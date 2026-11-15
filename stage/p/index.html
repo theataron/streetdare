@@ -47,17 +47,18 @@
         </div>
         <div class="burst" id="burst" aria-hidden="true"></div>
       </div>
+      <div class="how row">
+        <div><b>1</b><span data-i18n="how1"></span></div>
+        <div><b>2</b><span id="how2"></span></div>
+        <div><b>3</b><span data-i18n="how3"></span></div>
+      </div>
       <div class="stack" id="preSpin"><button class="btn red big" id="spinBtn" data-i18n="spin"></button></div>
       <div class="row2" id="postSpin" hidden>
         <button class="btn red" id="acceptBtn" data-i18n="accept"></button>
         <button class="btn" id="againBtn" data-i18n="again"></button>
       </div>
       <label class="devil"><input type="checkbox" id="devil"><span data-i18n="devil"></span></label>
-      <div class="how">
-        <div><b>1</b><span data-i18n="how1"></span></div>
-        <div><b>2</b><span id="how2"></span></div>
-        <div><b>3</b><span data-i18n="how3"></span></div>
-      </div>
+      <p class="devnote" id="devNote"></p>
     </section>
 
     <!-- ===== ACCEPTED ===== -->
@@ -73,12 +74,12 @@
 
     <!-- ===== DONE + reveal ===== -->
     <section class="play" id="v-done" hidden>
-      <div class="trophy">🏆</div>
       <h1 class="display" data-i18n="doneTitle"></h1>
       <p class="sub" data-i18n="doneSub"></p>
       <div class="wlbox light" style="text-align:left;margin:22px 0">
         <h2 class="display" data-i18n="pitchH"></h2>
         <p class="sub" data-i18n="pitchP"></p>
+        <p class="refbanner" id="refLine" hidden></p>
         <div class="stack">
           <a class="btn red" data-to="shop" data-i18n="pitchCta"></a>
           <a class="btn plain" data-to="shop" data-i18n="passCta" style="padding:4px"></a>

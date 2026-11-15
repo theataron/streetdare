@@ -6,6 +6,7 @@ let current = null, spinning = false, seen = [];
 
 const who = () => owner ? owner.name : t('thePerson');
 const fill = k => t(k).replace('{name}', who());
+if (!demo) refSave(SHIRT.toLowerCase());
 
 function show(v){
   VIEWS.forEach(n => $('v-'+n).hidden = n !== v);
@@ -87,8 +88,10 @@ $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').c
 /* ----- words that depend on the language and on whose shirt it is ----- */
 document.addEventListener('langchange', () => {
   $('foundKicker').textContent = owner ? fill('found') : t('foundAnon');
-  $('spinSub').textContent = fill('spinSub');
-  $('how2').textContent = fill('how2');
+  $('spinSub').textContent = owner ? fill('spinSub') : t('spinSubAnon');
+  $('how2').textContent = owner ? fill('how2') : t('how2Anon');
+  $('devNote').textContent = fill('devilNote');
+  if ($('refLine') && typeof refText === 'function'){ $('refLine').textContent = refText(); $('refLine').hidden = !refText(); }
   $('accNote').textContent = fill('accNote');
   if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txt(current); }
 });

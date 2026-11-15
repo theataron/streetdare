@@ -11,6 +11,21 @@ const store = {
 const $ = id => document.getElementById(id);
 const SHIRT = (new URLSearchParams(location.search).get('s') || '').replace(/[^\w-]/g,'').slice(0,12);
 
+/* ----- referral: scanning someone's shirt in real life remembers whose shirt it was -----
+   referred_by stays, so a later sign-up or order can be credited to that wearer.
+   The scanner's own perk (money off their shirt) only lasts REF_HOURS from the scan. */
+const REF_HOURS = 6;
+function refSave(id){
+  const r = refGet();
+  if (r && r.id === id && r.left > 0) return;
+  store.set('referred_by', id); store.set('referred_at', String(Date.now()));
+}
+function refGet(){
+  const id = store.get('referred_by'); if (!id) return null;
+  const at = Number(store.get('referred_at')) || 0;
+  return { id, at, left: at + REF_HOURS * 3600000 - Date.now() };
+}
+
 /* ----- language ----- */
 const LANG_CHOSEN = !!store.get('sd_lang');
 let LANG = store.get('sd_lang') || ((navigator.language||'en').toLowerCase().startsWith('es') ? 'es' : 'en');
@@ -43,7 +58,7 @@ async function api(fn, data){
   if (!SD.API_URL) return Demo[fn](data||{});
   const res = fn === 'getWall'
     ? await fetch(SD.API_URL + '?fn=getWall&t=' + Date.now())
-    : await fetch(SD.API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({ fn, shirt:SHIRT, lang:LANG }, data||{})) });
+    : await fetch(SD.API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({ fn, shirt: SHIRT || (refGet() || {}).id || '', lang:LANG }, data||{})) });
   const j = await res.json();
   if (!j.ok) throw new Error(j.error || 'error');
   return j.data;
@@ -53,8 +68,8 @@ function track(type, extra){ if (SD.API_URL && !window.STAGE) api('logEvent', Ob
 
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
-  en:{ ph:'Your email', send:'Get my launch discount 🎟️', sending:'Sending…', ok:'You’re in 🎉 Your launch discount is saved - we’ll email you when the shirts drop.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
-  es:{ ph:'Tu email', send:'Quiero mi descuento 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Tu descuento está guardado - te escribimos cuando salgan las camisetas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
+  en:{ ph:'Your email', send:'Join the Community 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the Streetdare community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
+  es:{ ph:'Tu email', send:'Únete a la comunidad 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad Streetdare - te escribiremos en cuanto las camisetas estén listas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
 function initWaitlist(){
   document.querySelectorAll('form.wl').forEach(form => {

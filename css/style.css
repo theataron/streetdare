@@ -537,3 +537,22 @@ body.hot .card.b2{background-color:#2a1d1a}
 .toast{position:fixed;left:50%;bottom:22px;z-index:30;transform:translate(-50%,140%);background:var(--ink);color:var(--bg);font-weight:700;font-size:.92rem;padding:12px 18px;border-radius:99px;max-width:92vw;text-align:center;transition:transform .3s cubic-bezier(.2,1.4,.4,1)}
 .toast.on{transform:translate(-50%,0)}
 #v-done .wlbox h2.display{font-size:1.75rem;line-height:1.02}
+
+/* ===== v9: three steps above SPIN, Devil Mode note, new roadmap art ===== */
+.how.row{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin:0 0 12px;font-size:.88rem;font-weight:700;color:var(--ink)}
+.how.row div{align-items:center;gap:6px}
+.how.row b{width:22px;height:22px;font-size:.75rem;background:var(--red);color:#fff}
+.devnote{font-size:.78rem;color:var(--mute);max-width:34ch;margin:0 auto}
+#v-spin .sub{font-size:.9rem;line-height:1.4;max-width:38ch}
+#v-spin .devil{margin:14px 0 4px}
+.art.packs.dev .pk{background:var(--ink);color:#fff}
+.art.packs.dev .p2,.art.packs.dev .p4{background:var(--red)}
+.art.packs.dev .pk em{font-size:1.9rem}
+.art.comm{gap:14px;font-size:2.4rem}
+.art.comm span{animation:hop 1.8s ease-in-out infinite}
+.art.comm span:nth-child(2){animation-delay:.2s}.art.comm span:nth-child(3){animation-delay:.4s}.art.comm span:nth-child(4){animation-delay:.6s}
+.refbanner{background:#ffc531;color:#1b1412;border:2.5px solid var(--ink);border-radius:16px;padding:10px 14px;font-weight:700;font-size:.92rem;margin:0 0 14px}
+.price s{font:400 1.3rem "Bagel Fat One",sans-serif;color:var(--mute)}
+.hostopt{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;margin:0 0 16px;cursor:pointer}
+.hostopt input{width:20px;height:20px;accent-color:var(--red);flex:none;margin-top:2px}
+.gnext{text-align:center;color:#d9cdc6;font-size:.88rem;margin:0 0 12px;min-height:1.4em}
