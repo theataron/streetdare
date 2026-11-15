@@ -29,6 +29,11 @@ const QUESTS = {
     ['Swap shirts or jackets for one song','Intercambiad camiseta o chaqueta durante una canción'],
     ['Get a stranger to rate your dance moves out of 10 - loser buys the water','Que un desconocido puntúe vuestro baile del 1 al 10 - quien pierda invita al agua'],
     ['Start a slow clap and get at least ten people to join','Empezad un aplauso lento y conseguid que se unan al menos diez personas'],
-    ['Walk up to a group and introduce each other with a completely made-up life story','Acercaos a un grupo y presentaos el uno al otro con una vida totalmente inventada']
+    ['Walk up to a group and introduce each other with a completely made-up life story','Acercaos a un grupo y presentaos el uno al otro con una vida totalmente inventada'],
+    ['Convince a group you two are famous and sign autographs for them','Convenced a un grupo de que sois famosos y firmadles autógrafos'],
+    ['Get a whole group of strangers to chant both your names','Conseguid que un grupo de desconocidos coree vuestros nombres'],
+    ['Challenge strangers to a dance battle - the crowd picks the winner','Retad a unos desconocidos a una batalla de baile - el público elige quién gana'],
+    ['Walk up to the coolest-looking group here and ask them to rate your entrance out of 10','Acercaos al grupo con más estilo del sitio y pedidles que puntúen vuestra entrada del 1 al 10'],
+    ['Narrate the next two minutes of each other’s night like a nature documentary, out loud, for an audience','Narrad los próximos dos minutos de la noche del otro como un documental de naturaleza, en voz alta y con público']
   ]
 };

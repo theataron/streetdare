@@ -21,7 +21,7 @@ function applyLang(){
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
-  const b = $('lang'); if (b){ const i = LANGS.findIndex(l => l.code === LANG); b.textContent = LANGS[(i+1) % LANGS.length].code.toUpperCase(); }
+  const b = $('lang'); if (b) b.innerHTML = LANGS.map(l => '<span' + (l.code === LANG ? ' class="on"' : '') + '>' + l.code.toUpperCase() + '</span>').join('<i>|</i>');
   document.dispatchEvent(new Event('langchange'));
 }
 function initLang(dict){
@@ -48,7 +48,8 @@ async function api(fn, data){
   if (!j.ok) throw new Error(j.error || 'error');
   return j.data;
 }
-function track(type, extra){ if (SD.API_URL) api('logEvent', Object.assign({ type }, extra||{})).catch(()=>{}); }
+/* the hidden /stage/ preview never writes scan stats */
+function track(type, extra){ if (SD.API_URL && !window.STAGE) api('logEvent', Object.assign({ type }, extra||{})).catch(()=>{}); }
 
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
@@ -59,7 +60,8 @@ function initWaitlist(){
   document.querySelectorAll('form.wl').forEach(form => {
     const input = form.querySelector('input'), btn = form.querySelector('button');
     const err = form.querySelector('.wlerr'), demo = form.parentElement.querySelector('.demo');
-    const paint = () => { const w = WL_TEXT[LANG]; input.placeholder = w.ph; if (!btn.disabled) btn.textContent = w.send; if (demo){ demo.textContent = w.demo; demo.hidden = !!SD.API_URL; } };
+    const label = () => form.dataset.send ? t(form.dataset.send) : WL_TEXT[LANG].send;
+    const paint = () => { const w = WL_TEXT[LANG]; input.placeholder = w.ph; if (!btn.disabled) btn.textContent = label(); if (demo){ demo.textContent = w.demo; demo.hidden = !!SD.API_URL; } };
     document.addEventListener('langchange', paint); paint();
     form.addEventListener('submit', async e => {
       e.preventDefault();
@@ -67,10 +69,30 @@ function initWaitlist(){
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ err.textContent = w.bad; err.hidden = false; return; }
       err.hidden = true; btn.disabled = true; btn.textContent = w.sending;
       try{
-        await api('joinWaitlist', { email:v, source:form.dataset.source||'' });
+        await api('joinWaitlist', { email:v, source:(window.STAGE ? 'stage-' : '') + (form.dataset.source||'') });
         store.set('sd_joined','1');
         document.querySelectorAll('form.wl').forEach(f => { const p = document.createElement('p'); p.className = 'wlmsg'; p.textContent = w.ok; f.replaceWith(p); });
-      }catch(x){ err.textContent = w.err; err.hidden = false; btn.disabled = false; btn.textContent = w.send; }
+      }catch(x){ err.textContent = w.err; err.hidden = false; btn.disabled = false; btn.textContent = label(); }
+    });
+  });
+}
+
+/* ----- "add your dare to the deck" forms (any <form class="dareform">) -----
+   Ideas land in the Events tab of the Sheet with type "dare_idea" (stage: "dare_idea_stage"),
+   the dare in the "quest" column and the optional @ after a " | ". No backend change needed. */
+function initDareForms(){
+  document.querySelectorAll('form.dareform').forEach(form => {
+    const ta = form.querySelector('textarea'), ig = form.querySelector('input'), btn = form.querySelector('button'), msg = form.querySelector('.daremsg');
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const v = ta.value.trim().replace(/\s+/g,' ').slice(0,170); if (v.length < 6){ ta.focus(); return; }
+      const at = (ig.value.trim().replace(/^@/,'').match(/^[\w.]{1,30}$/) || [''])[0];
+      btn.disabled = true; btn.textContent = t('dareSending');
+      try{
+        await api('logEvent', { type: window.STAGE ? 'dare_idea_stage' : 'dare_idea', quest: v + (at ? ' | @' + at : '') });
+        ta.value = ''; ig.value = ''; msg.textContent = t('dareOk'); msg.hidden = false; setTimeout(() => { msg.hidden = true; }, 6000);
+      }catch(x){ msg.textContent = t('dareErr'); msg.hidden = false; }
+      btn.disabled = false; btn.textContent = t('dareSend');
     });
   });
 }

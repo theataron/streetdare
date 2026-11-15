@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STREETDARE - your dare</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#fbf8ef">
+<link rel="preload" href="../../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="top">
+    <a class="mark display" href="../" id="homeLogo">STREETDARE</a>
+    <div class="right">
+      <button class="lang" id="lang" aria-label="Language">ES</button>
+      <button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i><span class="peek" aria-hidden="true">👀</span></button>
+    </div>
+  </header>
+
+  <nav class="menu" id="menu" hidden>
+    <button class="x" id="menuClose" aria-label="Close">✕</button>
+    <a data-to="home"><span data-i18n="mHome"></span><small data-i18n="mHomeS"></small></a>
+    <a href="#" id="mSpinLink"><span data-i18n="mSpin"></span><small data-i18n="mSpinS"></small></a>
+    <a data-to="wall"><span data-i18n="mWall"></span><small data-i18n="mWallS"></small></a>
+    <a data-to="about"><span data-i18n="mAbout"></span><small data-i18n="mAboutS"></small></a>
+    <a data-to="shop"><span data-i18n="mClub"></span><small data-i18n="mClubS"></small></a>
+    <div class="foot">STREETDARE · Madrid</div>
+  </nav>
+
+  <main>
+    <!-- ===== SPIN ===== -->
+    <section class="play" id="v-spin" hidden>
+      <div class="kicker" id="foundKicker"></div>
+      <h1 class="display" data-i18n="spinTitle"></h1>
+      <p class="sub" id="spinSub"></p>
+      <div class="machine" id="machine">
+        <div class="deck" id="deck">
+          <div class="card back b2" aria-hidden="true"></div>
+          <div class="card back b1" aria-hidden="true"></div>
+          <div class="card front" id="front">
+            <div class="lbl" data-i18n="unlocked"></div>
+            <div class="reel q" id="reel" aria-live="polite">? ? ?</div>
+            <span class="stamp" id="stamp" aria-hidden="true" data-i18n="stamp"></span>
+          </div>
+        </div>
+        <div class="burst" id="burst" aria-hidden="true"></div>
+      </div>
+      <div class="stack" id="preSpin"><button class="btn red big" id="spinBtn" data-i18n="spin"></button></div>
+      <div class="row2" id="postSpin" hidden>
+        <button class="btn red" id="acceptBtn" data-i18n="accept"></button>
+        <button class="btn" id="againBtn" data-i18n="again"></button>
+      </div>
+      <label class="devil"><input type="checkbox" id="devil"><span data-i18n="devil"></span></label>
+      <div class="how">
+        <div><b>1</b><span data-i18n="how1"></span></div>
+        <div><b>2</b><span id="how2"></span></div>
+        <div><b>3</b><span data-i18n="how3"></span></div>
+      </div>
+    </section>
+
+    <!-- ===== ACCEPTED ===== -->
+    <section class="play" id="v-accept" hidden>
+      <div class="kicker" data-i18n="accKicker"></div>
+      <div class="ticket"><small>Dare</small><div id="accText"></div></div>
+      <p class="note" id="accNote"></p>
+      <div class="stack">
+        <button class="btn red" id="doneBtn" data-i18n="done"></button>
+        <button class="btn plain" id="changeBtn" data-i18n="change"></button>
+      </div>
+    </section>
+
+    <!-- ===== DONE + reveal ===== -->
+    <section class="play" id="v-done" hidden>
+      <div class="trophy">🏆</div>
+      <h1 class="display" data-i18n="doneTitle"></h1>
+      <p class="sub" data-i18n="doneSub"></p>
+      <div class="wlbox light" style="text-align:left;margin:22px 0">
+        <h2 class="display" data-i18n="pitchH"></h2>
+        <p class="sub" data-i18n="pitchP"></p>
+        <div class="stack">
+          <a class="btn red" data-to="shop" data-i18n="pitchCta"></a>
+          <a class="btn plain" data-to="shop" data-i18n="passCta" style="padding:4px"></a>
+        </div>
+      </div>
+      <div class="darebox">
+        <h2 class="display" data-i18n="dareH"></h2>
+        <p class="sub" data-i18n="dareP"></p>
+        <form class="dareform">
+          <textarea rows="2" maxlength="170" required data-i18n-ph="darePh"></textarea>
+          <input type="text" maxlength="31" autocapitalize="off" autocorrect="off" autocomplete="off" data-i18n-ph="igPh">
+          <button class="btn" type="submit" data-i18n="dareSend"></button>
+          <p class="daremsg" hidden></p>
+        </form>
+      </div>
+      <div class="stack">
+        <button class="btn" id="anotherBtn" data-i18n="another"></button>
+        <a class="btn plain" data-to="wall" data-i18n="toWall"></a>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="../../js/text.js"></script>
+<script src="../../js/stage.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/quests.js"></script>
+<script src="../../js/shirts.js"></script>
+<script src="../../js/play.js"></script>
+</body>
+</html>

@@ -9,7 +9,8 @@ function show(v){
 }
 window.addEventListener('hashchange', () => {
   const v = location.hash.slice(1);
-  if (v === 'join'){ show('home'); requestAnimationFrame(() => $('join').scrollIntoView({ behavior:'smooth' })); return; }
+  /* a hash that is a spot on the home page (#join, #shop…) scrolls to it */
+  if (!VIEWS.includes(v) && v && $(v)){ show('home'); requestAnimationFrame(() => $(v).scrollIntoView({ behavior:'smooth' })); return; }
   show(v);
 });
 $('burger').onclick = () => { $('menu').hidden = false; };
@@ -58,4 +59,6 @@ $('wallForm').addEventListener('submit', async e => {
 document.addEventListener('langchange', () => { chips(); paintWall(); });
 initLang(T);
 initWaitlist();
-if (location.hash === '#join'){ show('home'); setTimeout(() => $('join').scrollIntoView(), 50); } else show(location.hash.slice(1));
+initDareForms();
+{ const h = location.hash.slice(1);
+  if (h && !VIEWS.includes(h) && $(h)){ show('home'); setTimeout(() => $(h).scrollIntoView(), 50); } else show(h); }
