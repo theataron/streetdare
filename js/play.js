@@ -1,6 +1,6 @@
 /* ===== STREETDARE - the page a shirt's QR code opens ===== */
 const VIEWS = ['spin','accept','done'];
-const owner = SHIRTS[SHIRT.toLowerCase()] || null;
+let owner = SHIRTS[SHIRT.toLowerCase()] || null;
 const demo = !SHIRT || SHIRT === 'demo';
 let current = null, spinning = false, seen = [];
 
@@ -41,7 +41,28 @@ function confetti(){
   }
 }
 
-const deck = () => $('devil').checked ? QUESTS.devil : QUESTS.classic.concat((owner && owner.quests) || []);
+/* decks: start with the built-in copy (js/quests.js), swap in the live ones from the database when they arrive */
+const DECKS = { classic: QUESTS.classic, spicy: QUESTS.devil, shirt: (owner && owner.quests) || [] };
+const deck = () => $('devil').checked ? DECKS.spicy : DECKS.classic.concat(DECKS.shirt);
+async function loadLiveDecks(){
+  const s = demo ? '' : SHIRT.toLowerCase();
+  const where = s ? 'or=(deck_id.in.(classic,spicy),shirt_id.eq.' + encodeURIComponent(s) + ')' : 'deck_id=in.(classic,spicy)';
+  try{
+    const [rows, shirts] = await Promise.all([
+      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es&active=eq.true&' + where + '&order=sort,id'),
+      s ? sbGet('shirts?select=id,name&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
+    ]);
+    const live = { classic: [], spicy: [], shirt: [] };
+    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
+    if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
+    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name }); applyLang(); }
+  }catch(e){ /* offline or database asleep: keep the built-in decks */ }
+}
+function logPlay(type){
+  const q = current || [];
+  if (type === 'spin') track('spin'); else track(type, { quest: q[0] });
+  sbLog(type, { dare_id: q.id || null, dare_text: q[0] || null, deck_id: q.deck || ($('devil').checked ? 'spicy' : 'classic') });
+}
 const txt = q => q[LANG === 'es' ? 1 : 0];
 function resetSpin(){ current = null; deckReset(); const r = $('reel'); r.className = 'reel q'; r.textContent = '? ? ?'; $('preSpin').hidden = false; $('postSpin').hidden = true; }
 function pick(){
@@ -67,7 +88,7 @@ function spin(){
     front.classList.remove('flip'); void front.offsetWidth; front.classList.add('flip');
     machine.classList.add('won'); if (!still()) confetti();
     if (navigator.vibrate) navigator.vibrate([30,40,60]);
-    spinning = false; $('spinBtn').disabled = false; $('preSpin').hidden = true; $('postSpin').hidden = false; track('spin');
+    spinning = false; $('spinBtn').disabled = false; $('preSpin').hidden = true; $('postSpin').hidden = false; logPlay('spin');
   }
   machine.classList.add('shuffling');
   (function step(){
@@ -79,9 +100,9 @@ function spin(){
 }
 $('spinBtn').onclick = spin;
 $('againBtn').onclick = spin;
-$('acceptBtn').onclick = () => { $('accText').textContent = txt(current); track('accept', { quest: current[0] }); show('accept'); };
+$('acceptBtn').onclick = () => { $('accText').textContent = txt(current); logPlay('accept'); show('accept'); };
 $('changeBtn').onclick = () => { resetSpin(); show('spin'); };
-$('doneBtn').onclick = () => { track('done', { quest: current[0] }); show('done'); };
+$('doneBtn').onclick = () => { logPlay('done'); show('done'); };
 $('anotherBtn').onclick = () => { resetSpin(); show('spin'); };
 $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').checked); if (!spinning) resetSpin(); };
 
@@ -100,4 +121,5 @@ initLang(T);
 initWaitlist();
 initDareForms();
 show('spin');
-try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); } }catch(e){}
+try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
+loadLiveDecks();

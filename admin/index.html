@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STREETDARE · Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#fbf8ef">
+<style>
+@font-face{font-family:"Bagel Fat One";src:url(../fonts/bagel-fat-one.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"DM Sans";src:url(../fonts/dm-sans.woff2) format("woff2");font-weight:100 1000;font-display:swap}
+:root{--bg:#fbf8ef;--ink:#1b1412;--red:#bd0a0a;--blush:#f6ddd3;--mute:#6f625c;--card:#fffdf7;--line:#e7dfd2;--ok:#1d7a43}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.45 "DM Sans",system-ui,sans-serif;min-height:100dvh}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px 60px}
+.display{font-family:"Bagel Fat One","Arial Black",sans-serif;font-weight:400;letter-spacing:.01em}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0;flex-wrap:wrap}
+.mark{color:var(--red);font-size:1.3rem;text-decoration:none;transform:rotate(-2deg);display:inline-block}
+.mark small{font:700 .7rem "DM Sans";letter-spacing:.14em;color:var(--ink);margin-left:6px;vertical-align:middle}
+.who{font-size:.85rem;color:var(--mute)}
+button,input,textarea,select{font:inherit;color:inherit}
+.btn{font-weight:700;padding:9px 16px;border-radius:99px;border:2px solid var(--ink);background:var(--card);cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+.btn.red{background:var(--red);color:#fff}
+.btn.sm{padding:5px 11px;font-size:.85rem;box-shadow:none}
+.btn.ghost{border-color:transparent;box-shadow:none;background:none;text-decoration:underline;color:var(--mute)}
+.btn:disabled{opacity:.45;cursor:default}
+input[type=text],input[type=email],textarea,select{width:100%;padding:9px 11px;border:1.5px solid var(--ink);border-radius:10px;background:#fff}
+textarea{resize:vertical;min-height:44px}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:18px;margin-bottom:18px}
+h2.display{font-size:1.5rem;margin-bottom:12px}
+h3{font-size:1rem;margin:4px 0 10px}
+.muted{color:var(--mute)}
+.login{max-width:420px;margin:12vh auto 0;text-align:center}
+.login h1{font-size:2.6rem;color:var(--red);margin-bottom:6px;transform:rotate(-2deg)}
+.login form{display:grid;gap:12px;margin-top:22px}
+.msg{margin-top:12px;font-size:.92rem}
+.msg.err{color:var(--red)}
+nav.tabs{display:flex;gap:8px;margin:4px 0 18px;flex-wrap:wrap}
+nav.tabs button{border:2px solid var(--ink);background:none;border-radius:99px;padding:7px 16px;font-weight:700;cursor:pointer}
+nav.tabs button.on{background:var(--ink);color:var(--bg)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.tile{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:12px 14px}
+.tile b{display:block;font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:.8rem;color:var(--mute);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.tile small{display:block;color:var(--mute);font-size:.78rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{text-align:left;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding:6px 8px;border-bottom:2px solid var(--ink)}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.feed{list-style:none;padding:0;max-height:420px;overflow:auto}
+.feed li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:.88rem}
+.feed time{color:var(--mute);min-width:70px;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:2px 8px;background:var(--blush);color:var(--red);white-space:nowrap}
+.tag.done{background:#d9f0e2;color:var(--ok)}
+.tag.scan{background:#e6e9f7;color:#2a43a8}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:var(--ok)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:p 1.6s infinite}
+@keyframes p{50%{opacity:.25}}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.chips button{border:2px solid var(--ink);border-radius:99px;background:#fff;padding:6px 14px;font-weight:700;cursor:pointer}
+.chips button.on{background:var(--red);border-color:var(--red);color:#fff}
+.chips button.off{opacity:.55}
+.dare{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
+.dare.inactive textarea{opacity:.5}
+.dare .acts{display:grid;gap:6px;justify-items:start;min-width:110px}
+.dare label{font-size:.85rem;display:flex;gap:6px;align-items:center;cursor:pointer}
+@media (max-width:700px){.dare{grid-template-columns:1fr}}
+.lbl{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.row > *{flex:1;min-width:140px}
+.row > .btn{flex:0 0 auto}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:700;font-size:.9rem;z-index:9}
+.empty{color:var(--mute);padding:14px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== logged out ===== -->
+  <section class="login" id="v-login" hidden>
+    <h1 class="display">STREETDARE</h1>
+    <p class="muted">Admin board. Enter your email and we'll send you a login link.</p>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required>
+      <button class="btn red" type="submit" id="loginBtn">Send me a login link</button>
+    </form>
+    <p class="msg" id="loginMsg" hidden></p>
+  </section>
+
+  <!-- ===== logged in, not admin ===== -->
+  <section class="login" id="v-noaccess" hidden>
+    <h1 class="display">Almost there</h1>
+    <p>You're logged in as <b id="naEmail"></b>, but this account isn't an admin yet.</p>
+    <p class="muted" style="margin-top:10px">Ask Claude to make this account an admin, then reload this page.</p>
+    <p style="margin-top:18px"><button class="btn" id="naOut">Log out</button></p>
+  </section>
+
+  <!-- ===== admin board ===== -->
+  <div id="v-admin" hidden>
+    <header>
+      <a class="mark display" href="../">STREETDARE<small>ADMIN</small></a>
+      <div class="who"><span id="meEmail"></span> · <button class="btn ghost sm" id="logout">Log out</button></div>
+    </header>
+    <nav class="tabs">
+      <button data-tab="live" class="on">Live results</button>
+      <button data-tab="decks">Decks &amp; dares</button>
+      <button data-tab="shirts">Shirts</button>
+    </nav>
+
+    <!-- LIVE -->
+    <div id="t-live">
+      <div class="tiles" id="tiles"></div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Right now <span class="live" id="liveDot" hidden><i></i>live</span></h3>
+          <ul class="feed" id="feed"></ul>
+        </div>
+        <div>
+          <div class="card">
+            <h3>Per shirt</h3>
+            <table><thead><tr><th>Shirt</th><th class="n">Scans</th><th class="n">People</th><th class="n">Done</th><th>Last</th></tr></thead><tbody id="shirtRows"></tbody></table>
+          </div>
+          <div class="card">
+            <h3>Most played dares</h3>
+            <table><thead><tr><th>Dare</th><th class="n">Accepted</th><th class="n">Done</th></tr></thead><tbody id="dareRows"></tbody></table>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size:.85rem">Counting starts from when the site was connected to the database (17 Nov 2026). Older scans and the waitlist are still in the Google Sheet.</p>
+    </div>
+
+    <!-- DECKS -->
+    <div id="t-decks" hidden>
+      <div class="chips" id="deckChips"></div>
+      <div class="card" id="deckSettings"></div>
+      <div class="card">
+        <h3>Add a dare</h3>
+        <form class="row" id="addDare">
+          <div><div class="lbl">English</div><textarea id="newEn" rows="2" maxlength="300" required></textarea></div>
+          <div><div class="lbl">Español</div><textarea id="newEs" rows="2" maxlength="300" required></textarea></div>
+          <button class="btn red" type="submit">Add</button>
+        </form>
+      </div>
+      <div class="card"><h3 id="dareTitle">Dares</h3><div id="dareList"></div></div>
+    </div>
+
+    <!-- SHIRTS -->
+    <div id="t-shirts" hidden>
+      <div class="card">
+        <h3>Add a shirt</h3>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px">The shirt ID goes into the QR code: <b>streetdare.com/p/?s=ID</b>. Lowercase letters, numbers, - and _ only, max 12 characters.</p>
+        <form class="row" id="addShirt">
+          <div><div class="lbl">Shirt ID</div><input type="text" id="newShirtId" maxlength="12" pattern="[a-z0-9_-]{1,12}" required placeholder="e.g. lucia"></div>
+          <div><div class="lbl">Name shown to scanners</div><input type="text" id="newShirtName" maxlength="40" required placeholder="e.g. Lucía"></div>
+          <button class="btn red" type="submit">Add shirt</button>
+        </form>
+      </div>
+      <div class="card">
+        <table><thead><tr><th>ID</th><th>Name</th><th>QR link</th><th>Status</th><th></th></tr></thead><tbody id="shirtList"></tbody></table>
+      </div>
+      <p class="muted" style="font-size:.85rem">A shirt's own dares (only shown when someone scans that shirt) are edited under Decks &amp; dares → pick the shirt.</p>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const sb = createClient('https://jlnsqerwiwmbqpzzcskf.supabase.co', 'sb_publishable_zWPRZvdU4QyCI5hlmAvCWA_Mz7_koXT');
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+function view(v){ ['login','noaccess','admin'].forEach(n => $('v-'+n).hidden = n !== v); }
+const ago = d => {
+  const s = (Date.now() - new Date(d)) / 1000;
+  if (s < 60) return 'just now'; if (s < 3600) return Math.floor(s/60) + ' min ago';
+  if (s < 86400) return Math.floor(s/3600) + ' h ago'; return Math.floor(s/86400) + ' d ago';
+};
+const hhmm = d => new Date(d).toLocaleString('en-GB', { weekday:'short', hour:'2-digit', minute:'2-digit' });
+
+/* ===== login ===== */
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const btn = $('loginBtn'), m = $('loginMsg');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  const { error } = await sb.auth.signInWithOtp({ email: $('email').value.trim(), options: { emailRedirectTo: location.origin + '/admin/' } });
+  m.hidden = false;
+  if (error){ m.className = 'msg err'; m.textContent = error.message; btn.disabled = false; btn.textContent = 'Send me a login link'; }
+  else { m.className = 'msg'; m.textContent = 'Check your inbox and click the link. Open it on this device and browser.'; btn.textContent = 'Link sent'; }
+};
+const logout = async () => { await sb.auth.signOut(); location.reload(); };
+$('logout').onclick = logout; $('naOut').onclick = logout;
+
+async function boot(session){
+  if (!session){ view('login'); return; }
+  const { data: me } = await sb.from('profiles').select('email, role').eq('id', session.user.id).maybeSingle();
+  if (!me || me.role !== 'admin'){ $('naEmail').textContent = session.user.email; view('noaccess'); return; }
+  $('meEmail').textContent = me.email; view('admin');
+  if (location.hash.includes('access_token')) history.replaceState(null, '', location.pathname);
+  await Promise.all([loadLive(), loadDecks(), loadShirts()]);
+  startRealtime();
+}
+let booted = false;
+sb.auth.onAuthStateChange((evt, session) => {
+  if (evt === 'SIGNED_OUT'){ view('login'); return; }
+  if (!booted && (evt === 'INITIAL_SESSION' || evt === 'SIGNED_IN')){ booted = !!session; setTimeout(() => boot(session), 0); }
+});
+
+/* ===== tabs ===== */
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  ['live','decks','shirts'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
+});
+
+/* ===== live results ===== */
+const EVT = { scan:'scanned', spin:'spun a dare', accept:'accepted', done:'completed' };
+function feedItem(e){
+  const what = e.event === 'accept' || e.event === 'done' ? ': ' + esc(e.dare_text) : '';
+  return '<li><time>' + hhmm(e.created_at) + '</time><span class="tag ' + e.event + '">' + e.event + '</span><span><b>' + esc(e.shirt_id) + '</b> ' + EVT[e.event] + what + '</span></li>';
+}
+async function loadLive(){
+  const [daily, shirts, dares, feed] = await Promise.all([
+    sb.from('daily_stats').select('*'),
+    sb.from('shirt_stats').select('*').order('scans', { ascending:false }),
+    sb.from('dare_stats').select('*').order('dones', { ascending:false }).order('accepts', { ascending:false }).limit(15),
+    sb.from('play_events').select('*').order('created_at', { ascending:false }).limit(40)
+  ]);
+  const days = daily.data || [];
+  const today = new Date().toLocaleDateString('en-CA', { timeZone:'Europe/Madrid' });
+  const weekAgo = new Date(Date.now() - 6*86400000).toLocaleDateString('en-CA', { timeZone:'Europe/Madrid' });
+  const sum = (rows, k) => rows.reduce((a, r) => a + Number(r[k] || 0), 0);
+  const t = days.filter(d => d.day === today), w = days.filter(d => d.day >= weekAgo);
+  const s = shirts.data || [];
+  $('tiles').innerHTML = [
+    ['Scans today', sum(t,'scans'), sum(w,'scans') + ' this week'],
+    ['Dares done today', sum(t,'dones'), sum(w,'dones') + ' this week'],
+    ['Scans all time', sum(s,'scans'), s.length + ' shirts scanned'],
+    ['Dares done all time', sum(s,'dones'), sum(s,'accepts') + ' accepted'],
+  ].map(([k,v,sub]) => '<div class="tile"><span>' + k + '</span><b>' + v + '</b><small>' + sub + '</small></div>').join('');
+  $('shirtRows').innerHTML = s.length ? s.map(r => '<tr><td><b>' + esc(r.shirt_id) + '</b></td><td class="n">' + r.scans + '</td><td class="n">' + r.people + '</td><td class="n">' + r.dones + '</td><td class="muted">' + ago(r.last_seen) + '</td></tr>').join('') : '<tr><td colspan="5" class="empty">No scans yet.</td></tr>';
+  const d = dares.data || [];
+  $('dareRows').innerHTML = d.length ? d.map(r => '<tr><td>' + esc(r.dare_text) + '</td><td class="n">' + r.accepts + '</td><td class="n">' + r.dones + '</td></tr>').join('') : '<tr><td colspan="3" class="empty">No dares played yet.</td></tr>';
+  const f = feed.data || [];
+  $('feed').innerHTML = f.length ? f.map(feedItem).join('') : '<li class="empty">Nothing yet. Scan a shirt and watch it appear here.</li>';
+}
+let liveRefresh;
+function startRealtime(){
+  sb.channel('play').on('postgres_changes', { event:'INSERT', schema:'public', table:'play_events' }, p => {
+    const f = $('feed'); if (f.querySelector('.empty')) f.innerHTML = '';
+    f.insertAdjacentHTML('afterbegin', feedItem(p.new));
+    clearTimeout(liveRefresh); liveRefresh = setTimeout(loadLive, 1500);
+  }).subscribe(status => { $('liveDot').hidden = status !== 'SUBSCRIBED'; });
+}
+
+/* ===== decks & dares ===== */
+let decks = [], shirtsAll = [], scope = { deck_id: 'classic' };
+async function loadDecks(){
+  const [d, s] = await Promise.all([
+    sb.from('decks').select('*').order('sort'),
+    sb.from('shirts').select('id,name').order('id')
+  ]);
+  decks = d.data || []; shirtsAll = s.data || [];
+  paintChips(); paintDeckSettings(); loadDares();
+}
+function paintChips(){
+  $('deckChips').innerHTML =
+    decks.map(d => '<button data-deck="' + d.id + '" class="' + (scope.deck_id === d.id ? 'on' : '') + (d.active ? '' : ' off') + '">' + esc(d.name_en) + '</button>').join('') +
+    shirtsAll.map(s => '<button data-shirt="' + s.id + '" class="' + (scope.shirt_id === s.id ? 'on' : '') + '">👕 ' + esc(s.name) + '</button>').join('');
+  $('deckChips').querySelectorAll('button').forEach(b => b.onclick = () => {
+    scope = b.dataset.deck ? { deck_id: b.dataset.deck } : { shirt_id: b.dataset.shirt };
+    paintChips(); paintDeckSettings(); loadDares();
+  });
+}
+function paintDeckSettings(){
+  const box = $('deckSettings');
+  if (scope.shirt_id){ const s = shirtsAll.find(x => x.id === scope.shirt_id); box.innerHTML = '<h3>' + esc(s ? s.name : scope.shirt_id) + "'s own dares</h3><p class=\"muted\">These only show up when someone scans this shirt, mixed into the Classic deck.</p>"; return; }
+  const d = decks.find(x => x.id === scope.deck_id); if (!d){ box.innerHTML = ''; return; }
+  box.innerHTML =
+    '<form class="row" id="deckForm">' +
+      '<div><div class="lbl">Name (EN)</div><input type="text" name="name_en" value="' + esc(d.name_en) + '"></div>' +
+      '<div><div class="lbl">Nombre (ES)</div><input type="text" name="name_es" value="' + esc(d.name_es) + '"></div>' +
+      '<label style="flex:0 0 auto"><input type="checkbox" name="active"' + (d.active ? ' checked' : '') + '> Live on the site</label>' +
+      '<label style="flex:0 0 auto"><input type="checkbox" name="is_free"' + (d.is_free ? ' checked' : '') + '> Free</label>' +
+      '<button class="btn sm" type="submit">Save deck</button>' +
+    '</form>' +
+    (d.id === 'classic' || d.id === 'spicy' ? '' : '<p class="muted" style="font-size:.85rem;margin-top:8px">This pack isn\'t shown on the scan page yet. It will be once pack choice and checkout are built.</p>');
+  $('deckForm').onsubmit = async e => {
+    e.preventDefault(); const f = e.target;
+    const { error } = await sb.from('decks').update({ name_en: f.name_en.value.trim(), name_es: f.name_es.value.trim(), active: f.active.checked, is_free: f.is_free.checked }).eq('id', d.id);
+    if (error) return toast('Error: ' + error.message);
+    toast('Deck saved'); loadDecks();
+  };
+}
+async function loadDares(){
+  let q = sb.from('dares').select('*').order('sort').order('id');
+  q = scope.deck_id ? q.eq('deck_id', scope.deck_id) : q.eq('shirt_id', scope.shirt_id);
+  const { data, error } = await q;
+  if (error) return toast('Error: ' + error.message);
+  const live = data.filter(x => x.active).length;
+  $('dareTitle').textContent = data.length + ' dares · ' + live + ' live';
+  $('dareList').innerHTML = data.length ? data.map(r =>
+    '<div class="dare' + (r.active ? '' : ' inactive') + '" data-id="' + r.id + '">' +
+      '<div><div class="lbl">English</div><textarea name="en" rows="2" maxlength="300">' + esc(r.text_en) + '</textarea></div>' +
+      '<div><div class="lbl">Español</div><textarea name="es" rows="2" maxlength="300">' + esc(r.text_es) + '</textarea></div>' +
+      '<div class="acts"><label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
+      '<button class="btn sm red" name="save" disabled>Save</button><button class="btn ghost sm" name="del">Delete</button></div>' +
+    '</div>').join('') : '<p class="empty">No dares here yet. Add the first one above.</p>';
+  $('dareList').querySelectorAll('.dare').forEach(row => {
+    const id = row.dataset.id, save = row.querySelector('[name=save]');
+    row.querySelectorAll('textarea').forEach(t => t.oninput = () => save.disabled = false);
+    save.onclick = async () => {
+      const en = row.querySelector('[name=en]').value.trim(), es = row.querySelector('[name=es]').value.trim();
+      if (en.length < 2 || es.length < 2) return toast('Both languages are needed');
+      const { error } = await sb.from('dares').update({ text_en: en, text_es: es, updated_at: new Date().toISOString() }).eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      save.disabled = true; toast('Saved - live on the site now');
+    };
+    row.querySelector('[name=active]').onchange = async e => {
+      const { error } = await sb.from('dares').update({ active: e.target.checked }).eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      row.classList.toggle('inactive', !e.target.checked); toast(e.target.checked ? 'Dare is live' : 'Dare hidden from the site');
+      loadDares();
+    };
+    row.querySelector('[name=del]').onclick = async () => {
+      if (!confirm('Delete this dare for good? (Untick "Live" instead if you might want it back.)')) return;
+      const { error } = await sb.from('dares').delete().eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      toast('Deleted'); loadDares();
+    };
+  });
+}
+$('addDare').onsubmit = async e => {
+  e.preventDefault();
+  const en = $('newEn').value.trim(), es = $('newEs').value.trim();
+  const { error } = await sb.from('dares').insert(Object.assign({ text_en: en, text_es: es, sort: 999 }, scope));
+  if (error) return toast('Error: ' + error.message);
+  $('newEn').value = ''; $('newEs').value = ''; toast('Dare added - live on the site now'); loadDares();
+};
+
+/* ===== shirts ===== */
+async function loadShirts(){
+  const { data, error } = await sb.from('shirts').select('*').order('created_at');
+  if (error) return toast('Error: ' + error.message);
+  $('shirtList').innerHTML = data.map(s => {
+    const url = 'https://streetdare.com/p/?s=' + s.id;
+    return '<tr data-id="' + s.id + '"><td><b>' + esc(s.id) + '</b></td><td><input type="text" name="name" value="' + esc(s.name) + '" maxlength="40"></td>' +
+      '<td><a href="' + url + '" target="_blank" rel="noopener">' + url.replace('https://','') + '</a></td>' +
+      '<td><select name="status"><option value="active"' + (s.status === 'active' ? ' selected' : '') + '>Active</option><option value="disabled"' + (s.status === 'disabled' ? ' selected' : '') + '>Disabled</option></select></td>' +
+      '<td><button class="btn sm" name="save">Save</button></td></tr>';
+  }).join('');
+  $('shirtList').querySelectorAll('tr').forEach(tr => tr.querySelector('[name=save]').onclick = async () => {
+    const { error } = await sb.from('shirts').update({ name: tr.querySelector('[name=name]').value.trim(), status: tr.querySelector('[name=status]').value }).eq('id', tr.dataset.id);
+    if (error) return toast('Error: ' + error.message);
+    toast('Shirt saved'); loadDecks();
+  });
+}
+$('addShirt').onsubmit = async e => {
+  e.preventDefault();
+  const id = $('newShirtId').value.trim().toLowerCase(), name = $('newShirtName').value.trim();
+  const { error } = await sb.from('shirts').insert({ id, name });
+  if (error) return toast(error.code === '23505' ? 'That ID is already taken' : 'Error: ' + error.message);
+  $('newShirtId').value = ''; $('newShirtName').value = ''; toast('Shirt added: streetdare.com/p/?s=' + id); loadShirts(); loadDecks();
+};
+</script>
+</body>
+</html>

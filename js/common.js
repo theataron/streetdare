@@ -66,6 +66,34 @@ async function api(fn, data){
 /* the hidden /stage/ preview never writes scan stats */
 function track(type, extra){ if (SD.API_URL && !window.STAGE) api('logEvent', Object.assign({ type }, extra||{})).catch(()=>{}); }
 
+/* ----- Supabase database (decks, shirts, live stats for /admin) -----
+   The publishable key is meant to be public: the database's own rules decide what it can do.
+   If the database is unreachable the site keeps working with the decks in js/quests.js. */
+const SB = { url: 'https://jlnsqerwiwmbqpzzcskf.supabase.co', key: 'sb_publishable_zWPRZvdU4QyCI5hlmAvCWA_Mz7_koXT' };
+async function sbGet(path, ms){
+  const ctl = window.AbortController ? new AbortController() : null;
+  const timer = ctl && setTimeout(() => ctl.abort(), ms || 4000);
+  try{
+    const res = await fetch(SB.url + '/rest/v1/' + path, { headers:{ apikey: SB.key }, signal: ctl && ctl.signal });
+    if (!res.ok) throw new Error(res.status);
+    return await res.json();
+  } finally { if (timer) clearTimeout(timer); }
+}
+function deviceId(){
+  let d = store.get('sd_device');
+  if (!d){ d = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2); store.set('sd_device', d); }
+  return d;
+}
+function sbLog(event, extra){
+  const s = SHIRT.toLowerCase();
+  if (window.STAGE || !s || s === 'demo') return;
+  fetch(SB.url + '/rest/v1/play_events', {
+    method:'POST', keepalive:true,
+    headers:{ apikey: SB.key, 'Content-Type':'application/json', Prefer:'return=minimal' },
+    body: JSON.stringify(Object.assign({ event, shirt_id: s, device_id: deviceId(), lang: LANG }, extra||{}))
+  }).catch(()=>{});
+}
+
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
   en:{ ph:'Your email', send:'Join the Community 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },

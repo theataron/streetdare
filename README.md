@@ -9,6 +9,12 @@ The website behind the STREETDARE shirts.
 - Dare ideas people submit ("Got a better dare?") land in the Sheet's **Events** tab with type `dare_idea` (stage: `dare_idea_stage`).
 - Each shirt's QR code points to `streetdare.com/p/?s=<id>`. Shirts are listed in `js/shirts.js` (Aron's is `?s=aron`).
 
+## Database and admin board (Supabase)
+- `streetdare.com/admin/` is the admin board: log in with a magic link, then edit decks and dares, add shirts, and watch scans and dares live.
+- Decks, dares and shirts live in the Supabase database (project `jlnsqerwiwmbqpzzcskf`, Frankfurt). The scan page loads them from there and falls back to `js/quests.js` and `js/shirts.js` if the database can't be reached, so keep those files roughly in sync.
+- Every scan, spin, accepted and completed dare is saved in the `play_events` table (and still in the Google Sheet for now). The waitlist and emails still run on the Sheet.
+- `.github/workflows/keep-alive.yml` pings the database every 3 days so the free plan never pauses it.
+
 ## Files you may want to edit
 - `js/text.js` - every word on the site (English and Spanish).
 - `js/quests.js` - the dare decks.
