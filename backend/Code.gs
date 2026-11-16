@@ -10,48 +10,48 @@
    LAUNCH_URL: the shop link for the launch email. Leave it empty until the shirts are on sale.
    LAUNCH_CODE must also exist as a real discount code in your checkout (EUR 10 off, valid 1 week). */
 const WELCOME_ON  = true;
-const SENDER_NAME = 'Aron from Streetdare';
+const SENDER_NAME = 'Aron from STREETDARE';
 const REPLY_TO    = 'streetdare.official@gmail.com';
 const LAUNCH_URL  = '';
 const LAUNCH_CODE = 'EARLYDARE';
 
 const MAIL = {
   en: {
-    welcomeSubject: 'Welcome to Streetdare 👀',
+    welcomeSubject: 'Welcome to STREETDARE 👀',
     welcome: [
       'Hey,',
-      'Welcome to the Streetdare community! We\'re really glad you\'re here early.',
-      'Most people out at bars and clubs actually want to meet new people, they just don\'t know how to take that first step. That\'s why we\'re creating Streetdare in Madrid: made-to-order streetwear with a live QR code on the back that gives strangers an easy, fun excuse to talk and become friends.',
+      'Welcome to the STREETDARE community! We\'re really glad you\'re here early.',
+      'Most people out at bars and clubs actually want to meet new people, they just don\'t know how to take that first step. That\'s why we\'re creating STREETDARE in Madrid: made-to-order streetwear with a live QR code on the back that gives strangers an easy, fun excuse to talk and become friends.',
       'We\'re putting the finishing touches on the first shirts right now. You won\'t get annoying daily emails from us. We\'ll only reach out when the shirts are ready to order, and because you joined the community before launch, we\'ll include an exclusive discount code for you.',
-      'See you out there soon,\nAron & the Streetdare crew'
+      'See you out there soon,\nAron & the STREETDARE crew'
     ],
-    launchSubject: 'Streetdare is live - here is your early-community discount 🎟️',
+    launchSubject: 'STREETDARE is live - here is your early-community discount 🎟️',
     launch: [
       'Hey,',
-      'Thank you for being part of the Streetdare community from the very beginning.',
+      'Thank you for being part of the STREETDARE community from the very beginning.',
       'Today, our made-to-order shirts are officially live! Each shirt comes with your personal QR code, your own dashboard to add custom dares, and stats from your nights out.',
       'Because you subscribed before launch, use the code {code} at checkout for €10 off your order. Just make sure to use it within 1 week, before the code expires.',
       'Get your shirt → {url}',
-      'See you on the dancefloor,\nAron & the Streetdare crew'
+      'See you on the dancefloor,\nAron & the STREETDARE crew'
     ]
   },
   es: {
-    welcomeSubject: 'Te damos la bienvenida a Streetdare 👀',
+    welcomeSubject: 'Te damos la bienvenida a STREETDARE 👀',
     welcome: [
       'Hola:',
-      '¡Te damos la bienvenida a la comunidad Streetdare! Nos alegra mucho que hayas llegado tan pronto.',
-      'La mayoría de la gente que sale a bares y discotecas en realidad quiere conocer gente nueva, pero no sabe cómo dar el primer paso. Por eso estamos creando Streetdare en Madrid: streetwear hecho por encargo con un QR en la espalda que les da a los desconocidos una excusa fácil y divertida para hablar y hacerse amigos.',
+      '¡Te damos la bienvenida a la comunidad STREETDARE! Nos alegra mucho que hayas llegado tan pronto.',
+      'La mayoría de la gente que sale a bares y discotecas en realidad quiere conocer gente nueva, pero no sabe cómo dar el primer paso. Por eso estamos creando STREETDARE en Madrid: streetwear hecho por encargo con un QR en la espalda que les da a los desconocidos una excusa fácil y divertida para hablar y hacerse amigos.',
       'Ahora mismo estamos dando los últimos retoques a las primeras camisetas. No vas a recibir emails pesados todos los días. Solo te escribiremos cuando las camisetas se puedan pedir y, como te uniste a la comunidad antes del lanzamiento, incluiremos un código de descuento exclusivo para ti.',
-      'Nos vemos pronto por ahí,\nAron y el equipo de Streetdare'
+      'Nos vemos pronto por ahí,\nAron y el equipo de STREETDARE'
     ],
-    launchSubject: 'Streetdare ya está aquí: tu descuento por llegar antes 🎟️',
+    launchSubject: 'STREETDARE ya está aquí: tu descuento por llegar antes 🎟️',
     launch: [
       'Hola:',
-      'Gracias por formar parte de la comunidad Streetdare desde el principio.',
+      'Gracias por formar parte de la comunidad STREETDARE desde el principio.',
       '¡Hoy salen oficialmente nuestras camisetas hechas por encargo! Cada camiseta viene con tu QR personal, tu propio panel para añadir retos y las estadísticas de tus noches de fiesta.',
       'Como te apuntaste antes del lanzamiento, usa el código {code} al pagar y tendrás 10 € de descuento en tu pedido. Acuérdate de usarlo en el plazo de 1 semana, antes de que caduque.',
       'Consigue tu camiseta → {url}',
-      'Nos vemos en la pista,\nAron y el equipo de Streetdare'
+      'Nos vemos en la pista,\nAron y el equipo de STREETDARE'
     ]
   }
 };

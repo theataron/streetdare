@@ -2,7 +2,7 @@
 
 Until this is done the site runs in demo mode: emails are not saved and wall messages stay on the visitor's phone.
 
-1. Create a new Google Sheet (for example inside the Drive folder "03 Data") and name it "Streetdare data".
+1. Create a new Google Sheet (for example inside the Drive folder "03 Data") and name it "STREETDARE data".
 2. In the Sheet: Extensions → Apps Script.
 3. Delete whatever is in the editor, paste everything from `Code.gs`, and save.
 4. Click Deploy → New deployment → type "Web app".

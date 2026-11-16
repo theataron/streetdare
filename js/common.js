@@ -68,8 +68,8 @@ function track(type, extra){ if (SD.API_URL && !window.STAGE) api('logEvent', Ob
 
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
-  en:{ ph:'Your email', send:'Join the Community 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the Streetdare community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
-  es:{ ph:'Tu email', send:'Únete a la comunidad 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad Streetdare - te escribiremos en cuanto las camisetas estén listas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
+  en:{ ph:'Your email', send:'Join the Community 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
+  es:{ ph:'Tu email', send:'Únete a la comunidad 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE - te escribiremos en cuanto las camisetas estén listas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
 function initWaitlist(){
   document.querySelectorAll('form.wl').forEach(form => {

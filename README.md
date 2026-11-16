@@ -1,6 +1,6 @@
 # STREETDARE
 
-The website behind the Streetdare shirts.
+The website behind the STREETDARE shirts.
 
 ## How it works
 - `index.html` is the home page (home, The Wall, About, Join the club).

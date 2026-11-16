@@ -1,5 +1,5 @@
 /* ===== Quest decks. Each quest: [English, Español]. Edit freely.
-   "classic" is the general party pack everyone gets. "devil" is Devil mode.
+   "classic" is the general party pack everyone gets. "devil" is the Spicy pack.
    Quests for one specific shirt go in js/shirts.js. ===== */
 const QUESTS = {
   classic: [

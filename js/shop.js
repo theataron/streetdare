@@ -22,15 +22,13 @@
     checkout('shirt');
   };
   $('buyPass').onclick = () => checkout('pass');
-  $('hostUp').onchange = paintShirt;
 
-  /* one shirt: €10 off for a few hours after scanning someone's shirt, plus the optional Host Upgrade */
+  /* one shirt: €10 off for a few hours after scanning someone's shirt */
   function paintShirt(){
-    const perk = refPerk(), base = PRICES.shirt - (perk ? PRICES.refOff : 0), total = base + ($('hostUp').checked ? PRICES.host : 0);
+    const perk = refPerk(), base = PRICES.shirt - (perk ? PRICES.refOff : 0);
     $('refBanner').hidden = !perk; $('refBanner').textContent = refText();
     $('shopPrice').innerHTML = (perk ? '<s>' + eur(PRICES.shirt) + '</s> ' : '') + eur(base);
-    $('hostTxt').textContent = t('shopHost').replace('{p}', eur(PRICES.host));
-    $('buyShirt').textContent = t('shopBuy').replace('{p}', eur(total));
+    $('buyShirt').textContent = t('shopBuy').replace('{p}', eur(base));
   }
 
   /* squad: the price per shirt drops at each tier */

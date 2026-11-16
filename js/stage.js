@@ -9,8 +9,8 @@ window.STAGE = true;
 const PRICES = {
   shirt: 49,          /* one made-to-order shirt, free shipping */
   pass: 4.99,         /* Shirtless Pass: a day of dares on the phone */
-  devil: 1,           /* Devil Mode unlock for a scanner */
-  host: 5,            /* Devil Mode Host Upgrade, added when buying a shirt (placeholder price) */
+  packs: 3,           /* dare packs included with every shirt */
+  pack: 3.99,         /* each extra dare pack (placeholder price) */
   refOff: 10,         /* off your own shirt after scanning someone's, for REF_HOURS (js/common.js) */
   /* group tiers: [from this many shirts, price per shirt] (placeholder prices) */
   tiers: [[3, 45], [5, 42], [8, 39]],
@@ -30,7 +30,7 @@ Object.assign(T.en, {
   ctaQ: "Want your own shirt and dares?",
   mClub: "Get your shirt 👕",
   mClubS: "The shirt, the Shirtless Pass and squad packs",
-  clIntro: "We’re building a community of people who actually want to connect when they go out. The shirt, Devil Mode, the Shirtless Pass and squad packs are live in Madrid, and real-world nights and local events come next.",
+  clIntro: "We’re building a community of people who actually want to connect when they go out. The shirt, dare packs, the Shirtless Pass and squad packs are live in Madrid, and real-world nights and local events come next.",
   tagFirst: "Live now",
   g4h: "Free shipping",
   g4p: "Every shirt is printed for you and ships in 3-5 working days.",
@@ -41,22 +41,22 @@ Object.assign(T.en, {
   q5: "How much is it?",
   a5: "A shirt is €49 with free shipping, and it’s made to order with your own QR, so it ships in 3-5 working days. Groups of 3 or more pay less per shirt, and the Shirtless Pass is €4.99 if you’d rather play without one.",
   q7: "What do I get for scanning someone’s shirt?",
-  a7: "If you scan a Streetdare shirt on a night out, you get €10 off your own for the next 6 hours. And when someone who scanned your shirt buys one, you unlock the Devil Mode Host Upgrade for free.",
-  devilNote: "Unlock for €1 - or free if {name} has the Host Upgrade.",
+  a7: "If you scan a STREETDARE shirt on a night out, you get €10 off your own for the next 6 hours. And when someone who scanned your shirt buys one, you get an extra dare pack for free.",
+  devilNote: "A bolder set of dares, and one of the packs on {name}’s shirt.",
+  c4p: "Themed decks for every kind of night: Erasmus, Spicy, Festival and Madrid, with more on the way. Every shirt comes with your pick of three, and extra packs are €3.99 each.",
   pitchP: "Every shirt is made to order with your own QR and your own dares. It’s €49 with free shipping.",
   pitchCta: "Get your own shirt →",
   passCta: "Or play tonight with the Shirtless Pass for €4.99",
   refLine: "Because you scanned {name}’s shirt, you get €10 off your own for the next {time}.",
-  refAnon: "a Streetdare",
+  refAnon: "a STREETDARE",
   shopKicker: "Made to order",
-  shopH: "Get your Streetdare",
+  shopH: "Get your STREETDARE",
   shopColor: "Colour",
   shopBlack: "Black",
   shopWhite: "White",
   shopSize: "Size",
   shopShip: "Free shipping · ships in 3-5 working days",
-  shopIncl: "An oversized unisex tee, printed just for you with your own QR and your name. You pick your dare decks and can add your own dares.",
-  shopHost: "Add the Devil Mode Host Upgrade for {p}, so everyone who scans you gets Devil Mode for free.",
+  shopIncl: "An oversized unisex tee, printed just for you with your own QR and your name. It comes with your pick of three dare packs (Erasmus, Spicy, Festival or Madrid), and you can add your own dares.",
   shopBuy: "Buy the shirt - {p}",
   shopPickSize: "Pick your size first ☝️",
   shopOr: "or",
@@ -82,7 +82,7 @@ Object.assign(T.es, {
   ctaQ: "¿Quieres tu propia camiseta y retos?",
   mClub: "Consigue tu camiseta 👕",
   mClubS: "La camiseta, el Shirtless Pass y los squad packs",
-  clIntro: "Estamos creando una comunidad de gente que de verdad quiere conectar cuando sale. La camiseta, el Modo Diablo, el Shirtless Pass y los squad packs ya están disponibles en Madrid, y después vendrán noches reales y eventos locales.",
+  clIntro: "Estamos creando una comunidad de gente que de verdad quiere conectar cuando sale. La camiseta, los packs de retos, el Shirtless Pass y los squad packs ya están disponibles en Madrid, y después vendrán noches reales y eventos locales.",
   tagFirst: "Ya disponible",
   g4h: "Envío gratis",
   g4p: "Cada camiseta se imprime para ti y se envía en 3-5 días laborables.",
@@ -93,22 +93,22 @@ Object.assign(T.es, {
   q5: "¿Cuánto cuesta?",
   a5: "La camiseta cuesta 49 € con envío gratis y se hace por encargo con tu propio QR, así que se envía en 3-5 días laborables. Los grupos de 3 o más pagan menos por camiseta, y el Shirtless Pass cuesta 4,99 € si prefieres jugar sin camiseta.",
   q7: "¿Qué gano por escanear la camiseta de alguien?",
-  a7: "Si escaneas una camiseta Streetdare una noche de fiesta, tienes 10 € de descuento en la tuya durante las 6 horas siguientes. Y cuando alguien que escaneó tu camiseta compra una, desbloqueas gratis el Host Upgrade del Modo Diablo.",
-  devilNote: "Desbloquéalo por 1 €, o gratis si {name} tiene el Host Upgrade.",
+  a7: "Si escaneas una camiseta STREETDARE una noche de fiesta, tienes 10 € de descuento en la tuya durante las 6 horas siguientes. Y cuando alguien que escaneó tu camiseta compra una, te llevas gratis un pack de retos extra.",
+  devilNote: "Una tanda de retos más atrevidos, y uno de los packs de la camiseta de {name}.",
+  c4p: "Barajas temáticas para cada tipo de noche: Erasmus, Picante, Festival y Madrid, con más en camino. Cada camiseta incluye los tres que tú elijas, y los packs extra cuestan 3,99 € cada uno.",
   pitchP: "Cada camiseta se hace por encargo con tu propio QR y tus propios retos. Cuesta 49 € con envío gratis.",
   pitchCta: "Consigue tu camiseta →",
   passCta: "O juega esta noche con el Shirtless Pass por 4,99 €",
   refLine: "Por haber escaneado la camiseta de {name}, tienes 10 € de descuento en la tuya durante {time}.",
-  refAnon: "Streetdare",
+  refAnon: "STREETDARE",
   shopKicker: "Hecha por encargo",
-  shopH: "Hazte con tu Streetdare",
+  shopH: "Hazte con tu STREETDARE",
   shopColor: "Color",
   shopBlack: "Negra",
   shopWhite: "Blanca",
   shopSize: "Talla",
   shopShip: "Envío gratis · se envía en 3-5 días laborables",
-  shopIncl: "Una camiseta oversized unisex, impresa solo para ti con tu propio QR y tu nombre. Eliges tus barajas de retos y puedes añadir los tuyos.",
-  shopHost: "Añade el Host Upgrade del Modo Diablo por {p}, para que todo el que te escanee tenga el Modo Diablo gratis.",
+  shopIncl: "Una camiseta oversized unisex, impresa solo para ti con tu propio QR y tu nombre. Incluye los tres packs de retos que tú elijas (Erasmus, Picante, Festival o Madrid), y puedes añadir tus propios retos.",
   shopBuy: "Comprar la camiseta - {p}",
   shopPickSize: "Elige tu talla primero ☝️",
   shopOr: "o",
@@ -139,7 +139,7 @@ function refPerk(){
 function refText(){
   const p = refPerk(); if (!p) return '';
   return p.name ? t('refLine').replace('{name}', p.name).replace('{time}', p.time)
-                : t('refLine').replace(LANG === 'es' ? 'la camiseta de {name}' : '{name}’s shirt', LANG === 'es' ? 'una camiseta Streetdare' : 'a Streetdare shirt').replace('{time}', p.time);
+                : t('refLine').replace(LANG === 'es' ? 'la camiseta de {name}' : '{name}’s shirt', LANG === 'es' ? 'una camiseta STREETDARE' : 'a STREETDARE shirt').replace('{time}', p.time);
 }
 
 /* euros, written the way each language writes them */

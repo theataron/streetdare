@@ -16,7 +16,7 @@ We give people the first push. Two things make a night unforgettable: stepping o
 - Dares are done together, never at someone's expense.
 
 ## Where it comes from
-Aron has always loved going out and meeting new people, in clubs and in any social situation. He is a very extroverted person. He first made a shirt just for himself, with a QR code on the back, so anyone could scan it and get a dare to do with him. He then realised many other people would want the same thing, and started building Streetdare. The project is in its initial stage.
+Aron has always loved going out and meeting new people, in clubs and in any social situation. He is a very extroverted person. He first made a shirt just for himself, with a QR code on the back, so anyone could scan it and get a dare to do with him. He then realised many other people would want the same thing, and started building STREETDARE. The project is in its initial stage.
 
 ## Where it's going
 1. Shirts with a personal QR code, so anyone can be the person who starts the dare.
