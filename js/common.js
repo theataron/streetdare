@@ -29,13 +29,15 @@ function refGet(){
 
 /* ----- language ----- */
 const LANG_CHOSEN = !!store.get('sd_lang');
-let LANG = store.get('sd_lang') || ((navigator.language||'en').toLowerCase().startsWith('es') ? 'es' : 'en');
+const PHONE_LANG = (navigator.language||'en').toLowerCase();
+let LANG = store.get('sd_lang') || (PHONE_LANG.startsWith('es') ? 'es' : PHONE_LANG.startsWith('hu') ? 'hu' : 'en');
 function setLang(code){ LANG = code; store.set('sd_lang', code); applyLang(); }
 let DICT = { en:{} };
 const t = k => (DICT[LANG] && DICT[LANG][k]) ?? (DICT.en[k] ?? k);
 /* ----- account links: "Log in" in the header, "Log in" + "Create account" in the menu ----- */
 const ACCT = {
   en:{ login:'Log in', me:'Profile', signup:'Create account', loginS:'Your profile, your shirts, your stats', signupS:'Got a shirt? Claim it here', meS:'Your photo, your shirts and your stats' },
+  hu:{ login:'Belépés', me:'Profil', signup:'Fiók létrehozása', loginS:'A profilod, a pólóid, a statisztikáid', signupS:'Van pólód? Itt igényelheted', meS:'A fotód, a pólóid és a statisztikáid' },
   es:{ login:'Entrar', me:'Perfil', signup:'Crear cuenta', loginS:'Tu perfil, tus camisetas, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tu foto, tus camisetas y tus estadísticas' }
 };
 const loggedIn = () => !!store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token');
@@ -174,6 +176,7 @@ function sbLog(event, extra){
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
   en:{ member:'You’re already in the STREETDARE community ✓ Want emails about new shirts and events? Switch them on in <a href="/me/">your profile</a>.', ph:'Your email', send:'Join & get the drop alert 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
+  hu:{ member:'Már a STREETDARE közösség tagja vagy ✓ Kérsz e-mailt az új pólókról és eseményekről? <a href="/me/">A profilodban</a> bekapcsolhatod.', ph:'Az e-mail-címed', send:'Feliratkozom az értesítőre 🎟️', sending:'Küldés…', ok:'Bent vagy 🎉 Üdv a STREETDARE közösségben! Írunk, amint elkészülnek a pólók.', bad:'Ez az e-mail-cím nem tűnik jónak.', err:'Nem sikerült csatlakozni. Próbáld újra.', demo:'Demó mód: a feliratkozásokat még nem mentjük.' },
   es:{ member:'Ya estás en la comunidad STREETDARE ✓ ¿Quieres emails sobre camisetas nuevas y eventos? Actívalos en <a href="/me/">tu perfil</a>.', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE - te escribiremos en cuanto las camisetas estén listas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
 function initWaitlist(){

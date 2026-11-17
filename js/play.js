@@ -51,17 +51,17 @@ async function loadLiveDecks(){
   const where = s ? 'or=(deck_id.in.(classic,spicy),shirt_id.eq.' + encodeURIComponent(s) + ')' : 'deck_id=in.(classic,spicy)';
   try{
     const [rows, shirts] = await Promise.all([
-      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,adult&active=eq.true&' + where + '&order=sort,id'),
+      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,text_hu,adult&active=eq.true&' + where + '&order=sort,id'),
       s ? sbGet('rpc/shirt_card?p_id=' + encodeURIComponent(s)) : Promise.resolve([])
     ]);
     const live = { classic: [], spicy: [], shirt: [] };
-    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
+    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.hu = r.text_hu || ''; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
     if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].ig || '', photo: shirts[0].photo || '' }); applyLang(); paintPhoto(); }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
-const EXTRA = { en:{ ig:'Follow {name} on Instagram', mine:'Is this your shirt? Open your dashboard →' }, es:{ ig:'Sigue a {name} en Instagram', mine:'¿Es tu camiseta? Abre tu panel →' } };
+const EXTRA = { en:{ ig:'Follow {name} on Instagram', mine:'Is this your shirt? Open your dashboard →' }, es:{ ig:'Sigue a {name} en Instagram', mine:'¿Es tu camiseta? Abre tu panel →' }, hu:{ ig:'Kövesd Instagramon: {name}', mine:'A te pólód? Nyisd meg a profilodat →' } };
 function paintExtras(){
   const x = EXTRA[LANG] || EXTRA.en, ig = $('igReveal');
   if (ig){ ig.hidden = !(owner && owner.ig); if (owner && owner.ig){ ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{name}', who()) + ' · @' + owner.ig; } }
@@ -73,7 +73,7 @@ function logPlay(type){
   if (type === 'spin') track('spin'); else track(type, { quest: q[0] });
   sbLog(type, { dare_id: q.id || null, dare_text: q[0] || null, deck_id: q.deck || (QUESTS.devil.includes(q) ? 'spicy' : 'classic') });
 }
-const txt = q => q[LANG === 'es' ? 1 : 0];
+const txt = q => LANG === 'hu' ? (q.hu || q[3] || q[0]) : (q[LANG === 'es' ? 1 : 0] || q[0]);
 function paintDare(){
   const a = isAdult(current);
   $('adultTag').hidden = !a; $('accAdult').hidden = !a;

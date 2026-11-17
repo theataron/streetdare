@@ -228,7 +228,7 @@
 <div class="toast" id="toast" hidden></div>
 
 <script type="module">
-import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=4';
+import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
 
 const T = {
@@ -261,6 +261,35 @@ const T = {
        codeH:'Your dare code', codeP:'After a dare, the person who scanned you types this code on their phone, and only then does the dare count on your profile. Tell it to the people you actually did a dare with.', newCode:'Make a new code', codeNew:'New code ready',
        profH:'Your profile', nameL:'Your name', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
        accH:'Account', loggedAs:'Logged in as {e}', logout:'Log out', del2:'Delete my account', delConfirm:'Delete your account? Your own dares are deleted and the shirt is unlinked from you. This can’t be undone.', err:'Something went wrong. Try again.' },
+  hu:{ hello:'Szia, {n}', title:'A profilod', claimH:'Igényeld a pólódat', claimP:'Minden STREETDARE pólóhoz jár egy igénylőkód. Írd be ide, és a póló a tiéd: a statisztikáid, a kihívásaid és a neved a szkennelési oldalon.',
+       claimBtn:'Igénylem a pólómat', claiming:'Ellenőrzés…', claimBad:'Ez a kód nem működött. Ellenőrizd, vagy lehet, hogy már igényelték.', noShirt:'Még nincs pólód? <a href="../#join">Csatlakozz a közösséghez</a>, és szólunk, amint elkészülnek.', claimed:'A tiéd! 🎉',
+       statsH:'A pólód élőben', live:'élő', scans:'Szkennelés', people:'Ember', done:'Teljesített', feedEmpty:'Még senki nem szkennelt be. Vedd fel, és itt látod majd élőben.',
+       ev_scan:'Valaki beszkennelte a pólódat', ev_spin:'Pörgetett egy kihívást', ev_accept:'Kihívás elfogadva', ev_done:'Kihívás teljesítve 🎉', copy:'Másolás', copied:'Link kimásolva', open:'Megnyitás',
+       daresH:'Saját kihívásaid', daresP:'Ezek csak a te pólódon vannak. Bekeverjük őket a pakliba, amikor valaki beszkennel. Legfeljebb 10, és legyenek viccesek és biztonságosak.', enL:'A kihívásod', esL:'Angol változat (nem kötelező)',
+       addDare:'Kihívás hozzáadása', limit:'Elérted a 10 kihívást. Előbb törölj vagy szerkessz egyet.', tooShort:'Írj egy kicsit többet.', daresEmpty:'Még nincs saját kihívásod. Add hozzá az elsőt lent.', liveL:'Aktív', del:'Törlés', save:'Mentés', edit:'Szerkesztés',
+       hidden:'A STREETDARE elrejtette', added:'Kihívás hozzáadva. Már él a pólódon.', delSure:'Törlöd ezt a kihívást?',
+       decksH:'A paklijaid', decksP:'Ezek vannak a pakliban, amikor valaki beszkenneli a pólódat.', included:'Benne van', soon:'Hamarosan', want:'Ezt kérem', wanted:'Feliratkoztál ✓',
+       setupH:'Állítsd be 🚀', setupP:'Négy gyors lépés, és a pólód készen áll az első estére.', addClaim:'Másik póló igénylése',
+       st1:'Tölts fel egy fotót', st1s:'Aki beszkennel, a neved mellett látja, így tudja, kit keres.', st1b:'Fotót töltök fel',
+       st2:'Ismerd meg a kihíváskódodat', st2s:'Egy kihívás után az, aki beszkennelt, beírja ezt a kódot, és így számít a kihívás. Lentebb találod, a pólódnál.', st2b:'Mutasd',
+       st3:'Próbáld ki a pólódat', st3s:'Nyisd meg a saját szkennelési oldaladat, és pörgess egy kihívást, hogy lásd, mit látnak mások.', st3b:'Megnyitom az oldalamat',
+       st4:'Vedd fel és menj bulizni', st4s:'Ez magától bepipálódik, amikor először beszkennel valaki.',
+       profP:'Ezt látják, akik beszkennelik bármelyik pólódat.', shirtsH:'A pólóid',
+       ncH:'Ez a neved? 👋', ncP:'Aki beszkenneli a pólódat, ezt a nevet látja. Azt add meg, amin a barátaid szólítanak.', ncBtn:'Igen, ez vagyok',
+       mktL:'Kérek e-mailt az új pólókról, eseményekről és hírekről', codeSave:'Kód mentése', codeBad:'Pontosan 4 számjegyet adj meg.', codeSaved:'Kód elmentve',
+       setupDone:'{n}/4 kész',
+       guideH:'Így működik a pólód',
+       g:[['Mi történik, amikor valaki beszkennel','Megnyílik az oldalad, látja a fotódat és a nevedet, és pörget egy kihívást. Ha elfogadja, megmutatja neked a telefonját, és együtt megcsináljátok. Minden kihívás önkéntes: bármelyikőtök mondhat nemet, vagy pörgethet újat.'],
+          ['A kihíváskódod','Ha megvan a közös kihívás, a másik rányom a „Megcsináltuk” gombra, és beírja a 4 jegyű kódodat. Csak ekkor kerül fel a kihívás a profilodra. Azoknak mondd meg a kódot, akikkel tényleg megcsináltátok, és bármikor megváltoztathatod.'],
+          ['Ördög mód és 18+ kihívások','A szkennelési oldalon van egy Ördög mód kapcsoló, ami merészebb kihívásokat tesz a pakliba. Néhány kihívás italról szól, ezek 18+ jelölést kapnak. A víz mindig ér, inni senkinek nem kötelező.'],
+          ['Saját kihívások','Adj hozzá legfeljebb 10 kihívást, ami csak a te pólódon van. Bekeverjük őket a pakliba, amikor valaki beszkennel. Legyenek viccesek és biztonságosak idegenek számára is.'],
+          ['Fotó és Instagram','A fotód a neved mellett jelenik meg, hogy tudják, kit keresnek. Az Instagramod csak egy teljesített kihívás után látszik, és csak ha bekapcsolod.'],
+          ['Mit mondj, ha kérdezik','„Szkenneld be, kapsz egy kihívást, és együtt megcsináljuk.” Ennyi. Mosolyogj, mutass a hátadra, és hagyd, hogy a póló beszéljen helyetted.'],
+          ['Ha valami nem stimmel','Soha nem kötelező megcsinálni egy kihívást. Ha valaki kellemetlenül viselkedik, menj el, és ha komoly, írj nekünk: streetdare.official@gmail.com.']],
+       photoAdd:'Fotó feltöltése', photoChange:'Fotó cseréje', photoDel:'Eltávolítás', photoUp:'Feltöltés…', photoSaved:'Fotó elmentve. Már látják, akik beszkennelnek.', photoBad:'Ez a kép nem működött. Próbáld JPG-vel vagy PNG-vel.',
+       codeH:'A kihíváskódod', codeP:'Egy kihívás után az, aki beszkennelt, beírja ezt a kódot a telefonján, és csak ekkor számít a kihívás a profilodon. Azoknak mondd meg, akikkel tényleg megcsináltatok egy kihívást.', newCode:'Új kódot kérek', codeNew:'Kész az új kód',
+       profH:'A profilod', nameL:'A neved', igL:'Instagram (nem kötelező)', igPubL:'Mutassa az Instagramomat, miután valaki teljesített velem egy kihívást', saveProf:'Mentés', saved:'Elmentve', badIg:'Ez az Instagram-név nem tűnik jónak.',
+       accH:'Fiók', loggedAs:'Bejelentkezve: {e}', logout:'Kijelentkezés', del2:'Fiók törlése', delConfirm:'Törlöd a fiókodat? A saját kihívásaid törlődnek, és a póló már nem lesz hozzád kötve. Ez nem vonható vissza.', err:'Valami hiba történt. Próbáld újra.' },
   es:{ hello:'Hola {n}', title:'Tu perfil', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
        claimBtn:'Reclamar mi camiseta', claiming:'Comprobando…', claimBad:'Ese código no ha funcionado. Revísalo; puede que ya esté reclamado.', noShirt:'¿Aún no tienes camiseta? <a href="../#join">Únete a la comunidad</a> y te avisamos cuando estén listas.', claimed:'¡Es tuya! 🎉',
        statsH:'Tu camiseta en directo', live:'en directo', scans:'Escaneos', people:'Personas', done:'Retos hechos', feedEmpty:'Aún no hay escaneos. Póntela y míralos aparecer aquí en directo.',
@@ -292,14 +321,14 @@ const T = {
        accH:'Cuenta', loggedAs:'Has entrado como {e}', logout:'Salir', del2:'Borrar mi cuenta', delConfirm:'¿Borrar tu cuenta? Se borran tus retos propios y la camiseta deja de estar vinculada a ti. No se puede deshacer.', err:'Algo ha fallado. Inténtalo otra vez.' }
 };
 let L = lang(), user = null, profile = null, shirts = [], shirt = null, decks = [], interest = new Set(), events = [], channel = null;
-const t = k => T[L][k];
+const t = k => ((T[L] || {})[k] ?? T.en[k]);
 let toastT; function toast(m){ $('toast').textContent = m; $('toast').hidden = false; clearTimeout(toastT); toastT = setTimeout(() => $('toast').hidden = true, 2600); }
-const when = d => { const s = (Date.now() - new Date(d)) / 1000; if (s < 60) return L === 'es' ? 'ahora' : 'now'; if (s < 3600) return Math.floor(s/60) + ' min'; if (s < 86400) return Math.floor(s/3600) + ' h'; return new Date(d).toLocaleDateString(L === 'es' ? 'es-ES' : 'en-GB', { day:'numeric', month:'short' }); };
+const when = d => { const s = (Date.now() - new Date(d)) / 1000; if (s < 60) return { es:'ahora', hu:'most' }[L] || 'now'; if (s < 3600) return Math.floor(s/60) + ' min'; if (s < 86400) return Math.floor(s/3600) + ' h'; return new Date(d).toLocaleDateString({ es:'es-ES', hu:'hu-HU' }[L] || 'en-GB', { day:'numeric', month:'short' }); };
 
 /* ===== text ===== */
 function paint(){
   document.documentElement.lang = L;
-  $('lang').innerHTML = ['en','es'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
+  $('lang').innerHTML = ['en','es','hu'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
   const name = (profile && profile.name) || '';
   $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
   $('title').textContent = t('title');
@@ -317,7 +346,7 @@ function paint(){
   if (shirt){ paintStats(); paintDares(); paintDecks(); }
   paintSetup();
 }
-$('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
+$('lang').onclick = () => { L = { en:'es', es:'hu', hu:'en' }[L] || 'en'; setLang(L); paint(); };
 
 /* ===== start ===== */
 (async () => {
@@ -326,7 +355,7 @@ $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); }
   user = session.user;
   const [p, d, i] = await Promise.all([
     sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed').eq('id', user.id).maybeSingle(),
-    sb.from('decks').select('id,name_en,name_es,is_free,active,sort').order('sort'),
+    sb.from('decks').select('id,name_en,name_es,name_hu,is_free,active,sort').order('sort'),
     sb.from('pack_interest').select('deck_id')
   ]);
   profile = p.data || {}; decks = d.data || []; interest = new Set((i.data || []).map(r => r.deck_id));
@@ -393,11 +422,11 @@ $('claimForm').onsubmit = async e => {
 /* ===== my dares ===== */
 let myDares = [];
 async function loadDares(){
-  const { data } = await sb.from('dares').select('id,text_en,text_es,active,hidden_by_admin').eq('shirt_id', shirt.id).order('sort').order('id');
+  const { data } = await sb.from('dares').select('id,text_en,text_es,text_hu,active,hidden_by_admin').eq('shirt_id', shirt.id).order('sort').order('id');
   myDares = data || [];
 }
 function paintDares(){
-  const main = r => L === 'es' ? r.text_es : r.text_en, other = r => L === 'es' ? r.text_en : r.text_es;
+  const main = r => L === 'es' ? r.text_es : L === 'hu' ? (r.text_hu || r.text_en) : r.text_en, other = r => L === 'en' ? r.text_es : r.text_en;
   $('myDares').innerHTML = myDares.length ? myDares.map(r =>
     '<div class="dare' + (r.active && !r.hidden_by_admin ? '' : ' off') + '" data-id="' + r.id + '">' +
       '<p>' + esc(main(r)) + (other(r) !== main(r) ? '<small>' + esc(other(r)) + '</small>' : '') + '</p>' +
@@ -419,7 +448,7 @@ function paintDares(){
       row.querySelector('[name=save]').onclick = async () => {
         const a = row.querySelector('[name=a]').value.trim(), b = row.querySelector('[name=b]').value.trim() || a;
         if (a.length < 4) return toast(t('tooShort'));
-        const upd = L === 'es' ? { text_es: a, text_en: b } : { text_en: a, text_es: b };
+        const upd = L === 'es' ? { text_es: a, text_en: b } : L === 'hu' ? { text_hu: a, text_en: b, text_es: b } : { text_en: a, text_es: b };
         const { error } = await sb.from('dares').update(upd).eq('id', id); if (error) return toast(t('err'));
         await loadDares(); paintDares(); toast(t('saved'));
       };
@@ -430,7 +459,7 @@ $('dareForm').onsubmit = async e => {
   e.preventDefault(); $('dareErr').hidden = true;
   const a = $('dEn').value.trim().replace(/\s+/g,' '), b = $('dEs').value.trim().replace(/\s+/g,' ') || a;
   if (a.length < 4){ $('dareErr').textContent = t('tooShort'); $('dareErr').hidden = false; return; }
-  const row = L === 'es' ? { text_es: a, text_en: b } : { text_en: a, text_es: b };
+  const row = L === 'es' ? { text_es: a, text_en: b } : L === 'hu' ? { text_hu: a, text_en: b, text_es: b } : { text_en: a, text_es: b };
   const { error } = await sb.from('dares').insert(Object.assign({ shirt_id: shirt.id, sort: myDares.length }, row));
   if (error){ $('dareErr').textContent = (error.message || '').includes('dare_limit') ? t('limit') : t('err'); $('dareErr').hidden = false; return; }
   $('dEn').value = ''; $('dEs').value = ''; toast(t('added')); await loadDares(); paintDares();
@@ -439,7 +468,7 @@ $('dareForm').onsubmit = async e => {
 /* ===== decks ===== */
 function paintDecks(){
   $('deckList').innerHTML = decks.map(d => {
-    const name = L === 'es' ? d.name_es : d.name_en, inc = d.is_free && d.active;
+    const name = (L === 'es' ? d.name_es : L === 'hu' ? d.name_hu : d.name_en) || d.name_en, inc = d.is_free && d.active;
     return '<div class="deck"><div><b>' + esc(name) + '</b></div>' + (inc ? '<span class="pill">' + t('included') + '</span>'
       : (interest.has(d.id) ? '<span class="pill soon">' + t('wanted') + '</span>' : '<button class="mini" data-want="' + d.id + '">' + t('want') + '</button>')) + '</div>';
   }).join('');

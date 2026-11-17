@@ -27,7 +27,8 @@ export function safeNext(v, fallback){
 
 export function lang(){
   try{ const s = localStorage.getItem('sd_lang'); if (s) return s; }catch(e){}
-  return (navigator.language || 'en').toLowerCase().startsWith('es') ? 'es' : 'en';
+  const n = (navigator.language || 'en').toLowerCase();
+  return n.startsWith('es') ? 'es' : n.startsWith('hu') ? 'hu' : 'en';
 }
 export function setLang(l){ try{ localStorage.setItem('sd_lang', l); }catch(e){} }
 

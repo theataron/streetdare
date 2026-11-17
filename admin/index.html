@@ -141,6 +141,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
         <form class="row" id="addDare">
           <div><div class="lbl">English</div><textarea id="newEn" rows="2" maxlength="300" required></textarea></div>
           <div><div class="lbl">Español</div><textarea id="newEs" rows="2" maxlength="300" required></textarea></div>
+          <div><div class="lbl">Magyar</div><textarea id="newHu" rows="2" maxlength="300"></textarea></div>
           <label style="font-weight:700;align-self:center"><input type="checkbox" id="newAdult"> 18+</label>
           <button class="btn red" type="submit">Add</button>
         </form>
@@ -285,6 +286,7 @@ function paintDeckSettings(){
     '<form class="row" id="deckForm">' +
       '<div><div class="lbl">Name (EN)</div><input type="text" name="name_en" value="' + esc(d.name_en) + '"></div>' +
       '<div><div class="lbl">Nombre (ES)</div><input type="text" name="name_es" value="' + esc(d.name_es) + '"></div>' +
+      '<div><div class="lbl">Név (HU)</div><input type="text" name="name_hu" value="' + esc(d.name_hu || '') + '"></div>' +
       '<label style="flex:0 0 auto"><input type="checkbox" name="active"' + (d.active ? ' checked' : '') + '> Live on the site</label>' +
       '<label style="flex:0 0 auto"><input type="checkbox" name="is_free"' + (d.is_free ? ' checked' : '') + '> Free</label>' +
       '<button class="btn sm" type="submit">Save deck</button>' +
@@ -293,7 +295,7 @@ function paintDeckSettings(){
   if (!(d.id === 'classic' || d.id === 'spicy')) sb.from('pack_interest').select('user_id', { count:'exact', head:true }).eq('deck_id', d.id).then(r => { const el = $('interestN'); if (el) el.textContent = (r.count || 0) + ' shirt owners said "I want this".'; });
   $('deckForm').onsubmit = async e => {
     e.preventDefault(); const f = e.target;
-    const { error } = await sb.from('decks').update({ name_en: f.name_en.value.trim(), name_es: f.name_es.value.trim(), active: f.active.checked, is_free: f.is_free.checked }).eq('id', d.id);
+    const { error } = await sb.from('decks').update({ name_en: f.name_en.value.trim(), name_es: f.name_es.value.trim(), name_hu: f.name_hu.value.trim() || null, active: f.active.checked, is_free: f.is_free.checked }).eq('id', d.id);
     if (error) return toast('Error: ' + error.message);
     toast('Deck saved'); loadDecks();
   };
@@ -309,6 +311,7 @@ async function loadDares(){
     '<div class="dare' + (r.active ? '' : ' inactive') + '" data-id="' + r.id + '">' +
       '<div><div class="lbl">English</div><textarea name="en" rows="2" maxlength="300">' + esc(r.text_en) + '</textarea></div>' +
       '<div><div class="lbl">Español</div><textarea name="es" rows="2" maxlength="300">' + esc(r.text_es) + '</textarea></div>' +
+      '<div><div class="lbl">Magyar</div><textarea name="hu" rows="2" maxlength="300">' + esc(r.text_hu || '') + '</textarea></div>' +
       '<div class="acts"><label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
       '<label title="Shows an 18+ tag on the dare"><input type="checkbox" name="adult"' + (r.adult ? ' checked' : '') + '> 18+</label>' +
       (r.shirt_id ? '<label title="Owner can\'t switch it back on"><input type="checkbox" name="hide"' + (r.hidden_by_admin ? ' checked' : '') + '> Hidden by admin</label>' : '') +
@@ -318,9 +321,9 @@ async function loadDares(){
     const id = row.dataset.id, save = row.querySelector('[name=save]');
     row.querySelectorAll('textarea').forEach(t => t.oninput = () => save.disabled = false);
     save.onclick = async () => {
-      const en = row.querySelector('[name=en]').value.trim(), es = row.querySelector('[name=es]').value.trim();
+      const en = row.querySelector('[name=en]').value.trim(), es = row.querySelector('[name=es]').value.trim(), hu = row.querySelector('[name=hu]').value.trim();
       if (en.length < 2 || es.length < 2) return toast('Both languages are needed');
-      const { error } = await sb.from('dares').update({ text_en: en, text_es: es, updated_at: new Date().toISOString() }).eq('id', id);
+      const { error } = await sb.from('dares').update({ text_en: en, text_es: es, text_hu: hu || null, updated_at: new Date().toISOString() }).eq('id', id);
       if (error) return toast('Error: ' + error.message);
       save.disabled = true; toast('Saved - live on the site now');
     };
@@ -351,10 +354,10 @@ async function loadDares(){
 }
 $('addDare').onsubmit = async e => {
   e.preventDefault();
-  const en = $('newEn').value.trim(), es = $('newEs').value.trim();
-  const { error } = await sb.from('dares').insert(Object.assign({ text_en: en, text_es: es, adult: $('newAdult').checked, sort: 999 }, scope));
+  const en = $('newEn').value.trim(), es = $('newEs').value.trim(), hu = $('newHu').value.trim();
+  const { error } = await sb.from('dares').insert(Object.assign({ text_en: en, text_es: es, text_hu: hu || null, adult: $('newAdult').checked, sort: 999 }, scope));
   if (error) return toast('Error: ' + error.message);
-  $('newEn').value = ''; $('newEs').value = ''; $('newAdult').checked = false; toast('Dare added - live on the site now'); loadDares();
+  $('newEn').value = ''; $('newEs').value = ''; $('newHu').value = ''; $('newAdult').checked = false; toast('Dare added - live on the site now'); loadDares();
 };
 
 /* ===== shirts ===== */
