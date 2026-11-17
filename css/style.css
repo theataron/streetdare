@@ -556,3 +556,7 @@ body.hot .card.b2{background-color:#2a1d1a}
 .hostopt{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;margin:0 0 16px;cursor:pointer}
 .hostopt input{width:20px;height:20px;accent-color:var(--red);flex:none;margin-top:2px}
 .gnext{text-align:center;color:#d9cdc6;font-size:.88rem;margin:0 0 12px;min-height:1.4em}
+
+/* account link in the header */
+.acct{font:700 .8rem "DM Sans",sans-serif;background:var(--red);color:#fff;border:2px solid var(--ink);border-radius:99px;padding:6px 12px;text-decoration:none;white-space:nowrap}
+.acct:active{transform:translate(1px,1px)}

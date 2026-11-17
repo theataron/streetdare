@@ -32,7 +32,28 @@ let LANG = store.get('sd_lang') || ((navigator.language||'en').toLowerCase().sta
 function setLang(code){ LANG = code; store.set('sd_lang', code); applyLang(); }
 let DICT = { en:{} };
 const t = k => (DICT[LANG] && DICT[LANG][k]) ?? (DICT.en[k] ?? k);
+/* ----- account links: "Log in" in the header, "Log in" + "Create account" in the menu ----- */
+const ACCT = {
+  en:{ login:'Log in', me:'My shirt', signup:'Create account', loginS:'Your shirt, your dares, your stats', signupS:'Got a shirt? Claim it here', meS:'Your stats and your own dares' },
+  es:{ login:'Entrar', me:'Mi camiseta', signup:'Crear cuenta', loginS:'Tu camiseta, tus retos, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tus estadísticas y tus retos' }
+};
+const loggedIn = () => !!store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token');
+function paintAccount(){
+  const a = ACCT[LANG] || ACCT.en, right = document.querySelector('.top .right'), menu = $('menu');
+  if (window.STAGE) return;
+  if (right && !$('acctBtn')){ const l = document.createElement('a'); l.id = 'acctBtn'; l.className = 'acct'; right.prepend(l); }
+  if (menu && !$('mLogin')){
+    const foot = menu.querySelector('.foot');
+    const mk = id => { const el = document.createElement('a'); el.id = id; el.innerHTML = '<span></span><small></small>'; menu.insertBefore(el, foot); return el; };
+    mk('mLogin'); mk('mSignup');
+  }
+  const btn = $('acctBtn'); if (btn){ btn.textContent = loggedIn() ? a.me : a.login; btn.href = loggedIn() ? '/me/' : '/login/'; }
+  const ml = $('mLogin'), ms = $('mSignup');
+  if (ml){ ml.href = loggedIn() ? '/me/' : '/login/'; ml.querySelector('span').textContent = loggedIn() ? a.me : a.login; ml.querySelector('small').textContent = loggedIn() ? a.meS : a.loginS; }
+  if (ms){ ms.hidden = loggedIn(); ms.href = '/login/?mode=signup'; ms.querySelector('span').textContent = a.signup; ms.querySelector('small').textContent = a.signupS; }
+}
 function applyLang(){
+  paintAccount();
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
