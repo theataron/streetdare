@@ -103,7 +103,7 @@ function spin(){
     front.classList.remove('flip'); void front.offsetWidth; front.classList.add('flip');
     machine.classList.add('won'); if (!still()) confetti();
     if (navigator.vibrate) navigator.vibrate([30,40,60]);
-    spinning = false; $('spinBtn').disabled = false; $('preSpin').hidden = true; $('postSpin').hidden = false; logPlay('spin');
+    spinning = false; $('spinBtn').disabled = false; $('preSpin').hidden = true; $('postSpin').hidden = false; logPlay('spin'); document.dispatchEvent(new Event('sd:landed'));
   }
   machine.classList.add('shuffling');
   (function step(){
@@ -173,3 +173,4 @@ initDareForms();
 show('spin');
 try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
 loadLiveDecks();
+consentInit('sd:landed');

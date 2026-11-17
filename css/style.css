@@ -577,3 +577,10 @@ body.hot .codeform .wlerr{color:#ffb4a8}
 /* header profile button with the owner's photo */
 .acct.withpic{display:inline-flex;align-items:center;gap:6px;padding-left:4px}
 .acct.withpic img{width:24px;height:24px;border-radius:50%;object-fit:cover;border:1.5px solid #fff}
+
+/* analytics question: small, at the bottom, both answers look the same */
+.consent{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;max-width:460px;margin:0 auto;background:var(--ink);color:#fff;border-radius:18px;padding:12px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:.88rem;line-height:1.35}
+.consent p{flex:1 1 220px;margin:0}
+.consent a{color:#fff;text-decoration:underline;opacity:.85}
+.consent .cbtns{display:flex;gap:8px;flex:1 1 auto}
+.consent button{flex:1;min-width:90px;font:700 .9rem "DM Sans",sans-serif;padding:9px 14px;border-radius:99px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer}

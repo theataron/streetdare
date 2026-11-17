@@ -62,3 +62,4 @@ initWaitlist();
 initDareForms();
 { const h = location.hash.slice(1);
   if (h && !VIEWS.includes(h) && $(h)){ show('home'); setTimeout(() => $(h).scrollIntoView(), 50); } else show(h); }
+consentInit();

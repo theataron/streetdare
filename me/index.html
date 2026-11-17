@@ -65,14 +65,28 @@
 .photorow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);background:var(--blush);flex:none;display:grid;place-items:center;font-size:2rem}
 .photorow .acts{display:flex;gap:8px;flex-wrap:wrap}
-.steps{list-style:none;padding:0;margin:4px 0 0;display:grid;gap:10px}
-.steps li{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.12);border-radius:14px;padding:10px 12px}
-.steps li b{display:block}
-.steps li small{display:block;opacity:.9;font-size:.85rem;margin-top:2px}
-.steps .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
-.steps li.ok .ck{background:#fff;color:var(--red)}
-.steps li.ok{opacity:.7}
-.steps .mini{margin-top:8px;background:#fff;color:var(--ink);border-color:#fff}
+.setup{background:var(--card)}
+.setup .bar{height:8px;border-radius:99px;background:#eadfd2;overflow:hidden;margin:2px 0 14px}
+.setup .bar i{display:block;height:100%;background:var(--red);border-radius:99px;transition:width .4s}
+.steps{list-style:none;padding:0;margin:0;display:grid;gap:0}
+.steps li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1.5px solid #eadfd2;color:var(--ink)}
+.steps li:first-child{border-top:0}
+.steps li b{display:block;font-size:1rem}
+.steps li small{display:block;color:var(--mute);font-size:.88rem;margin-top:2px;line-height:1.35}
+.steps .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:.8rem;background:#fff}
+.steps li.done .ck{background:#1d7a43;border-color:#1d7a43;color:#fff}
+.steps li.done b{color:var(--mute);font-weight:600;text-decoration:line-through;text-decoration-thickness:1.5px}
+.steps li.done small{display:none}
+.steps .mini{margin-top:8px;display:inline-block}
+.codeedit input::placeholder{font:500 1rem "DM Sans",sans-serif;letter-spacing:.05em;color:var(--mute)}
+.guide details{border-top:1.5px solid #eadfd2;padding:10px 0}
+.guide details:first-of-type{border-top:0}
+.guide summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+.guide summary::after{content:"+";font-weight:800;color:var(--red)}
+.guide details[open] summary::after{content:"–"}
+.guide details p{margin:8px 0 0;font-size:.95rem;color:var(--ink)}
+.codeedit{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.codeedit input{width:120px;font:400 1.6rem "Bagel Fat One",sans-serif;letter-spacing:.25em;text-align:center;padding:8px 6px 4px;border:2px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink)}
 .code{font:400 2.6rem/1 "Bagel Fat One",sans-serif;letter-spacing:.3em;text-align:center;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:16px 8px 12px;margin:6px 0 12px}
 </style>
 </head>
@@ -94,9 +108,20 @@
       <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
 
       <!-- set-up checklist for new owners -->
-      <section class="panel nudge" id="setup" hidden>
+      <!-- right after the profile is created: is this the name people should see? -->
+      <section class="panel nudge" id="nameCheck" hidden>
+        <h2 id="ncH"></h2>
+        <p class="sub" id="ncP"></p>
+        <form id="ncForm" class="field" style="margin:0">
+          <input id="ncName" maxlength="40" required>
+          <button class="btn" type="submit" id="ncBtn" style="margin-top:6px"></button>
+        </form>
+      </section>
+
+      <section class="panel setup" id="setup" hidden>
         <h2 id="setupH"></h2>
         <p class="sub" id="setupP"></p>
+        <div class="bar"><i id="setupBar"></i></div>
         <ol class="steps" id="steps"></ol>
       </section>
 
@@ -112,7 +137,8 @@
         <form id="profForm">
           <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
           <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
-          <label class="tog" style="margin-bottom:14px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
+          <label class="tog" style="margin-bottom:10px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
+          <label class="tog" style="margin-bottom:14px"><input type="checkbox" id="pMkt"><span id="pMktL"></span></label>
           <p class="err" id="profErr" hidden></p>
           <button class="btn" type="submit" id="profBtn"></button>
         </form>
@@ -140,7 +166,11 @@
           <h2 id="codeH"></h2>
           <p class="sub" id="codeP"></p>
           <div class="code" id="codeVal">····</div>
-          <button class="mini" type="button" id="newCode"></button>
+          <form class="codeedit" id="codeForm">
+            <input id="codeIn" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="1234" aria-label="Code">
+            <button class="mini red" type="submit" id="codeSave"></button>
+            <button class="mini plain" type="button" id="newCode"></button>
+          </form>
         </section>
 
         <!-- stats + live -->
@@ -166,6 +196,12 @@
             <p class="err" id="dareErr" hidden></p>
             <button class="btn red" type="submit" id="dareBtn"></button>
           </form>
+        </section>
+
+        <!-- how it works -->
+        <section class="panel guide">
+          <h2 id="guideH"></h2>
+          <div id="guide"></div>
         </section>
 
         <!-- decks -->
@@ -210,6 +246,17 @@ const T = {
        st3:'Test your shirt', st3s:'Open your own scan page and spin a dare, so you know what people see.', st3b:'Open my scan page',
        st4:'Wear it out', st4s:'This ticks itself the first time someone scans you.',
        profP:'This is what people see when they scan any of your shirts.', shirtsH:'Your shirts',
+       ncH:'Is this your name? 👋', ncP:'People who scan your shirt see this name. Use the one your friends call you.', ncBtn:'Yes, that’s me',
+       mktL:'Email me about new shirts, events and news', codeSave:'Save code', codeBad:'Use exactly 4 numbers.', codeSaved:'Code saved',
+       setupDone:'{n} of 4 done',
+       guideH:'How your shirt works',
+       g:[['What happens when someone scans you','They land on your page, see your photo and name, and spin a dare. When they accept it, they show you their phone and you do it together. Every dare is optional: either of you can say no or spin again.'],
+          ['Your dare code','When you’ve done a dare together, they tap “We did it” and type your 4-digit code. Only then does the dare count on your profile. Tell the code to the people you actually did a dare with, and change it whenever you like.'],
+          ['Devil mode and 18+ dares','On the scan page there’s a Devil mode switch that adds bolder dares. Some dares are about drinks and are marked 18+. Water always counts, nobody has to drink.'],
+          ['Your own dares','Add up to 10 dares that only your shirt has. They’re mixed into the deck when someone scans you. Keep them fun and safe for strangers.'],
+          ['Photo and Instagram','Your photo shows next to your name so people know who to look for. Your Instagram only shows after a completed dare, and only if you switch it on.'],
+          ['What to say when someone asks','“Scan it, you get a dare and we do it together.” That’s all. Smile, point at your back, and let the shirt do the talking.'],
+          ['If something feels off','You never have to do a dare. If someone makes you uncomfortable, walk away, and tell us at streetdare.official@gmail.com if it’s serious.']],
        photoAdd:'Add photo', photoChange:'Change photo', photoDel:'Remove', photoUp:'Uploading…', photoSaved:'Photo saved. Scanners see it now.', photoBad:'That image didn’t work. Try a JPG or PNG.',
        codeH:'Your dare code', codeP:'After a dare, the person who scanned you types this code on their phone, and only then does the dare count on your profile. Tell it to the people you actually did a dare with.', newCode:'Make a new code', codeNew:'New code ready',
        profH:'Your profile', nameL:'Your name', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
@@ -228,6 +275,17 @@ const T = {
        st3:'Prueba tu camiseta', st3s:'Abre tu propia página de escaneo y saca un reto, para ver lo que ve la gente.', st3b:'Abrir mi página',
        st4:'Sal con ella', st4s:'Se marca solo la primera vez que alguien te escanee.',
        profP:'Esto es lo que ve la gente cuando escanea cualquiera de tus camisetas.', shirtsH:'Tus camisetas',
+       ncH:'¿Este es tu nombre? 👋', ncP:'Quien escanea tu camiseta ve este nombre. Pon el que usan tus amigos.', ncBtn:'Sí, soy yo',
+       mktL:'Escríbeme sobre camisetas nuevas, eventos y novedades', codeSave:'Guardar código', codeBad:'Usa exactamente 4 números.', codeSaved:'Código guardado',
+       setupDone:'{n} de 4 hechos',
+       guideH:'Cómo funciona tu camiseta',
+       g:[['Qué pasa cuando alguien te escanea','Llega a tu página, ve tu foto y tu nombre, y saca un reto. Cuando lo acepta, te enseña el móvil y lo hacéis juntos. Todos los retos son opcionales: cualquiera de los dos puede decir que no o sacar otro.'],
+          ['Tu código de reto','Cuando habéis hecho un reto, pulsa “¡Hecho!” y escribe tu código de 4 cifras. Solo entonces el reto cuenta en tu perfil. Díselo a la gente con la que de verdad has hecho un reto, y cámbialo cuando quieras.'],
+          ['Modo Diablo y retos +18','En la página del escaneo hay un interruptor de Modo Diablo que añade retos más atrevidos. Algunos retos van de bebidas y están marcados +18. El agua siempre vale, nadie tiene que beber.'],
+          ['Tus propios retos','Añade hasta 10 retos que solo tiene tu camiseta. Se mezclan en la baraja cuando alguien te escanea. Que sean divertidos y seguros para desconocidos.'],
+          ['Foto e Instagram','Tu foto sale junto a tu nombre para que sepan a quién buscar. Tu Instagram solo aparece después de un reto completado, y solo si lo activas.'],
+          ['Qué decir cuando te pregunten','“Escanéalo, te toca un reto y lo hacemos juntos.” Y ya está. Sonríe, señala tu espalda y deja que la camiseta hable.'],
+          ['Si algo no te cuadra','Nunca tienes que hacer un reto. Si alguien te incomoda, vete, y si es grave escríbenos a streetdare.official@gmail.com.']],
        photoAdd:'Añadir foto', photoChange:'Cambiar foto', photoDel:'Quitar', photoUp:'Subiendo…', photoSaved:'Foto guardada. Ya la ven al escanearte.', photoBad:'Esa imagen no ha funcionado. Prueba con un JPG o PNG.',
        codeH:'Tu código de reto', codeP:'Después de un reto, quien te ha escaneado escribe este código en su móvil, y solo entonces el reto cuenta en tu perfil. Díselo a la gente con la que de verdad has hecho un reto.', newCode:'Crear un código nuevo', codeNew:'Código nuevo listo',
        profH:'Tu perfil', nameL:'Tu nombre', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
@@ -245,15 +303,17 @@ function paint(){
   const name = (profile && profile.name) || '';
   $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
   $('title').textContent = t('title');
-  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','codeH','codeP','newCode','setupH','setupP','profP','shirtsH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','codeH','codeP','newCode','setupH','setupP','profP','shirtsH','ncH','ncP','ncBtn','codeSave','guideH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
   $('claimBtn').textContent = t('claimBtn'); $('noShirt').innerHTML = t('noShirt');
   $('liveTxt').textContent = t('live'); $('lScans').textContent = t('scans'); $('lPeople').textContent = t('people'); $('lDone').textContent = t('done');
   $('copyLink').textContent = t('copy'); $('openLink').textContent = t('open');
   $('dEnL').textContent = t('enL'); $('dEsL').textContent = t('esL'); $('dareBtn').textContent = t('addDare');
+  $('pMktL').textContent = t('mktL');
+  $('guide').innerHTML = t('g').map(x => '<details><summary>' + esc(x[0]) + '</summary><p>' + esc(x[1]) + '</p></details>').join('');
   $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
   $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
-  paintProfile();
+  paintProfile(); paintNameCheck();
   if (shirt){ paintStats(); paintDares(); paintDecks(); }
   paintSetup();
 }
@@ -265,7 +325,7 @@ $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); }
   if (!session){ location.replace('/login/?next=/me/'); return; }
   user = session.user;
   const [p, d, i] = await Promise.all([
-    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public').eq('id', user.id).maybeSingle(),
+    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed').eq('id', user.id).maybeSingle(),
     sb.from('decks').select('id,name_en,name_es,is_free,active,sort').order('sort'),
     sb.from('pack_interest').select('deck_id')
   ]);
@@ -396,7 +456,8 @@ $('profForm').onsubmit = async e => {
   e.preventDefault(); $('profErr').hidden = true;
   const name = $('pName').value.trim(), ig = $('pIg').value.trim().replace(/^@/, '');
   if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)){ $('profErr').textContent = t('badIg'); $('profErr').hidden = false; return; }
-  const upd = { name, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked };
+  const upd = { name, name_confirmed: true, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked, marketing_opt_in: $('pMkt').checked };
+  if (upd.marketing_opt_in !== !!profile.marketing_opt_in) upd.marketing_opt_in_at = new Date().toISOString();
   const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
   if (error){ $('profErr').textContent = t('err'); $('profErr').hidden = false; return; }
   Object.assign(profile, upd); toast(t('saved')); paint();
@@ -410,7 +471,7 @@ function paintProfile(){
   $('avatar').hidden = !u; $('avatarEmpty').hidden = !!u; if (u) $('avatar').src = u;
   $('photoBtn').textContent = u ? t('photoChange') : t('photoAdd');
   $('photoDel').textContent = t('photoDel'); $('photoDel').hidden = !u;
-  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; }
+  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; $('pMkt').checked = !!profile.marketing_opt_in; }
   try{ if (u) localStorage.setItem('sd_avatar', u); else localStorage.removeItem('sd_avatar'); }catch(e){}
 }
 $('photoBtn').onclick = () => $('photoFile').click();
@@ -421,10 +482,13 @@ const mark = k => { try{ localStorage.setItem('sd_setup_' + k, '1'); }catch(e){}
 function paintSetup(){
   if (!shirt){ $('setup').hidden = true; return; }
   const done = { st1: !!(profile && profile.avatar_url), st2: seen('code'), st3: seen('test'), st4: events.some(e => e.event === 'scan') };
-  $('setup').hidden = Object.values(done).every(Boolean);
+  const n = Object.values(done).filter(Boolean).length;
+  $('setup').hidden = n === 4;
+  $('setupBar').style.width = (n / 4 * 100) + '%';
+  $('setupP').textContent = t('setupDone').replace('{n}', n) + ' · ' + t('setupP');
   const btn = { st1:'<button class="mini" data-do="photo">' + t('st1b') + '</button>', st2:'<button class="mini" data-do="code">' + t('st2b') + '</button>',
                 st3:'<a class="mini" data-do="test" target="_blank" rel="noopener" href="/p/?s=' + encodeURIComponent(shirt.id) + '">' + t('st3b') + '</a>', st4:'' };
-  $('steps').innerHTML = ['st1','st2','st3','st4'].map((k, i) => '<li class="' + (done[k] ? 'ok' : '') + '"><span class="ck">' + (done[k] ? '✓' : i + 1) + '</span><div><b>' + t(k) + '</b><small>' + t(k + 's') + '</small>' + (done[k] ? '' : btn[k]) + '</div></li>').join('');
+  $('steps').innerHTML = ['st1','st2','st3','st4'].map((k, i) => '<li class="' + (done[k] ? 'done' : '') + '"><span class="ck">' + (done[k] ? '✓' : i + 1) + '</span><div><b>' + t(k) + '</b><small>' + t(k + 's') + '</small>' + (done[k] ? '' : btn[k]) + '</div></li>').join('');
   $('steps').querySelectorAll('[data-do]').forEach(b => b.onclick = () => {
     const d = b.dataset.do;
     if (d === 'photo') return $('photoFile').click();
@@ -469,11 +533,36 @@ $('photoDel').onclick = async () => {
   if (old && old.includes('/avatars/')) sb.storage.from('avatars').remove([old.split('/avatars/')[1]]);
 };
 
+/* ===== name check, right after the profile is created ===== */
+function paintNameCheck(){
+  const show = !!profile && !profile.name_confirmed;
+  $('nameCheck').hidden = !show;
+  if (show && !$('ncName').value) $('ncName').value = profile.name || '';
+}
+$('ncForm').onsubmit = async e => {
+  e.preventDefault();
+  const name = $('ncName').value.trim().replace(/\s+/g, ' ');
+  if (name.length < 1) return;
+  const { error } = await sb.from('profiles').update({ name, name_confirmed: true }).eq('id', user.id);
+  if (error) return toast(t('err'));
+  profile.name = name; profile.name_confirmed = true; $('pName').value = name; toast(t('saved')); paint();
+};
+
 /* ===== dare code ===== */
 async function loadCode(){
   const { data } = await sb.from('shirt_codes').select('code').eq('shirt_id', shirt.id).maybeSingle();
   $('codeVal').textContent = (data && data.code) || '····';
+  $('codeIn').value = '';
 }
+$('codeIn').oninput = () => { $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); };
+$('codeForm').onsubmit = async e => {
+  e.preventDefault();
+  const code = $('codeIn').value;
+  if (!/^[0-9]{4}$/.test(code)) return toast(t('codeBad'));
+  const { error } = await sb.from('shirt_codes').update({ code, updated_at: new Date().toISOString() }).eq('shirt_id', shirt.id);
+  if (error) return toast(t('err'));
+  $('codeVal').textContent = code; $('codeIn').value = ''; toast(t('codeSaved'));
+};
 $('newCode').onclick = async () => {
   const code = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
   const { error } = await sb.from('shirt_codes').update({ code, updated_at: new Date().toISOString() }).eq('shirt_id', shirt.id);

@@ -2,7 +2,8 @@
    API_URL: paste the Google Apps Script web-app link (ending in /exec) between the quotes.
    While it is empty the site runs in DEMO MODE: email sign-ups are NOT collected,
    and wall messages only live on the visitor's own phone. See backend/SETUP.md. */
-const SD = { API_URL: 'https://script.google.com/macros/s/AKfycbzJsL0f9hHVi1GYV_vMrzFgDBMkWBeLgugA8oV-zaMIh1sDrTbZ3LN595ZrwVy5eLAt/exec' };
+/* GA_ID: your Google Analytics 4 measurement ID (G-XXXXXXXXXX). While it's empty there is no analytics and no cookie banner. */
+const SD = { GA_ID: '', API_URL: 'https://script.google.com/macros/s/AKfycbzJsL0f9hHVi1GYV_vMrzFgDBMkWBeLgugA8oV-zaMIh1sDrTbZ3LN595ZrwVy5eLAt/exec' };
 
 const store = {
   get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
@@ -90,7 +91,57 @@ async function api(fn, data){
   return j.data;
 }
 /* the hidden /stage/ preview never writes scan stats */
-function track(type, extra){ if (SD.API_URL && !window.STAGE) api('logEvent', Object.assign({ type }, extra||{})).catch(()=>{}); }
+function track(type, extra){
+  if (SD.API_URL && !window.STAGE) api('logEvent', Object.assign({ type }, extra||{})).catch(()=>{});
+  gaEvent(type, extra);
+}
+
+/* ----- Google Analytics 4, only after a clear "OK" -----
+   Nothing from Google loads until the visitor taps OK (Consent Mode v2, basic). "No thanks" is the same size and colour.
+   The choice is remembered for 12 months; /privacy/ has a button to change it. On the scan page the question waits
+   until the first dare has landed, so the game always comes first. */
+const CONSENT_TEXT = {
+  en:{ q:'Can we count your visit with Google Analytics? It helps us improve STREETDARE.', yes:'OK', no:'No thanks', more:'Details' },
+  es:{ q:'¿Podemos contar tu visita con Google Analytics? Nos ayuda a mejorar STREETDARE.', yes:'Vale', no:'No, gracias', more:'Detalles' },
+  hu:{ q:'Megszámolhatjuk a látogatásodat a Google Analyticsszel? Ezzel segítesz jobbá tenni a STREETDARE-t.', yes:'Mehet', no:'Inkább ne', more:'Részletek' }
+};
+function consentGet(){
+  try{ const c = JSON.parse(store.get('sd_consent') || 'null'); if (c && Date.now() - c.at < 365 * 864e5) return c.v; }catch(e){}
+  return null;
+}
+function consentSet(v){ store.set('sd_consent', JSON.stringify({ v, at: Date.now() })); }
+let gaReady = false;
+function gaLoad(){
+  if (gaReady || !SD.GA_ID || window.STAGE) return; gaReady = true;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ dataLayer.push(arguments); };
+  gtag('consent', 'default', { analytics_storage:'granted', ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied' });
+  gtag('js', new Date());
+  gtag('config', SD.GA_ID, { anonymize_ip: true, page_path: location.pathname + location.hash });
+  const sc = document.createElement('script'); sc.async = true; sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(SD.GA_ID); document.head.appendChild(sc);
+}
+function gaEvent(name, extra){
+  if (!gaReady || !window.gtag) return;
+  const p = {}; if (typeof SHIRT !== 'undefined' && SHIRT) p.shirt = SHIRT.toLowerCase(); if (extra && 'verified' in extra) p.verified = !!extra.verified;
+  gtag('event', 'sd_' + name, p);
+}
+function consentAsk(){
+  if (!SD.GA_ID || window.STAGE || consentGet() || $('consent')) return;
+  const c = CONSENT_TEXT[LANG] || CONSENT_TEXT.en, base = location.pathname.split('/').length > 2 ? '../' : '';
+  const box = document.createElement('div'); box.id = 'consent'; box.className = 'consent'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-live', 'polite');
+  box.innerHTML = '<p>' + c.q + ' <a href="' + base + 'privacy/#cookies">' + c.more + '</a></p><div class="cbtns"><button type="button" data-v="denied">' + c.no + '</button><button type="button" data-v="granted">' + c.yes + '</button></div>';
+  box.querySelectorAll('button').forEach(b => b.onclick = () => { consentSet(b.dataset.v); box.remove(); if (b.dataset.v === 'granted') gaLoad(); });
+  document.body.appendChild(box);
+}
+function consentInit(delayUntilEvent){
+  if (!SD.GA_ID || window.STAGE) return;
+  if (consentGet() === 'granted') return gaLoad();
+  if (consentGet() === 'denied') return;
+  if (delayUntilEvent) document.addEventListener(delayUntilEvent, () => setTimeout(consentAsk, 1200), { once:true });
+  else setTimeout(consentAsk, 1500);
+}
+window.addEventListener('hashchange', () => { if (gaReady && window.gtag) gtag('event', 'page_view', { page_path: location.pathname + location.hash }); });
+function consentReset(){ try{ localStorage.removeItem('sd_consent'); }catch(e){} location.reload(); }
 
 /* ----- Supabase database (decks, shirts, live stats for /admin) -----
    The publishable key is meant to be public: the database's own rules decide what it can do.
@@ -122,10 +173,20 @@ function sbLog(event, extra){
 
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
-  en:{ ph:'Your email', send:'Join the Community 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
-  es:{ ph:'Tu email', send:'Únete a la comunidad 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE - te escribiremos en cuanto las camisetas estén listas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
+  en:{ member:'You’re already in the STREETDARE community ✓ Want emails about new shirts and events? Switch them on in <a href="/me/">your profile</a>.', ph:'Your email', send:'Join & get the drop alert 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community - we’ll send you an email as soon as the shirts are ready.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
+  es:{ member:'Ya estás en la comunidad STREETDARE ✓ ¿Quieres emails sobre camisetas nuevas y eventos? Actívalos en <a href="/me/">tu perfil</a>.', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE - te escribiremos en cuanto las camisetas estén listas.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
 function initWaitlist(){
+  /* account holders are already members: no email form, just a pointer to the email switch in their profile */
+  if (loggedIn() && !window.STAGE){
+    const paintMember = () => document.querySelectorAll('.wlmember').forEach(p => { p.innerHTML = (WL_TEXT[LANG] || WL_TEXT.en).member; });
+    document.querySelectorAll('form.wl').forEach(form => {
+      const p = document.createElement('p'); p.className = 'wlmsg wlmember'; form.replaceWith(p);
+      const d = p.parentElement && p.parentElement.querySelector('.coupon'); if (d) d.hidden = true;
+    });
+    paintMember(); document.addEventListener('langchange', paintMember);
+    return;
+  }
   document.querySelectorAll('form.wl').forEach(form => {
     const input = form.querySelector('input'), btn = form.querySelector('button');
     const err = form.querySelector('.wlerr'), demo = form.parentElement.querySelector('.demo');
