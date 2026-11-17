@@ -43,17 +43,19 @@ function confetti(){
 
 /* decks: start with the built-in copy (js/quests.js), swap in the live ones from the database when they arrive */
 const DECKS = { classic: QUESTS.classic, spicy: QUESTS.devil, shirt: (owner && owner.quests) || [] };
-const deck = () => $('devil').checked ? DECKS.spicy : DECKS.classic.concat(DECKS.shirt);
+/* Devil mode adds the bolder dares on top of the Party deck */
+const deck = () => DECKS.classic.concat(DECKS.shirt, $('devil').checked ? DECKS.spicy : []);
+const isAdult = q => !!(q && (q.adult || q[2]));
 async function loadLiveDecks(){
   const s = demo ? '' : SHIRT.toLowerCase();
   const where = s ? 'or=(deck_id.in.(classic,spicy),shirt_id.eq.' + encodeURIComponent(s) + ')' : 'deck_id=in.(classic,spicy)';
   try{
     const [rows, shirts] = await Promise.all([
-      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es&active=eq.true&' + where + '&order=sort,id'),
+      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,adult&active=eq.true&' + where + '&order=sort,id'),
       s ? sbGet('shirts?select=id,name,instagram,instagram_public&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
     ]);
     const live = { classic: [], spicy: [], shirt: [] };
-    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
+    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
     if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].instagram_public ? shirts[0].instagram : '' }); applyLang(); }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
@@ -69,10 +71,15 @@ document.addEventListener('langchange', paintExtras);
 function logPlay(type){
   const q = current || [];
   if (type === 'spin') track('spin'); else track(type, { quest: q[0] });
-  sbLog(type, { dare_id: q.id || null, dare_text: q[0] || null, deck_id: q.deck || ($('devil').checked ? 'spicy' : 'classic') });
+  sbLog(type, { dare_id: q.id || null, dare_text: q[0] || null, deck_id: q.deck || (QUESTS.devil.includes(q) ? 'spicy' : 'classic') });
 }
 const txt = q => q[LANG === 'es' ? 1 : 0];
-function resetSpin(){ current = null; deckReset(); const r = $('reel'); r.className = 'reel q'; r.textContent = '? ? ?'; $('preSpin').hidden = false; $('postSpin').hidden = true; }
+function paintDare(){
+  const a = isAdult(current);
+  $('adultTag').hidden = !a; $('accAdult').hidden = !a;
+  $('together').hidden = !current; $('together').textContent = owner ? fill('together') : t('togetherAnon');
+}
+function resetSpin(){ current = null; deckReset(); paintDare(); const r = $('reel'); r.className = 'reel q'; r.textContent = '? ? ?'; $('preSpin').hidden = false; $('postSpin').hidden = true; }
 function pick(){
   const d = deck(); let pool = d.filter(q => !seen.includes(q));
   if (!pool.length){ seen = seen.filter(q => !d.includes(q)); pool = d; }
@@ -83,7 +90,7 @@ function setReel(text, cls){ const r = $('reel'); r.className = 'reel'; void r.o
 function spin(){
   if (spinning) return; spinning = true;
   $('preSpin').hidden = false; $('postSpin').hidden = true; $('spinBtn').disabled = true;
-  deckReset(); setReel('? ? ?', 'q');
+  deckReset(); setReel('? ? ?', 'q'); $('together').hidden = true; $('adultTag').hidden = true;
   const final = pick();
   /* other dares flick past first, so people see how deep the deck is */
   const others = deck().filter(q => q !== final).sort(() => Math.random() - .5);
@@ -92,7 +99,7 @@ function spin(){
   function land(){
     machine.classList.remove('shuffling');
     if (GAPS.length) flick();
-    current = final; setReel(txt(final), 'land');
+    current = final; setReel(txt(final), 'land'); paintDare();
     front.classList.remove('flip'); void front.offsetWidth; front.classList.add('flip');
     machine.classList.add('won'); if (!still()) confetti();
     if (navigator.vibrate) navigator.vibrate([30,40,60]);
@@ -108,7 +115,7 @@ function spin(){
 }
 $('spinBtn').onclick = spin;
 $('againBtn').onclick = spin;
-$('acceptBtn').onclick = () => { $('accText').textContent = txt(current); logPlay('accept'); show('accept'); };
+$('acceptBtn').onclick = () => { $('accText').textContent = txt(current); paintDare(); logPlay('accept'); show('accept'); };
 $('changeBtn').onclick = () => { resetSpin(); show('spin'); };
 $('doneBtn').onclick = () => { logPlay('done'); show('done'); };
 $('anotherBtn').onclick = () => { resetSpin(); show('spin'); };
@@ -123,6 +130,7 @@ document.addEventListener('langchange', () => {
   if ($('refLine') && typeof refText === 'function'){ $('refLine').textContent = refText(); $('refLine').hidden = !refText(); }
   $('accNote').textContent = fill('accNote');
   if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txt(current); }
+  paintDare();
 });
 
 initLang(T);

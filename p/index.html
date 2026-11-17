@@ -44,6 +44,7 @@
             <div class="lbl" data-i18n="unlocked"></div>
             <div class="reel q" id="reel" aria-live="polite">? ? ?</div>
             <span class="stamp" id="stamp" aria-hidden="true" data-i18n="stamp"></span>
+            <span class="adult" id="adultTag" hidden>18+</span>
           </div>
         </div>
         <div class="burst" id="burst" aria-hidden="true"></div>
@@ -54,6 +55,7 @@
         <div><b>3</b><span data-i18n="how3"></span></div>
       </div>
       <div class="stack" id="preSpin"><button class="btn red big" id="spinBtn" data-i18n="spin"></button></div>
+      <p class="together" id="together" hidden></p>
       <div class="row2" id="postSpin" hidden>
         <button class="btn red" id="acceptBtn" data-i18n="accept"></button>
         <button class="btn" id="againBtn" data-i18n="again"></button>
@@ -65,7 +67,7 @@
     <!-- ===== ACCEPTED ===== -->
     <section class="play" id="v-accept" hidden>
       <div class="kicker" data-i18n="accKicker"></div>
-      <div class="ticket"><small>Dare</small><div id="accText"></div></div>
+      <div class="ticket"><small>Dare <span class="adult" id="accAdult" hidden>18+</span></small><div id="accText"></div></div>
       <p class="note" id="accNote"></p>
       <div class="stack">
         <button class="btn red" id="doneBtn" data-i18n="done"></button>

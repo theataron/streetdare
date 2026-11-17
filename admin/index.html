@@ -141,6 +141,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
         <form class="row" id="addDare">
           <div><div class="lbl">English</div><textarea id="newEn" rows="2" maxlength="300" required></textarea></div>
           <div><div class="lbl">Español</div><textarea id="newEs" rows="2" maxlength="300" required></textarea></div>
+          <label style="font-weight:700;align-self:center"><input type="checkbox" id="newAdult"> 18+</label>
           <button class="btn red" type="submit">Add</button>
         </form>
       </div>
@@ -278,7 +279,7 @@ function paintChips(){
 }
 function paintDeckSettings(){
   const box = $('deckSettings');
-  if (scope.shirt_id){ const s = shirtsAll.find(x => x.id === scope.shirt_id); box.innerHTML = '<h3>' + esc(s ? s.name : scope.shirt_id) + "'s own dares</h3><p class=\"muted\">These only show up when someone scans this shirt, mixed into the Classic deck.</p>"; return; }
+  if (scope.shirt_id){ const s = shirtsAll.find(x => x.id === scope.shirt_id); box.innerHTML = '<h3>' + esc(s ? s.name : scope.shirt_id) + "'s own dares</h3><p class=\"muted\">These only show up when someone scans this shirt, mixed into the Party deck.</p>"; return; }
   const d = decks.find(x => x.id === scope.deck_id); if (!d){ box.innerHTML = ''; return; }
   box.innerHTML =
     '<form class="row" id="deckForm">' +
@@ -309,6 +310,7 @@ async function loadDares(){
       '<div><div class="lbl">English</div><textarea name="en" rows="2" maxlength="300">' + esc(r.text_en) + '</textarea></div>' +
       '<div><div class="lbl">Español</div><textarea name="es" rows="2" maxlength="300">' + esc(r.text_es) + '</textarea></div>' +
       '<div class="acts"><label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
+      '<label title="Shows an 18+ tag on the dare"><input type="checkbox" name="adult"' + (r.adult ? ' checked' : '') + '> 18+</label>' +
       (r.shirt_id ? '<label title="Owner can\'t switch it back on"><input type="checkbox" name="hide"' + (r.hidden_by_admin ? ' checked' : '') + '> Hidden by admin</label>' : '') +
       '<button class="btn sm red" name="save" disabled>Save</button><button class="btn ghost sm" name="del">Delete</button></div>' +
     '</div>').join('') : '<p class="empty">No dares here yet. Add the first one above.</p>';
@@ -328,6 +330,11 @@ async function loadDares(){
       row.classList.toggle('inactive', !e.target.checked); toast(e.target.checked ? 'Dare is live' : 'Dare hidden from the site');
       loadDares();
     };
+    row.querySelector('[name=adult]').onchange = async e => {
+      const { error } = await sb.from('dares').update({ adult: e.target.checked }).eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      toast(e.target.checked ? 'Marked 18+' : '18+ tag removed');
+    };
     const hide = row.querySelector('[name=hide]');
     if (hide) hide.onchange = async () => {
       const { error } = await sb.from('dares').update({ hidden_by_admin: hide.checked }).eq('id', id);
@@ -345,9 +352,9 @@ async function loadDares(){
 $('addDare').onsubmit = async e => {
   e.preventDefault();
   const en = $('newEn').value.trim(), es = $('newEs').value.trim();
-  const { error } = await sb.from('dares').insert(Object.assign({ text_en: en, text_es: es, sort: 999 }, scope));
+  const { error } = await sb.from('dares').insert(Object.assign({ text_en: en, text_es: es, adult: $('newAdult').checked, sort: 999 }, scope));
   if (error) return toast('Error: ' + error.message);
-  $('newEn').value = ''; $('newEs').value = ''; toast('Dare added - live on the site now'); loadDares();
+  $('newEn').value = ''; $('newEs').value = ''; $('newAdult').checked = false; toast('Dare added - live on the site now'); loadDares();
 };
 
 /* ===== shirts ===== */

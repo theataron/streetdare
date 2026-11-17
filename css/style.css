@@ -560,3 +560,8 @@ body.hot .card.b2{background-color:#2a1d1a}
 /* account link in the header */
 .acct{font:700 .8rem "DM Sans",sans-serif;background:var(--red);color:#fff;border:2px solid var(--ink);border-radius:99px;padding:6px 12px;text-decoration:none;white-space:nowrap}
 .acct:active{transform:translate(1px,1px)}
+
+/* dare extras: 18+ tag and the "do this together" line */
+.adult{display:inline-block;vertical-align:middle;font:700 .68rem/1 "DM Sans",sans-serif;letter-spacing:.06em;padding:4px 7px;border-radius:99px;background:#ffe32a;color:#000;margin-left:6px}
+.card.front .adult{position:absolute;top:12px;left:12px;margin:0}
+.together{text-align:center;font-weight:700;margin:-4px 0 14px}

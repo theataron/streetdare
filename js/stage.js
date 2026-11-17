@@ -25,6 +25,7 @@ const CHECKOUT = { shirt: '', pass: '', group: '' };
 const SIZES = ['XS','S','M','L','XL','XXL','3XL'];
 
 Object.assign(T.en, {
+  devilNote: "Adds the bolder dares on top of the party deck. Free on every shirt.",
   hKicker: "Now live · Madrid",
   ctaList: "Get your shirt - €49",
   ctaQ: "Want your own shirt and dares?",
@@ -42,7 +43,6 @@ Object.assign(T.en, {
   a5: "A shirt is €49 with free shipping, and it’s made to order with your own QR, so it ships in 3-5 working days. Groups of 3 or more pay less per shirt, and the Shirtless Pass is €4.99 if you’d rather play without one.",
   q7: "What do I get for scanning someone’s shirt?",
   a7: "If you scan a STREETDARE shirt on a night out, you get €10 off your own for the next 6 hours. And when someone who scanned your shirt buys one, you get an extra dare pack for free.",
-  devilNote: "A bolder set of dares, and one of the packs on {name}’s shirt.",
   c4p: "Themed decks for every kind of night: Erasmus, Spicy, Festival and Madrid, with more on the way. Every shirt comes with your pick of three, and extra packs are €3.99 each.",
   pitchP: "Every shirt is made to order with your own QR and your own dares. It’s €49 with free shipping.",
   pitchCta: "Get your own shirt →",
@@ -77,6 +77,7 @@ Object.assign(T.en, {
   stageTag: "stage preview"
 });
 Object.assign(T.es, {
+  devilNote: "Añade los retos más atrevidos a la baraja de fiesta. Gratis en todas las camisetas.",
   hKicker: "Ya disponible · Madrid",
   ctaList: "Consigue tu camiseta - 49 €",
   ctaQ: "¿Quieres tu propia camiseta y retos?",
@@ -94,7 +95,6 @@ Object.assign(T.es, {
   a5: "La camiseta cuesta 49 € con envío gratis y se hace por encargo con tu propio QR, así que se envía en 3-5 días laborables. Los grupos de 3 o más pagan menos por camiseta, y el Shirtless Pass cuesta 4,99 € si prefieres jugar sin camiseta.",
   q7: "¿Qué gano por escanear la camiseta de alguien?",
   a7: "Si escaneas una camiseta STREETDARE una noche de fiesta, tienes 10 € de descuento en la tuya durante las 6 horas siguientes. Y cuando alguien que escaneó tu camiseta compra una, te llevas gratis un pack de retos extra.",
-  devilNote: "Una tanda de retos más atrevidos, y uno de los packs de la camiseta de {name}.",
   c4p: "Barajas temáticas para cada tipo de noche: Erasmus, Picante, Festival y Madrid, con más en camino. Cada camiseta incluye los tres que tú elijas, y los packs extra cuestan 3,99 € cada uno.",
   pitchP: "Cada camiseta se hace por encargo con tu propio QR y tus propios retos. Cuesta 49 € con envío gratis.",
   pitchCta: "Consigue tu camiseta →",
