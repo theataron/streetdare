@@ -55,6 +55,7 @@
         <p class="err" id="emailErr" hidden></p>
         <button class="btn red" type="submit" id="sendBtn"></button>
       </form>
+      <p class="small" style="margin-top:14px" id="legal"></p>
     </div>
 
     <!-- step 2: code -->
@@ -76,11 +77,11 @@ const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const next = safeNext(params.get('next'), '/me/');
 const T = {
-  en:{ h1:'Log in', sub:'Your shirt, your dares, your stats. No password needed.', h1Up:'Create your account', subUp:'Got a STREETDARE shirt? Make an account and claim it. No password to remember: we email you a code.', mLogin:'Log in', mSignup:'Create account', namePh:'Your first name', sendUp:'Create my account', google:'Continue with Google', or:'or with your email', ph:'Your email', send:'Send me a code', sending:'Sending…',
+  en:{ h1:'Log in', sub:'Your shirt, your dares, your stats. No password needed.', h1Up:'Create your account', subUp:'Got a STREETDARE shirt? Make an account and claim it. No password to remember: we email you a code.', mLogin:'Log in', mSignup:'Create account', namePh:'Your first name', sendUp:'Create my account', legal:'By continuing you accept our <a href="/privacy/">privacy policy</a>.', google:'Continue with Google', or:'or with your email', ph:'Your email', send:'Send me a code', sending:'Sending…',
        sentTo:'We sent a code to <b>{e}</b>. It can take a minute, and check your spam folder too.', codePh:'000000', verify:'Log in', verifying:'Checking…', resend:'Send a new code', resendIn:'New code in {s}s', other:'Use another email',
        badEmail:'That email doesn’t look right.', badCode:'That code didn’t work. Check it or ask for a new one.', wait:'Too many tries. Wait a minute and try again.', err:'Something went wrong. Try again.',
        finish:'Enter your email to finish logging in.', h1Finish:'Almost in' },
-  es:{ h1:'Entrar', sub:'Tu camiseta, tus retos, tus estadísticas. Sin contraseña.', h1Up:'Crea tu cuenta', subUp:'¿Tienes una camiseta STREETDARE? Crea tu cuenta y reclámala. Sin contraseña que recordar: te enviamos un código por email.', mLogin:'Entrar', mSignup:'Crear cuenta', namePh:'Tu nombre', sendUp:'Crear mi cuenta', google:'Continuar con Google', or:'o con tu email', ph:'Tu email', send:'Envíame un código', sending:'Enviando…',
+  es:{ h1:'Entrar', sub:'Tu camiseta, tus retos, tus estadísticas. Sin contraseña.', h1Up:'Crea tu cuenta', subUp:'¿Tienes una camiseta STREETDARE? Crea tu cuenta y reclámala. Sin contraseña que recordar: te enviamos un código por email.', mLogin:'Entrar', mSignup:'Crear cuenta', namePh:'Tu nombre', sendUp:'Crear mi cuenta', legal:'Al continuar aceptas nuestra <a href="/privacy/">política de privacidad</a>.', google:'Continuar con Google', or:'o con tu email', ph:'Tu email', send:'Envíame un código', sending:'Enviando…',
        sentTo:'Te hemos enviado un código a <b>{e}</b>. Puede tardar un minuto; mira también en spam.', codePh:'000000', verify:'Entrar', verifying:'Comprobando…', resend:'Enviar otro código', resendIn:'Otro código en {s}s', other:'Usar otro email',
        badEmail:'Ese email no parece correcto.', badCode:'Ese código no ha funcionado. Revísalo o pide uno nuevo.', wait:'Demasiados intentos. Espera un minuto y vuelve a probar.', err:'Algo ha fallado. Inténtalo otra vez.',
        finish:'Escribe tu email para terminar de entrar.', h1Finish:'Casi dentro' }
@@ -101,6 +102,7 @@ function paint(){
   $('code').placeholder = t('codePh'); if (!$('verifyBtn').disabled) $('verifyBtn').textContent = t('verify');
   $('sentTo').innerHTML = t('sentTo').replace('{e}', email.replace(/[<>&"]/g, ''));
   $('other').textContent = t('other'); tick();
+  $('legal').innerHTML = t('legal');
 }
 $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
 $('mLogin').onclick = () => { mode = 'login'; paint(); };
