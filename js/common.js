@@ -34,8 +34,8 @@ let DICT = { en:{} };
 const t = k => (DICT[LANG] && DICT[LANG][k]) ?? (DICT.en[k] ?? k);
 /* ----- account links: "Log in" in the header, "Log in" + "Create account" in the menu ----- */
 const ACCT = {
-  en:{ login:'Log in', me:'My shirt', signup:'Create account', loginS:'Your shirt, your dares, your stats', signupS:'Got a shirt? Claim it here', meS:'Your stats and your own dares' },
-  es:{ login:'Entrar', me:'Mi camiseta', signup:'Crear cuenta', loginS:'Tu camiseta, tus retos, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tus estadísticas y tus retos' }
+  en:{ login:'Log in', me:'Profile', signup:'Create account', loginS:'Your profile, your shirts, your stats', signupS:'Got a shirt? Claim it here', meS:'Your photo, your shirts and your stats' },
+  es:{ login:'Entrar', me:'Perfil', signup:'Crear cuenta', loginS:'Tu perfil, tus camisetas, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tu foto, tus camisetas y tus estadísticas' }
 };
 const loggedIn = () => !!store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token');
 function paintAccount(){
@@ -47,7 +47,12 @@ function paintAccount(){
     const mk = id => { const el = document.createElement('a'); el.id = id; el.innerHTML = '<span></span><small></small>'; menu.insertBefore(el, foot); return el; };
     mk('mLogin'); mk('mSignup');
   }
-  const btn = $('acctBtn'); if (btn){ btn.textContent = loggedIn() ? a.me : a.login; btn.href = loggedIn() ? '/me/' : '/login/'; }
+  const btn = $('acctBtn');
+  if (btn){
+    btn.href = loggedIn() ? '/me/' : '/login/'; btn.textContent = loggedIn() ? a.me : a.login;
+    const pic = store.get('sd_avatar');
+    if (loggedIn() && pic && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(pic)){ const i = document.createElement('img'); i.src = pic; i.alt = ''; btn.prepend(i); btn.classList.add('withpic'); }
+  }
   const ml = $('mLogin'), ms = $('mSignup');
   if (ml){ ml.href = loggedIn() ? '/me/' : '/login/'; ml.querySelector('span').textContent = loggedIn() ? a.me : a.login; ml.querySelector('small').textContent = loggedIn() ? a.meS : a.loginS; }
   if (ms){ ms.hidden = loggedIn(); ms.href = '/login/?mode=signup'; ms.querySelector('span').textContent = a.signup; ms.querySelector('small').textContent = a.signupS; }

@@ -52,12 +52,12 @@ async function loadLiveDecks(){
   try{
     const [rows, shirts] = await Promise.all([
       sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,adult&active=eq.true&' + where + '&order=sort,id'),
-      s ? sbGet('shirts?select=id,name,ig_shown,photo_url&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
+      s ? sbGet('rpc/shirt_card?p_id=' + encodeURIComponent(s)) : Promise.resolve([])
     ]);
     const live = { classic: [], spicy: [], shirt: [] };
     rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
-    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].ig_shown || '', photo: shirts[0].photo_url || '' }); applyLang(); paintPhoto(); }
+    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].ig || '', photo: shirts[0].photo || '' }); applyLang(); paintPhoto(); }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
 /* after a completed dare: the wearer's Instagram, if they chose to show it */

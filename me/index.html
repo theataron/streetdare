@@ -65,6 +65,14 @@
 .photorow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
 .avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);background:var(--blush);flex:none;display:grid;place-items:center;font-size:2rem}
 .photorow .acts{display:flex;gap:8px;flex-wrap:wrap}
+.steps{list-style:none;padding:0;margin:4px 0 0;display:grid;gap:10px}
+.steps li{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.12);border-radius:14px;padding:10px 12px}
+.steps li b{display:block}
+.steps li small{display:block;opacity:.9;font-size:.85rem;margin-top:2px}
+.steps .ck{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
+.steps li.ok .ck{background:#fff;color:var(--red)}
+.steps li.ok{opacity:.7}
+.steps .mini{margin-top:8px;background:#fff;color:var(--ink);border-color:#fff}
 .code{font:400 2.6rem/1 "Bagel Fat One",sans-serif;letter-spacing:.3em;text-align:center;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:16px 8px 12px;margin:6px 0 12px}
 </style>
 </head>
@@ -85,6 +93,31 @@
       <h1 class="display" id="title"></h1>
       <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
 
+      <!-- set-up checklist for new owners -->
+      <section class="panel nudge" id="setup" hidden>
+        <h2 id="setupH"></h2>
+        <p class="sub" id="setupP"></p>
+        <ol class="steps" id="steps"></ol>
+      </section>
+
+      <!-- the person -->
+      <section class="panel">
+        <h2 id="profH"></h2>
+        <p class="sub" id="profP"></p>
+        <div class="photorow">
+          <img class="avatar" id="avatar" alt="" hidden><div class="avatar" id="avatarEmpty">🙂</div>
+          <div class="acts"><button class="mini red" type="button" id="photoBtn"></button><button class="mini plain" type="button" id="photoDel" hidden></button></div>
+          <input type="file" id="photoFile" accept="image/*" hidden>
+        </div>
+        <form id="profForm">
+          <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
+          <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
+          <label class="tog" style="margin-bottom:14px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
+          <p class="err" id="profErr" hidden></p>
+          <button class="btn" type="submit" id="profBtn"></button>
+        </form>
+      </section>
+
       <!-- no shirt yet -->
       <section class="panel" id="p-claim" hidden>
         <h2 id="claimH"></h2>
@@ -98,14 +131,9 @@
       </section>
 
       <div id="shirtArea" hidden>
-        <div class="shirtpick" id="shirtPick" hidden></div>
+        <h2 class="display" id="shirtsH" style="font-size:1.6rem;margin:26px 0 0"></h2>
+        <div class="shirtpick" id="shirtPick"></div>
 
-        <!-- first thing to set up: a photo -->
-        <section class="panel nudge" id="photoNudge" hidden>
-          <h2 id="nudgeH"></h2>
-          <p class="sub" id="nudgeP"></p>
-          <button class="btn" type="button" id="nudgeBtn"></button>
-        </section>
 
         <!-- dare code -->
         <section class="panel">
@@ -147,22 +175,6 @@
           <div id="deckList"></div>
         </section>
 
-        <!-- profile -->
-        <section class="panel">
-          <h2 id="profH"></h2>
-          <div class="photorow">
-            <img class="avatar" id="avatar" alt="" hidden><div class="avatar" id="avatarEmpty">🙂</div>
-            <div class="acts"><button class="mini red" type="button" id="photoBtn"></button><button class="mini plain" type="button" id="photoDel" hidden></button></div>
-            <input type="file" id="photoFile" accept="image/*" hidden>
-          </div>
-          <form id="profForm">
-            <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
-            <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
-            <label class="tog" style="margin-bottom:14px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
-            <p class="err" id="profErr" hidden></p>
-            <button class="btn" type="submit" id="profBtn"></button>
-          </form>
-        </section>
       </div>
 
       <!-- account -->
@@ -184,7 +196,7 @@ import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=4';
 const $ = id => document.getElementById(id);
 
 const T = {
-  en:{ hello:'Hey {n}', title:'Your shirt', claimH:'Claim your shirt', claimP:'Every STREETDARE shirt comes with a claim code. Enter it here and the shirt is yours: your stats, your dares, your name on the scan page.',
+  en:{ hello:'Hey {n}', title:'Your profile', claimH:'Claim your shirt', claimP:'Every STREETDARE shirt comes with a claim code. Enter it here and the shirt is yours: your stats, your dares, your name on the scan page.',
        claimBtn:'Claim my shirt', claiming:'Checking…', claimBad:'That code didn’t work. Check it, or it may already be claimed.', noShirt:'No shirt yet? <a href="../#join">Join the community</a> and we’ll tell you when they’re ready.', claimed:'It’s yours! 🎉',
        statsH:'Your shirt live', live:'live', scans:'Scans', people:'People', done:'Dares done', feedEmpty:'No scans yet. Wear it out and watch them appear here live.',
        ev_scan:'Someone scanned your shirt', ev_spin:'They spun a dare', ev_accept:'Dare accepted', ev_done:'Dare completed 🎉', copy:'Copy', copied:'Link copied', open:'Open',
@@ -192,12 +204,17 @@ const T = {
        addDare:'Add dare', limit:'You’ve reached 10 dares. Delete or edit one first.', tooShort:'Write a bit more.', daresEmpty:'No dares of your own yet. Add the first one below.', liveL:'On', del:'Delete', save:'Save', edit:'Edit',
        hidden:'Hidden by STREETDARE', added:'Dare added. It’s live on your shirt now.', delSure:'Delete this dare?',
        decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', included:'Included', soon:'Coming soon', want:'I want this', wanted:'You’re on the list ✓',
-       nudgeH:'Add your photo 📸', nudgeP:'People who scan your shirt will see it next to your name, so they know who they’re looking for. It takes ten seconds.', nudgeBtn:'Add my photo',
+       setupH:'Get set up 🚀', setupP:'Four quick steps and your shirt is ready for its first night out.', addClaim:'Claim another shirt',
+       st1:'Add your photo', st1s:'People who scan you see it next to your name, so they know who they’re looking for.', st1b:'Add my photo',
+       st2:'Learn your dare code', st2s:'After a dare, the person who scanned you types it so the dare counts. It’s further down, under your shirt.', st2b:'Show me',
+       st3:'Test your shirt', st3s:'Open your own scan page and spin a dare, so you know what people see.', st3b:'Open my scan page',
+       st4:'Wear it out', st4s:'This ticks itself the first time someone scans you.',
+       profP:'This is what people see when they scan any of your shirts.', shirtsH:'Your shirts',
        photoAdd:'Add photo', photoChange:'Change photo', photoDel:'Remove', photoUp:'Uploading…', photoSaved:'Photo saved. Scanners see it now.', photoBad:'That image didn’t work. Try a JPG or PNG.',
        codeH:'Your dare code', codeP:'After a dare, the person who scanned you types this code on their phone, and only then does the dare count on your profile. Tell it to the people you actually did a dare with.', newCode:'Make a new code', codeNew:'New code ready',
-       profH:'On your shirt', nameL:'Name shown to people who scan you', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
+       profH:'Your profile', nameL:'Your name', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
        accH:'Account', loggedAs:'Logged in as {e}', logout:'Log out', del2:'Delete my account', delConfirm:'Delete your account? Your own dares are deleted and the shirt is unlinked from you. This can’t be undone.', err:'Something went wrong. Try again.' },
-  es:{ hello:'Hola {n}', title:'Tu camiseta', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
+  es:{ hello:'Hola {n}', title:'Tu perfil', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
        claimBtn:'Reclamar mi camiseta', claiming:'Comprobando…', claimBad:'Ese código no ha funcionado. Revísalo; puede que ya esté reclamado.', noShirt:'¿Aún no tienes camiseta? <a href="../#join">Únete a la comunidad</a> y te avisamos cuando estén listas.', claimed:'¡Es tuya! 🎉',
        statsH:'Tu camiseta en directo', live:'en directo', scans:'Escaneos', people:'Personas', done:'Retos hechos', feedEmpty:'Aún no hay escaneos. Póntela y míralos aparecer aquí en directo.',
        ev_scan:'Alguien ha escaneado tu camiseta', ev_spin:'Han sacado un reto', ev_accept:'Reto aceptado', ev_done:'Reto completado 🎉', copy:'Copiar', copied:'Enlace copiado', open:'Abrir',
@@ -205,10 +222,15 @@ const T = {
        addDare:'Añadir reto', limit:'Ya tienes 10 retos. Borra o edita uno primero.', tooShort:'Escribe un poco más.', daresEmpty:'Aún no tienes retos propios. Añade el primero abajo.', liveL:'Activo', del:'Borrar', save:'Guardar', edit:'Editar',
        hidden:'Ocultado por STREETDARE', added:'Reto añadido. Ya está activo en tu camiseta.', delSure:'¿Borrar este reto?',
        decksH:'Tus barajas', decksP:'Lo que hay en la baraja cuando alguien escanea tu camiseta.', included:'Incluida', soon:'Próximamente', want:'La quiero', wanted:'Estás en la lista ✓',
-       nudgeH:'Añade tu foto 📸', nudgeP:'Quien escanee tu camiseta la verá junto a tu nombre, así sabe a quién buscar. Son diez segundos.', nudgeBtn:'Añadir mi foto',
+       setupH:'Ponlo a punto 🚀', setupP:'Cuatro pasos rápidos y tu camiseta está lista para su primera noche.', addClaim:'Reclamar otra camiseta',
+       st1:'Añade tu foto', st1s:'Quien te escanee la ve junto a tu nombre, así sabe a quién buscar.', st1b:'Añadir mi foto',
+       st2:'Conoce tu código de reto', st2s:'Después de un reto, quien te ha escaneado lo escribe para que el reto cuente. Está más abajo, en tu camiseta.', st2b:'Enséñamelo',
+       st3:'Prueba tu camiseta', st3s:'Abre tu propia página de escaneo y saca un reto, para ver lo que ve la gente.', st3b:'Abrir mi página',
+       st4:'Sal con ella', st4s:'Se marca solo la primera vez que alguien te escanee.',
+       profP:'Esto es lo que ve la gente cuando escanea cualquiera de tus camisetas.', shirtsH:'Tus camisetas',
        photoAdd:'Añadir foto', photoChange:'Cambiar foto', photoDel:'Quitar', photoUp:'Subiendo…', photoSaved:'Foto guardada. Ya la ven al escanearte.', photoBad:'Esa imagen no ha funcionado. Prueba con un JPG o PNG.',
        codeH:'Tu código de reto', codeP:'Después de un reto, quien te ha escaneado escribe este código en su móvil, y solo entonces el reto cuenta en tu perfil. Díselo a la gente con la que de verdad has hecho un reto.', newCode:'Crear un código nuevo', codeNew:'Código nuevo listo',
-       profH:'En tu camiseta', nameL:'Nombre que ve quien te escanea', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
+       profH:'Tu perfil', nameL:'Tu nombre', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
        accH:'Cuenta', loggedAs:'Has entrado como {e}', logout:'Salir', del2:'Borrar mi cuenta', delConfirm:'¿Borrar tu cuenta? Se borran tus retos propios y la camiseta deja de estar vinculada a ti. No se puede deshacer.', err:'Algo ha fallado. Inténtalo otra vez.' }
 };
 let L = lang(), user = null, profile = null, shirts = [], shirt = null, decks = [], interest = new Set(), events = [], channel = null;
@@ -220,10 +242,10 @@ const when = d => { const s = (Date.now() - new Date(d)) / 1000; if (s < 60) ret
 function paint(){
   document.documentElement.lang = L;
   $('lang').innerHTML = ['en','es'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
-  const name = (shirt && shirt.name) || (profile && profile.name) || '';
+  const name = (profile && profile.name) || '';
   $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
-  $('title').textContent = shirts.length ? t('title') : t('claimH');
-  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','nudgeH','nudgeP','nudgeBtn','codeH','codeP','newCode'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  $('title').textContent = t('title');
+  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','codeH','codeP','newCode','setupH','setupP','profP','shirtsH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
   $('claimBtn').textContent = t('claimBtn'); $('noShirt').innerHTML = t('noShirt');
   $('liveTxt').textContent = t('live'); $('lScans').textContent = t('scans'); $('lPeople').textContent = t('people'); $('lDone').textContent = t('done');
   $('copyLink').textContent = t('copy'); $('openLink').textContent = t('open');
@@ -231,7 +253,9 @@ function paint(){
   $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
   $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
-  if (shirt){ paintStats(); paintDares(); paintDecks(); paintPhoto(); }
+  paintProfile();
+  if (shirt){ paintStats(); paintDares(); paintDecks(); }
+  paintSetup();
 }
 $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
 
@@ -241,32 +265,32 @@ $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); }
   if (!session){ location.replace('/login/?next=/me/'); return; }
   user = session.user;
   const [p, d, i] = await Promise.all([
-    sb.from('profiles').select('name, role').eq('id', user.id).maybeSingle(),
+    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public').eq('id', user.id).maybeSingle(),
     sb.from('decks').select('id,name_en,name_es,is_free,active,sort').order('sort'),
     sb.from('pack_interest').select('deck_id')
   ]);
   profile = p.data || {}; decks = d.data || []; interest = new Set((i.data || []).map(r => r.deck_id));
   $('adminLink').hidden = profile.role !== 'admin';
+  try{ if (profile.avatar_url) localStorage.setItem('sd_avatar', profile.avatar_url); else localStorage.removeItem('sd_avatar'); }catch(e){}
   await loadShirts();
   $('loading').hidden = true; $('app').hidden = false;
 })();
 
 async function loadShirts(pick){
-  const { data } = await sb.from('shirts').select('id,name,status,instagram,instagram_public,photo_url').eq('owner_id', user.id).order('created_at');
+  const { data } = await sb.from('shirts').select('id,name,status').eq('owner_id', user.id).order('created_at');
   shirts = data || [];
   $('p-claim').hidden = !!shirts.length; $('shirtArea').hidden = !shirts.length;
-  $('shirtPick').hidden = shirts.length < 2;
-  $('shirtPick').innerHTML = shirts.map(s => '<button data-id="' + esc(s.id) + '">👕 ' + esc(s.name) + '</button>').join('');
-  $('shirtPick').querySelectorAll('button').forEach(b => b.onclick = () => selectShirt(b.dataset.id));
+  $('shirtPick').innerHTML = shirts.map(s => '<button data-id="' + esc(s.id) + '">👕 ' + esc(s.id) + '</button>').join('') + '<button type="button" id="claimMore">+ ' + esc(t('addClaim')) + '</button>';
+  $('claimMore').onclick = () => { $('p-claim').hidden = false; $('p-claim').scrollIntoView({ behavior:'smooth' }); };
+  $('shirtPick').querySelectorAll('button[data-id]').forEach(b => b.onclick = () => selectShirt(b.dataset.id));
   if (shirts.length) await selectShirt(pick || shirts[0].id); else paint();
 }
 
 async function selectShirt(id){
   shirt = shirts.find(s => s.id === id);
-  $('shirtPick').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  $('shirtPick').querySelectorAll('button[data-id]').forEach(b => b.classList.toggle('on', b.dataset.id === id));
   const url = 'https://streetdare.com/p/?s=' + shirt.id;
   $('qrLink').textContent = url.replace('https://',''); $('openLink').href = url;
-  $('pName').value = shirt.name || ''; $('pIg').value = shirt.instagram ? '@' + shirt.instagram : ''; $('pIgPub').checked = !!shirt.instagram_public;
   const { data } = await sb.from('play_events').select('event,device_id,dare_text,created_at').eq('shirt_id', shirt.id).order('created_at', { ascending:false }).limit(1000);
   events = data || [];
   await Promise.all([loadDares(), loadCode()]);
@@ -287,7 +311,7 @@ function startLive(){
   if (channel) sb.removeChannel(channel);
   channel = sb.channel('me-' + shirt.id)
     .on('postgres_changes', { event:'INSERT', schema:'public', table:'play_events', filter:'shirt_id=eq.' + shirt.id }, p => {
-      events.unshift(p.new); paintStats();
+      events.unshift(p.new); paintStats(); paintSetup();
       if (p.new.event === 'scan' && navigator.vibrate) navigator.vibrate(60);
     })
     .subscribe(s => { $('liveDot').hidden = s !== 'SUBSCRIBED'; });
@@ -373,21 +397,42 @@ $('profForm').onsubmit = async e => {
   const name = $('pName').value.trim(), ig = $('pIg').value.trim().replace(/^@/, '');
   if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)){ $('profErr').textContent = t('badIg'); $('profErr').hidden = false; return; }
   const upd = { name, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked };
-  const { error } = await sb.from('shirts').update(upd).eq('id', shirt.id);
+  const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
   if (error){ $('profErr').textContent = t('err'); $('profErr').hidden = false; return; }
-  Object.assign(shirt, upd); $('pIgPub').checked = upd.instagram_public; toast(t('saved')); paint();
+  Object.assign(profile, upd); toast(t('saved')); paint();
 };
 
 
 /* ===== photo shown to scanners ===== */
-function paintPhoto(){
-  const u = shirt && shirt.photo_url;
+let profFilled = false;
+function paintProfile(){
+  const u = profile && profile.avatar_url;
   $('avatar').hidden = !u; $('avatarEmpty').hidden = !!u; if (u) $('avatar').src = u;
   $('photoBtn').textContent = u ? t('photoChange') : t('photoAdd');
   $('photoDel').textContent = t('photoDel'); $('photoDel').hidden = !u;
-  $('photoNudge').hidden = !!u;
+  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; }
+  try{ if (u) localStorage.setItem('sd_avatar', u); else localStorage.removeItem('sd_avatar'); }catch(e){}
 }
-$('photoBtn').onclick = $('nudgeBtn').onclick = () => $('photoFile').click();
+$('photoBtn').onclick = () => $('photoFile').click();
+
+/* ===== set-up checklist (shown until all four steps are done) ===== */
+const seen = k => { try{ return localStorage.getItem('sd_setup_' + k) === '1'; }catch(e){ return false; } };
+const mark = k => { try{ localStorage.setItem('sd_setup_' + k, '1'); }catch(e){} };
+function paintSetup(){
+  if (!shirt){ $('setup').hidden = true; return; }
+  const done = { st1: !!(profile && profile.avatar_url), st2: seen('code'), st3: seen('test'), st4: events.some(e => e.event === 'scan') };
+  $('setup').hidden = Object.values(done).every(Boolean);
+  const btn = { st1:'<button class="mini" data-do="photo">' + t('st1b') + '</button>', st2:'<button class="mini" data-do="code">' + t('st2b') + '</button>',
+                st3:'<a class="mini" data-do="test" target="_blank" rel="noopener" href="/p/?s=' + encodeURIComponent(shirt.id) + '">' + t('st3b') + '</a>', st4:'' };
+  $('steps').innerHTML = ['st1','st2','st3','st4'].map((k, i) => '<li class="' + (done[k] ? 'ok' : '') + '"><span class="ck">' + (done[k] ? '✓' : i + 1) + '</span><div><b>' + t(k) + '</b><small>' + t(k + 's') + '</small>' + (done[k] ? '' : btn[k]) + '</div></li>').join('');
+  $('steps').querySelectorAll('[data-do]').forEach(b => b.onclick = () => {
+    const d = b.dataset.do;
+    if (d === 'photo') return $('photoFile').click();
+    if (d === 'code'){ mark('code'); $('codeVal').scrollIntoView({ behavior:'smooth', block:'center' }); }
+    if (d === 'test') mark('test');
+    setTimeout(paintSetup, 400);
+  });
+}
 function squareJpeg(file){
   return new Promise((resolve, reject) => {
     const img = new Image(), url = URL.createObjectURL(file);
@@ -402,25 +447,25 @@ function squareJpeg(file){
   });
 }
 $('photoFile').onchange = async () => {
-  const f = $('photoFile').files[0]; $('photoFile').value = ''; if (!f || !shirt) return;
+  const f = $('photoFile').files[0]; $('photoFile').value = ''; if (!f) return;
   const b = $('photoBtn'); b.disabled = true; b.textContent = t('photoUp');
   try{
-    const blob = await squareJpeg(f), path = shirt.id + '/' + Date.now() + '.jpg';
+    const blob = await squareJpeg(f), path = user.id + '/' + Date.now() + '.jpg';
     const up = await sb.storage.from('avatars').upload(path, blob, { contentType:'image/jpeg', cacheControl:'31536000' });
     if (up.error) throw up.error;
-    const old = shirt.photo_url, url = sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
-    const { error } = await sb.from('shirts').update({ photo_url: url }).eq('id', shirt.id);
+    const old = profile.avatar_url, url = sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+    const { error } = await sb.from('profiles').update({ avatar_url: url }).eq('id', user.id);
     if (error) throw error;
-    shirt.photo_url = url; toast(t('photoSaved'));
+    profile.avatar_url = url; toast(t('photoSaved'));
     if (old && old.includes('/avatars/')) sb.storage.from('avatars').remove([old.split('/avatars/')[1]]);
   }catch(e){ toast(t('photoBad')); }
-  b.disabled = false; paintPhoto();
+  b.disabled = false; paint();
 };
 $('photoDel').onclick = async () => {
-  const old = shirt.photo_url;
-  const { error } = await sb.from('shirts').update({ photo_url: null }).eq('id', shirt.id);
+  const old = profile.avatar_url;
+  const { error } = await sb.from('profiles').update({ avatar_url: null }).eq('id', user.id);
   if (error) return toast(t('err'));
-  shirt.photo_url = null; paintPhoto();
+  profile.avatar_url = null; paint();
   if (old && old.includes('/avatars/')) sb.storage.from('avatars').remove([old.split('/avatars/')[1]]);
 };
 
