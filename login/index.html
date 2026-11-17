@@ -72,7 +72,7 @@
 </div>
 
 <script type="module">
-import { sb, getSession, safeNext, lang, setLang, googleEnabled } from '../js/sb.js';
+import { sb, getSession, safeNext, lang, setLang, googleEnabled } from '../js/sb.js?v=4';
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const next = safeNext(params.get('next'), '/me/');

@@ -32,3 +32,6 @@ export function lang(){
 export function setLang(l){ try{ localStorage.setItem('sd_lang', l); }catch(e){} }
 
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* kept for pages a browser may still have cached from before the live Google check */
+export const GOOGLE_ENABLED = false;
