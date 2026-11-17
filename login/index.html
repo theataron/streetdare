@@ -72,7 +72,7 @@
 </div>
 
 <script type="module">
-import { sb, getSession, safeNext, lang, setLang, GOOGLE_ENABLED } from '../js/sb.js';
+import { sb, getSession, safeNext, lang, setLang, googleEnabled } from '../js/sb.js';
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const next = safeNext(params.get('next'), '/me/');
@@ -107,7 +107,7 @@ function paint(){
 $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
 $('mLogin').onclick = () => { mode = 'login'; paint(); };
 $('mSignup').onclick = () => { mode = 'signup'; paint(); $('name').focus(); };
-$('google').hidden = $('or').hidden = !GOOGLE_ENABLED;
+googleEnabled().then(on => { $('google').hidden = $('or').hidden = !on; });
 
 function showErr(id, k){ $(id).textContent = t(k); $(id).hidden = false; }
 function errKey(e){ const m = (e && (e.message || '')).toLowerCase(); return e && (e.status === 429 || m.includes('rate')) ? 'wait' : null; }
