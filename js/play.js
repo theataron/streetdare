@@ -50,14 +50,22 @@ async function loadLiveDecks(){
   try{
     const [rows, shirts] = await Promise.all([
       sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es&active=eq.true&' + where + '&order=sort,id'),
-      s ? sbGet('shirts?select=id,name&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
+      s ? sbGet('shirts?select=id,name,instagram,instagram_public&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
     ]);
     const live = { classic: [], spicy: [], shirt: [] };
     rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
-    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name }); applyLang(); }
+    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].instagram_public ? shirts[0].instagram : '' }); applyLang(); }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
+/* after a completed dare: the wearer's Instagram, if they chose to show it */
+const EXTRA = { en:{ ig:'Follow {name} on Instagram', mine:'Is this your shirt? Open your dashboard →' }, es:{ ig:'Sigue a {name} en Instagram', mine:'¿Es tu camiseta? Abre tu panel →' } };
+function paintExtras(){
+  const x = EXTRA[LANG] || EXTRA.en, ig = $('igReveal');
+  if (ig){ ig.hidden = !(owner && owner.ig); if (owner && owner.ig){ ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{name}', who()) + ' · @' + owner.ig; } }
+  const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') && !demo && !window.STAGE); }
+}
+document.addEventListener('langchange', paintExtras);
 function logPlay(type){
   const q = current || [];
   if (type === 'spin') track('spin'); else track(type, { quest: q[0] });

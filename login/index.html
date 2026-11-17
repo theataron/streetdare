@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STREETDARE · Log in</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbf8ef">
+<link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.auth{max-width:420px;margin:0 auto;padding:18px 0 60px;text-align:center}
+.auth h1{font-size:clamp(2.4rem,11vw,3.2rem);color:var(--red);transform:rotate(-2deg);margin:18px 0 10px}
+.auth .sub{max-width:32ch;margin:0 auto 22px}
+.auth form{display:grid;gap:12px;text-align:left}
+.auth input{width:100%;font:500 1.05rem "DM Sans",sans-serif;padding:15px 18px;border:2.5px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink)}
+.auth input.code{font:700 1.9rem/1 "DM Sans",monospace;letter-spacing:.35em;text-align:center;padding:14px 10px}
+.or{display:flex;align-items:center;gap:12px;color:var(--mute);font-size:.85rem;margin:6px 0}
+.or:before,.or:after{content:"";flex:1;height:1.5px;background:var(--ink);opacity:.18}
+.gbtn{display:flex!important;align-items:center;justify-content:center;gap:10px}
+.gbtn svg{width:20px;height:20px}
+.err{color:var(--red);font-weight:600;font-size:.92rem;text-align:center}
+.small{font-size:.85rem;color:var(--mute);text-align:center}
+.small button{background:none;border:0;color:var(--ink);text-decoration:underline;font:inherit;cursor:pointer;padding:4px}
+.small button:disabled{color:var(--mute);text-decoration:none;cursor:default}
+.sent{background:var(--blush);border-radius:14px;padding:12px 14px;font-size:.95rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark display" href="../">STREETDARE</a>
+    <div class="right"><button class="lang" id="lang" aria-label="Language">ES</button></div>
+  </header>
+
+  <main class="auth">
+    <h1 class="display" id="h1"></h1>
+    <p class="sub" id="sub"></p>
+
+    <!-- step 1: email -->
+    <div id="s-email">
+      <button class="btn gbtn" id="google" type="button" hidden>
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+        <span id="googleTxt"></span>
+      </button>
+      <div class="or" id="or" hidden><span id="orTxt"></span></div>
+      <form id="emailForm" novalidate>
+        <input type="email" id="email" autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off" maxlength="120" required>
+        <p class="err" id="emailErr" hidden></p>
+        <button class="btn red" type="submit" id="sendBtn"></button>
+      </form>
+    </div>
+
+    <!-- step 2: code -->
+    <div id="s-code" hidden>
+      <p class="sent" id="sentTo"></p>
+      <form id="codeForm" novalidate style="margin-top:14px">
+        <input class="code" id="code" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="8" required>
+        <p class="err" id="codeErr" hidden></p>
+        <button class="btn red" type="submit" id="verifyBtn"></button>
+      </form>
+      <p class="small" style="margin-top:16px"><button id="resend" type="button"></button> · <button id="other" type="button"></button></p>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { sb, getSession, safeNext, lang, setLang, GOOGLE_ENABLED } from '../js/sb.js';
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const next = safeNext(params.get('next'), '/me/');
+const T = {
+  en:{ h1:'Log in', sub:'Your shirt, your dares, your stats. No password needed.', google:'Continue with Google', or:'or with your email', ph:'Your email', send:'Send me a code', sending:'Sending…',
+       sentTo:'We sent a code to <b>{e}</b>. It can take a minute, and check your spam folder too.', codePh:'000000', verify:'Log in', verifying:'Checking…', resend:'Send a new code', resendIn:'New code in {s}s', other:'Use another email',
+       badEmail:'That email doesn’t look right.', badCode:'That code didn’t work. Check it or ask for a new one.', wait:'Too many tries. Wait a minute and try again.', err:'Something went wrong. Try again.',
+       finish:'Enter your email to finish logging in.', h1Finish:'Almost in' },
+  es:{ h1:'Entrar', sub:'Tu camiseta, tus retos, tus estadísticas. Sin contraseña.', google:'Continuar con Google', or:'o con tu email', ph:'Tu email', send:'Envíame un código', sending:'Enviando…',
+       sentTo:'Te hemos enviado un código a <b>{e}</b>. Puede tardar un minuto; mira también en spam.', codePh:'000000', verify:'Entrar', verifying:'Comprobando…', resend:'Enviar otro código', resendIn:'Otro código en {s}s', other:'Usar otro email',
+       badEmail:'Ese email no parece correcto.', badCode:'Ese código no ha funcionado. Revísalo o pide uno nuevo.', wait:'Demasiados intentos. Espera un minuto y vuelve a probar.', err:'Algo ha fallado. Inténtalo otra vez.',
+       finish:'Escribe tu email para terminar de entrar.', h1Finish:'Casi dentro' }
+};
+let L = lang(), email = '', pendingCode = (params.get('code') || '').replace(/\D/g,'').slice(0,8), timer;
+const t = k => T[L][k];
+function paint(){
+  document.documentElement.lang = L;
+  $('lang').innerHTML = ['en','es'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
+  $('h1').textContent = pendingCode && $('s-code').hidden ? t('h1Finish') : t('h1');
+  $('sub').textContent = pendingCode && $('s-code').hidden ? t('finish') : t('sub');
+  $('googleTxt').textContent = t('google'); $('orTxt').textContent = t('or');
+  $('email').placeholder = t('ph'); if (!$('sendBtn').disabled) $('sendBtn').textContent = pendingCode ? t('verify') : t('send');
+  $('code').placeholder = t('codePh'); if (!$('verifyBtn').disabled) $('verifyBtn').textContent = t('verify');
+  $('sentTo').innerHTML = t('sentTo').replace('{e}', email.replace(/[<>&"]/g, ''));
+  $('other').textContent = t('other'); tick();
+}
+$('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
+$('google').hidden = $('or').hidden = !GOOGLE_ENABLED;
+
+function showErr(id, k){ $(id).textContent = t(k); $(id).hidden = false; }
+function errKey(e){ const m = (e && (e.message || '')).toLowerCase(); return e && (e.status === 429 || m.includes('rate')) ? 'wait' : null; }
+
+let left = 0;
+function tick(){ const b = $('resend'); b.disabled = left > 0; b.textContent = left > 0 ? t('resendIn').replace('{s}', left) : t('resend'); }
+function startTimer(){ left = 60; tick(); clearInterval(timer); timer = setInterval(() => { left--; tick(); if (left <= 0) clearInterval(timer); }, 1000); }
+
+async function sendCode(){
+  const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:true, emailRedirectTo: location.origin + next } });
+  if (error) throw error;
+  try{ localStorage.setItem('sd_login_email', email); }catch(e){}
+}
+async function verify(code){
+  const { error } = await sb.auth.verifyOtp({ email, token: code, type:'email' });
+  if (error) throw error;
+  try{ localStorage.removeItem('sd_login_email'); }catch(e){}
+  location.replace(next);
+}
+
+$('emailForm').onsubmit = async e => {
+  e.preventDefault(); $('emailErr').hidden = true;
+  email = $('email').value.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return showErr('emailErr','badEmail');
+  const b = $('sendBtn'); b.disabled = true; b.textContent = pendingCode ? t('verifying') : t('sending');
+  try{
+    if (pendingCode){ await verify(pendingCode); return; }
+    await sendCode(); $('s-email').hidden = true; $('s-code').hidden = false; paint(); startTimer(); $('code').focus();
+  }catch(x){ showErr('emailErr', errKey(x) || (pendingCode ? 'badCode' : 'err')); if (pendingCode){ pendingCode = ''; } }
+  b.disabled = false; paint();
+};
+$('codeForm').onsubmit = async e => {
+  e.preventDefault(); $('codeErr').hidden = true;
+  const code = $('code').value.replace(/\D/g,'');
+  if (code.length < 6) return showErr('codeErr','badCode');
+  const b = $('verifyBtn'); b.disabled = true; b.textContent = t('verifying');
+  try{ await verify(code); }catch(x){ showErr('codeErr', errKey(x) || 'badCode'); b.disabled = false; b.textContent = t('verify'); }
+};
+/* pasting or auto-filling the 6 digits logs straight in */
+$('code').oninput = () => { const v = $('code').value.replace(/\D/g,''); $('code').value = v; if (v.length === 6 && !$('verifyBtn').disabled) $('codeForm').requestSubmit(); };
+$('resend').onclick = async () => { $('codeErr').hidden = true; try{ await sendCode(); startTimer(); }catch(x){ showErr('codeErr', errKey(x) || 'err'); } };
+$('other').onclick = () => { $('s-code').hidden = true; $('s-email').hidden = false; $('code').value = ''; $('email').focus(); paint(); };
+$('google').onclick = () => sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin + next } });
+
+(async () => {
+  const session = await getSession();
+  if (session){ location.replace(next); return; }
+  let saved = ''; try{ saved = localStorage.getItem('sd_login_email') || ''; }catch(e){}
+  if (pendingCode && saved){
+    email = saved; $('s-email').hidden = true; $('s-code').hidden = false; $('code').value = pendingCode; paint();
+    $('verifyBtn').disabled = true; $('verifyBtn').textContent = t('verifying');
+    try{ await verify(pendingCode); }catch(x){ showErr('codeErr', errKey(x) || 'badCode'); $('verifyBtn').disabled = false; $('verifyBtn').textContent = t('verify'); }
+    return;
+  }
+  if (saved) $('email').value = saved;
+  paint();
+})();
+</script>
+</body>
+</html>

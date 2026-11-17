@@ -13,6 +13,8 @@ The website behind the STREETDARE shirts.
 - `streetdare.com/admin/` is the admin board: log in with a magic link, then edit decks and dares, add shirts, and watch scans and dares live.
 - Decks, dares and shirts live in the Supabase database (project `jlnsqerwiwmbqpzzcskf`, Frankfurt). The scan page loads them from there and falls back to `js/quests.js` and `js/shirts.js` if the database can't be reached, so keep those files roughly in sync.
 - Every scan, spin, accepted and completed dare is saved in the `play_events` table (and still in the Google Sheet for now). The waitlist and emails still run on the Sheet.
+- `streetdare.com/login/` is the login for everyone (6-digit email code; "Continue with Google" appears once `GOOGLE_ENABLED` is true in `js/sb.js`). `streetdare.com/me/` is a shirt owner's dashboard: claim a shirt with its code (DARE-XXXXXX, shown in the admin Shirts tab), live scans, own dares (max 10), decks, name and Instagram on the shirt, delete account.
+- The login email template is in `backend/emails/login-code.html`. Paste it into Supabase → Authentication → Emails → Templates, for both "Magic link" and "Confirm sign up".
 - `.github/workflows/keep-alive.yml` pings the database every 3 days so the free plan never pauses it.
 
 ## Files you may want to edit

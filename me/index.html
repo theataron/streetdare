@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STREETDARE · My shirt</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbf8ef">
+<link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.me{padding:6px 0 70px}
+.me h1{font-size:clamp(2.2rem,10vw,3rem);color:var(--red);transform:rotate(-2deg);margin:10px 0 6px}
+.panel{background:var(--card);border:2.5px solid var(--ink);border-radius:20px;padding:18px;margin:18px 0;box-shadow:var(--sh)}
+.panel h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.5rem;margin-bottom:6px}
+.panel .sub{margin-bottom:14px;font-size:.95rem}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+.tile{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 8px;text-align:center}
+.tile b{display:block;font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.8rem;line-height:1.05}
+.tile span{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.feed{list-style:none;padding:0;margin:10px 0 0;max-height:300px;overflow:auto}
+.feed li{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #eadfd2;font-size:.92rem}
+.feed time{color:var(--mute);min-width:62px;font-size:.82rem;padding-top:2px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;color:#1d7a43;vertical-align:middle;margin-left:6px}
+.live i{width:8px;height:8px;border-radius:50%;background:#1d7a43;animation:p 1.6s infinite}
+@keyframes p{50%{opacity:.25}}
+.linkrow{display:flex;gap:8px;align-items:center;background:#fff;border:2px solid var(--ink);border-radius:14px;padding:8px 8px 8px 12px;font-size:.92rem;margin-top:12px}
+.linkrow code{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:inherit;font-weight:600}
+.mini{font:700 .85rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:99px;background:var(--card);padding:7px 13px;cursor:pointer;color:var(--ink);white-space:nowrap;text-decoration:none}
+.mini.red{background:var(--red);color:#fff}
+.mini.plain{border-color:transparent;background:none;text-decoration:underline;color:var(--mute);padding:7px 6px}
+.mini:disabled{opacity:.5;cursor:default}
+.field{display:grid;gap:6px;margin-bottom:12px}
+.field label,.lbl{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.field input,.field textarea,.claim input{width:100%;font:500 1rem "DM Sans",sans-serif;padding:12px 14px;border:2px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink)}
+.field textarea{resize:vertical;min-height:52px}
+.claim{display:grid;gap:12px}
+.claim input{font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;font-size:1.2rem}
+.dare{border-top:1.5px solid #eadfd2;padding:12px 0;display:grid;gap:8px}
+.dare:first-child{border-top:0}
+.dare p{font-weight:600}
+.dare p small{display:block;font-weight:400;color:var(--mute)}
+.dare.off p{opacity:.45}
+.dare .acts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tog{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;cursor:pointer}
+.tog input{width:20px;height:20px;accent-color:var(--red)}
+.flag{font-size:.8rem;color:var(--red);font-weight:700}
+.deck{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1.5px solid #eadfd2}
+.deck:first-child{border-top:0}
+.deck b{display:block}
+.deck small{color:var(--mute)}
+.pill{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:4px 10px;background:#d9f0e2;color:#1d7a43;white-space:nowrap}
+.pill.soon{background:var(--blush);color:var(--red)}
+.err{color:var(--red);font-weight:600;font-size:.9rem}
+.ok{color:#1d7a43;font-weight:600;font-size:.9rem}
+.shirtpick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.shirtpick button{border:2px solid var(--ink);border-radius:99px;background:#fff;padding:6px 14px;font-weight:700;cursor:pointer}
+.shirtpick button.on{background:var(--ink);color:var(--bg)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:.9rem;z-index:9;max-width:90vw;text-align:center}
+.danger{color:var(--mute);font-size:.88rem;margin-top:8px}
+.loading{text-align:center;color:var(--mute);padding:60px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark display" href="../">STREETDARE</a>
+    <div class="right">
+      <button class="lang" id="lang" aria-label="Language">ES</button>
+    </div>
+  </header>
+
+  <main class="me">
+    <p class="loading" id="loading">…</p>
+
+    <div id="app" hidden>
+      <div class="kicker" id="hello"></div>
+      <h1 class="display" id="title"></h1>
+      <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
+
+      <!-- no shirt yet -->
+      <section class="panel" id="p-claim" hidden>
+        <h2 id="claimH"></h2>
+        <p class="sub" id="claimP"></p>
+        <form class="claim" id="claimForm">
+          <input id="claimCode" maxlength="11" autocomplete="off" autocapitalize="characters" placeholder="DARE-XXXXXX">
+          <p class="err" id="claimErr" hidden></p>
+          <button class="btn red" type="submit" id="claimBtn"></button>
+        </form>
+        <p class="sub" style="margin:16px 0 0;font-size:.9rem" id="noShirt"></p>
+      </section>
+
+      <div id="shirtArea" hidden>
+        <div class="shirtpick" id="shirtPick" hidden></div>
+
+        <!-- stats + live -->
+        <section class="panel">
+          <h2><span id="statsH"></span><span class="live" id="liveDot" hidden><i></i><span id="liveTxt"></span></span></h2>
+          <div class="tiles">
+            <div class="tile"><b id="nScans">0</b><span id="lScans"></span></div>
+            <div class="tile"><b id="nPeople">0</b><span id="lPeople"></span></div>
+            <div class="tile"><b id="nDone">0</b><span id="lDone"></span></div>
+          </div>
+          <ul class="feed" id="feed"></ul>
+          <div class="linkrow"><code id="qrLink"></code><button class="mini" id="copyLink"></button><a class="mini" id="openLink" target="_blank" rel="noopener"></a></div>
+        </section>
+
+        <!-- my dares -->
+        <section class="panel">
+          <h2 id="daresH"></h2>
+          <p class="sub" id="daresP"></p>
+          <div id="myDares"></div>
+          <form id="dareForm" style="margin-top:14px">
+            <div class="field"><label for="dEn" id="dEnL"></label><textarea id="dEn" rows="2" maxlength="300"></textarea></div>
+            <div class="field"><label for="dEs" id="dEsL"></label><textarea id="dEs" rows="2" maxlength="300"></textarea></div>
+            <p class="err" id="dareErr" hidden></p>
+            <button class="btn red" type="submit" id="dareBtn"></button>
+          </form>
+        </section>
+
+        <!-- decks -->
+        <section class="panel">
+          <h2 id="decksH"></h2>
+          <p class="sub" id="decksP"></p>
+          <div id="deckList"></div>
+        </section>
+
+        <!-- profile -->
+        <section class="panel">
+          <h2 id="profH"></h2>
+          <form id="profForm">
+            <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
+            <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
+            <label class="tog" style="margin-bottom:14px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
+            <p class="err" id="profErr" hidden></p>
+            <button class="btn" type="submit" id="profBtn"></button>
+          </form>
+        </section>
+      </div>
+
+      <!-- account -->
+      <section class="panel">
+        <h2 id="accH"></h2>
+        <p class="sub" id="accEmail"></p>
+        <div class="stack">
+          <button class="btn" id="logout"></button>
+        </div>
+        <p class="danger"><button class="mini plain" id="delAcc"></button></p>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script type="module">
+import { sb, getSession, lang, setLang, esc } from '../js/sb.js';
+const $ = id => document.getElementById(id);
+
+const T = {
+  en:{ hello:'Hey {n}', title:'Your shirt', claimH:'Claim your shirt', claimP:'Every STREETDARE shirt comes with a claim code. Enter it here and the shirt is yours: your stats, your dares, your name on the scan page.',
+       claimBtn:'Claim my shirt', claiming:'Checking…', claimBad:'That code didn’t work. Check it, or it may already be claimed.', noShirt:'No shirt yet? <a href="../#join">Join the community</a> and we’ll tell you when they’re ready.', claimed:'It’s yours! 🎉',
+       statsH:'Your shirt live', live:'live', scans:'Scans', people:'People', done:'Dares done', feedEmpty:'No scans yet. Wear it out and watch them appear here live.',
+       ev_scan:'Someone scanned your shirt', ev_spin:'They spun a dare', ev_accept:'Dare accepted', ev_done:'Dare completed 🎉', copy:'Copy', copied:'Link copied', open:'Open',
+       daresH:'Your own dares', daresP:'Dares only your shirt has. They’re mixed into the deck when someone scans you. Up to 10, and keep them fun and safe.', enL:'Your dare', esL:'Spanish version (optional)',
+       addDare:'Add dare', limit:'You’ve reached 10 dares. Delete or edit one first.', tooShort:'Write a bit more.', daresEmpty:'No dares of your own yet. Add the first one below.', liveL:'On', del:'Delete', save:'Save', edit:'Edit',
+       hidden:'Hidden by STREETDARE', added:'Dare added. It’s live on your shirt now.', delSure:'Delete this dare?',
+       decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', included:'Included', soon:'Coming soon', want:'I want this', wanted:'You’re on the list ✓',
+       profH:'On your shirt', nameL:'Name shown to people who scan you', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
+       accH:'Account', loggedAs:'Logged in as {e}', logout:'Log out', del2:'Delete my account', delConfirm:'Delete your account? Your own dares are deleted and the shirt is unlinked from you. This can’t be undone.', err:'Something went wrong. Try again.' },
+  es:{ hello:'Hola {n}', title:'Tu camiseta', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
+       claimBtn:'Reclamar mi camiseta', claiming:'Comprobando…', claimBad:'Ese código no ha funcionado. Revísalo; puede que ya esté reclamado.', noShirt:'¿Aún no tienes camiseta? <a href="../#join">Únete a la comunidad</a> y te avisamos cuando estén listas.', claimed:'¡Es tuya! 🎉',
+       statsH:'Tu camiseta en directo', live:'en directo', scans:'Escaneos', people:'Personas', done:'Retos hechos', feedEmpty:'Aún no hay escaneos. Póntela y míralos aparecer aquí en directo.',
+       ev_scan:'Alguien ha escaneado tu camiseta', ev_spin:'Han sacado un reto', ev_accept:'Reto aceptado', ev_done:'Reto completado 🎉', copy:'Copiar', copied:'Enlace copiado', open:'Abrir',
+       daresH:'Tus propios retos', daresP:'Retos que solo tiene tu camiseta. Se mezclan en la baraja cuando alguien te escanea. Hasta 10, y que sean divertidos y seguros.', enL:'Tu reto', esL:'Versión en inglés (opcional)',
+       addDare:'Añadir reto', limit:'Ya tienes 10 retos. Borra o edita uno primero.', tooShort:'Escribe un poco más.', daresEmpty:'Aún no tienes retos propios. Añade el primero abajo.', liveL:'Activo', del:'Borrar', save:'Guardar', edit:'Editar',
+       hidden:'Ocultado por STREETDARE', added:'Reto añadido. Ya está activo en tu camiseta.', delSure:'¿Borrar este reto?',
+       decksH:'Tus barajas', decksP:'Lo que hay en la baraja cuando alguien escanea tu camiseta.', included:'Incluida', soon:'Próximamente', want:'La quiero', wanted:'Estás en la lista ✓',
+       profH:'En tu camiseta', nameL:'Nombre que ve quien te escanea', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
+       accH:'Cuenta', loggedAs:'Has entrado como {e}', logout:'Salir', del2:'Borrar mi cuenta', delConfirm:'¿Borrar tu cuenta? Se borran tus retos propios y la camiseta deja de estar vinculada a ti. No se puede deshacer.', err:'Algo ha fallado. Inténtalo otra vez.' }
+};
+let L = lang(), user = null, profile = null, shirts = [], shirt = null, decks = [], interest = new Set(), events = [], channel = null;
+const t = k => T[L][k];
+let toastT; function toast(m){ $('toast').textContent = m; $('toast').hidden = false; clearTimeout(toastT); toastT = setTimeout(() => $('toast').hidden = true, 2600); }
+const when = d => { const s = (Date.now() - new Date(d)) / 1000; if (s < 60) return L === 'es' ? 'ahora' : 'now'; if (s < 3600) return Math.floor(s/60) + ' min'; if (s < 86400) return Math.floor(s/3600) + ' h'; return new Date(d).toLocaleDateString(L === 'es' ? 'es-ES' : 'en-GB', { day:'numeric', month:'short' }); };
+
+/* ===== text ===== */
+function paint(){
+  document.documentElement.lang = L;
+  $('lang').innerHTML = ['en','es'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
+  const name = (shirt && shirt.name) || (profile && profile.name) || '';
+  $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
+  $('title').textContent = shirts.length ? t('title') : t('claimH');
+  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  $('claimBtn').textContent = t('claimBtn'); $('noShirt').innerHTML = t('noShirt');
+  $('liveTxt').textContent = t('live'); $('lScans').textContent = t('scans'); $('lPeople').textContent = t('people'); $('lDone').textContent = t('done');
+  $('copyLink').textContent = t('copy'); $('openLink').textContent = t('open');
+  $('dEnL').textContent = t('enL'); $('dEsL').textContent = t('esL'); $('dareBtn').textContent = t('addDare');
+  $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
+  $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
+  $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
+  if (shirt){ paintStats(); paintDares(); paintDecks(); }
+}
+$('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
+
+/* ===== start ===== */
+(async () => {
+  const session = await getSession();
+  if (!session){ location.replace('/login/?next=/me/'); return; }
+  user = session.user;
+  const [p, d, i] = await Promise.all([
+    sb.from('profiles').select('name, role').eq('id', user.id).maybeSingle(),
+    sb.from('decks').select('id,name_en,name_es,is_free,active,sort').order('sort'),
+    sb.from('pack_interest').select('deck_id')
+  ]);
+  profile = p.data || {}; decks = d.data || []; interest = new Set((i.data || []).map(r => r.deck_id));
+  $('adminLink').hidden = profile.role !== 'admin';
+  await loadShirts();
+  $('loading').hidden = true; $('app').hidden = false;
+})();
+
+async function loadShirts(pick){
+  const { data } = await sb.from('shirts').select('id,name,status,instagram,instagram_public').eq('owner_id', user.id).order('created_at');
+  shirts = data || [];
+  $('p-claim').hidden = !!shirts.length; $('shirtArea').hidden = !shirts.length;
+  $('shirtPick').hidden = shirts.length < 2;
+  $('shirtPick').innerHTML = shirts.map(s => '<button data-id="' + esc(s.id) + '">👕 ' + esc(s.name) + '</button>').join('');
+  $('shirtPick').querySelectorAll('button').forEach(b => b.onclick = () => selectShirt(b.dataset.id));
+  if (shirts.length) await selectShirt(pick || shirts[0].id); else paint();
+}
+
+async function selectShirt(id){
+  shirt = shirts.find(s => s.id === id);
+  $('shirtPick').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  const url = 'https://streetdare.com/p/?s=' + shirt.id;
+  $('qrLink').textContent = url.replace('https://',''); $('openLink').href = url;
+  $('pName').value = shirt.name || ''; $('pIg').value = shirt.instagram ? '@' + shirt.instagram : ''; $('pIgPub').checked = !!shirt.instagram_public;
+  const { data } = await sb.from('play_events').select('event,device_id,dare_text,created_at').eq('shirt_id', shirt.id).order('created_at', { ascending:false }).limit(1000);
+  events = data || [];
+  await loadDares();
+  startLive();
+  paint();
+}
+
+/* ===== stats + live ===== */
+function paintStats(){
+  $('nScans').textContent = events.filter(e => e.event === 'scan').length;
+  $('nPeople').textContent = new Set(events.map(e => e.device_id).filter(Boolean)).size;
+  $('nDone').textContent = events.filter(e => e.event === 'done').length;
+  const f = events.slice(0, 25);
+  $('feed').innerHTML = f.length ? f.map(e => '<li><time>' + when(e.created_at) + '</time><span>' + t('ev_' + e.event) + (e.dare_text && e.event !== 'spin' ? '<br><small style="color:var(--mute)">' + esc(e.dare_text) + '</small>' : '') + '</span></li>').join('')
+    : '<li style="color:var(--mute)">' + t('feedEmpty') + '</li>';
+}
+function startLive(){
+  if (channel) sb.removeChannel(channel);
+  channel = sb.channel('me-' + shirt.id)
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'play_events', filter:'shirt_id=eq.' + shirt.id }, p => {
+      events.unshift(p.new); paintStats();
+      if (p.new.event === 'scan' && navigator.vibrate) navigator.vibrate(60);
+    })
+    .subscribe(s => { $('liveDot').hidden = s !== 'SUBSCRIBED'; });
+}
+$('copyLink').onclick = async () => { try{ await navigator.clipboard.writeText('https://' + $('qrLink').textContent); toast(t('copied')); }catch(e){} };
+
+/* ===== claim ===== */
+$('claimForm').onsubmit = async e => {
+  e.preventDefault(); $('claimErr').hidden = true;
+  const code = $('claimCode').value.trim().toUpperCase();
+  if (code.length < 6) return;
+  const b = $('claimBtn'); b.disabled = true; b.textContent = t('claiming');
+  const { data, error } = await sb.rpc('claim_shirt', { p_code: code.startsWith('DARE-') ? code : 'DARE-' + code });
+  b.disabled = false; b.textContent = t('claimBtn');
+  if (error){ $('claimErr').textContent = t('claimBad'); $('claimErr').hidden = false; return; }
+  toast(t('claimed')); await loadShirts(data);
+};
+
+/* ===== my dares ===== */
+let myDares = [];
+async function loadDares(){
+  const { data } = await sb.from('dares').select('id,text_en,text_es,active,hidden_by_admin').eq('shirt_id', shirt.id).order('sort').order('id');
+  myDares = data || [];
+}
+function paintDares(){
+  const main = r => L === 'es' ? r.text_es : r.text_en, other = r => L === 'es' ? r.text_en : r.text_es;
+  $('myDares').innerHTML = myDares.length ? myDares.map(r =>
+    '<div class="dare' + (r.active && !r.hidden_by_admin ? '' : ' off') + '" data-id="' + r.id + '">' +
+      '<p>' + esc(main(r)) + (other(r) !== main(r) ? '<small>' + esc(other(r)) + '</small>' : '') + '</p>' +
+      (r.hidden_by_admin ? '<span class="flag">' + t('hidden') + '</span>' :
+      '<div class="acts"><label class="tog"><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '>' + t('liveL') + '</label>' +
+      '<button class="mini plain" name="edit">' + t('edit') + '</button><button class="mini plain" name="del">' + t('del') + '</button></div>') +
+    '</div>').join('') : '<p class="sub" style="margin:0">' + t('daresEmpty') + '</p>';
+  $('dareForm').hidden = myDares.length >= 10;
+  if (myDares.length >= 10){ $('myDares').insertAdjacentHTML('beforeend', '<p class="sub" style="margin:10px 0 0">' + t('limit') + '</p>'); }
+  $('myDares').querySelectorAll('.dare').forEach(row => {
+    const id = Number(row.dataset.id), r = myDares.find(x => x.id === id);
+    const act = row.querySelector('[name=active]'); if (!act) return;
+    act.onchange = async () => { const { error } = await sb.from('dares').update({ active: act.checked }).eq('id', id); if (error) return toast(t('err')); r.active = act.checked; paintDares(); };
+    row.querySelector('[name=del]').onclick = async () => { if (!confirm(t('delSure'))) return; const { error } = await sb.from('dares').delete().eq('id', id); if (error) return toast(t('err')); await loadDares(); paintDares(); };
+    row.querySelector('[name=edit]').onclick = () => {
+      row.innerHTML = '<div class="field"><label>' + t('enL') + '</label><textarea name="a" rows="2" maxlength="300">' + esc(main(r)) + '</textarea></div>' +
+        '<div class="field"><label>' + t('esL') + '</label><textarea name="b" rows="2" maxlength="300">' + esc(other(r) === main(r) ? '' : other(r)) + '</textarea></div>' +
+        '<div class="acts"><button class="mini red" name="save">' + t('save') + '</button></div>';
+      row.querySelector('[name=save]').onclick = async () => {
+        const a = row.querySelector('[name=a]').value.trim(), b = row.querySelector('[name=b]').value.trim() || a;
+        if (a.length < 4) return toast(t('tooShort'));
+        const upd = L === 'es' ? { text_es: a, text_en: b } : { text_en: a, text_es: b };
+        const { error } = await sb.from('dares').update(upd).eq('id', id); if (error) return toast(t('err'));
+        await loadDares(); paintDares(); toast(t('saved'));
+      };
+    };
+  });
+}
+$('dareForm').onsubmit = async e => {
+  e.preventDefault(); $('dareErr').hidden = true;
+  const a = $('dEn').value.trim().replace(/\s+/g,' '), b = $('dEs').value.trim().replace(/\s+/g,' ') || a;
+  if (a.length < 4){ $('dareErr').textContent = t('tooShort'); $('dareErr').hidden = false; return; }
+  const row = L === 'es' ? { text_es: a, text_en: b } : { text_en: a, text_es: b };
+  const { error } = await sb.from('dares').insert(Object.assign({ shirt_id: shirt.id, sort: myDares.length }, row));
+  if (error){ $('dareErr').textContent = (error.message || '').includes('dare_limit') ? t('limit') : t('err'); $('dareErr').hidden = false; return; }
+  $('dEn').value = ''; $('dEs').value = ''; toast(t('added')); await loadDares(); paintDares();
+};
+
+/* ===== decks ===== */
+function paintDecks(){
+  $('deckList').innerHTML = decks.map(d => {
+    const name = L === 'es' ? d.name_es : d.name_en, inc = d.is_free && d.active;
+    return '<div class="deck"><div><b>' + esc(name) + '</b></div>' + (inc ? '<span class="pill">' + t('included') + '</span>'
+      : (interest.has(d.id) ? '<span class="pill soon">' + t('wanted') + '</span>' : '<button class="mini" data-want="' + d.id + '">' + t('want') + '</button>')) + '</div>';
+  }).join('');
+  $('deckList').querySelectorAll('[data-want]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    const { error } = await sb.from('pack_interest').insert({ deck_id: b.dataset.want });
+    if (error && error.code !== '23505'){ b.disabled = false; return toast(t('err')); }
+    interest.add(b.dataset.want); paintDecks();
+  });
+}
+
+/* ===== profile on the shirt ===== */
+$('profForm').onsubmit = async e => {
+  e.preventDefault(); $('profErr').hidden = true;
+  const name = $('pName').value.trim(), ig = $('pIg').value.trim().replace(/^@/, '');
+  if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)){ $('profErr').textContent = t('badIg'); $('profErr').hidden = false; return; }
+  const upd = { name, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked };
+  const { error } = await sb.from('shirts').update(upd).eq('id', shirt.id);
+  if (error){ $('profErr').textContent = t('err'); $('profErr').hidden = false; return; }
+  Object.assign(shirt, upd); $('pIgPub').checked = upd.instagram_public; toast(t('saved')); paint();
+};
+
+/* ===== account ===== */
+$('logout').onclick = async () => { await sb.auth.signOut(); location.replace('/login/'); };
+$('delAcc').onclick = async () => {
+  if (!confirm(t('delConfirm'))) return;
+  const { error } = await sb.rpc('delete_my_account');
+  if (error) return toast(t('err'));
+  await sb.auth.signOut(); location.replace('/');
+};
+</script>
+</body>
+</html>

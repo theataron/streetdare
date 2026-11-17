@@ -82,7 +82,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
   <!-- ===== logged out ===== -->
   <section class="login" id="v-login" hidden>
     <h1 class="display">STREETDARE</h1>
-    <p class="muted">Admin board. Enter your email and we'll send you a login link.</p>
+    <p class="muted">Taking you to the login page…</p>
     <form id="loginForm">
       <input type="email" id="email" placeholder="your@email.com" autocomplete="email" required>
       <button class="btn red" type="submit" id="loginBtn">Send me a login link</button>
@@ -159,7 +159,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
         </form>
       </div>
       <div class="card">
-        <table><thead><tr><th>ID</th><th>Name</th><th>QR link</th><th>Status</th><th></th></tr></thead><tbody id="shirtList"></tbody></table>
+        <table><thead><tr><th>ID</th><th>Name</th><th>QR link</th><th>Owner / claim code</th><th>Status</th><th></th></tr></thead><tbody id="shirtList"></tbody></table>
       </div>
       <p class="muted" style="font-size:.85rem">A shirt's own dares (only shown when someone scans that shirt) are edited under Decks &amp; dares → pick the shirt.</p>
     </div>
@@ -197,7 +197,7 @@ const logout = async () => { await sb.auth.signOut(); location.reload(); };
 $('logout').onclick = logout; $('naOut').onclick = logout;
 
 async function boot(session){
-  if (!session){ view('login'); return; }
+  if (!session){ location.replace('/login/?next=/admin/'); return; }
   const { data: me } = await sb.from('profiles').select('email, role').eq('id', session.user.id).maybeSingle();
   if (!me || me.role !== 'admin'){ $('naEmail').textContent = session.user.email; view('noaccess'); return; }
   $('meEmail').textContent = me.email; view('admin');
@@ -288,7 +288,8 @@ function paintDeckSettings(){
       '<label style="flex:0 0 auto"><input type="checkbox" name="is_free"' + (d.is_free ? ' checked' : '') + '> Free</label>' +
       '<button class="btn sm" type="submit">Save deck</button>' +
     '</form>' +
-    (d.id === 'classic' || d.id === 'spicy' ? '' : '<p class="muted" style="font-size:.85rem;margin-top:8px">This pack isn\'t shown on the scan page yet. It will be once pack choice and checkout are built.</p>');
+    (d.id === 'classic' || d.id === 'spicy' ? '' : '<p class="muted" style="font-size:.85rem;margin-top:8px">This pack isn\'t shown on the scan page yet. It will be once pack choice and checkout are built. <b id="interestN"></b></p>');
+  if (!(d.id === 'classic' || d.id === 'spicy')) sb.from('pack_interest').select('user_id', { count:'exact', head:true }).eq('deck_id', d.id).then(r => { const el = $('interestN'); if (el) el.textContent = (r.count || 0) + ' shirt owners said "I want this".'; });
   $('deckForm').onsubmit = async e => {
     e.preventDefault(); const f = e.target;
     const { error } = await sb.from('decks').update({ name_en: f.name_en.value.trim(), name_es: f.name_es.value.trim(), active: f.active.checked, is_free: f.is_free.checked }).eq('id', d.id);
@@ -308,6 +309,7 @@ async function loadDares(){
       '<div><div class="lbl">English</div><textarea name="en" rows="2" maxlength="300">' + esc(r.text_en) + '</textarea></div>' +
       '<div><div class="lbl">Español</div><textarea name="es" rows="2" maxlength="300">' + esc(r.text_es) + '</textarea></div>' +
       '<div class="acts"><label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
+      (r.shirt_id ? '<label title="Owner can\'t switch it back on"><input type="checkbox" name="hide"' + (r.hidden_by_admin ? ' checked' : '') + '> Hidden by admin</label>' : '') +
       '<button class="btn sm red" name="save" disabled>Save</button><button class="btn ghost sm" name="del">Delete</button></div>' +
     '</div>').join('') : '<p class="empty">No dares here yet. Add the first one above.</p>';
   $('dareList').querySelectorAll('.dare').forEach(row => {
@@ -325,6 +327,12 @@ async function loadDares(){
       if (error) return toast('Error: ' + error.message);
       row.classList.toggle('inactive', !e.target.checked); toast(e.target.checked ? 'Dare is live' : 'Dare hidden from the site');
       loadDares();
+    };
+    const hide = row.querySelector('[name=hide]');
+    if (hide) hide.onchange = async () => {
+      const { error } = await sb.from('dares').update({ hidden_by_admin: hide.checked }).eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      toast(hide.checked ? 'Hidden. The owner can\'t turn it back on.' : 'Unhidden'); loadDares();
     };
     row.querySelector('[name=del]').onclick = async () => {
       if (!confirm('Delete this dare for good? (Untick "Live" instead if you might want it back.)')) return;
@@ -344,12 +352,19 @@ $('addDare').onsubmit = async e => {
 
 /* ===== shirts ===== */
 async function loadShirts(){
-  const { data, error } = await sb.from('shirts').select('*').order('created_at');
+  const [{ data, error }, cl, pr] = await Promise.all([
+    sb.from('shirts').select('id,name,status,owner_id,created_at').order('created_at'),
+    sb.from('shirt_claims').select('shirt_id,code'),
+    sb.from('profiles').select('id,email')
+  ]);
   if (error) return toast('Error: ' + error.message);
+  const codes = Object.fromEntries((cl.data || []).map(c => [c.shirt_id, c.code]));
+  const emails = Object.fromEntries((pr.data || []).map(p => [p.id, p.email]));
   $('shirtList').innerHTML = data.map(s => {
     const url = 'https://streetdare.com/p/?s=' + s.id;
     return '<tr data-id="' + s.id + '"><td><b>' + esc(s.id) + '</b></td><td><input type="text" name="name" value="' + esc(s.name) + '" maxlength="40"></td>' +
       '<td><a href="' + url + '" target="_blank" rel="noopener">' + url.replace('https://','') + '</a></td>' +
+      '<td>' + (s.owner_id ? '✓ ' + esc(emails[s.owner_id] || 'claimed') : '<code style="font-weight:700;user-select:all">' + esc(codes[s.id] || '-') + '</code>') + '</td>' +
       '<td><select name="status"><option value="active"' + (s.status === 'active' ? ' selected' : '') + '>Active</option><option value="disabled"' + (s.status === 'disabled' ? ' selected' : '') + '>Disabled</option></select></td>' +
       '<td><button class="btn sm" name="save">Save</button></td></tr>';
   }).join('');
