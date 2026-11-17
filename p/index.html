@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>STREETDARE - your dare</title>
 <meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="STREETDARE">
+<meta property="og:title" content="You just found a STREETDARE shirt 👀">
+<meta property="og:description" content="Spin for a dare and do it together with the person in the shirt.">
+<meta property="og:url" content="https://streetdare.com/p/">
+<meta property="og:image" content="https://streetdare.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="STREETDARE - the shirt that makes the first move">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://streetdare.com/img/og.png">
 <meta name="theme-color" content="#fbf8ef">
 <link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../css/style.css">
@@ -33,6 +44,7 @@
     <!-- ===== SPIN ===== -->
     <section class="play" id="v-spin" hidden>
       <a class="kicker" id="mineLink" href="/me/" hidden style="display:block;margin-bottom:10px;color:var(--ink);text-decoration:underline"></a>
+      <img class="ownerpic" id="ownerPic" alt="" hidden>
       <div class="kicker" id="foundKicker"></div>
       <h1 class="display" data-i18n="spinTitle"></h1>
       <p class="sub" id="spinSub"></p>
@@ -73,6 +85,20 @@
         <button class="btn red" id="doneBtn" data-i18n="done"></button>
         <button class="btn plain" id="changeBtn" data-i18n="change"></button>
       </div>
+    </section>
+
+    <!-- ===== CONFIRM with the owner's code ===== -->
+    <section class="play" id="v-confirm" hidden>
+      <div class="kicker" data-i18n="cfKicker"></div>
+      <h1 class="display" data-i18n="cfTitle"></h1>
+      <p class="sub" id="cfSub"></p>
+      <form class="codeform" id="codeForm" novalidate>
+        <input id="codeIn" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]*" placeholder="• • • •" aria-label="Code">
+        <p class="wlerr" id="codeErr" hidden></p>
+        <p class="smallnote" id="codeDemo" hidden data-i18n="cfDemo"></p>
+        <button class="btn red" type="submit" id="codeBtn" data-i18n="cfBtn"></button>
+      </form>
+      <button class="btn plain" id="codeSkip" data-i18n="cfSkip"></button>
     </section>
 
     <!-- ===== DONE + reveal ===== -->

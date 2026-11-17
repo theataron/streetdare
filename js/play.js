@@ -1,5 +1,5 @@
 /* ===== STREETDARE - the page a shirt's QR code opens ===== */
-const VIEWS = ['spin','accept','done'];
+const VIEWS = ['spin','accept','confirm','done'];
 let owner = SHIRTS[SHIRT.toLowerCase()] || null;
 const demo = !SHIRT || SHIRT === 'demo';
 let current = null, spinning = false, seen = [];
@@ -11,7 +11,7 @@ if (!demo) refSave(SHIRT.toLowerCase());
 function show(v){
   VIEWS.forEach(n => $('v-'+n).hidden = n !== v);
   $('menu').hidden = true;
-  document.body.classList.toggle('hot', $('devil').checked && ['spin','accept','done'].includes(v));
+  document.body.classList.toggle('hot', $('devil').checked && ['spin','accept','confirm','done'].includes(v));
   window.scrollTo(0,0);
 }
 
@@ -52,12 +52,12 @@ async function loadLiveDecks(){
   try{
     const [rows, shirts] = await Promise.all([
       sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,adult&active=eq.true&' + where + '&order=sort,id'),
-      s ? sbGet('shirts?select=id,name,instagram,instagram_public&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
+      s ? sbGet('shirts?select=id,name,ig_shown,photo_url&id=eq.' + encodeURIComponent(s)) : Promise.resolve([])
     ]);
     const live = { classic: [], spicy: [], shirt: [] };
     rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
-    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].instagram_public ? shirts[0].instagram : '' }); applyLang(); }
+    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].ig_shown || '', photo: shirts[0].photo_url || '' }); applyLang(); paintPhoto(); }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
@@ -117,18 +117,52 @@ $('spinBtn').onclick = spin;
 $('againBtn').onclick = spin;
 $('acceptBtn').onclick = () => { $('accText').textContent = txt(current); paintDare(); logPlay('accept'); show('accept'); };
 $('changeBtn').onclick = () => { resetSpin(); show('spin'); };
-$('doneBtn').onclick = () => { logPlay('done'); show('done'); };
+$('doneBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); setTimeout(() => $('codeIn').focus(), 150); };
+
+/* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
+const practice = () => demo || !!window.STAGE;
+function finishDare(counted){ track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+$('codeIn').oninput = () => { $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true; };
+$('codeForm').onsubmit = async e => {
+  e.preventDefault();
+  const code = $('codeIn').value, err = $('codeErr'), btn = $('codeBtn');
+  if (code.length !== 4){ err.textContent = t('cfShort'); err.hidden = false; return; }
+  if (practice()){ if (code === '1234') return finishDare(false); err.textContent = fill('cfWrong'); err.hidden = false; return; }
+  btn.disabled = true;
+  let res = 'error';
+  try{
+    const q = current || [];
+    const r = await fetch(SB.url + '/rest/v1/rpc/confirm_dare', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_shirt: SHIRT.toLowerCase(), p_code: code, p_device: deviceId(), p_dare_id: q.id || null, p_dare_text: q[0] || null, p_deck: q.deck || 'classic', p_lang: LANG }) });
+    res = r.ok ? await r.json() : 'error';
+  }catch(x){}
+  btn.disabled = false;
+  if (res === 'ok') return finishDare(true);
+  if (res === 'error') return finishDare(false);
+  err.textContent = res === 'locked' ? t('cfLocked') : fill('cfWrong'); err.hidden = false;
+  $('codeIn').select();
+};
+$('codeSkip').onclick = () => finishDare(false);
+
+/* ----- the owner's photo next to their name ----- */
+function paintPhoto(){
+  const img = $('ownerPic'), src = owner && owner.photo;
+  if (!src || !/^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)){ img.hidden = true; return; }
+  img.src = src; img.alt = who(); img.hidden = false;
+}
 $('anotherBtn').onclick = () => { resetSpin(); show('spin'); };
 $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').checked); if (!spinning) resetSpin(); };
 
 /* ----- words that depend on the language and on whose shirt it is ----- */
 document.addEventListener('langchange', () => {
   $('foundKicker').textContent = owner ? fill('found') : t('foundAnon');
-  $('spinSub').textContent = owner ? fill('spinSub') : t('spinSubAnon');
+  const safeName = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
+  $('spinSub').innerHTML = owner ? t('spinSub').replace('{name}', safeName) : t('spinSubAnon');
   $('how2').textContent = owner ? fill('how2') : t('how2Anon');
   $('devNote').textContent = fill('devilNote');
   if ($('refLine') && typeof refText === 'function'){ $('refLine').textContent = refText(); $('refLine').hidden = !refText(); }
   $('accNote').textContent = fill('accNote');
+  $('cfSub').textContent = fill('cfSub'); $('codeDemo').hidden = !practice();
   if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txt(current); }
   paintDare();
 });

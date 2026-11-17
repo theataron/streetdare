@@ -565,3 +565,11 @@ body.hot .card.b2{background-color:#2a1d1a}
 .adult{display:inline-block;vertical-align:middle;font:700 .68rem/1 "DM Sans",sans-serif;letter-spacing:.06em;padding:4px 7px;border-radius:99px;background:#ffe32a;color:#000;margin-left:6px}
 .card.front .adult{position:absolute;top:12px;left:12px;margin:0}
 .together{text-align:center;font-weight:700;margin:-4px 0 14px}
+
+/* owner photo on the scan page */
+.ownerpic{display:block;width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);margin:4px auto 12px}
+/* owner's dare code */
+.codeform{display:grid;gap:12px;margin:8px 0 10px}
+.codeform input{width:100%;font:400 2.4rem "Bagel Fat One",sans-serif;letter-spacing:.35em;text-align:center;padding:14px 10px 10px;border:3px solid var(--ink);border-radius:18px;background:var(--card);color:var(--ink)}
+.codeform .wlerr{color:var(--red);font-weight:600}
+body.hot .codeform .wlerr{color:#ffb4a8}

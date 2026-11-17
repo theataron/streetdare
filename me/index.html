@@ -59,6 +59,13 @@
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:.9rem;z-index:9;max-width:90vw;text-align:center}
 .danger{color:var(--mute);font-size:.88rem;margin-top:8px}
 .loading{text-align:center;color:var(--mute);padding:60px 0}
+.nudge{background:var(--red);color:#fff;border-color:var(--ink)}
+.nudge .sub{color:#fff;opacity:.95}
+.nudge .btn{background:#fff;color:var(--ink)}
+.photorow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);background:var(--blush);flex:none;display:grid;place-items:center;font-size:2rem}
+.photorow .acts{display:flex;gap:8px;flex-wrap:wrap}
+.code{font:400 2.6rem/1 "Bagel Fat One",sans-serif;letter-spacing:.3em;text-align:center;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:16px 8px 12px;margin:6px 0 12px}
 </style>
 </head>
 <body>
@@ -92,6 +99,21 @@
 
       <div id="shirtArea" hidden>
         <div class="shirtpick" id="shirtPick" hidden></div>
+
+        <!-- first thing to set up: a photo -->
+        <section class="panel nudge" id="photoNudge" hidden>
+          <h2 id="nudgeH"></h2>
+          <p class="sub" id="nudgeP"></p>
+          <button class="btn" type="button" id="nudgeBtn"></button>
+        </section>
+
+        <!-- dare code -->
+        <section class="panel">
+          <h2 id="codeH"></h2>
+          <p class="sub" id="codeP"></p>
+          <div class="code" id="codeVal">····</div>
+          <button class="mini" type="button" id="newCode"></button>
+        </section>
 
         <!-- stats + live -->
         <section class="panel">
@@ -128,6 +150,11 @@
         <!-- profile -->
         <section class="panel">
           <h2 id="profH"></h2>
+          <div class="photorow">
+            <img class="avatar" id="avatar" alt="" hidden><div class="avatar" id="avatarEmpty">🙂</div>
+            <div class="acts"><button class="mini red" type="button" id="photoBtn"></button><button class="mini plain" type="button" id="photoDel" hidden></button></div>
+            <input type="file" id="photoFile" accept="image/*" hidden>
+          </div>
           <form id="profForm">
             <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
             <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
@@ -165,6 +192,9 @@ const T = {
        addDare:'Add dare', limit:'You’ve reached 10 dares. Delete or edit one first.', tooShort:'Write a bit more.', daresEmpty:'No dares of your own yet. Add the first one below.', liveL:'On', del:'Delete', save:'Save', edit:'Edit',
        hidden:'Hidden by STREETDARE', added:'Dare added. It’s live on your shirt now.', delSure:'Delete this dare?',
        decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', included:'Included', soon:'Coming soon', want:'I want this', wanted:'You’re on the list ✓',
+       nudgeH:'Add your photo 📸', nudgeP:'People who scan your shirt will see it next to your name, so they know who they’re looking for. It takes ten seconds.', nudgeBtn:'Add my photo',
+       photoAdd:'Add photo', photoChange:'Change photo', photoDel:'Remove', photoUp:'Uploading…', photoSaved:'Photo saved. Scanners see it now.', photoBad:'That image didn’t work. Try a JPG or PNG.',
+       codeH:'Your dare code', codeP:'After a dare, the person who scanned you types this code on their phone, and only then does the dare count on your profile. Tell it to the people you actually did a dare with.', newCode:'Make a new code', codeNew:'New code ready',
        profH:'On your shirt', nameL:'Name shown to people who scan you', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
        accH:'Account', loggedAs:'Logged in as {e}', logout:'Log out', del2:'Delete my account', delConfirm:'Delete your account? Your own dares are deleted and the shirt is unlinked from you. This can’t be undone.', err:'Something went wrong. Try again.' },
   es:{ hello:'Hola {n}', title:'Tu camiseta', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
@@ -175,6 +205,9 @@ const T = {
        addDare:'Añadir reto', limit:'Ya tienes 10 retos. Borra o edita uno primero.', tooShort:'Escribe un poco más.', daresEmpty:'Aún no tienes retos propios. Añade el primero abajo.', liveL:'Activo', del:'Borrar', save:'Guardar', edit:'Editar',
        hidden:'Ocultado por STREETDARE', added:'Reto añadido. Ya está activo en tu camiseta.', delSure:'¿Borrar este reto?',
        decksH:'Tus barajas', decksP:'Lo que hay en la baraja cuando alguien escanea tu camiseta.', included:'Incluida', soon:'Próximamente', want:'La quiero', wanted:'Estás en la lista ✓',
+       nudgeH:'Añade tu foto 📸', nudgeP:'Quien escanee tu camiseta la verá junto a tu nombre, así sabe a quién buscar. Son diez segundos.', nudgeBtn:'Añadir mi foto',
+       photoAdd:'Añadir foto', photoChange:'Cambiar foto', photoDel:'Quitar', photoUp:'Subiendo…', photoSaved:'Foto guardada. Ya la ven al escanearte.', photoBad:'Esa imagen no ha funcionado. Prueba con un JPG o PNG.',
+       codeH:'Tu código de reto', codeP:'Después de un reto, quien te ha escaneado escribe este código en su móvil, y solo entonces el reto cuenta en tu perfil. Díselo a la gente con la que de verdad has hecho un reto.', newCode:'Crear un código nuevo', codeNew:'Código nuevo listo',
        profH:'En tu camiseta', nameL:'Nombre que ve quien te escanea', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
        accH:'Cuenta', loggedAs:'Has entrado como {e}', logout:'Salir', del2:'Borrar mi cuenta', delConfirm:'¿Borrar tu cuenta? Se borran tus retos propios y la camiseta deja de estar vinculada a ti. No se puede deshacer.', err:'Algo ha fallado. Inténtalo otra vez.' }
 };
@@ -190,7 +223,7 @@ function paint(){
   const name = (shirt && shirt.name) || (profile && profile.name) || '';
   $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
   $('title').textContent = shirts.length ? t('title') : t('claimH');
-  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','nudgeH','nudgeP','nudgeBtn','codeH','codeP','newCode'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
   $('claimBtn').textContent = t('claimBtn'); $('noShirt').innerHTML = t('noShirt');
   $('liveTxt').textContent = t('live'); $('lScans').textContent = t('scans'); $('lPeople').textContent = t('people'); $('lDone').textContent = t('done');
   $('copyLink').textContent = t('copy'); $('openLink').textContent = t('open');
@@ -198,7 +231,7 @@ function paint(){
   $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
   $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
-  if (shirt){ paintStats(); paintDares(); paintDecks(); }
+  if (shirt){ paintStats(); paintDares(); paintDecks(); paintPhoto(); }
 }
 $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); };
 
@@ -219,7 +252,7 @@ $('lang').onclick = () => { L = L === 'en' ? 'es' : 'en'; setLang(L); paint(); }
 })();
 
 async function loadShirts(pick){
-  const { data } = await sb.from('shirts').select('id,name,status,instagram,instagram_public').eq('owner_id', user.id).order('created_at');
+  const { data } = await sb.from('shirts').select('id,name,status,instagram,instagram_public,photo_url').eq('owner_id', user.id).order('created_at');
   shirts = data || [];
   $('p-claim').hidden = !!shirts.length; $('shirtArea').hidden = !shirts.length;
   $('shirtPick').hidden = shirts.length < 2;
@@ -236,7 +269,7 @@ async function selectShirt(id){
   $('pName').value = shirt.name || ''; $('pIg').value = shirt.instagram ? '@' + shirt.instagram : ''; $('pIgPub').checked = !!shirt.instagram_public;
   const { data } = await sb.from('play_events').select('event,device_id,dare_text,created_at').eq('shirt_id', shirt.id).order('created_at', { ascending:false }).limit(1000);
   events = data || [];
-  await loadDares();
+  await Promise.all([loadDares(), loadCode()]);
   startLive();
   paint();
 }
@@ -343,6 +376,64 @@ $('profForm').onsubmit = async e => {
   const { error } = await sb.from('shirts').update(upd).eq('id', shirt.id);
   if (error){ $('profErr').textContent = t('err'); $('profErr').hidden = false; return; }
   Object.assign(shirt, upd); $('pIgPub').checked = upd.instagram_public; toast(t('saved')); paint();
+};
+
+
+/* ===== photo shown to scanners ===== */
+function paintPhoto(){
+  const u = shirt && shirt.photo_url;
+  $('avatar').hidden = !u; $('avatarEmpty').hidden = !!u; if (u) $('avatar').src = u;
+  $('photoBtn').textContent = u ? t('photoChange') : t('photoAdd');
+  $('photoDel').textContent = t('photoDel'); $('photoDel').hidden = !u;
+  $('photoNudge').hidden = !!u;
+}
+$('photoBtn').onclick = $('nudgeBtn').onclick = () => $('photoFile').click();
+function squareJpeg(file){
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const side = Math.min(img.naturalWidth, img.naturalHeight), out = 640, c = document.createElement('canvas');
+      c.width = c.height = out;
+      c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, out, out);
+      URL.revokeObjectURL(url); c.toBlob(b => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', 0.86);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('img')); };
+    img.src = url;
+  });
+}
+$('photoFile').onchange = async () => {
+  const f = $('photoFile').files[0]; $('photoFile').value = ''; if (!f || !shirt) return;
+  const b = $('photoBtn'); b.disabled = true; b.textContent = t('photoUp');
+  try{
+    const blob = await squareJpeg(f), path = shirt.id + '/' + Date.now() + '.jpg';
+    const up = await sb.storage.from('avatars').upload(path, blob, { contentType:'image/jpeg', cacheControl:'31536000' });
+    if (up.error) throw up.error;
+    const old = shirt.photo_url, url = sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+    const { error } = await sb.from('shirts').update({ photo_url: url }).eq('id', shirt.id);
+    if (error) throw error;
+    shirt.photo_url = url; toast(t('photoSaved'));
+    if (old && old.includes('/avatars/')) sb.storage.from('avatars').remove([old.split('/avatars/')[1]]);
+  }catch(e){ toast(t('photoBad')); }
+  b.disabled = false; paintPhoto();
+};
+$('photoDel').onclick = async () => {
+  const old = shirt.photo_url;
+  const { error } = await sb.from('shirts').update({ photo_url: null }).eq('id', shirt.id);
+  if (error) return toast(t('err'));
+  shirt.photo_url = null; paintPhoto();
+  if (old && old.includes('/avatars/')) sb.storage.from('avatars').remove([old.split('/avatars/')[1]]);
+};
+
+/* ===== dare code ===== */
+async function loadCode(){
+  const { data } = await sb.from('shirt_codes').select('code').eq('shirt_id', shirt.id).maybeSingle();
+  $('codeVal').textContent = (data && data.code) || '····';
+}
+$('newCode').onclick = async () => {
+  const code = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+  const { error } = await sb.from('shirt_codes').update({ code, updated_at: new Date().toISOString() }).eq('shirt_id', shirt.id);
+  if (error) return toast(t('err'));
+  $('codeVal').textContent = code; toast(t('codeNew'));
 };
 
 /* ===== account ===== */
