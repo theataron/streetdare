@@ -80,7 +80,7 @@ function paintExtras(){
   $('igLocked').hidden = verified || practice() || demo;
   if (has){
     ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{ig}', owner.ig);
-    $('igH').textContent = x.igH; $('igP').textContent = x.igP.replace('{name}', who());
+    $('igH').textContent = x.igH;
     const pic = $('igPic'), src = owner.photo; pic.hidden = !(src && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)); if (!pic.hidden){ pic.src = src; pic.alt = who(); }
   }
   $('igLockP').textContent = x.lock.replace('{name}', who()); $('igLockBtn').textContent = x.lockBtn;
