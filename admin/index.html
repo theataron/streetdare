@@ -220,10 +220,12 @@ document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
 });
 
 /* ===== live results ===== */
-const EVT = { scan:'scanned', spin:'spun a dare', accept:'accepted', done:'completed' };
+const EVT = { scan:'scanned', spin:'spun a dare', show:'showed the wearer', accept:'accepted', done:'completed' };
+/* where the scanning phone is: its time zone, e.g. Europe/Madrid -> "Madrid" */
+const where = tz => tz ? ' <small style="color:var(--mute)">· 📍' + esc(tz.split('/').pop().replace(/_/g, ' ')) + '</small>' : '';
 function feedItem(e){
-  const what = e.event === 'accept' || e.event === 'done' ? ': ' + esc(e.dare_text) : '';
-  return '<li><time>' + hhmm(e.created_at) + '</time><span class="tag ' + e.event + '">' + e.event + '</span><span><b>' + esc(e.shirt_id) + '</b> ' + EVT[e.event] + what + '</span></li>';
+  const what = e.event === 'show' || e.event === 'accept' || e.event === 'done' ? ': ' + esc(e.dare_text) : '';
+  return '<li><time>' + hhmm(e.created_at) + '</time><span class="tag ' + e.event + '">' + e.event + '</span><span><b>' + esc(e.shirt_id) + '</b> ' + (EVT[e.event] || e.event) + what + where(e.tz) + '</span></li>';
 }
 async function loadLive(){
   const [daily, shirts, dares, feed] = await Promise.all([

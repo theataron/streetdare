@@ -169,13 +169,15 @@ function deviceId(){
   if (!d){ d = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2); store.set('sd_device', d); }
   return d;
 }
+/* the phone's timezone (e.g. Europe/Madrid): tells us roughly where a scan happened, without IP or GPS */
+function phoneTz(){ try{ return (Intl.DateTimeFormat().resolvedOptions().timeZone || '').slice(0, 40) || null; }catch(e){ return null; } }
 function sbLog(event, extra){
   const s = SHIRT.toLowerCase();
   if (window.STAGE || !s || s === 'demo') return;
   fetch(SB.url + '/rest/v1/play_events', {
     method:'POST', keepalive:true,
     headers:{ apikey: SB.key, 'Content-Type':'application/json', Prefer:'return=minimal' },
-    body: JSON.stringify(Object.assign({ event, shirt_id: s, device_id: deviceId(), lang: LANG }, extra||{}))
+    body: JSON.stringify(Object.assign({ event, shirt_id: s, device_id: deviceId(), lang: LANG, tz: phoneTz() }, extra||{}))
   }).catch(()=>{});
 }
 

@@ -32,7 +32,7 @@
 .mini:disabled{opacity:.5;cursor:default}
 .field{display:grid;gap:6px;margin-bottom:12px}
 .field label,.lbl{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
-.field input,.field textarea,.claim input{width:100%;font:500 1rem "DM Sans",sans-serif;padding:12px 14px;border:2px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink)}
+.field input,.field textarea,.field select,.claim input{width:100%;font:500 1rem "DM Sans",sans-serif;padding:12px 14px;border:2px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink)}
 .field textarea{resize:vertical;min-height:52px}
 .claim{display:grid;gap:12px}
 .claim input{font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;font-size:1.2rem}
@@ -118,6 +118,16 @@
         </form>
       </section>
 
+      <!-- where the owner lives now: guessed from the phone, confirmed by them -->
+      <section class="panel nudge" id="ctryCheck" hidden>
+        <h2 id="ccH"></h2>
+        <p class="sub" id="ccP"></p>
+        <form id="ccForm" class="field" style="margin:0">
+          <select id="ccSel" required></select>
+          <button class="btn" type="submit" id="ccBtn" style="margin-top:6px"></button>
+        </form>
+      </section>
+
       <section class="panel setup" id="setup" hidden>
         <h2 id="setupH"></h2>
         <p class="sub" id="setupP"></p>
@@ -136,6 +146,7 @@
         </div>
         <form id="profForm">
           <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
+          <div class="field"><label for="pCtry" id="pCtryL"></label><select id="pCtry"></select></div>
           <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
           <label class="tog" style="margin-bottom:10px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
           <label class="tog" style="margin-bottom:4px"><input type="checkbox" id="pMkt"><span id="pMktL"></span></label>
@@ -229,6 +240,7 @@
 <div class="toast" id="toast" hidden></div>
 
 <script src="../js/langpick.js"></script>
+<script src="../js/geo.js"></script>
 <script type="module">
 import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
@@ -237,7 +249,7 @@ const T = {
   en:{ hello:'Hey {n}', title:'Your profile', claimH:'Claim your shirt', claimP:'Every STREETDARE shirt comes with a claim code. Enter it here and the shirt is yours: your stats, your dares, your name on the scan page.',
        claimBtn:'Claim my shirt', claiming:'Checking…', claimBad:'That code didn’t work. Check it, or it may already be claimed.', noShirt:'No shirt yet? <a href="../#join">Join the community</a> and we’ll tell you when they’re ready.', claimed:'It’s yours! 🎉',
        statsH:'Your shirt live', live:'live', scans:'Scans', people:'People', done:'Dares done', feedEmpty:'No scans yet. Wear it out and watch them appear here live.',
-       ev_scan:'Someone scanned your shirt', ev_spin:'They spun a dare', ev_accept:'Dare accepted', ev_done:'Dare completed 🎉', copy:'Copy', copied:'Link copied', open:'Open',
+       ev_scan:'Someone scanned your shirt', ev_spin:'They spun a dare', ev_show:'They’re showing you a dare 👀', ev_accept:'Dare accepted', ev_done:'Dare completed 🎉', copy:'Copy', copied:'Link copied', open:'Open',
        daresH:'Your own dares', daresP:'Dares only your shirt has. They’re mixed into the deck when someone scans you. Up to 10, and keep them fun and safe.', enL:'Your dare', esL:'Spanish version (optional)',
        addDare:'Add dare', limit:'You’ve reached 10 dares. Delete or edit one first.', tooShort:'Write a bit more.', daresEmpty:'No dares of your own yet. Add the first one below.', liveL:'On', del:'Delete', save:'Save', edit:'Edit',
        hidden:'Hidden by STREETDARE', added:'Dare added. It’s live on your shirt now.', delSure:'Delete this dare?',
@@ -248,7 +260,7 @@ const T = {
        st3:'Test your shirt', st3s:'Open your own scan page and spin a dare, so you know what people see.', st3b:'Open my scan page',
        st4:'Wear it out', st4s:'This ticks itself the first time someone scans you.',
        profP:'This is what people see when they scan any of your shirts.', shirtsH:'Your shirts',
-       ncH:'Is this your name? 👋', ncP:'People who scan your shirt see this name. Use the one your friends call you.', ncBtn:'Yes, that’s me',
+       ncH:'Is this your name? 👋', ncP:'People who scan your shirt see this name. Use the one your friends call you.', ncBtn:'Yes, that’s me', ccH:'Where do you live right now? 🌍', ccP:'The country you live in at the moment, not where you’re from. We guessed it from your phone, so just check it.', ccBtn:'Yes, that’s right', ctryL:'Country you live in now', ctryPick:'Pick a country',
        mktL:'Email me about new shirts, decks, features and events', mktN:'No spam. Switch it off here any time, or reply “unsubscribe” to any email. <a href="/privacy/">Privacy</a>', codeSave:'Save code', codeBad:'Use exactly 4 numbers.', codeSaved:'Code saved',
        setupDone:'{n} of 4 done',
        guideH:'How your shirt works',
@@ -266,7 +278,7 @@ const T = {
   hu:{ hello:'Szia, {n}', title:'A profilod', claimH:'Igényeld a pólódat', claimP:'Minden STREETDARE pólóhoz jár egy igénylőkód. Írd be ide, és a póló a tiéd: a statisztikáid, a kihívásaid és a neved a szkennelési oldalon.',
        claimBtn:'Igénylem a pólómat', claiming:'Ellenőrzés…', claimBad:'Ez a kód nem működött. Ellenőrizd, vagy lehet, hogy már igényelték.', noShirt:'Még nincs pólód? <a href="../#join">Csatlakozz a közösséghez</a>, és szólunk, amint elkészülnek.', claimed:'A tiéd! 🎉',
        statsH:'A pólód élőben', live:'élő', scans:'Szkennelés', people:'Ember', done:'Teljesített', feedEmpty:'Még senki nem szkennelt be. Vedd fel, és itt látod majd élőben.',
-       ev_scan:'Valaki beszkennelte a pólódat', ev_spin:'Pörgetett egy kihívást', ev_accept:'Kihívás elfogadva', ev_done:'Kihívás teljesítve 🎉', copy:'Másolás', copied:'Link kimásolva', open:'Megnyitás',
+       ev_scan:'Valaki beszkennelte a pólódat', ev_spin:'Pörgetett egy kihívást', ev_show:'Mutat neked egy kihívást 👀', ev_accept:'Kihívás elfogadva', ev_done:'Kihívás teljesítve 🎉', copy:'Másolás', copied:'Link kimásolva', open:'Megnyitás',
        daresH:'Saját kihívásaid', daresP:'Ezek csak a te pólódon vannak. Bekeverjük őket a pakliba, amikor valaki beszkennel. Legfeljebb 10, és legyenek viccesek és biztonságosak.', enL:'A kihívásod', esL:'Angol változat (nem kötelező)',
        addDare:'Kihívás hozzáadása', limit:'Elérted a 10 kihívást. Előbb törölj vagy szerkessz egyet.', tooShort:'Írj egy kicsit többet.', daresEmpty:'Még nincs saját kihívásod. Add hozzá az elsőt lent.', liveL:'Aktív', del:'Törlés', save:'Mentés', edit:'Szerkesztés',
        hidden:'A STREETDARE elrejtette', added:'Kihívás hozzáadva. Már él a pólódon.', delSure:'Törlöd ezt a kihívást?',
@@ -277,7 +289,7 @@ const T = {
        st3:'Próbáld ki a pólódat', st3s:'Nyisd meg a saját szkennelési oldaladat, és pörgess egy kihívást, hogy lásd, mit látnak mások.', st3b:'Megnyitom az oldalamat',
        st4:'Vedd fel és menj bulizni', st4s:'Ez magától bepipálódik, amikor először beszkennel valaki.',
        profP:'Ezt látják, akik beszkennelik bármelyik pólódat.', shirtsH:'A pólóid',
-       ncH:'Ez a neved? 👋', ncP:'Aki beszkenneli a pólódat, ezt a nevet látja. Azt add meg, amin a barátaid szólítanak.', ncBtn:'Igen, ez vagyok',
+       ncH:'Ez a neved? 👋', ncP:'Aki beszkenneli a pólódat, ezt a nevet látja. Azt add meg, amin a barátaid szólítanak.', ncBtn:'Igen, ez vagyok', ccH:'Hol élsz most? 🌍', ccP:'Az ország, ahol jelenleg élsz, nem az, ahonnan származol. A telefonod alapján tippeltünk, csak nézd meg, stimmel-e.', ccBtn:'Igen, stimmel', ctryL:'Ország, ahol most élsz', ctryPick:'Válassz országot',
        mktL:'Kérek e-mailt az új pólókról, paklikról, funkciókról és eseményekről', mktN:'Spam nincs. Itt bármikor kikapcsolhatod, vagy válaszolj bármelyik levelünkre azzal, hogy „leiratkozom”. <a href="/privacy/">Adatvédelem</a>', codeSave:'Kód mentése', codeBad:'Pontosan 4 számjegyet adj meg.', codeSaved:'Kód elmentve',
        setupDone:'{n}/4 kész',
        guideH:'Így működik a pólód',
@@ -295,7 +307,7 @@ const T = {
   es:{ hello:'Hola {n}', title:'Tu perfil', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
        claimBtn:'Reclamar mi camiseta', claiming:'Comprobando…', claimBad:'Ese código no ha funcionado. Revísalo; puede que ya esté reclamado.', noShirt:'¿Aún no tienes camiseta? <a href="../#join">Únete a la comunidad</a> y te avisamos cuando estén listas.', claimed:'¡Es tuya! 🎉',
        statsH:'Tu camiseta en directo', live:'en directo', scans:'Escaneos', people:'Personas', done:'Retos hechos', feedEmpty:'Aún no hay escaneos. Póntela y míralos aparecer aquí en directo.',
-       ev_scan:'Alguien ha escaneado tu camiseta', ev_spin:'Han sacado un reto', ev_accept:'Reto aceptado', ev_done:'Reto completado 🎉', copy:'Copiar', copied:'Enlace copiado', open:'Abrir',
+       ev_scan:'Alguien ha escaneado tu camiseta', ev_spin:'Han sacado un reto', ev_show:'Te están enseñando un reto 👀', ev_accept:'Reto aceptado', ev_done:'Reto completado 🎉', copy:'Copiar', copied:'Enlace copiado', open:'Abrir',
        daresH:'Tus propios retos', daresP:'Retos que solo tiene tu camiseta. Se mezclan en la baraja cuando alguien te escanea. Hasta 10, y que sean divertidos y seguros.', enL:'Tu reto', esL:'Versión en inglés (opcional)',
        addDare:'Añadir reto', limit:'Ya tienes 10 retos. Borra o edita uno primero.', tooShort:'Escribe un poco más.', daresEmpty:'Aún no tienes retos propios. Añade el primero abajo.', liveL:'Activo', del:'Borrar', save:'Guardar', edit:'Editar',
        hidden:'Ocultado por STREETDARE', added:'Reto añadido. Ya está activo en tu camiseta.', delSure:'¿Borrar este reto?',
@@ -306,7 +318,7 @@ const T = {
        st3:'Prueba tu camiseta', st3s:'Abre tu propia página de escaneo y saca un reto, para ver lo que ve la gente.', st3b:'Abrir mi página',
        st4:'Sal con ella', st4s:'Se marca solo la primera vez que alguien te escanee.',
        profP:'Esto es lo que ve la gente cuando escanea cualquiera de tus camisetas.', shirtsH:'Tus camisetas',
-       ncH:'¿Este es tu nombre? 👋', ncP:'Quien escanea tu camiseta ve este nombre. Pon el que usan tus amigos.', ncBtn:'Sí, soy yo',
+       ncH:'¿Este es tu nombre? 👋', ncP:'Quien escanea tu camiseta ve este nombre. Pon el que usan tus amigos.', ncBtn:'Sí, soy yo', ccH:'¿Dónde vives ahora mismo? 🌍', ccP:'El país en el que vives ahora, no de donde eres. Lo hemos adivinado por tu móvil, así que solo compruébalo.', ccBtn:'Sí, es correcto', ctryL:'País en el que vives ahora', ctryPick:'Elige un país',
        mktL:'Escríbeme sobre camisetas, barajas y funciones nuevas, y eventos', mktN:'Sin spam. Desactívalo aquí cuando quieras o responde «baja» a cualquier email. <a href="/privacy/">Privacidad</a>', codeSave:'Guardar código', codeBad:'Usa exactamente 4 números.', codeSaved:'Código guardado',
        setupDone:'{n} de 4 hechos',
        guideH:'Cómo funciona tu camiseta',
@@ -334,17 +346,17 @@ function paint(){
   const name = (profile && profile.name) || '';
   $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
   $('title').textContent = t('title');
-  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','codeH','codeP','newCode','setupH','setupP','profP','shirtsH','ncH','ncP','ncBtn','codeSave','guideH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  ['claimH','claimP','statsH','daresH','daresP','decksH','decksP','profH','accH','codeH','codeP','newCode','setupH','setupP','profP','shirtsH','ncH','ncP','ncBtn','ccH','ccP','ccBtn','codeSave','guideH'].forEach(k => { if ($(k)) $(k).textContent = t(k); });
   $('claimBtn').textContent = t('claimBtn'); $('noShirt').innerHTML = t('noShirt');
   $('liveTxt').textContent = t('live'); $('lScans').textContent = t('scans'); $('lPeople').textContent = t('people'); $('lDone').textContent = t('done');
   $('copyLink').textContent = t('copy'); $('openLink').textContent = t('open');
   $('dEnL').textContent = t('enL'); $('dEsL').textContent = t('esL'); $('dareBtn').textContent = t('addDare');
   $('pMktL').textContent = t('mktL'); $('pMktN').innerHTML = t('mktN');
   $('guide').innerHTML = t('g').map(x => '<details><summary>' + esc(x[0]) + '</summary><p>' + esc(x[1]) + '</p></details>').join('');
-  $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
+  $('pCtryL').textContent = t('ctryL'); $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
   $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
-  paintProfile(); paintNameCheck();
+  paintProfile(); paintNameCheck(); paintCountry();
   if (shirt){ paintStats(); paintDares(); paintDecks(); }
   paintSetup();
 }
@@ -356,7 +368,7 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
   if (!session){ location.replace('/login/?next=/me/'); return; }
   user = session.user;
   const [p, d, i] = await Promise.all([
-    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed').eq('id', user.id).maybeSingle(),
+    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed').eq('id', user.id).maybeSingle(),
     sb.from('decks').select('id,name_en,name_es,name_hu,is_free,active,sort').order('sort'),
     sb.from('pack_interest').select('deck_id')
   ]);
@@ -487,7 +499,7 @@ $('profForm').onsubmit = async e => {
   e.preventDefault(); $('profErr').hidden = true;
   const name = $('pName').value.trim(), ig = $('pIg').value.trim().replace(/^@/, '');
   if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)){ $('profErr').textContent = t('badIg'); $('profErr').hidden = false; return; }
-  const upd = { name, name_confirmed: true, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked, marketing_opt_in: $('pMkt').checked };
+  const upd = { name, name_confirmed: true, country: $('pCtry').value || null, country_confirmed: !!$('pCtry').value, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked, marketing_opt_in: $('pMkt').checked };
   if (upd.marketing_opt_in !== !!profile.marketing_opt_in) upd.marketing_opt_in_at = new Date().toISOString();
   const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
   if (error){ $('profErr').textContent = t('err'); $('profErr').hidden = false; return; }
@@ -502,7 +514,7 @@ function paintProfile(){
   $('avatar').hidden = !u; $('avatarEmpty').hidden = !!u; if (u) $('avatar').src = u;
   $('photoBtn').textContent = u ? t('photoChange') : t('photoAdd');
   $('photoDel').textContent = t('photoDel'); $('photoDel').hidden = !u;
-  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; $('pMkt').checked = !!profile.marketing_opt_in; }
+  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; $('pMkt').checked = !!profile.marketing_opt_in; $('pCtry').value = profile.country || ''; }
   try{ if (u) localStorage.setItem('sd_avatar', u); else localStorage.removeItem('sd_avatar'); }catch(e){}
 }
 $('photoBtn').onclick = () => $('photoFile').click();
@@ -577,6 +589,27 @@ $('ncForm').onsubmit = async e => {
   const { error } = await sb.from('profiles').update({ name, name_confirmed: true }).eq('id', user.id);
   if (error) return toast(t('err'));
   profile.name = name; profile.name_confirmed = true; $('pName').value = name; toast(t('saved')); paint();
+};
+
+/* ===== country they live in now ===== */
+function countryOptions(sel, pick){
+  const keep = sel.value;
+  const list = SD_COUNTRIES.map(c => [c, sdCountryName(c, L)]).sort((a, b) => a[1].localeCompare(b[1], L));
+  sel.innerHTML = '<option value="">' + esc(t('ctryPick')) + '</option>' + list.map(([c, n]) => '<option value="' + c + '">' + sdFlag(c) + ' ' + esc(n) + '</option>').join('');
+  sel.value = keep || pick || '';
+}
+function paintCountry(){
+  countryOptions($('pCtry'), profile && profile.country);
+  const show = !!profile && profile.name_confirmed && !profile.country_confirmed;
+  $('ctryCheck').hidden = !show;
+  if (show) countryOptions($('ccSel'), profile.country || sdGuessCountry());
+}
+$('ccForm').onsubmit = async e => {
+  e.preventDefault();
+  const country = $('ccSel').value; if (!country) return;
+  const { error } = await sb.from('profiles').update({ country, country_confirmed: true }).eq('id', user.id);
+  if (error) return toast(t('err'));
+  profile.country = country; profile.country_confirmed = true; $('pCtry').value = country; toast(t('saved')); paint();
 };
 
 /* ===== dare code ===== */

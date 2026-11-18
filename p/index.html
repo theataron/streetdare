@@ -69,14 +69,28 @@
       </div>
       <div class="stack" id="preSpin"><button class="btn red big" id="spinBtn" data-i18n="spin"></button></div>
       <div class="nextstep" id="together" hidden><b data-i18n="nextH"></b> <span id="nextP"></span></div>
-      <div class="row2" id="postSpin" hidden>
-        <button class="btn red" id="acceptBtn" data-i18n="accept"></button>
+      <div class="stack" id="postSpin" hidden>
+        <button class="btn red" id="showBtn"></button>
         <button class="btn" id="againBtn" data-i18n="again"></button>
       </div>
       <label class="devil"><input type="checkbox" id="devil"><span data-i18n="devil"></span></label>
       <p class="devnote" id="devNote"></p>
     </section>
 
+    <!-- ===== SHOW MODE: the scanner turns the phone around, the dare opens up big ===== -->
+    <section class="play showmode" id="v-show" hidden>
+      <div class="kicker" data-i18n="shKicker"></div>
+      <div class="bigcard" id="bigCard">
+        <span class="adult" id="shAdult" hidden>18+</span>
+        <div class="bigtxt" id="shText"></div>
+        <button class="flip" type="button" id="shFlip"></button>
+      </div>
+      <p class="shnote" data-i18n="shNote"></p>
+      <div class="stack">
+        <button class="btn red" id="acceptBtn" data-i18n="accept"></button>
+        <button class="btn plain" id="shNo" data-i18n="shNo"></button>
+      </div>
+    </section>
     <!-- ===== ACCEPTED ===== -->
     <section class="play" id="v-accept" hidden>
       <div class="kicker" data-i18n="accKicker"></div>

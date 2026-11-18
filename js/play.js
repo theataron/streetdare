@@ -1,5 +1,5 @@
 /* ===== STREETDARE - the page a shirt's QR code opens ===== */
-const VIEWS = ['spin','accept','confirm','done'];
+const VIEWS = ['spin','show','accept','confirm','done'];
 let owner = SHIRTS[SHIRT.toLowerCase()] || null;
 const demo = !SHIRT || SHIRT === 'demo';
 let current = null, spinning = false, seen = [];
@@ -12,6 +12,7 @@ function show(v){
   VIEWS.forEach(n => $('v-'+n).hidden = n !== v);
   $('menu').hidden = true;
   document.body.classList.toggle('hot', $('devil').checked && ['spin','accept','confirm','done'].includes(v));
+  document.body.style.overflow = v === 'show' ? 'hidden' : '';
   window.scrollTo(0,0);
 }
 
@@ -81,10 +82,20 @@ function paintDare(){
   $('nextP').textContent = owner ? fill('nextP') : t('nextPAnon');
 }
 function resetSpin(){ current = null; deckReset(); paintDare(); const r = $('reel'); r.className = 'reel q'; r.textContent = '? ? ?'; $('preSpin').hidden = false; $('postSpin').hidden = true; }
+/* dares this shirt's wearer was already shown in the last 30 days still come up, but 5x less often */
+let recent = new Set();
+const RECENT_WEIGHT = 0.2;
+async function loadRecent(){
+  if (demo) return;
+  try{ const ids = await sbGet('rpc/shirt_recent_dares?p_id=' + encodeURIComponent(SHIRT.toLowerCase())); recent = new Set(ids.map(Number)); }catch(e){}
+}
 function pick(){
   const d = deck(); let pool = d.filter(q => !seen.includes(q));
   if (!pool.length){ seen = seen.filter(q => !d.includes(q)); pool = d; }
-  const q = pool[Math.floor(Math.random()*pool.length)]; seen.push(q); return q;
+  const w = pool.map(q => q.id && recent.has(Number(q.id)) ? RECENT_WEIGHT : 1);
+  let r = Math.random() * w.reduce((a, b) => a + b, 0), i = 0;
+  while (i < pool.length - 1 && (r -= w[i]) > 0) i++;
+  const q = pool[i]; seen.push(q); return q;
 }
 function setReel(text, cls){ const r = $('reel'); r.className = 'reel'; void r.offsetWidth; r.textContent = text; r.className = 'reel ' + cls; }
 
@@ -114,15 +125,55 @@ function spin(){
     setTimeout(step, GAPS[k++]);
   })();
 }
+/* ----- the dare in progress is kept on the phone, so a locked screen or reload doesn't lose it ----- */
+const CUR_KEY = 'sd_current', CUR_MAX = 4 * 3600e3;
+function saveCur(view){
+  if (!current) return;
+  try{ store.set(CUR_KEY, JSON.stringify({ s: SHIRT.toLowerCase(), view, at: Date.now(), sl: shLang, devil: $('devil').checked,
+    q: { en: current[0], es: current[1], hu: current.hu || current[3] || '', id: current.id || null, adult: isAdult(current), deck: current.deck || null } })); }catch(e){}
+}
+function clearCur(){ try{ localStorage.removeItem(CUR_KEY); }catch(e){} }
+function restoreCur(){
+  let c = null; try{ c = JSON.parse(store.get(CUR_KEY) || 'null'); }catch(e){}
+  if (!c || c.s !== SHIRT.toLowerCase() || Date.now() - c.at > CUR_MAX || !c.q || !c.q.en){ clearCur(); return false; }
+  const q = [c.q.en, c.q.es || c.q.en]; q.hu = c.q.hu; q.id = c.q.id; q.adult = !!c.q.adult; q.deck = c.q.deck;
+  current = q; shLang = c.sl || LANG; $('devil').checked = !!c.devil;
+  if (c.view === 'show'){ paintShow(); show('show'); }
+  else { $('accText').textContent = txtIn(current, shLang); paintDare(); show(c.view === 'confirm' ? 'confirm' : 'accept'); }
+  return true;
+}
+
+/* ----- show mode: the card opens up big for the person in the shirt, with an English / Spanish flip ----- */
+const LANG_NAME = { en:'English', es:'Español', hu:'Magyar' };
+let shLang = LANG;
+const txtIn = (q, l) => l === 'hu' ? (q.hu || q[3] || q[0]) : (q[l === 'es' ? 1 : 0] || q[0]);
+const flipTo = () => shLang !== LANG ? LANG : (LANG === 'en' ? 'es' : 'en');
+function paintShow(){
+  $('shText').textContent = txtIn(current, shLang);
+  $('shText').lang = shLang;
+  $('shAdult').hidden = !isAdult(current);
+  $('shFlip').textContent = '🌐 ' + LANG_NAME[flipTo()];
+}
+$('showBtn').onclick = () => {
+  if (!current) return;
+  shLang = LANG; paintShow(); logPlay('show'); show('show'); saveCur('show');
+  const c = $('bigCard'); c.style.animation = 'none'; void c.offsetWidth; c.style.animation = '';
+};
+$('shFlip').onclick = () => {
+  shLang = flipTo(); paintShow(); saveCur('show');
+  const x = $('shText'); x.classList.remove('swap'); void x.offsetWidth; x.classList.add('swap');
+};
+$('shNo').onclick = () => { clearCur(); show('spin'); spin(); };
+
 $('spinBtn').onclick = spin;
 $('againBtn').onclick = spin;
-$('acceptBtn').onclick = () => { $('accText').textContent = txt(current); paintDare(); logPlay('accept'); show('accept'); };
-$('changeBtn').onclick = () => { resetSpin(); show('spin'); };
-$('doneBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); setTimeout(() => $('codeIn').focus(), 150); };
+$('acceptBtn').onclick = () => { $('accText').textContent = txtIn(current, shLang); paintDare(); logPlay('accept'); show('accept'); saveCur('accept'); };
+$('changeBtn').onclick = () => { clearCur(); resetSpin(); show('spin'); };
+$('doneBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); saveCur('confirm'); setTimeout(() => $('codeIn').focus(), 150); };
 
 /* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
 const practice = () => demo || !!window.STAGE;
-function finishDare(counted){ track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+function finishDare(counted){ clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
 $('codeIn').oninput = () => {
   $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
   if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();
@@ -154,7 +205,7 @@ function paintPhoto(){
   if (!src || !/^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)){ img.hidden = true; return; }
   img.src = src; img.alt = who(); img.hidden = false;
 }
-$('anotherBtn').onclick = () => { resetSpin(); show('spin'); };
+$('anotherBtn').onclick = () => { clearCur(); resetSpin(); show('spin'); };
 $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').checked); if (!spinning) resetSpin(); };
 
 /* ----- words that depend on the language and on whose shirt it is ----- */
@@ -170,15 +221,18 @@ document.addEventListener('langchange', () => {
   $('devNote').textContent = fill('devilNote');
   if ($('refLine') && typeof refText === 'function'){ $('refLine').textContent = refText(); $('refLine').hidden = !refText(); }
   $('accNote').textContent = fill('accNote');
+  $('showBtn').textContent = owner ? fill('showBtn') : t('showBtnAnon');
+  if (current && !$('v-show').hidden) paintShow();
   $('cfSub').textContent = fill('cfSub'); $('codeDemo').hidden = !practice();
-  if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txt(current); }
+  if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txtIn(current, shLang); }
   paintDare();
 });
 
 initLang(T);
 initWaitlist();
 initDareForms();
-show('spin');
+if (!restoreCur()) show('spin');
 try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
 loadLiveDecks();
+loadRecent();
 consentInit();
