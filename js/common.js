@@ -4,7 +4,7 @@
    and wall messages only live on the visitor's own phone. See backend/SETUP.md. */
 /* GTM_ID: Google Tag Manager container (GA4 is set up inside it). GA_ID: optional direct GA4 ID (G-...) if GTM isn't used.
    While both are empty there is no analytics and no cookie banner. */
-const SD = { GTM_ID: 'GTM-TVNWM6CZ', GA_ID: '', API_URL: 'https://script.google.com/macros/s/AKfycbzJsL0f9hHVi1GYV_vMrzFgDBMkWBeLgugA8oV-zaMIh1sDrTbZ3LN595ZrwVy5eLAt/exec' };
+const SD = { GTM_ID: 'GTM-5T6L7M9S', GA_ID: '', API_URL: 'https://script.google.com/macros/s/AKfycbzJsL0f9hHVi1GYV_vMrzFgDBMkWBeLgugA8oV-zaMIh1sDrTbZ3LN595ZrwVy5eLAt/exec' };
 
 const store = {
   get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
