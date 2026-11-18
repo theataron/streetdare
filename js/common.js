@@ -181,9 +181,9 @@ function sbLog(event, extra){
 
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
-  en:{ member:'You’re already in the STREETDARE community ✓', optL:'Email me so I don’t miss new shirts, decks, features and events', optOn:'You’re on the list ✓', optFail:'Couldn’t save that here. Switch it on in <a href="/me/">your profile</a>.', note:'One email when the shirts drop, plus new decks, features and events now and then. No spam, unsubscribe with one reply. <a href="/privacy/">Privacy</a>', ph:'Your email', send:'Join & get the drop alert 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community. You won’t miss the drop.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
-  hu:{ member:'Már a STREETDARE közösség tagja vagy ✓', optL:'Írjatok, hogy ne maradjak le az új pólókról, paklikról, funkciókról és eseményekről', optOn:'Fent vagy a listán ✓', optFail:'Itt most nem sikerült elmenteni. <a href="/me/">A profilodban</a> bekapcsolhatod.', note:'Egy e-mail, amikor kijönnek a pólók, és néha hírek az új paklikról, funkciókról és eseményekről. Spam nincs, egy válasszal leiratkozhatsz. <a href="/privacy/">Adatvédelem</a>', ph:'Az e-mail-címed', send:'Feliratkozom az értesítőre 🎟️', sending:'Küldés…', ok:'Bent vagy 🎉 Üdv a STREETDARE közösségben! Nem maradsz le az indulásról.', bad:'Ez az e-mail-cím nem tűnik jónak.', err:'Nem sikerült csatlakozni. Próbáld újra.', demo:'Demó mód: a feliratkozásokat még nem mentjük.' },
-  es:{ member:'Ya estás en la comunidad STREETDARE ✓', optL:'Escribidme para no perderme camisetas, barajas y funciones nuevas, ni eventos', optOn:'Estás en la lista ✓', optFail:'No se ha podido guardar aquí. Actívalo en <a href="/me/">tu perfil</a>.', note:'Un email cuando salgan las camisetas y, de vez en cuando, novedades sobre barajas, funciones y eventos. Sin spam, te das de baja con una respuesta. <a href="/privacy/">Privacidad</a>', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE. No te vas a perder el lanzamiento.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
+  en:{ member:'You’re already in the STREETDARE community ✓', optL:'Email me so I don’t miss new shirts, decks, features and events', optOn:'You’re on the list ✓', optFail:'Your login has run out. <a href="{login}">Log in again</a> and you can switch this on.', note:'One email when the shirts drop, plus new decks, features and events now and then. No spam, unsubscribe with one reply. <a href="/privacy/">Privacy</a>', ph:'Your email', send:'Join & get the drop alert 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community. You won’t miss the drop.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
+  hu:{ member:'Már a STREETDARE közösség tagja vagy ✓', optL:'Írjatok, hogy ne maradjak le az új pólókról, paklikról, funkciókról és eseményekről', optOn:'Fent vagy a listán ✓', optFail:'Lejárt a bejelentkezésed. <a href="{login}">Lépj be újra</a>, és bekapcsolhatod.', note:'Egy e-mail, amikor kijönnek a pólók, és néha hírek az új paklikról, funkciókról és eseményekről. Spam nincs, egy válasszal leiratkozhatsz. <a href="/privacy/">Adatvédelem</a>', ph:'Az e-mail-címed', send:'Feliratkozom az értesítőre 🎟️', sending:'Küldés…', ok:'Bent vagy 🎉 Üdv a STREETDARE közösségben! Nem maradsz le az indulásról.', bad:'Ez az e-mail-cím nem tűnik jónak.', err:'Nem sikerült csatlakozni. Próbáld újra.', demo:'Demó mód: a feliratkozásokat még nem mentjük.' },
+  es:{ member:'Ya estás en la comunidad STREETDARE ✓', optL:'Escribidme para no perderme camisetas, barajas y funciones nuevas, ni eventos', optOn:'Estás en la lista ✓', optFail:'Tu sesión ha caducado. <a href="{login}">Vuelve a entrar</a> y podrás activarlo.', note:'Un email cuando salgan las camisetas y, de vez en cuando, novedades sobre barajas, funciones y eventos. Sin spam, te das de baja con una respuesta. <a href="/privacy/">Privacidad</a>', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE. No te vas a perder el lanzamiento.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
 function initWaitlist(){
   /* account holders are already members: no email form, just a pointer to the email switch in their profile */
@@ -213,12 +213,27 @@ function initWaitlist(){
 }
 
 /* ----- logged-in members: a switch right where the email form would be, saved straight to their profile ----- */
-function sbSession(){
-  try{ const x = JSON.parse(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') || 'null'); if (x && x.access_token && x.user && (x.expires_at || 0) * 1000 > Date.now() + 30000) return x; }catch(e){}
-  return null;
+/* login sessions last an hour; outside /me nobody refreshes them, so do it here when needed */
+const SB_KEY = 'sb-jlnsqerwiwmbqpzzcskf-auth-token';
+async function sbSession(){
+  let x = null;
+  try{ x = JSON.parse(store.get(SB_KEY) || 'null'); }catch(e){}
+  if (!x || !x.user) return null;
+  if (x.access_token && (x.expires_at || 0) * 1000 > Date.now() + 60000) return x;
+  if (!x.refresh_token) return null;
+  try{
+    const r = await fetch(SB.url + '/auth/v1/token?grant_type=refresh_token', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' }, body: JSON.stringify({ refresh_token: x.refresh_token }) });
+    if (!r.ok) return null;
+    const n = await r.json();
+    if (!n.expires_at && n.expires_in) n.expires_at = Math.floor(Date.now() / 1000) + n.expires_in;
+    store.set(SB_KEY, JSON.stringify(n));
+    return n.access_token && n.user ? n : null;
+  }catch(e){ return null; }
 }
 async function initMemberOptIn(){
-  const w = () => WL_TEXT[LANG] || WL_TEXT.en, ses = sbSession();
+  const w = () => WL_TEXT[LANG] || WL_TEXT.en;
+  let ses = await sbSession();
+  const failMsg = () => w().optFail.replace('{login}', '/login/?next=' + encodeURIComponent(location.pathname + location.search));
   let on = false;
   if (ses){
     try{
@@ -234,10 +249,11 @@ async function initMemberOptIn(){
     const cb = box.querySelector('input'); cb.checked = on;
     const paint = () => { box.querySelector('.wlmsg').textContent = w().member; box.querySelector('span').textContent = cb.checked ? w().optOn : w().optL; box.querySelector('.wlnote').innerHTML = w().note; };
     paint(); document.addEventListener('langchange', paint);
-    if (!ses){ box.querySelector('.optin').hidden = true; box.querySelector('.wlnote').innerHTML = w().optFail; return; }
+    if (!ses){ box.querySelector('.optin').hidden = true; box.querySelector('.wlnote').innerHTML = failMsg(); return; }
     cb.onchange = async () => {
       const v = cb.checked; paint();
       try{
+        ses = await sbSession(); if (!ses) throw 0;
         const r = await fetch(SB.url + '/rest/v1/profiles?id=eq.' + ses.user.id, { method:'PATCH',
           headers:{ apikey: SB.key, Authorization: 'Bearer ' + ses.access_token, 'Content-Type':'application/json', Prefer:'return=minimal' },
           body: JSON.stringify({ marketing_opt_in: v, marketing_opt_in_at: new Date().toISOString() }) });
@@ -245,7 +261,7 @@ async function initMemberOptIn(){
         document.querySelectorAll('.wlmember input').forEach(x => { x.checked = v; });
         document.dispatchEvent(new Event('langchange'));
         if (v) track('optin', {});
-      }catch(e){ cb.checked = !v; paint(); box.querySelector('.wlnote').innerHTML = w().optFail; }
+      }catch(e){ cb.checked = !v; paint(); box.querySelector('.wlnote').innerHTML = failMsg(); }
     };
   });
 }
