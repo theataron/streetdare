@@ -63,3 +63,6 @@ initDareForms();
 { const h = location.hash.slice(1);
   if (h && !VIEWS.includes(h) && $(h)){ show('home'); setTimeout(() => $(h).scrollIntoView(), 50); } else show(h); }
 consentInit();
+/* founder photo: always the current profile photo of Aron's account */
+fetch(SB.url + '/rest/v1/rpc/shirt_card?p_id=aron', { headers:{ apikey: SB.key } })
+  .then(r => r.ok ? r.json() : []).then(d => { const u = d[0] && d[0].photo; if (u && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(u)){ const i = $('founderPic'); if (i){ i.src = u; i.hidden = false; } } }).catch(() => {});

@@ -228,6 +228,7 @@
 </div>
 <div class="toast" id="toast" hidden></div>
 
+<script src="../js/langpick.js"></script>
 <script type="module">
 import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
@@ -329,7 +330,7 @@ const when = d => { const s = (Date.now() - new Date(d)) / 1000; if (s < 60) ret
 /* ===== text ===== */
 function paint(){
   document.documentElement.lang = L;
-  $('lang').innerHTML = ['en','es','hu'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
+  if (window.paintLangPick) window.paintLangPick();
   const name = (profile && profile.name) || '';
   $('hello').textContent = name ? t('hello').replace('{n}', name) : '';
   $('title').textContent = t('title');
@@ -347,7 +348,7 @@ function paint(){
   if (shirt){ paintStats(); paintDares(); paintDecks(); }
   paintSetup();
 }
-$('lang').onclick = () => { L = { en:'es', es:'hu', hu:'en' }[L] || 'en'; setLang(L); paint(); };
+window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLang(L); paint(); });
 
 /* ===== start ===== */
 (async () => {

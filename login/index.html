@@ -71,6 +71,7 @@
   </main>
 </div>
 
+<script src="../js/langpick.js"></script>
 <script type="module">
 import { sb, getSession, safeNext, lang, setLang, googleEnabled } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
@@ -94,7 +95,7 @@ let L = lang(), mode = params.get('mode') === 'signup' ? 'signup' : 'login', ema
 const t = k => ((T[L] || {})[k] ?? T.en[k]);
 function paint(){
   document.documentElement.lang = L;
-  $('lang').innerHTML = ['en','es','hu'].map(c => '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>').join('<i>|</i>');
+  if (window.paintLangPick) window.paintLangPick();
   const up = mode === 'signup';
   $('h1').textContent = pendingCode && $('s-code').hidden ? t('h1Finish') : (up ? t('h1Up') : t('h1'));
   $('sub').textContent = pendingCode && $('s-code').hidden ? t('finish') : (up ? t('subUp') : t('sub'));
@@ -108,7 +109,7 @@ function paint(){
   $('other').textContent = t('other'); tick();
   $('legal').innerHTML = t('legal');
 }
-$('lang').onclick = () => { L = { en:'es', es:'hu', hu:'en' }[L] || 'en'; setLang(L); paint(); };
+window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLang(L); paint(); });
 $('mLogin').onclick = () => { mode = 'login'; paint(); };
 $('mSignup').onclick = () => { mode = 'signup'; paint(); $('name').focus(); };
 googleEnabled().then(on => { $('google').hidden = $('or').hidden = !on; });

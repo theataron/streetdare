@@ -66,12 +66,12 @@ function applyLang(){
   document.documentElement.lang = LANG;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
-  const b = $('lang'); if (b) b.innerHTML = LANGS.map(l => '<span' + (l.code === LANG ? ' class="on"' : '') + '>' + l.code.toUpperCase() + '</span>').join('<i>|</i>');
+  if (window.paintLangPick) paintLangPick();
   document.dispatchEvent(new Event('langchange'));
 }
 function initLang(dict){
   DICT = dict;
-  $('lang').addEventListener('click', () => { const i = LANGS.findIndex(l => l.code === LANG); setLang(LANGS[(i+1) % LANGS.length].code); });
+  window.paintLangPick = langPicker($('lang'), () => LANG, code => setLang(code));
   applyLang();
 }
 

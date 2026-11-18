@@ -611,3 +611,23 @@ body.hot .nextstep b{color:var(--red)}
 .consent{padding:8px 10px;gap:8px;font-size:.8rem;bottom:8px;left:8px;right:8px}
 .consent p{flex:1 1 180px}
 .consent button{padding:7px 10px;min-width:70px;font-size:.82rem}
+
+/* language picker: a small button that opens a list */
+.langwrap{position:relative}
+.lang{display:inline-flex;align-items:center;gap:5px;border:2px solid var(--ink);border-radius:99px;padding:5px 10px;background:transparent;color:var(--ink);font:700 .8rem "DM Sans",sans-serif;letter-spacing:.04em;cursor:pointer}
+.lang .globe{font-size:.9rem}
+.lang .caret{font-size:.7rem;opacity:.7}
+.langlist{position:absolute;right:0;top:calc(100% + 6px);z-index:40;list-style:none;margin:0;padding:6px;min-width:160px;background:#fff;color:var(--ink);border:2.5px solid var(--ink);border-radius:16px;box-shadow:4px 4px 0 var(--ink)}
+.langlist li{display:flex;justify-content:space-between;gap:10px;padding:9px 12px;border-radius:10px;font-weight:600;cursor:pointer}
+.langlist li:hover,.langlist li:focus{background:var(--blush,#f6e3dc);outline:none}
+.langlist li.on{font-weight:800;color:var(--red)}
+body.hot .lang{border-color:#fff;color:#fff}
+
+/* who's behind STREETDARE */
+.founder{display:flex;align-items:center;gap:12px;margin:6px 0 12px}
+.founderpic{width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);box-shadow:3px 3px 0 var(--red)}
+.founder b{display:block;font-size:1.1rem}
+.founder small{color:var(--mute);font-weight:600}
+.crew{margin:18px 0}
+.crew img{display:block;width:100%;height:auto;border:2.5px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--red);transform:rotate(-1deg)}
+.crew figcaption{font-size:.85rem;color:var(--mute);margin-top:10px;text-align:right;font-weight:600}
