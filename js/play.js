@@ -159,7 +159,11 @@ $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').c
 
 /* ----- words that depend on the language and on whose shirt it is ----- */
 document.addEventListener('langchange', () => {
-  $('foundKicker').textContent = owner ? fill('found') : t('foundAnon');
+  if (owner){
+    const nm = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';'), parts = t('found').split('{name}');
+    $('foundKicker').innerHTML = parts.map(x => x.replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';')).join('<button type="button" class="namebtn" id="nameBtn">' + nm + '</button>');
+    $('nameBtn').onclick = () => openInfo(fill('nameTip'));
+  } else $('foundKicker').textContent = t('foundAnon');
   const safeName = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
   $('spinSub').innerHTML = owner ? t('spinSub').replace('{name}', safeName) : t('spinSubAnon');
   $('how2').textContent = owner ? fill('how2') : t('how2Anon');

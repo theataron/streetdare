@@ -299,3 +299,26 @@ function initDareForms(){
     '<path class="x" d="M182 102l12 12m0-12-12 12M316 772l12 12m0-12-12 12"/>';
   document.body.prepend(svg);
 })();
+
+/* ----- tap a profile photo to see it big; small info pop-up ----- */
+function sdModal(inner, cls){
+  const m = document.createElement('div'); m.className = 'sdmodal ' + (cls || ''); m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true');
+  m.innerHTML = '<div class="sdmodal-in">' + inner + '</div>';
+  const close = () => { m.remove(); document.removeEventListener('keydown', esc); };
+  const esc = e => { if (e.key === 'Escape') close(); };
+  m.addEventListener('click', e => { if (e.target === m || e.target.closest('[data-close]')) close(); });
+  document.addEventListener('keydown', esc);
+  document.body.appendChild(m);
+  const f = m.querySelector('button'); if (f) f.focus();
+  return m;
+}
+function openPhoto(src, alt){
+  if (!src) return;
+  const m = sdModal('<img alt=""><button class="sdclose" type="button" data-close aria-label="Close">✕</button>', 'photo');
+  const i = m.querySelector('img'); i.src = src; i.alt = alt || '';
+}
+function openInfo(text){
+  const m = sdModal('<p></p><button class="btn red" type="button" data-close></button>', 'info');
+  m.querySelector('p').textContent = text; m.querySelector('button').textContent = t('gotIt') || 'OK';
+}
+document.addEventListener('click', e => { const z = e.target.closest('img.zoomable'); if (z && !z.hidden) openPhoto(z.src, z.alt); });

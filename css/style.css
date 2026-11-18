@@ -631,3 +631,14 @@ body.hot .lang{border-color:#fff;color:#fff}
 .crew{margin:18px 0}
 .crew img{display:block;width:100%;height:auto;border:2.5px solid var(--ink);border-radius:18px;box-shadow:5px 5px 0 var(--red);transform:rotate(-1deg)}
 .crew figcaption{font-size:.85rem;color:var(--mute);margin-top:10px;text-align:right;font-weight:600}
+
+/* photo zoom + info pop-up */
+img.zoomable{cursor:zoom-in}
+.namebtn{all:unset;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.sdmodal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.72);display:grid;place-items:center;padding:20px;animation:sdfade .15s ease}
+@keyframes sdfade{from{opacity:0}to{opacity:1}}
+.sdmodal-in{position:relative}
+.sdmodal.photo img{display:block;width:min(86vw,460px);height:min(86vw,460px);object-fit:cover;border-radius:50%;border:4px solid #fff;box-shadow:8px 8px 0 var(--red)}
+.sdclose{position:absolute;top:-6px;right:-6px;width:40px;height:40px;border-radius:50%;border:2.5px solid var(--ink);background:#fff;color:var(--ink);font-weight:800;font-size:1rem;cursor:pointer}
+.sdmodal.info .sdmodal-in{background:var(--card,#fff);color:var(--ink);border:2.5px solid var(--ink);border-radius:20px;padding:20px;max-width:360px;box-shadow:6px 6px 0 var(--ink);text-align:center}
+.sdmodal.info p{margin:0 0 16px;font-size:1.05rem;line-height:1.45;font-weight:600}
