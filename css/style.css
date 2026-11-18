@@ -584,3 +584,10 @@ body.hot .codeform .wlerr{color:#ffb4a8}
 .consent a{color:#fff;text-decoration:underline;opacity:.85}
 .consent .cbtns{display:flex;gap:8px;flex:1 1 auto}
 .consent button{flex:1;min-width:90px;font:700 .9rem "DM Sans",sans-serif;padding:9px 14px;border-radius:99px;border:2px solid #fff;background:transparent;color:#fff;cursor:pointer}
+
+/* small consent line under email forms, and the members' email switch */
+.wlnote{font-size:.78rem;line-height:1.35;opacity:.75;margin:8px 4px 0}
+.wlnote a{color:inherit;text-decoration:underline}
+.wlmember .wlmsg{padding:4px 0 10px}
+.tog.optin{display:flex;gap:10px;align-items:flex-start;font-weight:700;cursor:pointer}
+.tog.optin input{width:22px;height:22px;flex:none;accent-color:var(--red);margin-top:1px}

@@ -22,7 +22,7 @@ const MAIL = {
       'Hey,',
       'Welcome to the STREETDARE community! We\'re really glad you\'re here early.',
       'Most people out at bars and clubs actually want to meet new people, they just don\'t know how to take that first step. That\'s why we\'re creating STREETDARE in Madrid: made-to-order streetwear with a live QR code on the back that gives strangers an easy, fun excuse to talk and become friends.',
-      'We\'re putting the finishing touches on the first shirts right now. You won\'t get annoying daily emails from us. We\'ll only reach out when the shirts are ready to order, and because you joined the community before launch, we\'ll include an exclusive discount code for you.',
+      'We\'re putting the finishing touches on the first shirts right now. You won\'t get annoying daily emails from us. We\'ll write when the shirts are ready to order (with an exclusive discount code, because you joined before launch), and now and then about new dare decks, features and STREETDARE nights.',
       'See you out there soon,\nAron & the STREETDARE crew'
     ],
     launchSubject: 'STREETDARE is live - here is your early-community discount 🎟️',
@@ -41,7 +41,7 @@ const MAIL = {
       'Hola:',
       '¡Te damos la bienvenida a la comunidad STREETDARE! Nos alegra mucho que hayas llegado tan pronto.',
       'La mayoría de la gente que sale a bares y discotecas en realidad quiere conocer gente nueva, pero no sabe cómo dar el primer paso. Por eso estamos creando STREETDARE en Madrid: streetwear hecho por encargo con un QR en la espalda que les da a los desconocidos una excusa fácil y divertida para hablar y hacerse amigos.',
-      'Ahora mismo estamos dando los últimos retoques a las primeras camisetas. No vas a recibir emails pesados todos los días. Solo te escribiremos cuando las camisetas se puedan pedir y, como te uniste a la comunidad antes del lanzamiento, incluiremos un código de descuento exclusivo para ti.',
+      'Ahora mismo estamos dando los últimos retoques a las primeras camisetas. No vas a recibir emails pesados todos los días. Te escribiremos cuando las camisetas se puedan pedir (con un código de descuento exclusivo, porque te uniste antes del lanzamiento) y, de vez en cuando, sobre nuevas barajas de retos, funciones y noches STREETDARE.',
       'Nos vemos pronto por ahí,\nAron y el equipo de STREETDARE'
     ],
     launchSubject: 'STREETDARE ya está aquí: tu descuento por llegar antes 🎟️',
@@ -53,11 +53,36 @@ const MAIL = {
       'Consigue tu camiseta → {url}',
       'Nos vemos en la pista,\nAron y el equipo de STREETDARE'
     ]
+  },
+  hu: {
+    welcomeSubject: 'Üdv a STREETDARE-ben 👀',
+    welcome: [
+      'Szia!',
+      'Üdv a STREETDARE közösségben! Nagyon örülünk, hogy már az elején itt vagy.',
+      'Bulizás közben a legtöbben szívesen megismernének új embereket, csak nem tudják, hogyan tegyék meg az első lépést. Ezért csináljuk a STREETDARE-t: rendelésre készülő streetwear egy QR-kóddal a hátán, ami könnyű és vicces ürügyet ad idegeneknek, hogy szóba álljanak egymással.',
+      'Most simítjuk el az utolsó részleteket az első pólókon. Nem fogunk naponta idegesítő e-mailekkel bombázni. Akkor írunk, amikor már rendelhetők a pólók (exkluzív kedvezménykóddal, mert még az indulás előtt csatlakoztál), és néha az új kihíváspaklikról, funkciókról és STREETDARE estékről.',
+      'Hamarosan találkozunk,\nÁron és a STREETDARE csapat'
+    ],
+    launchSubject: 'Elindult a STREETDARE: itt a korai közösségi kedvezményed 🎟️',
+    launch: [
+      'Szia!',
+      'Köszönjük, hogy a kezdetektől a STREETDARE közösség része vagy.',
+      'Ma hivatalosan is elindultak a rendelésre készülő pólóink! Mindegyikhez jár a saját QR-kódod, egy saját felület, ahol kihívásokat adhatsz hozzá, és statisztikák a bulis estéidről.',
+      'Mivel még az indulás előtt feliratkoztál, a {code} kóddal 10 eurót spórolsz a rendelésednél. Egy hétig érvényes, utána lejár.',
+      'Kérem a pólómat → {url}',
+      'Találkozunk a táncparketten,\nÁron és a STREETDARE csapat'
+    ]
   }
 };
+/* every email ends with a one-step way out */
+const UNSUB = {
+  en: 'Don\'t want these emails any more? Just reply "unsubscribe" and we\'ll take you off the list.',
+  es: '¿No quieres recibir más emails? Responde «baja» y te quitamos de la lista.',
+  hu: 'Nem szeretnél több e-mailt? Válaszolj erre a levélre azzal, hogy „leiratkozom”, és levesszük a listáról.'
+};
 function mail(to, lang, kind) {
-  const m = MAIL[lang === 'es' ? 'es' : 'en'];
-  const body = m[kind].join('\n\n').replace('{code}', LAUNCH_CODE).replace('{url}', LAUNCH_URL);
+  const L = MAIL[lang] ? lang : 'en', m = MAIL[L];
+  const body = m[kind].join('\n\n').replace('{code}', LAUNCH_CODE).replace('{url}', LAUNCH_URL) + '\n\n--\n' + UNSUB[L];
   MailApp.sendEmail(to, m[kind + 'Subject'], body, { name: SENDER_NAME, replyTo: REPLY_TO });
 }
 /* Run once from the editor after pasting this file: it asks for permission to send email
