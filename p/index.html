@@ -45,7 +45,7 @@
     <section class="play" id="v-spin" hidden>
       <a class="kicker" id="mineLink" href="/me/" hidden style="display:block;margin-bottom:10px;color:var(--ink);text-decoration:underline"></a>
       <div class="who">
-        <img class="ownerpic zoomable" id="ownerPic" alt="" hidden>
+        <img class="ownerpic" id="ownerPic" alt="" hidden role="button" tabindex="0">
         <div class="whotext"><div class="kicker" id="foundKicker"></div><h1 class="display" data-i18n="spinTitle"></h1></div>
       </div>
       <p class="sub" id="spinSub"></p>
@@ -120,7 +120,18 @@
     <section class="play" id="v-done" hidden>
       <h1 class="display" data-i18n="doneTitle"></h1>
       <p class="sub" data-i18n="doneSub"></p>
-      <a class="btn" id="igReveal" target="_blank" rel="noopener" hidden style="margin:6px 0 4px"></a>
+      <!-- after a confirmed dare: a big nudge to follow the wearer -->
+      <div class="igcard" id="igCard" hidden>
+        <img class="igpic" id="igPic" alt="" hidden>
+        <h2 class="display" id="igH"></h2>
+        <p id="igP"></p>
+        <a class="btn igbtn" id="igReveal" target="_blank" rel="noopener"></a>
+      </div>
+      <!-- dare skipped without the code: point back to it -->
+      <div class="igcard locked" id="igLocked" hidden>
+        <p id="igLockP"></p>
+        <button class="btn" type="button" id="igLockBtn"></button>
+      </div>
       <div class="wlbox light" style="text-align:left;margin:22px 0">
         <h2 class="display" data-i18n="pitchH"></h2>
         <p class="sub" data-i18n="pitchP"></p>

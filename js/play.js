@@ -63,10 +63,27 @@ async function loadLiveDecks(){
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
-const EXTRA = { en:{ ig:'Follow {name} on Instagram', mine:'Is this your shirt? Open your dashboard →' }, es:{ ig:'Sigue a {name} en Instagram', mine:'¿Es tu camiseta? Abre tu panel →' }, hu:{ ig:'Kövesd Instagramon: {name}', mine:'A te pólód? Nyisd meg a profilodat →' } };
+const EXTRA = {
+  en:{ igH:'Don’t lose each other 👀', igP:'You just did a dare with {name}. Follow them now, so you can find each other after tonight.', ig:'Follow @{ig} on Instagram',
+       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', mine:'Is this your shirt? Open your dashboard →' },
+  es:{ igH:'No os perdáis 👀', igP:'Acabas de hacer un reto con {name}. Síguele ahora para encontraros después de esta noche.', ig:'Sigue a @{ig} en Instagram',
+       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', mine:'¿Es tu camiseta? Abre tu panel →' },
+  hu:{ igH:'Ne veszítsétek el egymást 👀', igP:'Most csináltál meg egy kihívást vele: {name}. Kövesd be most, hogy ma este után is megtaláljátok egymást.', ig:'Kövesd: @{ig} Instagramon',
+       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', mine:'A te pólód? Nyisd meg a profilodat →' }
+};
+let verified = false;
 function paintExtras(){
   const x = EXTRA[LANG] || EXTRA.en, ig = $('igReveal');
-  if (ig){ ig.hidden = !(owner && owner.ig); if (owner && owner.ig){ ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{name}', who()) + ' · @' + owner.ig; } }
+  /* the wearer's Instagram only comes back from the server after the right dare code */
+  const has = verified && !!(owner && owner.ig);
+  $('igCard').hidden = !has;
+  $('igLocked').hidden = verified || practice() || demo;
+  if (has){
+    ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{ig}', owner.ig);
+    $('igH').textContent = x.igH; $('igP').textContent = x.igP.replace('{name}', who());
+    const pic = $('igPic'), src = owner.photo; pic.hidden = !(src && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)); if (!pic.hidden){ pic.src = src; pic.alt = who(); }
+  }
+  $('igLockP').textContent = x.lock.replace('{name}', who()); $('igLockBtn').textContent = x.lockBtn;
   const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') && !demo && !window.STAGE); }
 }
 document.addEventListener('langchange', paintExtras);
@@ -174,7 +191,7 @@ $('doneBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = tru
 
 /* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
 const practice = () => demo || !!window.STAGE;
-function finishDare(counted){ clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+function finishDare(counted, igHandle){ verified = !!counted; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
 $('codeIn').oninput = () => {
   $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
   if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();
@@ -193,12 +210,24 @@ $('codeForm').onsubmit = async e => {
     res = r.ok ? await r.json() : 'error';
   }catch(x){}
   btn.disabled = false;
-  if (res === 'ok') return finishDare(true);
+  if (typeof res === 'string' && (res === 'ok' || res.startsWith('ok|'))) return finishDare(true, res.slice(3));
   if (res === 'error') return finishDare(false);
   err.textContent = res === 'locked' ? t('cfLocked') : fill('cfWrong'); err.hidden = false;
   $('codeIn').select();
 };
 $('codeSkip').onclick = () => finishDare(false);
+
+/* ----- tapping the wearer's photo or name: how to get their Instagram ----- */
+function igTip(){
+  const src = owner && owner.photo, ok = src && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src);
+  const m = sdModal((ok ? '<img class="tippic" alt="">' : '') + '<p></p><button class="btn red" type="button" data-close></button>', 'info');
+  if (ok){ const i = m.querySelector('img'); i.src = src; i.alt = who(); }
+  m.querySelector('p').textContent = owner ? fill('nameTip') : t('nameTipAnon');
+  m.querySelector('button').textContent = t('gotIt') || 'OK';
+}
+$('ownerPic').onclick = igTip;
+$('ownerPic').onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); igTip(); } };
+$('igLockBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); setTimeout(() => $('codeIn').focus(), 150); };
 
 /* ----- the owner's photo next to their name ----- */
 function paintPhoto(){
@@ -214,7 +243,7 @@ document.addEventListener('langchange', () => {
   if (owner){
     const nm = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';'), parts = t('found').split('{name}');
     $('foundKicker').innerHTML = parts.map(x => x.replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';')).join('<button type="button" class="namebtn" id="nameBtn">' + nm + '</button>');
-    $('nameBtn').onclick = () => openInfo(fill('nameTip'));
+    $('nameBtn').onclick = igTip;
   } else $('foundKicker').textContent = t('foundAnon');
   const safeName = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
   $('spinSub').innerHTML = owner ? t('spinSub').replace('{name}', safeName) : t('spinSubAnon');
@@ -236,30 +265,30 @@ initDareForms();
 /* ----- scanned from far away (a photo or video)? Ask once, and explain STREETDARE if they're not with the wearer ----- */
 const FAR = {
   en:{ h:'Are you with {name} right now? 👀', p:'Looks like you scanned this from somewhere else. Is {name} right next to you?', yes:'Yes, they’re right here', no:'No, I saw it online',
-       h2:'So what is STREETDARE? 🤔', p2:'It’s a shirt with a QR code on the back. At a party, a stranger scans it, gets a dare, and does it together with the person wearing it. It’s the easiest way to start talking to someone new.',
-       p3:'{name} isn’t next to you, so you can’t play together right now. But you can get your own shirt and be the one strangers scan.', own:'Get my own shirt 👕', about:'Tell me more →', look:'Just look around' },
+       h2:'Want your own shirt? 👕', p2:'STREETDARE is a shirt with a QR code on the back. At a party, a stranger scans it, gets a dare and does it together with the person wearing it. It’s the easiest way to meet someone new.',
+       p3:'We’re building a community of people who love meeting new people, starting in Madrid and Budapest. The shirts are coming soon: join now and you’ll be the first to know, with a launch discount.', own:'Join and get the drop alert 🎟️', about:'What is STREETDARE? →', look:'Just look around', away:'{name} isn’t next to you, so you can’t play together right now.' },
   es:{ h:'¿Estás con {name} ahora mismo? 👀', p:'Parece que lo has escaneado desde otro sitio. ¿{name} está a tu lado?', yes:'Sí, está aquí', no:'No, lo he visto en internet',
-       h2:'¿Y qué es STREETDARE? 🤔', p2:'Es una camiseta con un código QR en la espalda. En una fiesta, alguien la escanea, saca un reto y lo hace junto a quien la lleva. Es la forma más fácil de empezar a hablar con alguien nuevo.',
-       p3:'{name} no está a tu lado, así que ahora no podéis jugar juntos. Pero puedes tener tu propia camiseta y ser tú a quien escaneen.', own:'Quiero mi camiseta 👕', about:'Cuéntame más →', look:'Solo quiero mirar' },
+       h2:'¿Quieres tu propia camiseta? 👕', p2:'STREETDARE es una camiseta con un código QR en la espalda. En una fiesta, alguien la escanea, saca un reto y lo hace junto a quien la lleva. Es la forma más fácil de conocer a alguien nuevo.',
+       p3:'Estamos creando una comunidad de gente a la que le encanta conocer gente nueva, empezando por Madrid y Budapest. Las camisetas llegan pronto: únete ahora y serás de los primeros en saberlo, con descuento de lanzamiento.', own:'Únete y recibe el aviso 🎟️', about:'¿Qué es STREETDARE? →', look:'Solo quiero mirar', away:'{name} no está a tu lado, así que ahora no podéis jugar juntos.' },
   hu:{ h:'Most {name} mellett vagy? 👀', p:'Úgy tűnik, máshonnan szkennelted be. {name} ott van melletted?', yes:'Igen, itt van', no:'Nem, a neten láttam',
-       h2:'És mi az a STREETDARE? 🤔', p2:'Egy póló, aminek QR-kód van a hátán. Egy buliban valaki beszkenneli, kap egy kihívást, és együtt csinálja meg azzal, aki a pólót viseli. Ez a legegyszerűbb módja, hogy szóba elegyedj valakivel.',
-       p3:'{name} most nincs melletted, így most nem tudtok együtt játszani. De lehet saját pólód, és akkor téged szkennelnek be.', own:'Kérem a saját pólóm 👕', about:'Mesélj többet →', look:'Csak nézelődöm' }
+       h2:'Kéne neked is egy saját póló? 👕', p2:'A STREETDARE egy póló, aminek QR-kód van a hátán. Egy buliban valaki beszkenneli, kap egy kihívást, és együtt csinálja meg azzal, aki a pólót viseli. Ez a legegyszerűbb módja, hogy megismerj valakit.',
+       p3:'Közösséget építünk azokból, akik szeretnek új emberekkel megismerkedni, Madridtól Budapestig. A pólók hamarosan jönnek: csatlakozz most, és elsőként tudod meg, indulási kedvezménnyel.', own:'Feliratkozom az értesítőre 🎟️', about:'Mi az a STREETDARE? →', look:'Csak nézelődöm', away:'{name} most nincs melletted, így most nem tudtok együtt játszani.' }
 };
 const farKey = () => 'sd_far_' + SHIRT.toLowerCase();
 function farText(k){ const x = FAR[LANG] || FAR.en; return x[k].replace(/\{name\}/g, who()); }
 function farInfo(m){
   const home = '../' + (SHIRT ? '?s=' + encodeURIComponent(SHIRT) : '');
   m.querySelector('.sdmodal-in').innerHTML = '<h2 class="display"></h2><p></p><p class="far3"></p><div class="stack">' +
-    '<a class="btn red" href="' + home + '#club"></a><a class="btn" href="' + home + '#about"></a><button class="btn plain" type="button" data-close></button></div>';
-  const q = m.querySelectorAll('h2,p,a,button');
+    '<a class="btn red" href="' + home + '#join"></a><a class="btn" href="' + home + '#about"></a><button class="btn plain" type="button" data-close></button></div><p class="faraway"></p>';
+  const q = m.querySelectorAll('h2,p,a,button');  /* h2, p, p.far3, a, a, button, p.faraway */
   q[0].textContent = farText('h2'); q[1].textContent = farText('p2'); q[2].textContent = farText('p3');
-  q[3].textContent = farText('own'); q[4].textContent = farText('about'); q[5].textContent = farText('look');
+  q[3].textContent = farText('own'); q[4].textContent = farText('about'); q[5].textContent = farText('look'); q[6].textContent = farText('away');
 }
 function farAsk(){
   const m = sdModal('<h2 class="display"></h2><p></p><div class="stack"><button class="btn red" type="button" data-a="yes"></button><button class="btn" type="button" data-a="no"></button></div>', 'info far');
   m.querySelector('h2').textContent = farText('h'); m.querySelector('p').textContent = farText('p');
   m.querySelector('[data-a=yes]').textContent = farText('yes'); m.querySelector('[data-a=no]').textContent = farText('no');
-  m.querySelector('[data-a=yes]').onclick = () => { try{ sessionStorage.setItem(farKey(), 'yes'); }catch(e){} m.remove(); };
+  m.querySelector('[data-a=yes]').onclick = () => { try{ sessionStorage.setItem(farKey(), 'yes'); }catch(e){} sbLog('here'); m.remove(); };
   m.querySelector('[data-a=no]').onclick = () => {
     try{ sessionStorage.setItem(farKey(), 'no'); }catch(e){}
     sbLog('remote'); window.SD_REMOTE = true; track('remote'); farInfo(m);
