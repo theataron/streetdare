@@ -173,4 +173,4 @@ initDareForms();
 show('spin');
 try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
 loadLiveDecks();
-consentInit('sd:landed');
+consentInit();
