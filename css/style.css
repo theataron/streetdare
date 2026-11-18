@@ -642,3 +642,8 @@ img.zoomable{cursor:zoom-in}
 .sdclose{position:absolute;top:-6px;right:-6px;width:40px;height:40px;border-radius:50%;border:2.5px solid var(--ink);background:#fff;color:var(--ink);font-weight:800;font-size:1rem;cursor:pointer}
 .sdmodal.info .sdmodal-in{background:var(--card,#fff);color:var(--ink);border:2.5px solid var(--ink);border-radius:20px;padding:20px;max-width:360px;box-shadow:6px 6px 0 var(--ink);text-align:center}
 .sdmodal.info p{margin:0 0 16px;font-size:1.05rem;line-height:1.45;font-weight:600}
+
+/* "your own shirt" card: black shirt in front, white one behind */
+.cardx .a-shirt .tee{fill:#151112}
+.cardx .a-shirt .tee-back{fill:#fbfaf6}
+.cardx .a-shirt .qbg{fill:#fff}
