@@ -662,3 +662,11 @@ img.zoomable{cursor:zoom-in}
 .showmode .stack{max-width:420px;margin:0 auto;width:100%}
 @keyframes bigopen{0%{opacity:0;transform:scale(.55) rotate(-7deg)}100%{opacity:1;transform:scale(1) rotate(-1deg)}}
 @media (prefers-reduced-motion:reduce){.bigcard,.bigtxt.swap{animation:none}}
+
+/* "are you with them?" pop-up for scans from far away */
+.sdmodal.far .sdmodal-in{max-width:380px;text-align:left}
+.sdmodal.far h2{font-size:1.6rem;color:var(--redt);margin:0 0 10px;line-height:1.1}
+.sdmodal.far p{font-weight:500;font-size:1rem}
+.sdmodal.far .far3{font-weight:700}
+.sdmodal.far .stack{gap:10px}
+body.showing .consent{display:none}

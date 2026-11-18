@@ -174,6 +174,8 @@ function phoneTz(){ try{ return (Intl.DateTimeFormat().resolvedOptions().timeZon
 function sbLog(event, extra){
   const s = SHIRT.toLowerCase();
   if (window.STAGE || !s || s === 'demo') return;
+  /* someone who said they're not with the wearer: only their 'remote' answer is logged, so the wearer's stats stay real */
+  if (window.SD_REMOTE && event !== 'remote') return;
   fetch(SB.url + '/rest/v1/play_events', {
     method:'POST', keepalive:true,
     headers:{ apikey: SB.key, 'Content-Type':'application/json', Prefer:'return=minimal' },

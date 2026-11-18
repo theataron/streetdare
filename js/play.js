@@ -13,6 +13,7 @@ function show(v){
   $('menu').hidden = true;
   document.body.classList.toggle('hot', $('devil').checked && ['spin','accept','confirm','done'].includes(v));
   document.body.style.overflow = v === 'show' ? 'hidden' : '';
+  document.body.classList.toggle('showing', v === 'show');
   window.scrollTo(0,0);
 }
 
@@ -222,6 +223,7 @@ document.addEventListener('langchange', () => {
   if ($('refLine') && typeof refText === 'function'){ $('refLine').textContent = refText(); $('refLine').hidden = !refText(); }
   $('accNote').textContent = fill('accNote');
   $('showBtn').textContent = owner ? fill('showBtn') : t('showBtnAnon');
+  $('shNote').textContent = owner ? fill('shNote') : t('shNoteAnon');
   if (current && !$('v-show').hidden) paintShow();
   $('cfSub').textContent = fill('cfSub'); $('codeDemo').hidden = !practice();
   if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txtIn(current, shLang); }
@@ -231,7 +233,51 @@ document.addEventListener('langchange', () => {
 initLang(T);
 initWaitlist();
 initDareForms();
-if (!restoreCur()) show('spin');
+/* ----- scanned from far away (a photo or video)? Ask once, and explain STREETDARE if they're not with the wearer ----- */
+const FAR = {
+  en:{ h:'Are you with {name} right now? 👀', p:'Looks like you scanned this from somewhere else. Is {name} right next to you?', yes:'Yes, they’re right here', no:'No, I saw it online',
+       h2:'So what is STREETDARE? 🤔', p2:'It’s a shirt with a QR code on the back. At a party, a stranger scans it, gets a dare, and does it together with the person wearing it. It’s the easiest way to start talking to someone new.',
+       p3:'{name} isn’t next to you, so you can’t play together right now. But you can get your own shirt and be the one strangers scan.', own:'Get my own shirt 👕', about:'Tell me more →', look:'Just look around' },
+  es:{ h:'¿Estás con {name} ahora mismo? 👀', p:'Parece que lo has escaneado desde otro sitio. ¿{name} está a tu lado?', yes:'Sí, está aquí', no:'No, lo he visto en internet',
+       h2:'¿Y qué es STREETDARE? 🤔', p2:'Es una camiseta con un código QR en la espalda. En una fiesta, alguien la escanea, saca un reto y lo hace junto a quien la lleva. Es la forma más fácil de empezar a hablar con alguien nuevo.',
+       p3:'{name} no está a tu lado, así que ahora no podéis jugar juntos. Pero puedes tener tu propia camiseta y ser tú a quien escaneen.', own:'Quiero mi camiseta 👕', about:'Cuéntame más →', look:'Solo quiero mirar' },
+  hu:{ h:'Most {name} mellett vagy? 👀', p:'Úgy tűnik, máshonnan szkennelted be. {name} ott van melletted?', yes:'Igen, itt van', no:'Nem, a neten láttam',
+       h2:'És mi az a STREETDARE? 🤔', p2:'Egy póló, aminek QR-kód van a hátán. Egy buliban valaki beszkenneli, kap egy kihívást, és együtt csinálja meg azzal, aki a pólót viseli. Ez a legegyszerűbb módja, hogy szóba elegyedj valakivel.',
+       p3:'{name} most nincs melletted, így most nem tudtok együtt játszani. De lehet saját pólód, és akkor téged szkennelnek be.', own:'Kérem a saját pólóm 👕', about:'Mesélj többet →', look:'Csak nézelődöm' }
+};
+const farKey = () => 'sd_far_' + SHIRT.toLowerCase();
+function farText(k){ const x = FAR[LANG] || FAR.en; return x[k].replace(/\{name\}/g, who()); }
+function farInfo(m){
+  const home = '../' + (SHIRT ? '?s=' + encodeURIComponent(SHIRT) : '');
+  m.querySelector('.sdmodal-in').innerHTML = '<h2 class="display"></h2><p></p><p class="far3"></p><div class="stack">' +
+    '<a class="btn red" href="' + home + '#club"></a><a class="btn" href="' + home + '#about"></a><button class="btn plain" type="button" data-close></button></div>';
+  const q = m.querySelectorAll('h2,p,a,button');
+  q[0].textContent = farText('h2'); q[1].textContent = farText('p2'); q[2].textContent = farText('p3');
+  q[3].textContent = farText('own'); q[4].textContent = farText('about'); q[5].textContent = farText('look');
+}
+function farAsk(){
+  const m = sdModal('<h2 class="display"></h2><p></p><div class="stack"><button class="btn red" type="button" data-a="yes"></button><button class="btn" type="button" data-a="no"></button></div>', 'info far');
+  m.querySelector('h2').textContent = farText('h'); m.querySelector('p').textContent = farText('p');
+  m.querySelector('[data-a=yes]').textContent = farText('yes'); m.querySelector('[data-a=no]').textContent = farText('no');
+  m.querySelector('[data-a=yes]').onclick = () => { try{ sessionStorage.setItem(farKey(), 'yes'); }catch(e){} m.remove(); };
+  m.querySelector('[data-a=no]').onclick = () => {
+    try{ sessionStorage.setItem(farKey(), 'no'); }catch(e){}
+    sbLog('remote'); window.SD_REMOTE = true; track('remote'); farInfo(m);
+  };
+}
+async function farCheck(){
+  if (demo || window.STAGE) return;
+  let ans = null; try{ ans = sessionStorage.getItem(farKey()); }catch(e){}
+  if (ans === 'no'){ window.SD_REMOTE = true; return; }
+  if (ans === 'yes') return;
+  try{
+    const r = await fetch(SB.url + '/rest/v1/rpc/scan_far', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_id: SHIRT.toLowerCase(), p_tz: phoneTz(), p_device: deviceId() }) });
+    if (r.ok && (await r.json()) === true) farAsk();
+  }catch(e){}
+}
+
+if (!restoreCur()){ show('spin'); farCheck(); }
 try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
 loadLiveDecks();
 loadRecent();
