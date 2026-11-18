@@ -125,7 +125,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
           </div>
           <div class="card">
             <h3>Most played dares</h3>
-            <table><thead><tr><th>Dare</th><th class="n">Accepted</th><th class="n">Done</th></tr></thead><tbody id="dareRows"></tbody></table>
+            <table><thead><tr><th>Dare</th><th class="n">Spun</th><th class="n">Accepted</th><th class="n">Done</th><th class="n" title="Done ÷ spun">Success</th></tr></thead><tbody id="dareRows"></tbody></table>
           </div>
         </div>
       </div>
@@ -229,7 +229,7 @@ async function loadLive(){
   const [daily, shirts, dares, feed] = await Promise.all([
     sb.from('daily_stats').select('*'),
     sb.from('shirt_stats').select('*').order('scans', { ascending:false }),
-    sb.from('dare_stats').select('*').order('dones', { ascending:false }).order('accepts', { ascending:false }).limit(15),
+    sb.from('dare_stats').select('*').order('spins', { ascending:false }).order('dones', { ascending:false }).limit(40),
     sb.from('play_events').select('*').order('created_at', { ascending:false }).limit(40)
   ]);
   const days = daily.data || [];
@@ -246,7 +246,8 @@ async function loadLive(){
   ].map(([k,v,sub]) => '<div class="tile"><span>' + k + '</span><b>' + v + '</b><small>' + sub + '</small></div>').join('');
   $('shirtRows').innerHTML = s.length ? s.map(r => '<tr><td><b>' + esc(r.shirt_id) + '</b></td><td class="n">' + r.scans + '</td><td class="n">' + r.people + '</td><td class="n">' + r.dones + '</td><td class="muted">' + ago(r.last_seen) + '</td></tr>').join('') : '<tr><td colspan="5" class="empty">No scans yet.</td></tr>';
   const d = dares.data || [];
-  $('dareRows').innerHTML = d.length ? d.map(r => '<tr><td>' + esc(r.dare_text) + '</td><td class="n">' + r.accepts + '</td><td class="n">' + r.dones + '</td></tr>').join('') : '<tr><td colspan="3" class="empty">No dares played yet.</td></tr>';
+  const rate = r => r.spins ? Math.round(100 * r.dones / r.spins) + '%' : '-';
+  $('dareRows').innerHTML = d.length ? d.map(r => '<tr><td>' + esc(r.dare_text) + '</td><td class="n">' + r.spins + '</td><td class="n">' + r.accepts + '</td><td class="n">' + r.dones + '</td><td class="n"><b>' + rate(r) + '</b></td></tr>').join('') : '<tr><td colspan="5" class="empty">No dares played yet.</td></tr>';
   const f = feed.data || [];
   $('feed').innerHTML = f.length ? f.map(feedItem).join('') : '<li class="empty">Nothing yet. Scan a shirt and watch it appear here.</li>';
 }

@@ -591,3 +591,23 @@ body.hot .codeform .wlerr{color:#ffb4a8}
 .wlmember .wlmsg{padding:4px 0 10px}
 .tog.optin{display:flex;gap:10px;align-items:flex-start;font-weight:700;cursor:pointer}
 .tog.optin input{width:22px;height:22px;flex:none;accent-color:var(--red);margin-top:1px}
+
+/* scan page: photo on the left, "you just scanned…" + title on the right */
+.who{display:flex;align-items:center;gap:14px;text-align:left;margin:2px 0 6px}
+.who .ownerpic{width:72px;height:72px;margin:0;flex:none}
+.who .whotext{min-width:0}
+.who .kicker{margin:0}
+.who h1{margin:4px 0 0;font-size:clamp(1.9rem,9vw,2.6rem);transform:rotate(-1.5deg);transform-origin:left center}
+.who:has(.ownerpic[hidden]){justify-content:center;text-align:center}
+.who:has(.ownerpic[hidden]) h1{transform-origin:center}
+.play #spinSub{margin:4px 0 10px}
+/* what to do after the dare lands */
+.nextstep{background:var(--ink);color:#fff;border-radius:16px;padding:10px 14px;margin:0 0 12px;text-align:left;font-size:.93rem;line-height:1.4}
+.nextstep b{color:#ffe32a}
+body.hot .nextstep{background:#fff;color:var(--ink)}
+body.hot .nextstep b{color:var(--red)}
+.launchline{margin-top:-4px}
+/* slimmer analytics bar so it doesn't sit on top of SPIN */
+.consent{padding:8px 10px;gap:8px;font-size:.8rem;bottom:8px;left:8px;right:8px}
+.consent p{flex:1 1 180px}
+.consent button{padding:7px 10px;min-width:70px;font-size:.82rem}

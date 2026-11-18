@@ -77,7 +77,8 @@ const txt = q => LANG === 'hu' ? (q.hu || q[3] || q[0]) : (q[LANG === 'es' ? 1 :
 function paintDare(){
   const a = isAdult(current);
   $('adultTag').hidden = !a; $('accAdult').hidden = !a;
-  $('together').hidden = !current; $('together').textContent = owner ? fill('together') : t('togetherAnon');
+  $('together').hidden = !current; $('howRow').hidden = !!current;
+  $('nextP').textContent = owner ? fill('nextP') : t('nextPAnon');
 }
 function resetSpin(){ current = null; deckReset(); paintDare(); const r = $('reel'); r.className = 'reel q'; r.textContent = '? ? ?'; $('preSpin').hidden = false; $('postSpin').hidden = true; }
 function pick(){
@@ -90,7 +91,7 @@ function setReel(text, cls){ const r = $('reel'); r.className = 'reel'; void r.o
 function spin(){
   if (spinning) return; spinning = true;
   $('preSpin').hidden = false; $('postSpin').hidden = true; $('spinBtn').disabled = true;
-  deckReset(); setReel('? ? ?', 'q'); $('together').hidden = true; $('adultTag').hidden = true;
+  deckReset(); setReel('? ? ?', 'q'); $('together').hidden = true; $('howRow').hidden = false; $('adultTag').hidden = true;
   const final = pick();
   /* other dares flick past first, so people see how deep the deck is */
   const others = deck().filter(q => q !== final).sort(() => Math.random() - .5);
@@ -122,7 +123,10 @@ $('doneBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = tru
 /* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
 const practice = () => demo || !!window.STAGE;
 function finishDare(counted){ track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
-$('codeIn').oninput = () => { $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true; };
+$('codeIn').oninput = () => {
+  $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
+  if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();
+};
 $('codeForm').onsubmit = async e => {
   e.preventDefault();
   const code = $('codeIn').value, err = $('codeErr'), btn = $('codeBtn');
