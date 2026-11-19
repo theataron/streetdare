@@ -58,6 +58,7 @@
             <div class="reel q" id="reel" aria-live="polite">? ? ?</div>
             <span class="stamp" id="stamp" aria-hidden="true" data-i18n="stamp"></span>
             <span class="adult" id="adultTag" hidden>18+</span>
+            <div class="byline" id="byFront" hidden></div>
           </div>
         </div>
         <div class="burst" id="burst" aria-hidden="true"></div>
@@ -83,6 +84,7 @@
       <div class="bigcard" id="bigCard">
         <span class="adult" id="shAdult" hidden>18+</span>
         <div class="bigtxt" id="shText"></div>
+        <div class="byline" id="byShow" hidden></div>
         <button class="flip" type="button" id="shFlip"></button>
       </div>
       <p class="shnote" id="shNote"></p>
@@ -94,7 +96,7 @@
     <!-- ===== ACCEPTED ===== -->
     <section class="play" id="v-accept" hidden>
       <div class="kicker" data-i18n="accKicker"></div>
-      <div class="ticket"><small>Dare <span class="adult" id="accAdult" hidden>18+</span></small><div id="accText"></div></div>
+      <div class="ticket"><small>Dare <span class="adult" id="accAdult" hidden>18+</span></small><div id="accText"></div><div class="byline" id="byAcc" hidden></div></div>
       <p class="note" id="accNote"></p>
       <div class="stack">
         <button class="btn red" id="doneBtn" data-i18n="done"></button>
@@ -131,6 +133,12 @@
         <p id="igLockP"></p>
         <button class="btn" type="button" id="igLockBtn"></button>
       </div>
+      <!-- a clean way out: back to your friends, or another dare -->
+      <div class="stack exits" id="exits">
+        <button class="btn red" type="button" id="leaveBtn"></button>
+        <button class="btn" type="button" id="anotherBtn" data-i18n="another"></button>
+      </div>
+      <p class="byebye" id="byeMsg" hidden></p>
       <div class="wlbox light" style="text-align:left;margin:22px 0">
         <h2 class="display" data-i18n="pitchH"></h2>
         <p class="sub" data-i18n="pitchP"></p>
@@ -155,7 +163,6 @@
         </form>
       </div>
       <div class="stack">
-        <button class="btn" id="anotherBtn" data-i18n="another"></button>
         <a class="btn plain" data-to="wall" data-i18n="toWall"></a>
       </div>
     </section>

@@ -35,7 +35,7 @@ function paintWall(){
   const box = $('msgs'); box.textContent = '';
   if (!wallData) return;
   if (!wallData.length){ const p = document.createElement('p'); p.className = 'empty'; p.textContent = t('wallEmpty'); box.appendChild(p); return; }
-  wallData.forEach(m => { const d = document.createElement('div'); d.className = 'msg'; d.textContent = m.text;
+  wallData.filter(m => !(window.sdHurtful && (sdHurtful(m.text) || sdHurtful(m.ig)))).forEach(m => { const d = document.createElement('div'); d.className = 'msg'; d.textContent = m.text;
     const s = document.createElement('small');
     if (m.ig){ const a = document.createElement('a'); a.href = 'https://instagram.com/' + encodeURIComponent(m.ig); a.target = '_blank'; a.rel = 'noopener'; a.textContent = '@' + m.ig; s.appendChild(a); s.appendChild(document.createTextNode(' · ')); }
     s.appendChild(document.createTextNode(ago(m.created) + ' · '));
@@ -44,15 +44,22 @@ function paintWall(){
       d.textContent = t('wallReported'); d.classList.add('gone'); };
     s.appendChild(r); d.appendChild(s); box.appendChild(d); });
 }
+function wallNote(text, ms){
+  const old = $('wallForm').querySelector('.wlnote'); if (old) old.remove();
+  const p = document.createElement('p'); p.className = 'wlerr wlnote'; p.style.color = 'var(--redt)'; p.style.fontWeight = '600'; p.textContent = text;
+  $('wallForm').appendChild(p); setTimeout(() => p.remove(), ms);
+}
 async function loadWall(){ $('wallDemo').hidden = !!SD.API_URL; try{ wallData = await api('getWall'); }catch(e){ wallData = wallData || []; } paintWall(); }
 $('wallForm').addEventListener('submit', async e => {
   e.preventDefault();
   const ta = $('wallText'), b = $('wallSend'), v = ta.value.trim(); if (!v) return;
+  /* keep the wall free of hurtful words: friendly note instead of posting */
+  if (sdHurtful(v) || sdHurtful($('wallIg').value)){ wallNote(t('wallClean'), 9000); ta.focus(); return; }
   b.disabled = true; b.textContent = t('wallSending');
   const ig = ($('wallIg').value.trim().replace(/^@/,'').match(/^[\w.]{1,30}$/) || [''])[0];
   $('wallIg').value = ig ? '@' + ig : '';
   try{ await api('postMessage', { text: v, ig }); ta.value = ''; await loadWall(); }
-  catch(x){ const p = document.createElement('p'); p.className = 'wlerr'; p.style.color = 'var(--redt)'; p.textContent = t('wallErr'); $('wallForm').appendChild(p); setTimeout(() => p.remove(), 4000); }
+  catch(x){ wallNote(t('wallErr'), 4000); }
   b.disabled = false; b.textContent = t('wallSend');
 });
 

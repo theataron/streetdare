@@ -65,11 +65,11 @@ async function loadLiveDecks(){
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
 const EXTRA = {
   en:{ igH:'Don’t lose each other 👀', igP:'You just did a dare with {name}. Follow them now, so you can find each other after tonight.', ig:'Follow @{ig} on Instagram',
-       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', mine:'Is this your shirt? Open your dashboard →' },
+       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing night 🙌 Scan again whenever you want another dare.', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
   es:{ igH:'No os perdáis 👀', igP:'Acabas de hacer un reto con {name}. Síguele ahora para encontraros después de esta noche.', ig:'Sigue a @{ig} en Instagram',
-       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', mine:'¿Es tu camiseta? Abre tu panel →' },
+       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'Que tengas una noche increíble 🙌 Escanea otra vez cuando quieras otro reto.', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
   hu:{ igH:'Ne veszítsétek el egymást 👀', igP:'Most csináltál meg egy kihívást vele: {name}. Kövesd be most, hogy ma este után is megtaláljátok egymást.', ig:'Kövesd: @{ig} Instagramon',
-       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', mine:'A te pólód? Nyisd meg a profilodat →' }
+       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Legyen fantasztikus estéd 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
 };
 let verified = false;
 function paintExtras(){
@@ -79,11 +79,12 @@ function paintExtras(){
   $('igCard').hidden = !has;
   $('igLocked').hidden = verified || practice() || demo;
   if (has){
-    ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{ig}', owner.ig);
+    ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.igLeave.replace('{ig}', owner.ig);
     $('igH').textContent = x.igH;
     const pic = $('igPic'), src = owner.photo; pic.hidden = !(src && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)); if (!pic.hidden){ pic.src = src; pic.alt = who(); }
   }
   $('igLockP').textContent = x.lock.replace('{name}', who()); $('igLockBtn').textContent = x.lockBtn;
+  $('leaveBtn').textContent = x.leave; $('leaveBtn').hidden = has; $('byeMsg').textContent = x.bye;
   const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') && !demo && !window.STAGE); }
 }
 document.addEventListener('langchange', paintExtras);
@@ -98,6 +99,12 @@ function paintDare(){
   $('adultTag').hidden = !a; $('accAdult').hidden = !a;
   $('together').hidden = !current; $('howRow').hidden = !!current;
   $('nextP').textContent = owner ? fill('nextP') : t('nextPAnon');
+  paintBy();
+}
+/* dares the wearer wrote themselves carry their name */
+function paintBy(){
+  const mine = !!(current && current.deck === 'shirt'), txt = (EXTRA[LANG] || EXTRA.en).by.replace('{name}', who());
+  ['byFront','byShow','byAcc'].forEach(id => { $(id).hidden = !mine; $(id).textContent = txt; });
 }
 function resetSpin(){ current = null; deckReset(); paintDare(); const r = $('reel'); r.className = 'reel q'; r.textContent = '? ? ?'; $('preSpin').hidden = false; $('postSpin').hidden = true; }
 /* dares this shirt's wearer was already shown in the last 30 days still come up, but 5x less often */
@@ -147,7 +154,7 @@ function spin(){
 const CUR_KEY = 'sd_current', CUR_MAX = 4 * 3600e3;
 function saveCur(view){
   if (!current) return;
-  try{ store.set(CUR_KEY, JSON.stringify({ s: SHIRT.toLowerCase(), view, at: Date.now(), sl: shLang, devil: $('devil').checked,
+  try{ store.set(CUR_KEY, JSON.stringify({ s: SHIRT.toLowerCase(), view, at: Date.now(), sl: shLang, devil: $('devil').checked, v: verified, st: codeStage,
     q: { en: current[0], es: current[1], hu: current.hu || current[3] || '', id: current.id || null, adult: isAdult(current), deck: current.deck || null } })); }catch(e){}
 }
 function clearCur(){ try{ localStorage.removeItem(CUR_KEY); }catch(e){} }
@@ -155,9 +162,9 @@ function restoreCur(){
   let c = null; try{ c = JSON.parse(store.get(CUR_KEY) || 'null'); }catch(e){}
   if (!c || c.s !== SHIRT.toLowerCase() || Date.now() - c.at > CUR_MAX || !c.q || !c.q.en){ clearCur(); return false; }
   const q = [c.q.en, c.q.es || c.q.en]; q.hu = c.q.hu; q.id = c.q.id; q.adult = !!c.q.adult; q.deck = c.q.deck;
-  current = q; shLang = c.sl || LANG; $('devil').checked = !!c.devil;
+  current = q; shLang = c.sl || LANG; $('devil').checked = !!c.devil; verified = !!c.v; codeStage = c.st || 'accept';
   if (c.view === 'show'){ paintShow(); show('show'); }
-  else { $('accText').textContent = txtIn(current, shLang); paintDare(); show(c.view === 'confirm' ? 'confirm' : 'accept'); }
+  else { $('accText').textContent = txtIn(current, shLang); paintDare(); show(c.view); }
   return true;
 }
 
@@ -169,7 +176,7 @@ const flipTo = () => shLang !== LANG ? LANG : (LANG === 'en' ? 'es' : 'en');
 function paintShow(){
   $('shText').textContent = txtIn(current, shLang);
   $('shText').lang = shLang;
-  $('shAdult').hidden = !isAdult(current);
+  $('shAdult').hidden = !isAdult(current); paintBy();
   $('shFlip').textContent = '🌐 ' + LANG_NAME[flipTo()];
 }
 $('showBtn').onclick = () => {
@@ -185,13 +192,28 @@ $('shNo').onclick = () => { clearCur(); show('spin'); spin(); };
 
 $('spinBtn').onclick = spin;
 $('againBtn').onclick = spin;
-$('acceptBtn').onclick = () => { $('accText').textContent = txtIn(current, shLang); paintDare(); logPlay('accept'); show('accept'); saveCur('accept'); };
-$('changeBtn').onclick = () => { clearCur(); resetSpin(); show('spin'); };
-$('doneBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); saveCur('confirm'); setTimeout(() => $('codeIn').focus(), 150); };
+/* the wearer's code is typed the moment you both say yes: it seals the dare, and from then on it counts */
+let codeStage = 'accept';
+function askCode(stage){ codeStage = stage; $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); saveCur('confirm'); setTimeout(() => $('codeIn').focus(), 150); }
+function toAccept(){ $('accText').textContent = txtIn(current, shLang); paintDare(); show('accept'); saveCur('accept'); }
+$('acceptBtn').onclick = () => { track('accept', { quest: (current || [])[0] }); askCode('accept'); };
+$('changeBtn').onclick = () => { clearCur(); verified = false; resetSpin(); show('spin'); };
+$('doneBtn').onclick = () => verified ? finishVerified() : finishDare(false);
+async function finishVerified(){
+  let res = 'error';
+  try{
+    const q = current || [];
+    const r = await fetch(SB.url + '/rest/v1/rpc/finish_dare', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_shirt: SHIRT.toLowerCase(), p_device: deviceId(), p_dare_id: q.id || null, p_dare_text: q[0] || null, p_deck: q.deck || 'classic', p_lang: LANG }) });
+    res = r.ok ? await r.json() : 'error';
+  }catch(x){}
+  if (typeof res === 'string' && (res === 'ok' || res.startsWith('ok|'))) return finishDare(true, res.slice(3));
+  finishDare(false);
+}
 
 /* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
 const practice = () => demo || !!window.STAGE;
-function finishDare(counted, igHandle){ verified = !!counted; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+function finishDare(counted, igHandle){ verified = !!counted; $('exits').hidden = false; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
 $('codeIn').oninput = () => {
   $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
   if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();
@@ -200,7 +222,7 @@ $('codeForm').onsubmit = async e => {
   e.preventDefault();
   const code = $('codeIn').value, err = $('codeErr'), btn = $('codeBtn');
   if (code.length !== 4){ err.textContent = t('cfShort'); err.hidden = false; return; }
-  if (practice()){ if (code === '1234') return finishDare(false); err.textContent = fill('cfWrong'); err.hidden = false; return; }
+  if (practice()){ if (code === '1234') return codeStage === 'late' ? finishDare(false) : toAccept(); err.textContent = fill('cfWrong'); err.hidden = false; return; }
   btn.disabled = true;
   let res = 'error';
   try{
@@ -210,12 +232,12 @@ $('codeForm').onsubmit = async e => {
     res = r.ok ? await r.json() : 'error';
   }catch(x){}
   btn.disabled = false;
-  if (typeof res === 'string' && (res === 'ok' || res.startsWith('ok|'))) return finishDare(true, res.slice(3));
-  if (res === 'error') return finishDare(false);
+  if (res === 'ok'){ verified = true; return codeStage === 'late' ? finishVerified() : toAccept(); }
+  if (res === 'error') return codeStage === 'late' ? finishDare(false) : toAccept();
   err.textContent = res === 'locked' ? t('cfLocked') : fill('cfWrong'); err.hidden = false;
   $('codeIn').select();
 };
-$('codeSkip').onclick = () => finishDare(false);
+$('codeSkip').onclick = () => { verified = false; codeStage === 'late' ? show('done') : toAccept(); };
 
 /* ----- tapping the wearer's photo or name: how to get their Instagram ----- */
 function igTip(){
@@ -227,7 +249,11 @@ function igTip(){
 }
 $('ownerPic').onclick = igTip;
 $('ownerPic').onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); igTip(); } };
-$('igLockBtn').onclick = () => { $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); setTimeout(() => $('codeIn').focus(), 150); };
+$('igLockBtn').onclick = () => askCode('late');
+/* clean way out */
+function byeBye(){ $('exits').hidden = true; $('igCard').hidden = true; $('igLocked').hidden = true; $('byeMsg').hidden = false; }
+$('leaveBtn').onclick = byeBye;
+$('igReveal').addEventListener('click', () => setTimeout(byeBye, 400));
 
 /* ----- the owner's photo next to their name ----- */
 function paintPhoto(){
@@ -235,7 +261,7 @@ function paintPhoto(){
   if (!src || !/^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)){ img.hidden = true; return; }
   img.src = src; img.alt = who(); img.hidden = false;
 }
-$('anotherBtn').onclick = () => { clearCur(); resetSpin(); show('spin'); };
+$('anotherBtn').onclick = () => { clearCur(); verified = false; resetSpin(); show('spin'); };
 $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').checked); if (!spinning) resetSpin(); };
 
 /* ----- words that depend on the language and on whose shirt it is ----- */

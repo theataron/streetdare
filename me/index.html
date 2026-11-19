@@ -166,6 +166,8 @@
           <label class="tog" style="margin-bottom:10px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
           <label class="tog" style="margin-bottom:4px"><input type="checkbox" id="pMkt"><span id="pMktL"></span></label>
           <p class="sub" id="pMktN" style="font-size:.82rem;margin:0 0 14px"></p>
+          <label class="tog" id="recap" style="margin-bottom:4px"><input type="checkbox" id="pRecap"><span id="pRecapL"></span></label>
+          <p class="sub" id="pRecapN" style="font-size:.82rem;margin:0 0 14px"></p>
           <p class="err" id="profErr" hidden></p>
           <button class="btn" type="submit" id="profBtn"></button>
         </form>
@@ -276,7 +278,7 @@ const T = {
        st4:'Wear it out', st4s:'This ticks itself the first time someone scans you.',
        profP:'This is what people see when they scan any of your shirts.', shirtsH:'Your shirts',
        ncH:'Is this your name? 👋', ncP:'People who scan your shirt see this name. Use the one your friends call you.', ncBtn:'Yes, that’s me', ccH:'Where do you live right now? 🌍', ccP:'The country you live in at the moment, not where you’re from.', ucH:'Pick your username ✨', ucP:'It’s yours alone on STREETDARE. 3–20 characters: small letters, numbers, dots and underscores.', ucBtn:'Save username', ucFree:'@{u} is free ✓', ucTaken:'@{u} is already taken', ucBad:'3–20 characters: small letters, numbers, dots and underscores. No dot at the start or end.', ucSaved:'Username saved', ucBlocked:'That username isn’t allowed. Try another one.', userL:'Username', ccBtn:'Yes, that’s right', ctryL:'Country you live in now', ctryPick:'Pick a country',
-       mktL:'Email me about new shirts, decks, features and events', mktN:'No spam. Switch it off here any time, or reply “unsubscribe” to any email. <a href="/privacy/">Privacy</a>', codeSave:'Save code', codeBad:'Use exactly 4 numbers.', codeSaved:'Code saved',
+       recapL:'Morning recap ☀️', recapN:'The day after a night out, we email you how many people scanned your shirt and how many dares you did.', mktL:'Email me about new shirts, decks, features and events', mktN:'No spam. Switch it off here any time, or reply “unsubscribe” to any email. <a href="/privacy/">Privacy</a>', codeSave:'Save code', codeBad:'Use exactly 4 numbers.', codeSaved:'Code saved',
        setupDone:'{n} of 4 done',
        guideH:'How your shirt works',
        g:[['What happens when someone scans you','They land on your page, see your photo and name, and spin a dare. When they accept it, they show you their phone and you do it together. Every dare is optional: either of you can say no or spin again.'],
@@ -305,7 +307,7 @@ const T = {
        st4:'Vedd fel és menj bulizni', st4s:'Ez magától bepipálódik, amikor először beszkennel valaki.',
        profP:'Ezt látják, akik beszkennelik bármelyik pólódat.', shirtsH:'A pólóid',
        ncH:'Ez a neved? 👋', ncP:'Aki beszkenneli a pólódat, ezt a nevet látja. Azt add meg, amin a barátaid szólítanak.', ncBtn:'Igen, ez vagyok', ccH:'Hol élsz most? 🌍', ccP:'Az ország, ahol jelenleg élsz, nem az, ahonnan származol.', ucH:'Válassz felhasználónevet ✨', ucP:'Csak a tiéd lesz a STREETDARE-en. 3–20 karakter: kisbetűk, számok, pont és alulvonás.', ucBtn:'Mentés', ucFree:'@{u} szabad ✓', ucTaken:'@{u} már foglalt', ucBad:'3–20 karakter: kisbetűk, számok, pont és alulvonás. Ponttal nem kezdődhet és nem végződhet.', ucSaved:'Felhasználónév elmentve', ucBlocked:'Ez a felhasználónév nem engedélyezett. Próbálj egy másikat.', userL:'Felhasználónév', ccBtn:'Igen, stimmel', ctryL:'Ország, ahol most élsz', ctryPick:'Válassz országot',
-       mktL:'Kérek e-mailt az új pólókról, paklikról, funkciókról és eseményekről', mktN:'Spam nincs. Itt bármikor kikapcsolhatod, vagy válaszolj bármelyik levelünkre azzal, hogy „leiratkozom”. <a href="/privacy/">Adatvédelem</a>', codeSave:'Kód mentése', codeBad:'Pontosan 4 számjegyet adj meg.', codeSaved:'Kód elmentve',
+       recapL:'Reggeli összefoglaló ☀️', recapN:'Egy esti buli utáni napon e-mailben elküldjük, hányan szkennelték be a pólódat, és hány kihívást csináltál meg.', mktL:'Kérek e-mailt az új pólókról, paklikról, funkciókról és eseményekről', mktN:'Spam nincs. Itt bármikor kikapcsolhatod, vagy válaszolj bármelyik levelünkre azzal, hogy „leiratkozom”. <a href="/privacy/">Adatvédelem</a>', codeSave:'Kód mentése', codeBad:'Pontosan 4 számjegyet adj meg.', codeSaved:'Kód elmentve',
        setupDone:'{n}/4 kész',
        guideH:'Így működik a pólód',
        g:[['Mi történik, amikor valaki beszkennel','Megnyílik az oldalad, látja a fotódat és a nevedet, és pörget egy kihívást. Ha elfogadja, megmutatja neked a telefonját, és együtt megcsináljátok. Minden kihívás önkéntes: bármelyikőtök mondhat nemet, vagy pörgethet újat.'],
@@ -334,7 +336,7 @@ const T = {
        st4:'Sal con ella', st4s:'Se marca solo la primera vez que alguien te escanee.',
        profP:'Esto es lo que ve la gente cuando escanea cualquiera de tus camisetas.', shirtsH:'Tus camisetas',
        ncH:'¿Este es tu nombre? 👋', ncP:'Quien escanea tu camiseta ve este nombre. Pon el que usan tus amigos.', ncBtn:'Sí, soy yo', ccH:'¿Dónde vives ahora mismo? 🌍', ccP:'El país en el que vives ahora, no de donde eres.', ucH:'Elige tu nombre de usuario ✨', ucP:'Solo será tuyo en STREETDARE. De 3 a 20 caracteres: minúsculas, números, puntos y guiones bajos.', ucBtn:'Guardar', ucFree:'@{u} está libre ✓', ucTaken:'@{u} ya está cogido', ucBad:'De 3 a 20 caracteres: minúsculas, números, puntos y guiones bajos. Sin punto al principio ni al final.', ucSaved:'Nombre de usuario guardado', ucBlocked:'Ese nombre de usuario no está permitido. Prueba otro.', userL:'Nombre de usuario', ccBtn:'Sí, es correcto', ctryL:'País en el que vives ahora', ctryPick:'Elige un país',
-       mktL:'Escríbeme sobre camisetas, barajas y funciones nuevas, y eventos', mktN:'Sin spam. Desactívalo aquí cuando quieras o responde «baja» a cualquier email. <a href="/privacy/">Privacidad</a>', codeSave:'Guardar código', codeBad:'Usa exactamente 4 números.', codeSaved:'Código guardado',
+       recapL:'Resumen de la mañana ☀️', recapN:'El día después de salir, te mandamos por email cuánta gente escaneó tu camiseta y cuántos retos hiciste.', mktL:'Escríbeme sobre camisetas, barajas y funciones nuevas, y eventos', mktN:'Sin spam. Desactívalo aquí cuando quieras o responde «baja» a cualquier email. <a href="/privacy/">Privacidad</a>', codeSave:'Guardar código', codeBad:'Usa exactamente 4 números.', codeSaved:'Código guardado',
        setupDone:'{n} de 4 hechos',
        guideH:'Cómo funciona tu camiseta',
        g:[['Qué pasa cuando alguien te escanea','Llega a tu página, ve tu foto y tu nombre, y saca un reto. Cuando lo acepta, te enseña el móvil y lo hacéis juntos. Todos los retos son opcionales: cualquiera de los dos puede decir que no o sacar otro.'],
@@ -366,12 +368,12 @@ function paint(){
   $('liveTxt').textContent = t('live'); $('lScans').textContent = t('scans'); $('lPeople').textContent = t('people'); $('lDone').textContent = t('done');
   $('copyLink').textContent = t('copy'); $('openLink').textContent = t('open');
   $('dEnL').textContent = t('enL'); $('dEsL').textContent = t('esL'); $('dareBtn').textContent = t('addDare');
-  $('pMktL').textContent = t('mktL'); $('pMktN').innerHTML = t('mktN');
+  $('pMktL').textContent = t('mktL'); $('pMktN').innerHTML = t('mktN'); $('pRecapL').textContent = t('recapL'); $('pRecapN').textContent = t('recapN');
   $('guide').innerHTML = t('g').map(x => '<details><summary>' + esc(x[0]) + '</summary><p>' + esc(x[1]) + '</p></details>').join('');
   $('pCtryL').textContent = t('ctryL'); $('pUserL').textContent = t('userL'); $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
   $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
-  paintProfile(); paintNameCheck(); paintUser(); paintCountry();
+  paintProfile(); paintNameCheck(); paintUser(); paintCountry(); saveLang();
   if (shirt){ paintStats(); paintDares(); paintDecks(); }
   paintSetup();
 }
@@ -383,7 +385,7 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
   if (!session){ location.replace('/login/?next=/me/'); return; }
   user = session.user;
   const [p, d, i] = await Promise.all([
-    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed, username').eq('id', user.id).maybeSingle(),
+    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed, username, recap_opt_in, lang').eq('id', user.id).maybeSingle(),
     sb.from('decks').select('id,name_en,name_es,name_hu,is_free,active,sort').order('sort'),
     sb.from('pack_interest').select('deck_id')
   ]);
@@ -516,7 +518,7 @@ $('profForm').onsubmit = async e => {
   if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)){ $('profErr').textContent = t('badIg'); $('profErr').hidden = false; return; }
   const un = $('pUser').value.trim().toLowerCase().replace(/^@/, '');
   if (un && !UN_RE.test(un)){ $('profErr').textContent = t('ucBad'); $('profErr').hidden = false; return; }
-  const upd = { name, name_confirmed: true, country: $('pCtry').value || null, country_confirmed: !!$('pCtry').value, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked, marketing_opt_in: $('pMkt').checked };
+  const upd = { name, name_confirmed: true, country: $('pCtry').value || null, country_confirmed: !!$('pCtry').value, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked, marketing_opt_in: $('pMkt').checked, recap_opt_in: $('pRecap').checked };
   if (upd.marketing_opt_in !== !!profile.marketing_opt_in) upd.marketing_opt_in_at = new Date().toISOString();
   if (un && un !== profile.username) upd.username = un;
   const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
@@ -532,7 +534,7 @@ function paintProfile(){
   $('avatar').hidden = !u; $('avatarEmpty').hidden = !!u; if (u) $('avatar').src = u;
   $('photoBtn').textContent = u ? t('photoChange') : t('photoAdd');
   $('photoDel').textContent = t('photoDel'); $('photoDel').hidden = !u;
-  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; $('pMkt').checked = !!profile.marketing_opt_in; $('pCtry').value = profile.country || ''; $('pUser').value = profile.username || ''; }
+  if (!profFilled && profile){ profFilled = true; $('pName').value = profile.name || ''; $('pIg').value = profile.instagram ? '@' + profile.instagram : ''; $('pIgPub').checked = !!profile.instagram_public; $('pMkt').checked = !!profile.marketing_opt_in; $('pRecap').checked = profile.recap_opt_in !== false; $('pCtry').value = profile.country || ''; $('pUser').value = profile.username || ''; }
   try{ if (u) localStorage.setItem('sd_avatar', u); else localStorage.removeItem('sd_avatar'); }catch(e){}
 }
 $('photoBtn').onclick = () => $('photoFile').click();
@@ -608,6 +610,13 @@ $('ncForm').onsubmit = async e => {
   if (error) return toast(t('err'));
   profile.name = name; profile.name_confirmed = true; $('pName').value = name; toast(t('saved')); paint();
 };
+
+/* ===== remember the owner's language for emails (morning recap) ===== */
+function saveLang(){
+  if (location.hash === '#recap' && profile && !window._rc){ window._rc = 1; setTimeout(() => { const r = $('recap'), d = r.closest('details'); if (d) d.open = true; r.scrollIntoView({ block:'center' }); }, 400); }
+  if (!profile || !user || profile.lang === L || !['en','es','hu'].includes(L)) return;
+  profile.lang = L; sb.from('profiles').update({ lang: L }).eq('id', user.id).then(() => {});
+}
 
 /* ===== unique username ===== */
 const unErr = (e, u) => e.code === '23505' ? t('ucTaken').replace('{u}', u) : /username_blocked|username_format/.test(e.message || '') ? t('ucBlocked') : t('err');
