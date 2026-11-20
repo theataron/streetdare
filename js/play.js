@@ -79,12 +79,12 @@ function paintExtras(){
   $('igCard').hidden = !has;
   $('igLocked').hidden = verified || practice() || demo;
   if (has){
-    ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.igLeave.replace('{ig}', owner.ig);
+    ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{ig}', owner.ig);
     $('igH').textContent = x.igH;
     const pic = $('igPic'), src = owner.photo; pic.hidden = !(src && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src)); if (!pic.hidden){ pic.src = src; pic.alt = who(); }
   }
   $('igLockP').textContent = x.lock.replace('{name}', who()); $('igLockBtn').textContent = x.lockBtn;
-  $('leaveBtn').textContent = x.leave; $('leaveBtn').hidden = has; $('byeMsg').textContent = x.bye;
+  $('leaveBtn').textContent = x.leave; $('leaveBtn').hidden = false; $('byeMsg').textContent = x.bye;
   const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') && !demo && !window.STAGE); }
 }
 document.addEventListener('langchange', paintExtras);
@@ -254,7 +254,6 @@ $('igLockBtn').onclick = () => askCode('late');
 /* after leaving (or following on Instagram) "Another dare" stays, in case they come back */
 function byeBye(){ $('leaveBtn').hidden = true; $('igLocked').hidden = true; $('byeMsg').hidden = false; }
 $('leaveBtn').onclick = byeBye;
-$('igReveal').addEventListener('click', () => setTimeout(byeBye, 400));
 
 /* ----- the owner's photo next to their name ----- */
 function paintPhoto(){
