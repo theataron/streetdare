@@ -4,7 +4,7 @@
      quests - optional extra quests only this shirt has, as [English, Español, 18+ (1 or 0), Magyar] ===== */
 const SHIRTS = {
   aron: {
-    name: 'Aron',
+    name: 'Áron',
     quests: [
       ['Kiss me (I’m gay 🏳️‍🌈)', 'Bésame (soy gay 🏳️‍🌈)', 1, 'Csókolj meg (meleg vagyok 🏳️‍🌈)']
     ]
