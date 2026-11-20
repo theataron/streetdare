@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STREETDARE · Shirtless Pass</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbf8ef">
+<link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.pp{padding:4px 0 90px}
+.pp h1{font-size:clamp(2.2rem,10vw,3rem);color:var(--red);transform:rotate(-2deg);margin:12px 0 10px}
+.pp .lead{font-size:1.08rem;margin:0 0 20px}
+.panel{background:var(--card);border:2.5px solid var(--ink);border-radius:20px;padding:18px;margin:16px 0;box-shadow:var(--sh)}
+.panel h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.45rem;margin-bottom:6px}
+.panel .sub{margin-bottom:12px;font-size:.95rem}
+.field{display:grid;gap:6px;margin-bottom:14px;text-align:left}
+.field label{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.field small{color:var(--mute);font-size:.85rem}
+.in,.field input,.field textarea{width:100%;font:500 1.05rem "DM Sans",sans-serif;padding:14px 16px;border:2.5px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink)}
+.at{display:flex;align-items:center;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding-left:14px}
+.at span{font-weight:700}
+.at input{border:0!important;background:transparent!important;padding-left:4px!important;outline:none}
+.codein{font:400 1.7rem "Bagel Fat One",sans-serif!important;letter-spacing:.18em;text-align:center;text-transform:uppercase}
+.err{color:var(--red);font-weight:600;font-size:.92rem;margin:6px 0}
+.ok{color:#1d7a43;font-weight:600;font-size:.92rem}
+.small{font-size:.86rem;color:var(--mute);text-align:center;margin-top:12px}
+.gbtn{display:flex!important;align-items:center;justify-content:center;gap:10px}
+.gbtn svg{width:20px;height:20px}
+.seatline{display:inline-block;background:var(--blush);color:var(--red);font-weight:800;border-radius:99px;padding:6px 14px;font-size:.92rem;margin-bottom:16px}
+.loading{text-align:center;color:var(--mute);padding:60px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:.92rem;z-index:30;max-width:90vw;text-align:center}
+.wa{background:#1f8f4e!important;color:#fff!important}
+.mini{font:700 .85rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:99px;background:var(--card);padding:7px 13px;cursor:pointer;color:var(--ink);white-space:nowrap;text-decoration:none;display:inline-block}
+.mini.red{background:var(--red);color:#fff}
+.mini.plain{border-color:transparent;background:none;text-decoration:underline;color:var(--mute);padding:7px 4px}
+.mini:disabled{opacity:.5}
+/* night header */
+.nighthead{position:sticky;top:0;z-index:5;background:var(--ink);color:var(--bg);border-radius:0 0 20px 20px;margin:0 -20px;padding:12px 20px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.nighthead b{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.25rem;line-height:1.05;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nighthead small{color:#d9cdc6;font-size:.8rem}
+.clock{font:400 1.35rem "Bagel Fat One",sans-serif;font-variant-numeric:tabular-nums;background:var(--red);border-radius:12px;padding:6px 10px 3px;white-space:nowrap}
+.navrow{display:flex;justify-content:space-between;gap:10px;margin:10px 0 0;font-size:.88rem}
+.navrow a{color:var(--mute)}
+/* leaderboard */
+.board{list-style:none;padding:0;margin:4px 0 0}
+.board li{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1.5px solid #eadfd2}
+.board li:first-child{border-top:0}
+.board li.me{background:var(--blush);border-radius:14px;padding:10px;margin:0 -10px;border-top-color:transparent}
+.board .rk{width:28px;text-align:center;font-weight:800;font-size:1.1rem}
+.av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--ink);background:var(--blush);display:grid;place-items:center;font-weight:800;flex:none}
+.board .nm{flex:1;min-width:0}
+.board .nm b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board .nm small{color:var(--mute);font-size:.82rem}
+.board .pts{font:400 1.5rem "Bagel Fat One",sans-serif}
+.board .pts small{font:700 .7rem "DM Sans",sans-serif;color:var(--mute);margin-left:2px}
+/* dare card */
+.darecard{background:var(--red);color:#fff;border:2.5px solid var(--ink);border-radius:22px;padding:22px 18px;margin:16px 0;box-shadow:var(--sh);transform:rotate(-.6deg)}
+.darecard .k{font-weight:800;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;opacity:.9;display:flex;justify-content:space-between;gap:10px}
+.darecard p{font-size:1.32rem;font-weight:700;line-height:1.3;margin:12px 0 14px}
+.darecard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.darecard .tags span{background:rgba(255,255,255,.18);border-radius:99px;padding:4px 10px;font-size:.8rem;font-weight:700}
+.darecard .btn{background:#fff;color:var(--ink)}
+.darecard .btn.plain{color:#fff;background:none}
+.ptsbadge{background:#fff;color:var(--red);border-radius:99px;padding:3px 10px;font-weight:800;letter-spacing:0}
+/* finish sheet */
+.sheet{position:fixed;inset:0;background:rgba(27,20,18,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet .box{background:var(--bg);width:100%;max-width:560px;max-height:92dvh;overflow:auto;border-radius:24px 24px 0 0;padding:22px 20px 30px;border-top:2.5px solid var(--ink)}
+.sheet h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.6rem;margin-bottom:10px}
+.handoff{background:var(--ink);color:#fff;border-radius:18px;padding:16px;margin:0 0 14px}
+.handoff b{display:block;font-size:1.15rem;margin-bottom:4px}
+.handoff small{color:#d9cdc6}
+.handoff input{margin-top:12px;font-size:1.3rem!important;text-align:center;font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{border:2px solid var(--ink);border-radius:99px;background:#fff;padding:8px 14px;font:700 .95rem "DM Sans",sans-serif;cursor:pointer;color:var(--ink)}
+.chips button.on{background:var(--ink);color:var(--bg)}
+.photopick{display:flex;align-items:center;gap:12px;background:#fff;border:2.5px dashed var(--ink);border-radius:16px;padding:12px;cursor:pointer}
+.photopick img{width:64px;height:64px;object-fit:cover;border-radius:10px}
+.photopick .ph{width:64px;height:64px;border-radius:10px;background:var(--blush);display:grid;place-items:center;font-size:1.7rem;flex:none}
+.photopick b{display:block}
+.photopick small{color:var(--mute);font-size:.85rem}
+/* feed */
+.notice{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 12px;font-size:.86rem;margin:0 0 10px;display:flex;gap:8px}
+.notice.warn{background:var(--blush);border-color:var(--red)}
+.compose{display:grid;gap:8px;margin:6px 0 14px}
+.compose textarea{min-height:52px;resize:vertical}
+.compose .row{display:flex;gap:8px;align-items:center}
+.compose .row .btn{width:auto;flex:1;padding:12px 16px}
+.replying{font-size:.85rem;background:var(--blush);border-radius:12px;padding:6px 10px;display:flex;justify-content:space-between;gap:8px}
+.msgs{list-style:none;padding:0;margin:0}
+.msgs li{padding:12px 0;border-top:1.5px solid #eadfd2;display:flex;gap:10px}
+.msgs li:first-child{border-top:0}
+.msgs .av{width:34px;height:34px;font-size:.85rem}
+.msgs .body{flex:1;min-width:0}
+.msgs .who{font-size:.82rem;color:var(--mute)}
+.msgs .who b{color:var(--ink)}
+.msgs .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.msgs .play{font-weight:700}
+.msgs .play.void{text-decoration:line-through;opacity:.55}
+.msgs .join{color:var(--mute);font-size:.9rem;font-style:italic}
+.msgs img.pic{display:block;max-width:100%;max-height:340px;border-radius:14px;border:2px solid var(--ink);margin-top:8px;object-fit:cover;background:var(--blush)}
+.msgs .gone{font-size:.85rem;color:var(--mute);margin-top:6px}
+.msgs .quote{border-left:3px solid var(--red);padding:2px 8px;margin:4px 0;font-size:.85rem;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msgs .acts{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.msgs .acts button{background:none;border:0;font:600 .8rem "DM Sans",sans-serif;color:var(--mute);cursor:pointer;padding:4px 6px}
+.msgs .acts button.on{color:var(--red)}
+.ptag{display:inline-block;background:#d9f0e2;color:#1d7a43;border-radius:99px;padding:1px 8px;font-size:.75rem;font-weight:800;margin-left:6px;vertical-align:middle}
+/* invite */
+.invite{text-align:center}
+.qr{width:200px;height:200px;margin:8px auto 10px;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:10px}
+.qr svg{width:100%;height:100%;display:block}
+.bigcode{font:400 2rem "Bagel Fat One",sans-serif;letter-spacing:.14em;margin:4px 0}
+.nights{list-style:none;padding:0;margin:0}
+.nights li{border-top:1.5px solid #eadfd2;padding:12px 0;display:flex;align-items:center;gap:10px}
+.nights li:first-child{border-top:0}
+.nights li a{flex:1;text-decoration:none}
+.nights b{display:block}
+.nights small{color:var(--mute)}
+.ended{background:var(--ink);color:#fff;border-radius:20px;padding:18px;margin:16px 0;text-align:center}
+.ended h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.6rem}
+.howto{background:var(--ink);color:#fff;border-radius:20px;padding:18px;margin:16px 0}
+.howto h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.4rem;margin-bottom:8px}
+.howto ol{margin:0 0 14px 1.1em;padding:0;display:grid;gap:6px}
+.howto .btn{background:#fff;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="top">
+    <a class="mark display" href="/?home=1">STREETDARE</a>
+    <div class="right"><button class="lang" id="lang" aria-label="Language">EN</button></div>
+  </header>
+
+  <main class="pp">
+    <p class="loading" id="v-loading">…</p>
+
+    <!-- not logged in, came with a code -->
+    <section id="v-gate" hidden>
+      <h1 class="display" id="gH"></h1>
+      <span class="seatline" id="gSeats" hidden></span>
+      <p class="lead" id="gP"></p>
+      <div class="stack">
+        <button class="btn gbtn" id="gGoogle" type="button">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 38.2 44 33 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+          <span id="gGoogleTxt"></span>
+        </button>
+        <a class="btn red" id="gEmail"></a>
+      </div>
+      <p class="small" id="gSmall"></p>
+    </section>
+
+    <!-- logged in, profile missing name / username -->
+    <section id="v-profile" hidden>
+      <h1 class="display" id="pfH"></h1>
+      <p class="lead" id="pfP"></p>
+      <form id="pfForm" novalidate>
+        <div class="field"><label id="pfNameL" for="pfName"></label><input id="pfName" maxlength="40" autocomplete="given-name" required></div>
+        <div class="field"><label id="pfUserL" for="pfUser"></label>
+          <div class="at"><span>@</span><input id="pfUser" class="in" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" required></div>
+          <small id="pfUserMsg"></small></div>
+        <div class="field"><label id="pfIgL" for="pfIg"></label>
+          <div class="at"><span>@</span><input id="pfIg" class="in" maxlength="30" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div>
+          <small id="pfIgS"></small></div>
+        <p class="err" id="pfErr" hidden></p>
+        <button class="btn red" type="submit" id="pfBtn"></button>
+      </form>
+    </section>
+
+    <!-- first person: name the night -->
+    <section id="v-first" hidden>
+      <h1 class="display" id="fH"></h1>
+      <p class="lead" id="fP"></p>
+      <form id="fForm" novalidate>
+        <div class="field"><input id="fName" maxlength="40" required></div>
+        <p class="err" id="fErr" hidden></p>
+        <button class="btn red big" type="submit" id="fBtn"></button>
+      </form>
+      <p class="small" id="fSmall"></p>
+    </section>
+
+    <!-- joining a night that already started -->
+    <section id="v-join" hidden>
+      <h1 class="display" id="jH"></h1>
+      <p class="lead" id="jP"></p>
+      <p class="err" id="jErr" hidden></p>
+      <button class="btn red big" type="button" id="jBtn"></button>
+    </section>
+
+    <!-- something is wrong with the code -->
+    <section id="v-msg" hidden>
+      <h1 class="display" id="mH"></h1>
+      <p class="lead" id="mP"></p>
+      <div class="stack">
+        <a class="btn wa" id="mWa" target="_blank" rel="noopener"></a>
+        <a class="btn" id="mHub" href="/pass/"></a>
+      </div>
+    </section>
+
+    <!-- hub: no code -->
+    <section id="v-hub" hidden>
+      <div class="kicker" id="hK"></div>
+      <h1 class="display" id="hH"></h1>
+      <p class="lead" id="hP"></p>
+      <section class="panel" id="hCodeBox">
+        <h2 id="hCodeH"></h2>
+        <p class="sub" id="hCodeP"></p>
+        <form id="hForm" novalidate>
+          <div class="field"><input class="in codein" id="hCode" maxlength="9" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX"></div>
+          <p class="err" id="hErr" hidden></p>
+          <button class="btn red" type="submit" id="hBtn"></button>
+        </form>
+      </section>
+      <section class="panel" id="hPast" hidden>
+        <h2 id="hPastH"></h2>
+        <ul class="nights" id="hNights"></ul>
+      </section>
+      <section class="panel">
+        <h2 id="hBuyH"></h2>
+        <p class="sub" id="hBuyP"></p>
+        <a class="btn wa" id="hWa" target="_blank" rel="noopener"></a>
+      </section>
+      <p class="small" id="hLogin" hidden></p>
+    </section>
+
+    <!-- the night -->
+    <section id="v-night" hidden>
+      <div class="nighthead">
+        <div style="min-width:0"><b id="nName"></b><small id="nSub"></small></div>
+        <div class="clock" id="nClock">--:--:--</div>
+      </div>
+      <div class="navrow"><a href="/pass/?all=1" id="nAll"></a><a href="/me/?stay=1" id="nProfile"></a></div>
+
+      <div class="howto" id="nHow" hidden>
+        <h2 id="howH"></h2>
+        <ol><li id="how1"></li><li id="how2"></li><li id="how3"></li></ol>
+        <button class="btn" type="button" id="howBtn"></button>
+      </div>
+
+      <div class="ended" id="nEnded" hidden><h2 id="endH"></h2><p id="endP"></p></div>
+
+      <div id="nPlay">
+        <div class="darecard" id="dCard">
+          <div class="k"><span id="dK"></span><span class="ptsbadge" id="dPts"></span></div>
+          <p id="dText"></p>
+          <div class="tags" id="dTags"></div>
+          <div class="stack">
+            <button class="btn" type="button" id="dDone"></button>
+            <button class="btn plain" type="button" id="dNext"></button>
+          </div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h2 id="bH"></h2>
+        <ul class="board" id="board"></ul>
+      </section>
+
+      <section class="panel">
+        <h2 id="feedH"></h2>
+        <div class="notice"><span>🔒</span><span id="privNote"></span></div>
+        <div class="notice warn" id="photoNote"><span>📸</span><span><span id="photoNoteTxt"></span> <button class="mini" type="button" id="saveAll" style="margin-top:6px"></button></span></div>
+        <form class="compose" id="cForm" novalidate>
+          <div class="replying" id="cReply" hidden><span id="cReplyTxt"></span><button class="mini plain" type="button" id="cReplyX">✕</button></div>
+          <textarea class="in" id="cText" maxlength="500"></textarea>
+          <div class="row">
+            <label class="mini" for="cFile" id="cPhotoL" style="padding:12px 14px">📷</label>
+            <input type="file" id="cFile" accept="image/*" hidden>
+            <button class="btn red" type="submit" id="cSend"></button>
+          </div>
+          <div id="cPreview" hidden class="photopick" style="border-style:solid;cursor:default"><img id="cPreviewImg" alt=""><span style="flex:1"><b id="cPreviewTxt"></b></span><button class="mini plain" type="button" id="cPreviewX">✕</button></div>
+        </form>
+        <ul class="msgs" id="msgs"></ul>
+      </section>
+
+      <section class="panel invite" id="inv">
+        <h2 id="invH"></h2>
+        <p class="sub" id="invP"></p>
+        <div id="invHas">
+          <div class="qr" id="invQr"></div>
+          <div class="bigcode" id="invCode"></div>
+          <button class="mini" type="button" id="invShare"></button>
+        </div>
+        <div id="invNone" hidden>
+          <a class="btn wa" id="invWa" target="_blank" rel="noopener"></a>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<!-- finishing a dare -->
+<div class="sheet" id="sheet" hidden>
+  <div class="box">
+    <h2 id="sH"></h2>
+    <div class="handoff" id="sAnsBox" hidden>
+      <b id="sAnsH"></b><small id="sAnsS"></small>
+      <input class="in" id="sAns" maxlength="60" autocomplete="off">
+    </div>
+    <div class="field" id="sWithBox" hidden>
+      <label id="sWithL"></label>
+      <div class="chips" id="sWith"></div>
+    </div>
+    <div class="field">
+      <label id="sPhotoL"></label>
+      <label class="photopick" for="sFile"><span class="ph" id="sPh">📸</span><img id="sImg" alt="" hidden><span><b id="sPhotoB"></b><small id="sPhotoS"></small></span></label>
+      <input type="file" id="sFile" accept="image/*" hidden>
+    </div>
+    <p class="err" id="sErr" hidden></p>
+    <div class="stack">
+      <button class="btn red big" type="button" id="sGo"></button>
+      <button class="btn plain" type="button" id="sCancel"></button>
+    </div>
+  </div>
+</div>
+
+<!-- save all photos: second tap shares (phones only allow sharing straight after a tap) -->
+<div class="sheet" id="saveSheet" hidden>
+  <div class="box">
+    <h2 id="svH"></h2>
+    <p class="sub" id="svP"></p>
+    <div class="stack" style="margin-top:12px">
+      <button class="btn red" type="button" id="svGo"></button>
+      <div id="svLinks" class="chips"></div>
+      <button class="btn plain" type="button" id="svX"></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="../js/langpick.js"></script>
+<script type="module">
+import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
+import qrcode from '../js/vendor/qrcode.mjs';
+const $ = id => document.getElementById(id);
+const WA = 'https://wa.me/36308904103';
+const PHOTO_DAYS = 7;
+
+const T = {
+  en:{
+    gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
+    gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
+    gGoogle:'Continue with Google', gEmail:'Continue with email', gSmall:'New here or been before, it’s the same button.',
+    pfH:'Quick, who are you? 👋', pfP:'Your group sees your name and username in the feed and on the leaderboard.',
+    pfNameL:'Your name', pfUserL:'Username', pfIgL:'Instagram (optional)', pfIgS:'Only your group sees it.', pfBtn:'Let’s go 🔥',
+    ucFree:'@{u} is free ✓', ucTaken:'@{u} is taken. Try another one.', ucBlocked:'Pick a different username.', ucBad:'3 to 20 characters: letters, numbers, . and _',
+    needName:'Write your name first.', needUser:'Pick a free username first.',
+    fH:'You’re the first one here 🎉', fP:'Give your night a name. Everyone in your group will see it.', fPh:'Chaos Night', fBtn:'Start the night ⏱', fSmall:'The 24 hours start now, for the whole group.',
+    jH:'Welcome to {name} 🔥', jP:'{names} {are} already in. You all have {time} left.', jPEmpty:'You all have {time} left.', jBtn:'I’m in', isOne:'is', areMany:'are', and:'and',
+    badH:'That code doesn’t work 🤔', badP:'Check the code, or message Aron and he’ll sort it out.',
+    fullH:'This pass is full', fullP:'All the seats are taken. Message Aron and he’ll add one more for €5.',
+    endedH:'This night is over 🌙', endedP:'The 24 hours have run out. Want to play again? Message Aron.',
+    expiredH:'This code has expired', expiredP:'Codes work for 30 days. Message Aron for a new one.',
+    waitH:'Too many tries', waitP:'Wait 15 minutes and try again.',
+    waBtn:'Message Aron on WhatsApp 💬', hubBtn:'Shirtless Pass',
+    hK:'No shirt yet? No problem', hH:'Shirtless Pass 🎟️', hP:'24 hours of STREETDARE for you and your friends. Go up to strangers, do dares, collect points and see who wins the night.',
+    hCodeH:'Got a code?', hCodeP:'Type it here, or scan the QR on Aron’s or a friend’s phone.', hBtn:'Take my seat',
+    hPastH:'Your nights', active:'Live now', rankOf:'#{r} of {n} · {p} pts', hBuyH:'Want to play?', hBuyP:'Message Aron and tell him how many of you there are. A seat is €5, and it comes off your shirt later.',
+    hLogin:'Played before? <a href="/login/?next=/pass/">Log in</a> to see your nights.',
+    nAll:'← All my nights', nProfile:'My profile →', nSub:'{n} in the group',
+    howH:'How it works', how1:'Go up to strangers and do the dares on your phone.', how2:'Every dare gives you points. Friends from your group can jump in, and everyone who joins gets the points.', how3:'Most points when the timer hits zero wins the night.', howBtn:'Let’s go 🔥',
+    endH:'The night is over 🌙', endP:'{name} won with {p} points 👑',
+    dK:'Your dare', pts:'+{p}', tagAns:'✍️ The stranger types', tagPhoto:'📸 Photo', dDone:'We did it ✅', dNext:'Give me another one', allDone:'You did every dare tonight 🤯 Legend.',
+    sH:'Nice! 🔥', sAnsH:'Hand your phone to the stranger 👋', sAnsS:'Keep holding it while they type.', sWithL:'Who from your group did it with you?', sPhotoL:'Photo',
+    sPhotoNeed:'Add the photo', sPhotoNeedS:'This dare needs a photo for the group.', sPhotoOpt:'Selfie with them? +1 point', sPhotoOptS:'Ask them first. Your group sees it for 7 days.', sPhotoOk:'Photo ready ✓', sPhotoChange:'Tap to change it',
+    sGo:'Count it', sCancel:'Back', sNeedAns:'Let them type their answer first.', sNeedPhoto:'This one needs a photo.', sDoneBefore:'You already did this dare tonight.', sEnded:'The night is over.',
+    gotPts:'+{p} points 🔥', uploading:'Uploading…', saving:'Saving…', err:'Something went wrong. Try again.',
+    bH:'Leaderboard', you:'you', ptsShort:'pts', daresN:'{n} dares', dares1:'1 dare',
+    feedH:'Group Feed', privNote:'Only your group sees this feed. During the launch phase, STREETDARE (Aron) can see it too, to learn how the game is played.',
+    photoNote:'Photos stay here for 7 days, then they disappear.', photoNoteLeft:'Photos disappear in {d}. Save them before they’re gone.', saveAll:'Save all photos',
+    cPh:'Write to your group…', cSend:'Send', cReplyTo:'Replying to {name}', cPreview:'Photo ready', reply:'Reply', del:'Delete', delQ:'Delete this?', challenge:'❌ Didn’t happen', challenged:'❌ {n}', voided:'Doesn’t count (the group said it didn’t happen)',
+    joined:'🎟️ {name} joined the night', photoGone:'📸 This photo has disappeared (7 days).', and2:' & ', empty:'Nothing yet. Do the first dare 👆',
+    invH:'Invite someone 🎟️', invP:'{l} of {s} seats left. They scan this QR or type the code.', invNone:'No seats left. Message Aron to add one more seat (€5).', invShare:'Share the link', invCopied:'Link copied',
+    svH:'Save all photos', svP:'{n} photos from {name}.', svNone:'No photos in this night yet.', svGo:'Save {n} photos', svPrep:'Getting the photos…', svX:'Close',
+    days1:'1 day', daysN:'{d} days', hours:'less than a day', timeLeft:'{h}h {m}m'
+  },
+  es:{
+    gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
+    gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
+    gGoogle:'Continuar con Google', gEmail:'Continuar con email', gSmall:'Si eres nuevo o ya has jugado, es el mismo botón.',
+    pfH:'Rápido, ¿quién eres? 👋', pfP:'Tu grupo ve tu nombre y tu usuario en el feed y en la clasificación.',
+    pfNameL:'Tu nombre', pfUserL:'Usuario', pfIgL:'Instagram (opcional)', pfIgS:'Solo lo ve tu grupo.', pfBtn:'Vamos 🔥',
+    ucFree:'@{u} está libre ✓', ucTaken:'@{u} ya está cogido. Prueba otro.', ucBlocked:'Elige otro usuario.', ucBad:'De 3 a 20 caracteres: letras, números, . y _',
+    needName:'Escribe primero tu nombre.', needUser:'Elige primero un usuario libre.',
+    fH:'Eres el primero 🎉', fP:'Ponle nombre a vuestra noche. Todo tu grupo lo verá.', fPh:'Noche Caos', fBtn:'Empezar la noche ⏱', fSmall:'Las 24 horas empiezan ahora, para todo el grupo.',
+    jH:'Bienvenido a {name} 🔥', jP:'{names} ya {are} dentro. Os quedan {time}.', jPEmpty:'Os quedan {time}.', jBtn:'Me apunto', isOne:'está', areMany:'están', and:'y',
+    badH:'Ese código no funciona 🤔', badP:'Revisa el código o escríbele a Aron y lo arregla.',
+    fullH:'Este pase está lleno', fullP:'Todas las plazas están cogidas. Escríbele a Aron y añade una más por 5 €.',
+    endedH:'Esta noche se ha acabado 🌙', endedP:'Se han acabado las 24 horas. ¿Queréis jugar otra vez? Escríbele a Aron.',
+    expiredH:'Este código ha caducado', expiredP:'Los códigos valen 30 días. Pídele uno nuevo a Aron.',
+    waitH:'Demasiados intentos', waitP:'Espera 15 minutos y vuelve a probar.',
+    waBtn:'Escribir a Aron por WhatsApp 💬', hubBtn:'Shirtless Pass',
+    hK:'¿Aún sin camiseta? Sin problema', hH:'Shirtless Pass 🎟️', hP:'24 horas de STREETDARE para ti y tus amigos. Acercaos a desconocidos, haced retos, sumad puntos y ved quién gana la noche.',
+    hCodeH:'¿Tienes un código?', hCodeP:'Escríbelo aquí o escanea el QR del móvil de Aron o de un amigo.', hBtn:'Coger mi plaza',
+    hPastH:'Tus noches', active:'En directo', rankOf:'#{r} de {n} · {p} pts', hBuyH:'¿Queréis jugar?', hBuyP:'Escríbele a Aron y dile cuántos sois. Una plaza cuesta 5 € y luego se descuenta de tu camiseta.',
+    hLogin:'¿Ya has jugado? <a href="/login/?next=/pass/">Entra</a> para ver tus noches.',
+    nAll:'← Todas mis noches', nProfile:'Mi perfil →', nSub:'{n} en el grupo',
+    howH:'Cómo funciona', how1:'Acércate a desconocidos y haz los retos del móvil.', how2:'Cada reto da puntos. Tus amigos del grupo pueden unirse, y todos los que se unen se llevan los puntos.', how3:'Quien tenga más puntos cuando el contador llegue a cero gana la noche.', howBtn:'Vamos 🔥',
+    endH:'La noche se ha acabado 🌙', endP:'{name} ha ganado con {p} puntos 👑',
+    dK:'Tu reto', pts:'+{p}', tagAns:'✍️ El desconocido escribe', tagPhoto:'📸 Foto', dDone:'¡Hecho! ✅', dNext:'Dame otro', allDone:'Has hecho todos los retos de esta noche 🤯 Leyenda.',
+    sH:'¡Bien! 🔥', sAnsH:'Pásale el móvil al desconocido 👋', sAnsS:'No lo sueltes mientras escribe.', sWithL:'¿Quién de tu grupo lo ha hecho contigo?', sPhotoL:'Foto',
+    sPhotoNeed:'Añade la foto', sPhotoNeedS:'Este reto necesita una foto para el grupo.', sPhotoOpt:'¿Selfie con esa persona? +1 punto', sPhotoOptS:'Pregúntale antes. Tu grupo la ve durante 7 días.', sPhotoOk:'Foto lista ✓', sPhotoChange:'Toca para cambiarla',
+    sGo:'Que cuente', sCancel:'Volver', sNeedAns:'Deja primero que escriba su respuesta.', sNeedPhoto:'Este reto necesita una foto.', sDoneBefore:'Ya has hecho este reto esta noche.', sEnded:'La noche se ha acabado.',
+    gotPts:'+{p} puntos 🔥', uploading:'Subiendo…', saving:'Guardando…', err:'Algo ha fallado. Inténtalo otra vez.',
+    bH:'Clasificación', you:'tú', ptsShort:'pts', daresN:'{n} retos', dares1:'1 reto',
+    feedH:'Group Feed', privNote:'Solo tu grupo ve este feed. Durante la fase de lanzamiento, STREETDARE (Aron) también puede verlo, para aprender cómo se juega.',
+    photoNote:'Las fotos se quedan aquí 7 días y luego desaparecen.', photoNoteLeft:'Las fotos desaparecen en {d}. Guárdalas antes de que se vayan.', saveAll:'Guardar todas las fotos',
+    cPh:'Escribe a tu grupo…', cSend:'Enviar', cReplyTo:'Respondiendo a {name}', cPreview:'Foto lista', reply:'Responder', del:'Borrar', delQ:'¿Borrar esto?', challenge:'❌ No pasó', challenged:'❌ {n}', voided:'No cuenta (el grupo dice que no pasó)',
+    joined:'🎟️ {name} se ha unido a la noche', photoGone:'📸 Esta foto ha desaparecido (7 días).', and2:' y ', empty:'Todavía nada. Haced el primer reto 👆',
+    invH:'Invita a alguien 🎟️', invP:'Quedan {l} de {s} plazas. Que escanee este QR o escriba el código.', invNone:'No quedan plazas. Escríbele a Aron para añadir una más (5 €).', invShare:'Compartir el enlace', invCopied:'Enlace copiado',
+    svH:'Guardar todas las fotos', svP:'{n} fotos de {name}.', svNone:'Todavía no hay fotos en esta noche.', svGo:'Guardar {n} fotos', svPrep:'Preparando las fotos…', svX:'Cerrar',
+    days1:'1 día', daysN:'{d} días', hours:'menos de un día', timeLeft:'{h} h {m} min'
+  },
+  hu:{
+    gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
+    gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
+    gGoogle:'Folytatás Google-fiókkal', gEmail:'Folytatás e-maillel', gSmall:'Akár új vagy, akár játszottál már, ugyanez a gomb.',
+    pfH:'Gyorsan, ki vagy? 👋', pfP:'A csapatod látja a neved és a felhasználóneved a feedben és a ranglistán.',
+    pfNameL:'A neved', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfBtn:'Mehet 🔥',
+    ucFree:'@{u} szabad ✓', ucTaken:'@{u} már foglalt. Próbálj másikat.', ucBlocked:'Válassz másik felhasználónevet.', ucBad:'3–20 karakter: betűk, számok, . és _',
+    needName:'Előbb írd be a neved.', needUser:'Előbb válassz egy szabad felhasználónevet.',
+    fH:'Te vagy itt az első 🎉', fP:'Adj nevet az estének. Az egész csapatod látni fogja.', fPh:'Káosz Este', fBtn:'Kezdődjön az este ⏱', fSmall:'A 24 óra most indul, az egész csapatnak.',
+    jH:'Üdv itt: {name} 🔥', jP:'{names} már bent {are}. Még {time} van hátra.', jPEmpty:'Még {time} van hátra.', jBtn:'Benne vagyok', isOne:'van', areMany:'vannak', and:'és',
+    badH:'Ez a kód nem működik 🤔', badP:'Nézd meg a kódot, vagy írj Aronnak, és elintézi.',
+    fullH:'Ez a pass betelt', fullP:'Minden hely foglalt. Írj Aronnak, és 5 €-ért hozzáad még egyet.',
+    endedH:'Ennek az estének vége 🌙', endedP:'Letelt a 24 óra. Játszanátok még? Írjatok Aronnak.',
+    expiredH:'Ez a kód lejárt', expiredP:'A kódok 30 napig érvényesek. Kérj újat Arontól.',
+    waitH:'Túl sok próbálkozás', waitP:'Várj 15 percet, és próbáld újra.',
+    waBtn:'Írok Aronnak WhatsAppon 💬', hubBtn:'Shirtless Pass',
+    hK:'Még nincs pólód? Semmi gond', hH:'Shirtless Pass 🎟️', hP:'24 óra STREETDARE neked és a barátaidnak. Menjetek oda idegenekhez, csináljatok kihívásokat, gyűjtsetek pontokat, és kiderül, ki nyeri az estét.',
+    hCodeH:'Van kódod?', hCodeP:'Írd be ide, vagy szkenneld be a QR-t Aron vagy egy barátod telefonjáról.', hBtn:'Elfoglalom a helyem',
+    hPastH:'Az estéid', active:'Élő', rankOf:'{n}-ből #{r} · {p} pont', hBuyH:'Játszanátok?', hBuyP:'Írj Aronnak, és mondd meg, hányan vagytok. Egy hely 5 €, és később levonjuk a pólód árából.',
+    hLogin:'Játszottál már? <a href="/login/?next=/pass/">Lépj be</a>, és látod az estéidet.',
+    nAll:'← Az összes estém', nProfile:'A profilom →', nSub:'{n} fő a csapatban',
+    howH:'Hogy működik', how1:'Menj oda idegenekhez, és csináld meg a kihívásokat a telefonodról.', how2:'Minden kihívás pontot ér. A csapatodból bárki beszállhat, és mindenki megkapja a pontokat, aki részt vett.', how3:'Akinek a legtöbb pontja van, amikor lejár az idő, az nyeri az estét.', howBtn:'Mehet 🔥',
+    endH:'Vége az estének 🌙', endP:'{name} nyert {p} ponttal 👑',
+    dK:'A kihívásod', pts:'+{p}', tagAns:'✍️ Az idegen írja be', tagPhoto:'📸 Fotó', dDone:'Megcsináltuk ✅', dNext:'Kérek egy másikat', allDone:'Ma este minden kihívást megcsináltál 🤯 Legenda.',
+    sH:'Szép! 🔥', sAnsH:'Add oda a telefonod az idegennek 👋', sAnsS:'Tartsd a kezedben, amíg beírja.', sWithL:'Ki csinálta veled a csapatodból?', sPhotoL:'Fotó',
+    sPhotoNeed:'Add hozzá a fotót', sPhotoNeedS:'Ehhez a kihíváshoz fotó kell a csapatnak.', sPhotoOpt:'Egy szelfi vele? +1 pont', sPhotoOptS:'Előbb kérdezd meg. A csapatod 7 napig látja.', sPhotoOk:'A fotó kész ✓', sPhotoChange:'Koppints a cseréhez',
+    sGo:'Számoljuk', sCancel:'Vissza', sNeedAns:'Előbb hadd írja be a válaszát.', sNeedPhoto:'Ehhez fotó kell.', sDoneBefore:'Ezt a kihívást ma már megcsináltad.', sEnded:'Vége az estének.',
+    gotPts:'+{p} pont 🔥', uploading:'Feltöltés…', saving:'Mentés…', err:'Valami hiba történt. Próbáld újra.',
+    bH:'Ranglista', you:'te', ptsShort:'pont', daresN:'{n} kihívás', dares1:'1 kihívás',
+    feedH:'Group Feed', privNote:'Ezt a feedet csak a csapatod látja. A bevezető időszakban a STREETDARE (Aron) is látja, hogy tanuljon belőle, hogyan játsszátok.',
+    photoNote:'A fotók 7 napig maradnak itt, utána eltűnnek.', photoNoteLeft:'A fotók {d} múlva eltűnnek. Mentsd el őket, mielőtt eltűnnek.', saveAll:'Az összes fotó mentése',
+    cPh:'Írj a csapatnak…', cSend:'Küldés', cReplyTo:'Válasz neki: {name}', cPreview:'A fotó kész', reply:'Válasz', del:'Törlés', delQ:'Törlöd?', challenge:'❌ Nem történt meg', challenged:'❌ {n}', voided:'Nem számít (a csapat szerint nem történt meg)',
+    joined:'🎟️ {name} csatlakozott az estéhez', photoGone:'📸 Ez a fotó eltűnt (7 nap).', and2:' és ', empty:'Még semmi. Csináljátok meg az első kihívást 👆',
+    invH:'Hívj meg valakit 🎟️', invP:'{s} helyből {l} szabad. Szkennelje be ezt a QR-t, vagy írja be a kódot.', invNone:'Nincs több szabad hely. Írj Aronnak, és hozzáad még egyet (5 €).', invShare:'Link megosztása', invCopied:'Link kimásolva',
+    svH:'Az összes fotó mentése', svP:'{n} fotó innen: {name}.', svNone:'Ebben az estében még nincs fotó.', svGo:'{n} fotó mentése', svPrep:'Fotók előkészítése…', svX:'Bezárás',
+    days1:'1 nap', daysN:'{d} nap', hours:'kevesebb mint egy nap', timeLeft:'{h} ó {m} p'
+  }
+};
+let L = lang();
+const t = (k, v) => { let s = (T[L] || {})[k] ?? T.en[k] ?? k; if (v) for (const x in v) s = s.split('{' + x + '}').join(v[x]); return s; };
+const params = new URLSearchParams(location.search);
+const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const fmtCode = c => c.length === 8 ? c.slice(0,4) + '-' + c.slice(4) : c;
+let code = normCode(params.get('c'));
+let session = null, user = null, profile = null, night = null, info = null, dares = [], msgs = [], skew = 0, clockT, current = null, renderHook = () => {};
+let toastT; function toast(m){ $('toast').textContent = m; $('toast').hidden = false; clearTimeout(toastT); toastT = setTimeout(() => $('toast').hidden = true, 2600); }
+const VIEWS = ['loading','gate','profile','first','join','msg','hub','night'];
+function view(v){ VIEWS.forEach(n => $('v-' + n).hidden = n !== v); window.scrollTo(0, 0); current = v; paint(); }
+const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
+
+function timeLeft(ms){ ms = Math.max(0, ms); const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60; return t('timeLeft', { h, m }); }
+function clockStr(ms){ ms = Math.max(0, ms); const s = Math.floor(ms / 1000), p = n => String(n).padStart(2, '0'); return p(Math.floor(s / 3600)) + ':' + p(Math.floor(s / 60) % 60) + ':' + p(s % 60); }
+const now = () => Date.now() + skew;
+const initial = n => esc((n || '?').trim().charAt(0).toUpperCase());
+const avatar = m => m && m.avatar && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(m.avatar) ? '<img class="av" src="' + esc(m.avatar) + '" alt="">' : '<span class="av">' + initial(m && m.name) + '</span>';
+const waLink = () => WA;
+
+/* ---------- static text ---------- */
+function paint(){
+  document.documentElement.lang = L;
+  if (window.paintLangPick) window.paintLangPick();
+  ['gH','gP','gSmall','pfH','pfP','pfNameL','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
+   'nAll','nProfile','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','feedH','privNote','saveAll','cSend','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel','svH','svX']
+    .forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  $('gGoogleTxt').textContent = t('gGoogle'); $('gEmail').textContent = t('gEmail');
+  $('fName').placeholder = t('fPh'); $('cText').placeholder = t('cPh');
+  $('mWa').textContent = $('hWa').textContent = $('invWa').textContent = t('waBtn');
+  $('mWa').href = $('hWa').href = $('invWa').href = waLink();
+  $('mHub').textContent = t('hubBtn');
+  $('hLogin').innerHTML = t('hLogin');
+  $('invNone').querySelector('a').textContent = t('waBtn');
+  renderHook();
+}
+window.paintLangPick = langPicker($('lang'), () => L, c => { L = c; setLang(L); if (profile && user){ sb.from('profiles').update({ lang: L }).eq('id', user.id).then(() => {}); } paint(); });
+
+/* ---------- start ---------- */
+(async () => {
+  session = await getSession(); user = session && session.user;
+  if (location.hash.includes('access_token')) history.replaceState(null, '', location.pathname + location.search);
+  if (user){
+    const { data } = await sb.from('profiles').select('name, username, instagram, avatar_url, lang').eq('id', user.id).maybeSingle();
+    profile = data || {};
+  }
+  route();
+})();
+
+async function route(){
+  if (params.get('n') && user) return openNight(params.get('n'));
+  if (code) return withCode();
+  return hub();
+}
+
+/* ---------- arriving with a code ---------- */
+async function withCode(){
+  const { data: p } = await sb.rpc('pass_preview', { p_code: code });
+  if (!p || p.status === 'bad') return msg('bad');
+  if (p.status === 'expired') return msg('expired');
+  if (p.status === 'member') return openNight(p.night);
+  if (p.status === 'ended') return msg('ended');
+  if (p.status === 'full') return msg('full');
+  if (!user){
+    const left = p.seats - p.used;
+    $('gSeats').hidden = false;
+    $('gSeats').textContent = p.started ? t('gSeatsStarted', { name: p.name, l: left, s: p.seats }) : t('gSeats', { l: left, s: p.seats });
+    const back = '/pass/?c=' + code;
+    $('gEmail').href = '/login/?next=' + encodeURIComponent(back);
+    $('gGoogle').onclick = () => sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin + back } });
+    return view('gate');
+  }
+  if (!profileReady()) return askProfile(() => withCode());
+  if (!p.started){ view('first'); setTimeout(() => $('fName').focus(), 50); return; }
+  const names = (p.members || []).filter(Boolean);
+  renderHook = () => {
+    if (current !== 'join') return;
+    $('jH').textContent = t('jH', { name: p.name });
+    const time = timeLeft(new Date(p.ends_at) - Date.now());
+    $('jP').textContent = names.length ? t('jP', { names: joinNames(names), are: names.length === 1 ? t('isOne') : t('areMany'), time }) : t('jPEmpty', { time });
+  };
+  view('join');
+}
+function joinNames(a){ return a.length <= 1 ? (a[0] || '') : a.slice(0, -1).join(', ') + ' ' + t('and') + ' ' + a[a.length - 1]; }
+function msg(kind){
+  renderHook = () => { if (current === 'msg'){ $('mH').textContent = t(kind + 'H'); $('mP').textContent = t(kind + 'P'); } };
+  view('msg');
+}
+async function activate(name){
+  const { data, error } = await sb.rpc('activate_pass', { p_code: code, p_name: name || null });
+  if (error || !data) return { status: 'err' };
+  return data;
+}
+$('fForm').onsubmit = async e => {
+  e.preventDefault(); $('fErr').hidden = true;
+  const name = $('fName').value.trim(); if (!name){ $('fName').focus(); return; }
+  const b = $('fBtn'); b.disabled = true;
+  const r = await activate(name); b.disabled = false;
+  handleActivate(r, 'fErr');
+};
+$('jBtn').onclick = async () => {
+  const b = $('jBtn'); b.disabled = true; $('jErr').hidden = true;
+  const r = await activate(); b.disabled = false;
+  handleActivate(r, 'jErr');
+};
+function handleActivate(r, errId){
+  if (r.status === 'ok' || r.status === 'member') return openNight(r.night, true);
+  if (r.status === 'need_name'){ view('first'); return; }
+  if (r.status === 'profile') return askProfile(() => withCode());
+  if (r.status === 'login') return location.reload();
+  if (['bad','full','ended','expired','wait'].includes(r.status)) return msg(r.status);
+  $(errId).textContent = t('err'); $(errId).hidden = false;
+}
+
+/* ---------- profile: name + username before joining ---------- */
+const profileReady = () => profile && (profile.name || '').trim() && profile.username;
+let afterProfile = null, ucOk = false, ucTimer;
+function askProfile(then){
+  afterProfile = then;
+  const first = (profile.name || (user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) || '').trim().split(/\s+/)[0] || '';
+  $('pfName').value = (profile.name || first).slice(0, 40);
+  $('pfIg').value = profile.instagram || '';
+  $('pfUser').value = profile.username || '';
+  if (!profile.username){
+    const base = ($('pfName').value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9._]/g, '').slice(0, 20);
+    if (base.length >= 3) $('pfUser').value = base;
+  }
+  view('profile'); ucCheck();
+}
+async function ucCheck(){
+  const u = $('pfUser').value.trim().toLowerCase(), m = $('pfUserMsg'); ucOk = false;
+  if (profile.username && u === profile.username){ ucOk = true; m.textContent = ''; return; }
+  if (!u){ m.textContent = ''; return; }
+  if (!/^[a-z0-9._]{3,20}$/.test(u)){ m.textContent = t('ucBad'); m.className = 'err'; return; }
+  const { data } = await sb.rpc('username_check', { p: u });
+  if ($('pfUser').value.trim().toLowerCase() !== u) return;
+  ucOk = data === 'ok';
+  m.textContent = t({ ok:'ucFree', taken:'ucTaken', blocked:'ucBlocked', bad:'ucBad' }[data] || 'err', { u });
+  m.className = ucOk ? 'ok' : 'err';
+}
+$('pfUser').oninput = () => {
+  const v = $('pfUser').value.toLowerCase().replace(/^@/, '').replace(/\s/g, '');
+  if (v !== $('pfUser').value) $('pfUser').value = v;
+  clearTimeout(ucTimer); ucTimer = setTimeout(ucCheck, 350);
+};
+$('pfIg').oninput = () => { const v = $('pfIg').value.toLowerCase().replace(/^@/, '').replace(/[^a-z0-9._]/g, ''); if (v !== $('pfIg').value) $('pfIg').value = v; };
+$('pfForm').onsubmit = async e => {
+  e.preventDefault(); const err = $('pfErr'); err.hidden = true;
+  const name = $('pfName').value.trim().slice(0, 40), u = $('pfUser').value.trim().toLowerCase(), ig = $('pfIg').value.trim();
+  if (!name){ err.textContent = t('needName'); err.hidden = false; return; }
+  if (!ucOk){ await ucCheck(); if (!ucOk){ err.textContent = t('needUser'); err.hidden = false; return; } }
+  const b = $('pfBtn'); b.disabled = true; b.textContent = t('saving');
+  const upd = { name, name_confirmed: true, username: u, lang: L };
+  if (ig) upd.instagram = ig;
+  const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
+  b.disabled = false; b.textContent = t('pfBtn');
+  if (error){ err.textContent = /duplicate|unique|taken/i.test(error.message) ? t('ucTaken', { u }) : t('err'); err.hidden = false; return; }
+  Object.assign(profile, upd);
+  if (afterProfile) afterProfile();
+};
+
+/* ---------- hub ---------- */
+async function hub(){
+  let list = [];
+  if (user){
+    const { data } = await sb.rpc('my_nights'); list = data || [];
+    const live = list.find(n => n.active);
+    if (live && !params.get('all')) return openNight(live.id);
+  }
+  $('hLogin').hidden = !!user;
+  $('hPast').hidden = !list.length;
+  renderHook = () => {
+    if (current !== 'hub') return;
+    $('hNights').innerHTML = list.map(n => {
+      const d = new Date(n.started_at).toLocaleDateString(L, { day:'numeric', month:'short' });
+      const sub = n.active ? '<span class="ptag">' + esc(t('active')) + '</span>' : esc(d);
+      return '<li><a href="/pass/?n=' + esc(n.id) + '"><b>' + esc(n.name) + '</b><small>' + sub + ' · ' + esc(t('rankOf', { r: n.rank || 1, n: n.members, p: n.points || 0 })) + '</small></a>' +
+        (n.active ? '' : '<a class="mini wa" href="' + waLink() + '" target="_blank" rel="noopener" style="flex:none">💬</a>') + '</li>';
+    }).join('');
+  };
+  view('hub');
+}
+$('hCode').oninput = () => { const v = normCode($('hCode').value).slice(0, 8); const f = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v; if (f !== $('hCode').value) $('hCode').value = f; };
+$('hForm').onsubmit = e => {
+  e.preventDefault(); const c = normCode($('hCode').value);
+  if (c.length !== 8){ $('hErr').textContent = t('badH'); $('hErr').hidden = false; return; }
+  location.href = '/pass/?c=' + c;
+};
+
+/* ---------- the night ---------- */
+async function openNight(id, fresh){
+  night = id;
+  if (params.get('n') !== id || params.get('c')) history.replaceState(null, '', '/pass/?n=' + id);
+  const [{ data: d }, { data: ds }] = await Promise.all([sb.rpc('night_info', { p_night: id }), sb.from('pass_dares').select('*').eq('active', true).order('sort')]);
+  if (!d) return hub();
+  info = d; dares = ds || [];
+  skew = new Date(info.now).getTime() - Date.now();
+  await loadMsgs();
+  rememberActive();
+  if (fresh || !store.get('sd_pass_how')) $('nHow').hidden = false;
+  view('night');
+  renderHook = renderNight;
+  renderNight();
+  if (!dare) pickDare();
+  clearInterval(clockT); clockT = setInterval(tickClock, 1000); tickClock();
+  startRealtime();
+}
+function rememberActive(){
+  const live = new Date(info.ends_at).getTime() > now();
+  if (live) store.set('sd_pass', JSON.stringify({ id: info.id, name: info.name, ends: new Date(info.ends_at).getTime() - skew }));
+  else { const s = JSON.parse(store.get('sd_pass') || 'null'); if (s && s.id === info.id) store.del('sd_pass'); }
+}
+$('howBtn').onclick = () => { $('nHow').hidden = true; store.set('sd_pass_how', '1'); };
+const isLive = () => info && new Date(info.ends_at).getTime() > now();
+function tickClock(){
+  if (!info) return;
+  const left = new Date(info.ends_at).getTime() - now();
+  $('nClock').textContent = clockStr(left);
+  if (left <= 0 && !$('nEnded').dataset.on){ $('nEnded').dataset.on = '1'; rememberActive(); renderNight(); }
+}
+const memberById = id => (info.members || []).find(m => m.id === id) || null;
+function nameList(ids){ return ids.map(i => (memberById(i) || {}).name).filter(Boolean); }
+
+function renderNight(){
+  if (!info || current !== 'night') return;
+  const live = isLive();
+  $('nName').textContent = info.name;
+  $('nSub').textContent = t('nSub', { n: info.members.length });
+  $('nPlay').hidden = !live; $('cForm').hidden = !live; $('inv').hidden = !live;
+  $('nEnded').hidden = live;
+  if (!live){
+    const w = info.members[0];
+    $('endH').textContent = t('endH');
+    $('endP').textContent = w && w.points ? t('endP', { name: w.name, p: w.points }) : '';
+  }
+  // leaderboard
+  let rank = 0, prev = null;
+  $('board').innerHTML = info.members.map((m, i) => {
+    if (m.points !== prev){ rank = i + 1; prev = m.points; }
+    const medal = ['🥇','🥈','🥉'][rank - 1] || rank;
+    return '<li class="' + (m.id === user.id ? 'me' : '') + '"><span class="rk">' + (m.points ? medal : '·') + '</span>' + avatar(m) +
+      '<span class="nm"><b>' + esc(m.name) + (m.id === user.id ? ' <small>(' + esc(t('you')) + ')</small>' : '') + '</b><small>@' + esc(m.username || '') +
+      (m.instagram ? ' · <a href="https://instagram.com/' + encodeURIComponent(m.instagram) + '" target="_blank" rel="noopener">IG</a>' : '') + ' · ' + esc(m.dares === 1 ? t('dares1') : t('daresN', { n: m.dares })) + '</small></span>' +
+      '<span class="pts">' + m.points + '<small>' + esc(t('ptsShort')) + '</small></span></li>';
+  }).join('');
+  // invite
+  const left = info.seats - info.used;
+  $('invP').textContent = left > 0 ? t('invP', { l: left, s: info.seats }) : t('invNone');
+  $('invHas').hidden = !(left > 0 && info.code); $('invNone').hidden = left > 0;
+  if (info.code && left > 0 && $('invQr').dataset.code !== info.code){
+    const q = qrcode(0, 'M'); q.addData(joinUrl()); q.make();
+    $('invQr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    $('invQr').dataset.code = info.code;
+  }
+  $('invCode').textContent = info.code ? fmtCode(info.code) : '';
+  // photo notice
+  const ends = new Date(info.ends_at).getTime();
+  const firstPhoto = msgs.filter(m => m.photo_path && !m.deleted).map(m => new Date(m.created_at).getTime()).sort((a, b) => a - b)[0];
+  if (!live && firstPhoto){
+    const daysLeft = Math.ceil((firstPhoto + PHOTO_DAYS * 864e5 - now()) / 864e5);
+    $('photoNoteTxt').textContent = daysLeft <= 0 ? t('photoNote') : t('photoNoteLeft', { d: daysLeft < 1 ? t('hours') : daysLeft === 1 ? t('days1') : t('daysN', { d: daysLeft }) });
+  } else $('photoNoteTxt').textContent = t('photoNote');
+  $('saveAll').hidden = !msgs.some(m => m.photo_path && !m.deleted);
+  renderDare(); renderMsgs();
+}
+const joinUrl = () => location.origin + '/pass/?c=' + info.code;
+$('invShare').onclick = async () => {
+  const url = joinUrl();
+  try{ if (navigator.share){ await navigator.share({ title: 'STREETDARE · ' + info.name, url }); return; } }catch(e){ return; }
+  try{ await navigator.clipboard.writeText(url); toast(t('invCopied')); }catch(e){ prompt('', url); }
+};
+
+/* ---------- dares ---------- */
+let dare = null;
+function myDone(){ return new Set(info.my_dares || []); }
+function pickDare(){
+  const done = myDone();
+  const pool = dares.filter(d => !done.has(d.id) && (!dare || d.id !== dare.id));
+  dare = pool.length ? pool[Math.floor(Math.random() * pool.length)] : (dares.filter(d => !done.has(d.id))[0] || null);
+  renderDare();
+}
+const dl = (d, k) => d[k + '_' + L] || d[k + '_en'] || d[k + '_es'] || '';
+function renderDare(){
+  if (!dare){ $('dText').textContent = t('allDone'); $('dPts').textContent = ''; $('dTags').innerHTML = ''; $('dDone').hidden = true; $('dNext').hidden = true; return; }
+  $('dDone').hidden = $('dNext').hidden = false;
+  $('dText').textContent = dare[L] || dare.en;
+  $('dPts').textContent = t('pts', { p: dare.points });
+  $('dTags').innerHTML = (dare.needs_answer ? '<span>' + esc(t('tagAns')) + '</span>' : '') + (dare.needs_photo ? '<span>' + esc(t('tagPhoto')) + '</span>' : '');
+}
+$('dNext').onclick = pickDare;
+$('dDone').onclick = () => openSheet();
+
+let withSel = new Set(), sheetBlob = null;
+function openSheet(){
+  withSel = new Set(); sheetBlob = null;
+  $('sErr').hidden = true; $('sAns').value = ''; $('sImg').hidden = true; $('sPh').hidden = false; $('sFile').value = '';
+  $('sH').textContent = t('sH');
+  $('sAnsBox').hidden = !dare.needs_answer;
+  $('sAns').placeholder = dl(dare, 'ask');
+  const others = info.members.filter(m => m.id !== user.id);
+  $('sWithBox').hidden = !others.length;
+  $('sWith').innerHTML = others.map(m => '<button type="button" data-id="' + esc(m.id) + '">' + esc(m.name) + '</button>').join('');
+  paintPhotoPick();
+  $('sGo').textContent = t('sGo') + ' · ' + t('pts', { p: dare.points });
+  $('sheet').hidden = false;
+  if (dare.needs_answer) setTimeout(() => $('sAns').focus(), 80);
+}
+function paintPhotoPick(){
+  $('sPhotoB').textContent = sheetBlob ? t('sPhotoOk') : dare.needs_photo ? t('sPhotoNeed') : t('sPhotoOpt');
+  $('sPhotoS').textContent = sheetBlob ? t('sPhotoChange') : dare.needs_photo ? t('sPhotoNeedS') : t('sPhotoOptS');
+}
+$('sWith').onclick = e => { const b = e.target.closest('button'); if (!b) return; const id = b.dataset.id; withSel.has(id) ? withSel.delete(id) : withSel.add(id); b.classList.toggle('on', withSel.has(id)); };
+$('sFile').onchange = async () => {
+  const f = $('sFile').files[0]; if (!f) return;
+  try{ sheetBlob = await shrink(f); $('sImg').src = URL.createObjectURL(sheetBlob); $('sImg').hidden = false; $('sPh').hidden = true; }catch(e){ sheetBlob = null; toast(t('err')); }
+  paintPhotoPick();
+};
+$('sCancel').onclick = () => { $('sheet').hidden = true; };
+$('sGo').onclick = async () => {
+  const err = $('sErr'); err.hidden = true;
+  const ans = $('sAns').value.trim();
+  if (dare.needs_answer && !ans){ err.textContent = t('sNeedAns'); err.hidden = false; return; }
+  if (dare.needs_photo && !sheetBlob){ err.textContent = t('sNeedPhoto'); err.hidden = false; return; }
+  const b = $('sGo'); b.disabled = true;
+  let path = null;
+  try{
+    if (sheetBlob){ b.textContent = t('uploading'); path = await upload(sheetBlob); }
+    b.textContent = t('saving');
+    const { data, error } = await sb.rpc('record_play', { p_night: night, p_dare: dare.id, p_answer: ans || null, p_with: [...withSel], p_photo: path });
+    if (error) throw error;
+    if (data.status !== 'ok'){
+      if (path) sb.storage.from('night-photos').remove([path]);
+      const k = { need_answer:'sNeedAns', need_photo:'sNeedPhoto', done_before:'sDoneBefore', ended:'sEnded' }[data.status] || 'err';
+      err.textContent = t(k); err.hidden = false;
+      if (data.status === 'done_before'){ info.my_dares = [...(info.my_dares || []), dare.id]; }
+      return;
+    }
+    $('sheet').hidden = true; toast(t('gotPts', { p: data.points }));
+    info.my_dares = [...(info.my_dares || []), dare.id]; pickDare(); refresh();
+  }catch(x){ if (path) sb.storage.from('night-photos').remove([path]); err.textContent = t('err'); err.hidden = false; }
+  finally{ b.disabled = false; b.textContent = t('sGo') + ' · ' + t('pts', { p: dare.points }); }
+};
+
+/* ---------- photos: shrink on the phone before upload ---------- */
+function shrink(file, max = 1200, q = 0.72){
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * s); c.height = Math.round(img.naturalHeight * s);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url); c.toBlob(b => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', q);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('img')); };
+    img.src = url;
+  });
+}
+async function upload(blob){
+  const path = night + '/' + user.id + '/' + crypto.randomUUID() + '.jpg';
+  const { error } = await sb.storage.from('night-photos').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '3600' });
+  if (error) throw error;
+  return path;
+}
+const signed = new Map();
+async function signAll(paths){
+  const need = paths.filter(p => p && !signed.has(p));
+  if (!need.length) return;
+  const { data } = await sb.storage.from('night-photos').createSignedUrls(need, 6 * 3600);
+  (data || []).forEach(r => { if (r.signedUrl) signed.set(r.path, r.signedUrl); else signed.set(r.path, ''); });
+}
+
+/* ---------- feed ---------- */
+let playsById = new Map();
+async function loadMsgs(){
+  const [{ data: m }, { data: p }] = await Promise.all([
+    sb.from('night_messages').select('*').eq('night_id', night).order('created_at', { ascending: false }).limit(300),
+    sb.from('night_plays').select('id, profile_id, dare_id, answer, with_ids, points, bonus, challenged_by, voided').eq('night_id', night)
+  ]);
+  msgs = m || []; playsById = new Map((p || []).map(x => [x.id, x]));
+  await signAll(msgs.filter(x => x.photo_path && !x.deleted && !photoExpired(x)).map(x => x.photo_path));
+}
+const photoExpired = m => now() - new Date(m.created_at).getTime() > PHOTO_DAYS * 864e5;
+function feedLine(m){
+  const p = playsById.get(m.play_id); if (!p) return '';
+  const d = dares.find(x => x.id === p.dare_id); if (!d) return '';
+  const names = [(memberById(p.profile_id) || {}).name || '?', ...nameList(p.with_ids || [])];
+  const nm = names.map(n => '<b>' + esc(n) + '</b>').join(esc(t('and2')));
+  return esc(dl(d, 'feed')).split('{name}').join(nm).split('{answer}').join('<b>' + esc(p.answer || '') + '</b>');
+}
+function renderMsgs(){
+  if (!info) return;
+  const live = isLive();
+  if (!msgs.length){ $('msgs').innerHTML = '<li class="join">' + esc(t('empty')) + '</li>'; return; }
+  const byId = new Map(msgs.map(m => [m.id, m]));
+  $('msgs').innerHTML = msgs.map(m => {
+    const who = memberById(m.profile_id) || { name: '?' };
+    const time = new Date(m.created_at).toLocaleTimeString(L, { hour:'2-digit', minute:'2-digit' });
+    if (m.kind === 'join') return '<li><span class="join">' + esc(t('joined', { name: who.name })) + ' · ' + time + '</span></li>';
+    const mine = m.profile_id === user.id;
+    let body = '', acts = '';
+    if (m.kind === 'play'){
+      const p = playsById.get(m.play_id) || {};
+      body = '<div class="play' + (p.voided ? ' void' : '') + '">' + feedLine(m) + '<span class="ptag">+' + ((p.points || 0) + (p.bonus || 0)) + '</span></div>' + (p.voided ? '<div class="gone">' + esc(t('voided')) + '</div>' : '');
+      const involved = p.profile_id === user.id || (p.with_ids || []).includes(user.id);
+      const n = (p.challenged_by || []).length;
+      if (live && !involved) acts += '<button type="button" data-ch="' + esc(p.id) + '" class="' + ((p.challenged_by || []).includes(user.id) ? 'on' : '') + '">' + esc(n ? t('challenged', { n }) : t('challenge')) + '</button>';
+      else if (n) acts += '<button type="button" disabled>' + esc(t('challenged', { n })) + '</button>';
+    } else {
+      if (m.deleted) return '';
+      const q = m.reply_to && byId.get(m.reply_to);
+      if (q) body += '<div class="quote">↪ ' + esc((memberById(q.profile_id) || {}).name || '?') + ': ' + esc(q.deleted ? '…' : (q.body || '📷')) + '</div>';
+      if (m.body) body += '<div class="txt">' + esc(m.body) + '</div>';
+    }
+    if (m.photo_path && !m.deleted){
+      if (photoExpired(m)) body += '<div class="gone">' + esc(t('photoGone')) + '</div>';
+      else if (signed.get(m.photo_path)) body += '<img class="pic" loading="lazy" src="' + esc(signed.get(m.photo_path)) + '" alt="">';
+    }
+    if (live && m.kind === 'chat') acts += '<button type="button" data-re="' + esc(m.id) + '">' + esc(t('reply')) + '</button>';
+    if (mine && !m.deleted && (m.kind === 'chat' || m.photo_path)) acts += '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>';
+    return '<li>' + avatar(who) + '<div class="body"><div class="who"><b>' + esc(who.name) + '</b> · ' + time + '</div>' + body + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div></li>';
+  }).join('');
+}
+$('msgs').onclick = async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.re){ const m = msgs.find(x => x.id === b.dataset.re); replyTo = m; $('cReply').hidden = false; $('cReplyTxt').textContent = t('cReplyTo', { name: (memberById(m.profile_id) || {}).name || '?' }); $('cText').focus(); return; }
+  if (b.dataset.del){
+    if (!confirm(t('delQ'))) return;
+    const { data } = await sb.rpc('delete_night_message', { p_id: b.dataset.del });
+    if (data && data.photo) sb.storage.from('night-photos').remove([data.photo]);
+    refresh(); return;
+  }
+  if (b.dataset.ch){ b.disabled = true; await sb.rpc('challenge_play', { p_play: b.dataset.ch }); refresh(); }
+};
+let replyTo = null, chatBlob = null;
+$('cReplyX').onclick = () => { replyTo = null; $('cReply').hidden = true; };
+$('cFile').onchange = async () => {
+  const f = $('cFile').files[0]; if (!f) return;
+  try{ chatBlob = await shrink(f); $('cPreviewImg').src = URL.createObjectURL(chatBlob); $('cPreviewTxt').textContent = t('cPreview'); $('cPreview').hidden = false; }catch(e){ chatBlob = null; toast(t('err')); }
+};
+$('cPreviewX').onclick = () => { chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true; };
+$('cForm').onsubmit = async e => {
+  e.preventDefault();
+  const body = $('cText').value.trim().slice(0, 500);
+  if (!body && !chatBlob) return;
+  const b = $('cSend'); b.disabled = true;
+  try{
+    let path = null;
+    if (chatBlob){ b.textContent = t('uploading'); path = await upload(chatBlob); }
+    const { error } = await sb.from('night_messages').insert({ night_id: night, profile_id: user.id, body: body || null, photo_path: path, reply_to: replyTo ? replyTo.id : null });
+    if (error){ if (path) sb.storage.from('night-photos').remove([path]); throw error; }
+    $('cText').value = ''; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
+    refresh();
+  }catch(x){ toast(t('err')); }
+  finally{ b.disabled = false; b.textContent = t('cSend'); }
+};
+
+/* ---------- live updates ---------- */
+let refT, chan;
+function refresh(){
+  clearTimeout(refT);
+  refT = setTimeout(async () => {
+    const { data } = await sb.rpc('night_info', { p_night: night });
+    if (data){ info = data; }
+    await loadMsgs(); renderNight();
+  }, 250);
+}
+function startRealtime(){
+  if (chan) return;
+  const f = 'night_id=eq.' + night;
+  chan = sb.channel('night-' + night)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'night_messages', filter: f }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'night_plays', filter: f }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'night_members', filter: f }, refresh)
+    .subscribe();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+}
+
+/* ---------- save all photos ---------- */
+let files = [];
+$('saveAll').onclick = async () => {
+  const list = msgs.filter(m => m.photo_path && !m.deleted && !photoExpired(m));
+  $('saveSheet').hidden = false; $('svLinks').innerHTML = ''; files = [];
+  if (!list.length){ $('svP').textContent = t('svNone'); $('svGo').hidden = true; return; }
+  $('svGo').hidden = false; $('svGo').disabled = true; $('svGo').textContent = t('svPrep'); $('svP').textContent = t('svP', { n: list.length, name: info.name });
+  await signAll(list.map(m => m.photo_path));
+  const slug = info.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'streetdare';
+  for (let i = 0; i < list.length; i++){
+    try{ const r = await fetch(signed.get(list[i].photo_path)); const b = await r.blob(); files.push(new File([b], slug + '-' + (i + 1) + '.jpg', { type: 'image/jpeg' })); }catch(e){}
+  }
+  $('svGo').disabled = false; $('svGo').textContent = t('svGo', { n: files.length });
+};
+$('svGo').onclick = async () => {
+  if (navigator.canShare && navigator.canShare({ files })){ try{ await navigator.share({ files }); }catch(e){} return; }
+  $('svLinks').innerHTML = files.map((f, i) => '<a class="mini" download="' + esc(f.name) + '" href="' + URL.createObjectURL(f) + '">📸 ' + (i + 1) + '</a>').join('');
+  files.forEach((f, i) => { const a = $('svLinks').children[i]; if (a) a.click(); });
+};
+$('svX').onclick = () => { $('saveSheet').hidden = true; };
+</script>
+</body>
+</html>

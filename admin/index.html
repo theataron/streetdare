@@ -55,6 +55,21 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .feed time{color:var(--mute);min-width:70px;font-variant-numeric:tabular-nums}
 .tag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:2px 8px;background:var(--blush);color:var(--red);white-space:nowrap}
 .tag.done{background:#d9f0e2;color:var(--ok)}
+.seatpick{display:flex;gap:6px;flex-wrap:wrap}
+.seatpick button{border:2px solid var(--ink);background:#fff;border-radius:12px;min-width:44px;padding:8px 10px;font-weight:800;cursor:pointer}
+.seatpick button.on{background:var(--ink);color:var(--bg)}
+.qrfull{position:fixed;inset:0;background:var(--bg);z-index:50;display:grid;place-items:center;padding:20px}
+.qrbox{max-width:420px;width:100%;text-align:center;display:grid;gap:14px}
+.qrimg{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:16px;width:min(80vw,340px);aspect-ratio:1;margin:0 auto}
+.qrimg svg{width:100%;height:100%;display:block}
+.qrcode{font-size:2.6rem;letter-spacing:.12em;color:var(--red)}
+.qrseats{font-weight:800;font-size:1.1rem}
+.st{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:2px 8px;white-space:nowrap}
+.st.unused{background:#e6e9f7;color:#2a43a8}.st.active{background:#d9f0e2;color:var(--ok)}.st.full{background:#fff1c9;color:#8a5a00}.st.ended,.st.expired,.st.void{background:#eee;color:var(--mute)}
+.pacts{display:flex;gap:4px;flex-wrap:wrap}
+.fmsg{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.fmsg img{max-width:160px;max-height:160px;border-radius:10px;border:1.5px solid var(--ink);display:block;margin-top:6px}
+.fmsg .x{margin-left:auto}
 .tag.scan{background:#e6e9f7;color:#2a43a8}
 .live{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:var(--ok)}
 .live i{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:p 1.6s infinite}
@@ -108,6 +123,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <button data-tab="live" class="on">Live results</button>
       <button data-tab="decks">Decks &amp; dares</button>
       <button data-tab="shirts">Shirts</button>
+      <button data-tab="passes">Shirtless Pass</button>
     </nav>
 
     <!-- LIVE -->
@@ -165,12 +181,51 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       </div>
       <p class="muted" style="font-size:.85rem">A shirt's own dares (only shown when someone scans that shirt) are edited under Decks &amp; dares → pick the shirt.</p>
     </div>
+
+    <!-- SHIRTLESS PASS -->
+    <div id="t-passes" hidden>
+      <div class="tiles" id="pTiles"></div>
+      <div class="grid2">
+        <div class="card">
+          <h3>Sell a pass</h3>
+          <p class="muted" style="font-size:.88rem;margin-bottom:10px">One code for the whole group. Everyone types the same code (or scans the QR); the first person names the night and starts the shared 24 hours. A seat is €5.</p>
+          <form id="sellForm" style="display:grid;gap:10px">
+            <div><div class="lbl">Seats</div><div class="seatpick" id="seatPick"></div></div>
+            <div class="grid2" style="gap:10px">
+              <div><div class="lbl">Payment</div><select id="sellPay"><option>Revolut or cash</option><option>Free (gift / test)</option></select></div>
+              <div><div class="lbl">Note (optional)</div><input type="text" id="sellNote" maxlength="200" placeholder="e.g. Erasmus group at Kapital"></div>
+            </div>
+            <button class="btn red" type="submit" id="sellBtn">Create code</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Right now <span class="live" id="pLive" hidden><i></i>live</span></h3>
+          <ul class="feed" id="pFeed"></ul>
+        </div>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <h3>All passes</h3>
+        <table><thead><tr><th>Code</th><th>Status</th><th class="n">Seats</th><th>Night</th><th>Who</th><th>Ends</th><th>Paid</th><th></th></tr></thead><tbody id="passRows"></tbody></table>
+      </div>
+      <div class="card" id="nightFeed" hidden></div>
+      <p class="muted" style="font-size:.85rem">Group Feeds are private to each group; during the launch phase you can read them here (the players are told this in the feed and in the privacy policy). Photos are deleted automatically after 7 days.</p>
+    </div>
+  </div>
+</div>
+<div class="qrfull" id="qrFull" hidden>
+  <div class="qrbox">
+    <div class="qrseats" id="qrSeats"></div>
+    <div class="qrimg" id="qrImg"></div>
+    <div class="qrcode display" id="qrCode"></div>
+    <p>Scan with your phone camera, or go to <b>streetdare.com/pass</b> and type the code.</p>
+    <button class="btn" type="button" id="qrClose">Done</button>
   </div>
 </div>
 <div class="toast" id="toast" hidden></div>
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import qrcode from '../js/vendor/qrcode.mjs';
 
 const sb = createClient('https://jlnsqerwiwmbqpzzcskf.supabase.co', 'sb_publishable_zWPRZvdU4QyCI5hlmAvCWA_Mz7_koXT');
 const $ = id => document.getElementById(id);
@@ -204,8 +259,8 @@ async function boot(session){
   if (!me || me.role !== 'admin'){ $('naEmail').textContent = session.user.email; view('noaccess'); return; }
   $('meEmail').textContent = me.email; view('admin');
   if (location.hash.includes('access_token')) history.replaceState(null, '', location.pathname);
-  await Promise.all([loadLive(), loadDecks(), loadShirts()]);
-  startRealtime();
+  await Promise.all([loadLive(), loadDecks(), loadShirts(), loadPasses()]);
+  startRealtime(); startPassRealtime();
 }
 let booted = false;
 sb.auth.onAuthStateChange((evt, session) => {
@@ -216,7 +271,7 @@ sb.auth.onAuthStateChange((evt, session) => {
 /* ===== tabs ===== */
 document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('on', x === b));
-  ['live','decks','shirts'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
+  ['live','decks','shirts','passes'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
 });
 
 /* ===== live results ===== */
@@ -397,6 +452,162 @@ $('addShirt').onsubmit = async e => {
   if (error) return toast(error.code === '23505' ? 'That ID is already taken' : 'Error: ' + error.message);
   $('newShirtId').value = ''; $('newShirtName').value = ''; toast('Shirt added: streetdare.com/p/?s=' + id); loadShirts(); loadDecks();
 };
+
+/* ===== Shirtless Pass ===== */
+const SEAT = 5;
+let passes = [], seats = 1;
+const fmtCode = c => c.slice(0, 4) + '-' + c.slice(4);
+const euro = n => '€' + (Number.isInteger(n) ? n : n.toFixed(2));
+function passState(p){
+  if (p.status === 'void') return 'void';
+  if (!p.night) return new Date(p.redeem_by) < new Date() ? 'expired' : 'unused';
+  if (new Date(p.night.ends_at) <= new Date()) return 'ended';
+  return p.members.length >= p.seats ? 'full' : 'active';
+}
+function paintSeatPick(){
+  $('seatPick').innerHTML = [1,2,3,4,5,6,8,10].map(n => '<button type="button" data-n="' + n + '" class="' + (n === seats ? 'on' : '') + '">' + n + '</button>').join('');
+  const free = $('sellPay').value.startsWith('Free');
+  $('sellBtn').textContent = 'Create code · ' + seats + (seats === 1 ? ' seat' : ' seats') + (free ? ' · free' : ' · ' + euro(seats * SEAT));
+}
+$('seatPick').onclick = e => { const b = e.target.closest('button'); if (!b) return; seats = +b.dataset.n; paintSeatPick(); };
+$('sellPay').onchange = paintSeatPick;
+paintSeatPick();
+function leftStr(d){ const ms = new Date(d) - Date.now(); if (ms <= 0) return 'ended ' + ago(d); const h = Math.floor(ms / 36e5), m = Math.floor(ms / 6e4) % 60; return h + 'h ' + m + 'm left'; }
+async function loadPasses(){
+  const { data, error } = await sb.rpc('admin_passes');
+  if (error) return toast('Error: ' + error.message);
+  passes = data || [];
+  const today = new Date(); today.setHours(0,0,0,0);
+  const st = passes.map(passState);
+  const soldToday = passes.filter(p => new Date(p.created_at) >= today && p.status !== 'void');
+  const cashToday = soldToday.filter(p => !p.payment.startsWith('Free')).reduce((a, p) => a + p.seats * p.price_cents / 100, 0);
+  const liveNights = passes.filter((p, i) => st[i] === 'active' || st[i] === 'full');
+  const dares = liveNights.reduce((a, p) => a + p.night.plays, 0);
+  const tiles = [
+    [soldToday.length, 'Sold today', soldToday.reduce((a, p) => a + p.seats, 0) + ' seats'],
+    [euro(cashToday), 'Taken today', 'Revolut or cash'],
+    [st.filter(x => x === 'unused').length, 'Unused codes', 'paid, not played yet'],
+    [liveNights.length, 'Live nights', liveNights.reduce((a, p) => a + p.members.length, 0) + ' people playing'],
+    [dares, 'Dares in live nights', '']
+  ];
+  $('pTiles').innerHTML = tiles.map(t => '<div class="tile"><b>' + t[0] + '</b><span>' + t[1] + '</span><small>' + t[2] + '</small></div>').join('');
+  $('passRows').innerHTML = passes.length ? passes.map((p, i) => {
+    const s = st[i], n = p.night, live = s === 'active' || s === 'full';
+    const who = p.members.map(m => esc(m.name) + ' <span class="muted">' + (m.points || 0) + '</span>').join(', ');
+    return '<tr data-id="' + p.id + '"><td><code style="font-weight:800;user-select:all">' + fmtCode(p.code) + '</code>' + (p.note ? '<br><small class="muted">' + esc(p.note) + '</small>' : '') + '</td>' +
+      '<td><span class="st ' + s + '">' + s + '</span></td>' +
+      '<td class="n">' + p.members.length + ' / ' + p.seats + '</td>' +
+      '<td>' + (n ? '<b>' + esc(n.name) + '</b><br><small class="muted">' + n.plays + ' dares · ' + n.messages + ' messages</small>' : '<span class="muted">-</span>') + '</td>' +
+      '<td>' + (who || '<span class="muted">-</span>') + '</td>' +
+      '<td>' + (n ? leftStr(n.ends_at) : '<small class="muted">use by ' + new Date(p.redeem_by).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + '</small>') + '</td>' +
+      '<td>' + (p.payment.startsWith('Free') ? 'free' : euro(p.seats * p.price_cents / 100)) + '<br><small class="muted">' + esc(p.payment) + ' · ' + hhmm(p.created_at) + '</small></td>' +
+      '<td><div class="pacts">' +
+        (s !== 'void' && s !== 'ended' && s !== 'expired' ? '<button class="btn sm" name="qr">QR</button><button class="btn sm" name="seat" title="They paid for one more person">+1 seat</button>' : '') +
+        (live ? '<button class="btn sm" name="ext" title="Give the whole group one more hour">+1 h</button>' : '') +
+        (n ? '<button class="btn sm" name="feed">Feed</button>' : '') +
+        (s === 'unused' ? '<button class="btn ghost sm" name="void">Void</button>' : '') +
+      '</div></td></tr>';
+  }).join('') : '<tr><td colspan="8" class="muted">No passes yet. Sell the first one above.</td></tr>';
+  $('passRows').querySelectorAll('tr[data-id]').forEach(tr => {
+    const p = passes.find(x => x.id === tr.dataset.id), b = n => tr.querySelector('[name=' + n + ']');
+    if (b('qr')) b('qr').onclick = () => showQr(p);
+    if (b('seat')) b('seat').onclick = async () => {
+      if (!confirm('Add one more seat to ' + fmtCode(p.code) + ' (' + euro(p.price_cents / 100) + ')?')) return;
+      const { error } = await sb.from('passes').update({ seats: p.seats + 1 }).eq('id', p.id);
+      if (error) return toast('Error: ' + error.message);
+      toast('Seat added. They can join with the same code now.'); loadPasses();
+    };
+    if (b('ext')) b('ext').onclick = async () => {
+      const { error } = await sb.from('nights').update({ ends_at: new Date(new Date(p.night.ends_at).getTime() + 36e5).toISOString() }).eq('id', p.night.id);
+      if (error) return toast('Error: ' + error.message);
+      toast('One more hour for the whole group'); loadPasses();
+    };
+    if (b('void')) b('void').onclick = async () => {
+      if (!confirm('Void ' + fmtCode(p.code) + '? Nobody will be able to use it.')) return;
+      const { error } = await sb.from('passes').update({ status: 'void' }).eq('id', p.id);
+      if (error) return toast('Error: ' + error.message);
+      toast('Code voided'); loadPasses();
+    };
+    if (b('feed')) b('feed').onclick = () => openFeed(p);
+  });
+  if (openFeedId) { const p = passes.find(x => x.night && x.night.id === openFeedId); if (p) openFeed(p, true); }
+}
+function showQr(p){
+  const url = 'https://streetdare.com/pass/?c=' + p.code;
+  const q = qrcode(0, 'M'); q.addData(url); q.make();
+  $('qrImg').innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+  $('qrCode').textContent = fmtCode(p.code);
+  const left = p.seats - p.members.length;
+  $('qrSeats').textContent = (p.night ? p.night.name + ' · ' : 'Shirtless Pass · ') + left + ' of ' + p.seats + (p.seats === 1 ? ' seat' : ' seats') + ' left';
+  $('qrFull').hidden = false;
+}
+$('qrClose').onclick = () => { $('qrFull').hidden = true; };
+$('sellForm').onsubmit = async e => {
+  e.preventDefault(); const btn = $('sellBtn'); btn.disabled = true;
+  const free = $('sellPay').value.startsWith('Free');
+  const { data, error } = await sb.from('passes').insert({ seats, payment: $('sellPay').value, price_cents: free ? 0 : SEAT * 100, note: $('sellNote').value.trim() || null }).select('id, code').single();
+  btn.disabled = false;
+  if (error) return toast('Error: ' + error.message);
+  $('sellNote').value = '';
+  await loadPasses();
+  const p = passes.find(x => x.id === data.id); if (p) showQr(p);
+};
+let openFeedId = null;
+async function openFeed(p, quiet){
+  openFeedId = p.night.id;
+  const id = p.night.id;
+  const [{ data: m }, { data: pl }, { data: ds }, { data: info }] = await Promise.all([
+    sb.from('night_messages').select('*').eq('night_id', id).order('created_at', { ascending: false }).limit(300),
+    sb.from('night_plays').select('*').eq('night_id', id),
+    sb.from('pass_dares').select('id, en, feed_en'),
+    sb.rpc('night_info', { p_night: id })
+  ]);
+  const names = Object.fromEntries(((info && info.members) || []).map(x => [x.id, x.name]));
+  const plays = Object.fromEntries((pl || []).map(x => [x.id, x]));
+  const dareById = Object.fromEntries((ds || []).map(x => [x.id, x]));
+  const paths = (m || []).filter(x => x.photo_path && !x.deleted).map(x => x.photo_path);
+  const urls = {};
+  if (paths.length){ const { data } = await sb.storage.from('night-photos').createSignedUrls(paths, 3600); (data || []).forEach(r => urls[r.path] = r.signedUrl); }
+  const line = x => {
+    if (x.kind === 'join') return '<i class="muted">🎟️ ' + esc(names[x.profile_id] || '?') + ' joined</i>';
+    if (x.kind === 'play'){ const y = plays[x.play_id] || {}, d = dareById[y.dare_id] || {};
+      const who = [names[y.profile_id] || '?', ...(y.with_ids || []).map(i => names[i] || '?')].join(' & ');
+      return '<b>' + esc((d.feed_en || '').split('{name}').join(who).split('{answer}').join(y.answer || '')) + '</b> <span class="tag done">+' + ((y.points || 0) + (y.bonus || 0)) + '</span>' + (y.voided ? ' <span class="tag">voided</span>' : ''); }
+    return '<b>' + esc(names[x.profile_id] || '?') + ':</b> ' + (x.deleted ? '<i class="muted">deleted</i>' : esc(x.body || ''));
+  };
+  $('nightFeed').innerHTML = '<h3>Group Feed · ' + esc(p.night.name) + ' <button class="btn ghost sm" id="nfClose">close</button></h3>' +
+    ((m || []).map(x => '<div class="fmsg" data-id="' + x.id + '"><time class="muted" style="min-width:52px">' + new Date(x.created_at).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) + '</time><div>' + line(x) +
+      (x.photo_path && urls[x.photo_path] ? '<img src="' + esc(urls[x.photo_path]) + '" alt="">' : '') + '</div>' +
+      (x.kind !== 'join' && !x.deleted ? '<button class="btn ghost sm x" name="del">delete</button>' : '') + '</div>').join('') || '<p class="muted">Nothing yet.</p>');
+  $('nightFeed').hidden = false;
+  $('nfClose').onclick = () => { $('nightFeed').hidden = true; openFeedId = null; };
+  $('nightFeed').querySelectorAll('[name=del]').forEach(b => b.onclick = async () => {
+    if (!confirm('Delete this from the Group Feed?')) return;
+    const id = b.closest('.fmsg').dataset.id;
+    const { data, error } = await sb.rpc('delete_night_message', { p_id: id });
+    if (error) return toast('Error: ' + error.message);
+    if (data && data.photo) await sb.storage.from('night-photos').remove([data.photo]);
+    toast('Deleted'); openFeed(p, true);
+  });
+  if (!quiet) $('nightFeed').scrollIntoView({ behavior: 'smooth' });
+}
+function passFeed(text){
+  const li = document.createElement('li'); li.innerHTML = '<time>' + new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) + '</time><span>' + text + '</span>';
+  $('pFeed').prepend(li); while ($('pFeed').children.length > 60) $('pFeed').lastChild.remove();
+}
+let passT;
+function startPassRealtime(){
+  const reload = () => { clearTimeout(passT); passT = setTimeout(loadPasses, 400); };
+  const nightName = id => { const p = passes.find(x => x.night && x.night.id === id); return p ? p.night.name : 'a night'; };
+  sb.channel('passes-admin')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'passes' }, reload)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'nights' }, reload)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'night_members' }, p => { reload(); passFeed('🎟️ Someone took a seat in <b>' + esc(nightName(p.new.night_id)) + '</b>'); })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'night_plays' }, p => { reload(); passFeed('🔥 A dare was done in <b>' + esc(nightName(p.new.night_id)) + '</b> (+' + (p.new.points + p.new.bonus) + ')'); })
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'night_messages' }, p => { if (p.new.kind === 'chat') passFeed('💬 New message in <b>' + esc(nightName(p.new.night_id)) + '</b>'); if (openFeedId === p.new.night_id) reload(); })
+    .subscribe(s => { $('pLive').hidden = s !== 'SUBSCRIBED'; });
+  setInterval(() => { if (!document.hidden) loadPasses(); }, 60000);
+}
 </script>
 </body>
 </html>

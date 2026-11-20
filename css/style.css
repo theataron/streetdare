@@ -691,3 +691,7 @@ body.showing .consent{display:none}
 .ticket .byline{margin-top:8px}
 .exits{margin:14px 0 6px}
 .byebye{font:700 1.1rem/1.4 "DM Sans",sans-serif;text-align:center;margin:18px 6px 8px}
+
+/* Shirtless Pass live bar */
+.passbar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700;font-size:.9rem;padding:9px 20px;position:sticky;top:0;z-index:20}
+.passbar b{font-weight:800}

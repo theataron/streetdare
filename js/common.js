@@ -37,9 +37,9 @@ let DICT = { en:{} };
 const t = k => (DICT[LANG] && DICT[LANG][k]) ?? (DICT.en[k] ?? k);
 /* ----- account links: "Log in" in the header, "Log in" + "Create account" in the menu ----- */
 const ACCT = {
-  en:{ login:'Log in', me:'Profile', signup:'Create account', loginS:'Your profile, your shirts, your stats', signupS:'Got a shirt? Claim it here', meS:'Your photo, your shirts and your stats' },
-  hu:{ login:'Belépés', me:'Profil', signup:'Fiók létrehozása', loginS:'A profilod, a pólóid, a statisztikáid', signupS:'Van pólód? Itt igényelheted', meS:'A fotód, a pólóid és a statisztikáid' },
-  es:{ login:'Entrar', me:'Perfil', signup:'Crear cuenta', loginS:'Tu perfil, tus camisetas, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tu foto, tus camisetas y tus estadísticas' }
+  en:{ pass:'Shirtless Pass 🎟️', passS:'No shirt? Play tonight with your friends', login:'Log in', me:'Profile', signup:'Create account', loginS:'Your profile, your shirts, your stats', signupS:'Got a shirt? Claim it here', meS:'Your photo, your shirts and your stats' },
+  hu:{ pass:'Shirtless Pass 🎟️', passS:'Nincs pólód? Játssz ma este a barátaiddal', login:'Belépés', me:'Profil', signup:'Fiók létrehozása', loginS:'A profilod, a pólóid, a statisztikáid', signupS:'Van pólód? Itt igényelheted', meS:'A fotód, a pólóid és a statisztikáid' },
+  es:{ pass:'Shirtless Pass 🎟️', passS:'¿Sin camiseta? Juega esta noche con tus amigos', login:'Entrar', me:'Perfil', signup:'Crear cuenta', loginS:'Tu perfil, tus camisetas, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tu foto, tus camisetas y tus estadísticas' }
 };
 const loggedIn = () => !!store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token');
 function paintAccount(){
@@ -49,8 +49,11 @@ function paintAccount(){
   if (menu && !$('mLogin')){
     const foot = menu.querySelector('.foot');
     const mk = id => { const el = document.createElement('a'); el.id = id; el.innerHTML = '<span></span><small></small>'; menu.insertBefore(el, foot); return el; };
-    mk('mLogin'); mk('mSignup');
+    mk('mPass'); mk('mLogin'); mk('mSignup');
   }
+  const mp = $('mPass');
+  if (mp){ mp.href = '/pass/'; mp.querySelector('span').textContent = a.pass; mp.querySelector('small').textContent = a.passS; }
+  paintPassBar();
   const btn = $('acctBtn');
   if (btn){
     btn.href = loggedIn() ? '/me/' : '/login/'; btn.textContent = loggedIn() ? a.me : a.login;
@@ -61,6 +64,25 @@ function paintAccount(){
   if (ml){ ml.href = loggedIn() ? '/me/' : '/login/'; ml.querySelector('span').textContent = loggedIn() ? a.me : a.login; ml.querySelector('small').textContent = loggedIn() ? a.meS : a.loginS; }
   if (ms){ ms.hidden = loggedIn(); ms.href = '/login/?mode=signup'; ms.querySelector('span').textContent = a.signup; ms.querySelector('small').textContent = a.signupS; }
 }
+/* ----- Shirtless Pass: while a night is live it is the home page, and a bar links back to it ----- */
+function livePass(){ try{ const p = JSON.parse(store.get('sd_pass') || 'null'); return p && p.ends > Date.now() && loggedIn() ? p : null; }catch(e){ return null; } }
+(function passTakeover(){
+  const q = new URLSearchParams(location.search), home = location.pathname === '/' || location.pathname === '/index.html';
+  if (q.has('home')){ try{ sessionStorage.setItem('sd_home_ok', '1'); }catch(e){} }
+  let ok = false; try{ ok = !!sessionStorage.getItem('sd_home_ok'); }catch(e){}
+  const p = livePass();
+  if (home && p && !ok && !window.STAGE && !location.hash) location.replace('/pass/?n=' + encodeURIComponent(p.id));
+})();
+function paintPassBar(){
+  const p = livePass(); let bar = $('passBar');
+  if (!p || window.STAGE || location.pathname.startsWith('/p/')){ if (bar) bar.remove(); return; }
+  if (!bar){ bar = document.createElement('a'); bar.id = 'passBar'; bar.className = 'passbar'; document.body.prepend(bar); }
+  bar.href = '/pass/?n=' + encodeURIComponent(p.id);
+  const ms = p.ends - Date.now(), h = Math.floor(ms / 36e5), m = Math.floor(ms / 6e4) % 60;
+  bar.innerHTML = '<span>⏱ ' + h + 'h ' + m + 'm · <b></b></span><span>→</span>';
+  bar.querySelector('b').textContent = p.name;
+}
+setInterval(paintPassBar, 30000);
 function applyLang(){
   paintAccount();
   document.documentElement.lang = LANG;

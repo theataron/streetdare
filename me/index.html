@@ -109,6 +109,7 @@
       <div class="kicker" id="hello"></div>
       <h1 class="display" id="title"></h1>
       <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
+      <p class="sub"><a href="/pass/" id="passLink">🎟️ Shirtless Pass →</a></p>
 
       <!-- set-up checklist for new owners -->
       <!-- right after the profile is created: is this the name people should see? -->
@@ -383,6 +384,10 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
 (async () => {
   const session = await getSession();
   if (!session){ location.replace('/login/?next=/me/'); return; }
+  try{
+    const sp = JSON.parse(localStorage.getItem('sd_pass') || 'null');
+    if (sp && sp.ends > Date.now() && !new URLSearchParams(location.search).has('stay')){ location.replace('/pass/?n=' + encodeURIComponent(sp.id)); return; }
+  }catch(e){}
   user = session.user;
   const [p, d, i] = await Promise.all([
     sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed, username, recap_opt_in, lang').eq('id', user.id).maybeSingle(),
@@ -696,7 +701,7 @@ $('newCode').onclick = async () => {
 };
 
 /* ===== account ===== */
-$('logout').onclick = async () => { await sb.auth.signOut(); location.replace('/login/'); };
+$('logout').onclick = async () => { try{ localStorage.removeItem('sd_pass'); }catch(e){} await sb.auth.signOut(); location.replace('/login/'); };
 $('delAcc').onclick = async () => {
   if (!confirm(t('delConfirm'))) return;
   const { error } = await sb.rpc('delete_my_account');
