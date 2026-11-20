@@ -26,12 +26,12 @@ const SIZES = ['XS','S','M','L','XL','XXL','3XL'];
 
 Object.assign(T.en, {
   devilNote: "Adds the bolder dares on top of the party deck. Free on every shirt.",
-  hKicker: "Now live · Madrid",
+  hKicker: "Now live · Madrid & Budapest",
   ctaList: "Get your shirt - €39",
   ctaQ: "Want your own shirt and dares?",
   mClub: "Get your shirt 👕",
   mClubS: "The shirt, the Shirtless Pass and squad packs",
-  clIntro: "We’re building a community of people who actually want to connect, on a night out and in everyday life. The shirt, dare packs, the Shirtless Pass and squad packs are live in Madrid, and real-world meetups and local events come next.",
+  clIntro: "We’re building a community of people who actually want to connect, on a night out and in everyday life. The shirt, dare packs, the Shirtless Pass and squad packs are live in Madrid and Budapest, and real-world meetups and local events come next.",
   tagFirst: "Live now",
   g4h: "Free shipping",
   g4p: "Every shirt is printed for you and ships in 3-5 working days.",
@@ -78,12 +78,12 @@ Object.assign(T.en, {
 });
 Object.assign(T.es, {
   devilNote: "Añade los retos más atrevidos a la baraja de fiesta. Gratis en todas las camisetas.",
-  hKicker: "Ya disponible · Madrid",
+  hKicker: "Ya disponible · Madrid y Budapest",
   ctaList: "Consigue tu camiseta - 39 €",
   ctaQ: "¿Quieres tu propia camiseta y retos?",
   mClub: "Consigue tu camiseta 👕",
   mClubS: "La camiseta, el Shirtless Pass y los squad packs",
-  clIntro: "Estamos creando una comunidad de gente que de verdad quiere conectar, de fiesta y en el día a día. La camiseta, los packs de retos, el Shirtless Pass y los squad packs ya están disponibles en Madrid, y después vendrán quedadas reales y eventos locales.",
+  clIntro: "Estamos creando una comunidad de gente que de verdad quiere conectar, de fiesta y en el día a día. La camiseta, los packs de retos, el Shirtless Pass y los squad packs ya están disponibles en Madrid y Budapest, y después vendrán quedadas reales y eventos locales.",
   tagFirst: "Ya disponible",
   g4h: "Envío gratis",
   g4p: "Cada camiseta se imprime para ti y se envía en 3-5 días laborables.",

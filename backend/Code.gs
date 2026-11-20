@@ -21,7 +21,7 @@ const MAIL = {
     welcome: [
       'Hey,',
       'Welcome to the STREETDARE community! We\'re really glad you\'re here early.',
-      'Most people out at bars and clubs actually want to meet new people, they just don\'t know how to take that first step. That\'s why we\'re creating STREETDARE in Madrid: made-to-order streetwear with a live QR code on the back that gives strangers an easy, fun excuse to talk and become friends.',
+      'Most people out at bars and clubs actually want to meet new people, they just don\'t know how to take that first step. That\'s why we\'re creating STREETDARE in Madrid and Budapest: made-to-order streetwear with a live QR code on the back that gives strangers an easy, fun excuse to talk and become friends.',
       'We\'re putting the finishing touches on the first shirts right now. You won\'t get annoying daily emails from us. We\'ll write when the shirts are ready to order (with an exclusive discount code, because you joined before launch), and now and then about new dare decks, features and STREETDARE nights.',
       'See you out there soon,\nAron & the STREETDARE crew'
     ],
@@ -40,7 +40,7 @@ const MAIL = {
     welcome: [
       'Hola:',
       '¡Te damos la bienvenida a la comunidad STREETDARE! Nos alegra mucho que hayas llegado tan pronto.',
-      'La mayoría de la gente que sale a bares y discotecas en realidad quiere conocer gente nueva, pero no sabe cómo dar el primer paso. Por eso estamos creando STREETDARE en Madrid: streetwear hecho por encargo con un QR en la espalda que les da a los desconocidos una excusa fácil y divertida para hablar y hacerse amigos.',
+      'La mayoría de la gente que sale a bares y discotecas en realidad quiere conocer gente nueva, pero no sabe cómo dar el primer paso. Por eso estamos creando STREETDARE en Madrid y Budapest: streetwear hecho por encargo con un QR en la espalda que les da a los desconocidos una excusa fácil y divertida para hablar y hacerse amigos.',
       'Ahora mismo estamos dando los últimos retoques a las primeras camisetas. No vas a recibir emails pesados todos los días. Te escribiremos cuando las camisetas se puedan pedir (con un código de descuento exclusivo, porque te uniste antes del lanzamiento) y, de vez en cuando, sobre nuevas barajas de retos, funciones y noches STREETDARE.',
       'Nos vemos pronto por ahí,\nAron y el equipo de STREETDARE'
     ],
