@@ -58,6 +58,8 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .seatpick{display:flex;gap:6px;flex-wrap:wrap}
 .seatpick button{border:2px solid var(--ink);background:#fff;border-radius:12px;min-width:44px;padding:8px 10px;font-weight:800;cursor:pointer}
 .seatpick button.on{background:var(--ink);color:var(--bg)}
+.seatpick input{border:2px solid var(--ink);border-radius:12px;padding:8px 10px;font-weight:800;text-align:center}
+.seatpick input.on{background:var(--ink);color:var(--bg)}
 .qrfull{position:fixed;inset:0;background:var(--bg);z-index:50;display:grid;place-items:center;padding:20px}
 .qrbox{max-width:420px;width:100%;text-align:center;display:grid;gap:14px}
 .qrimg{background:#fff;border:3px solid var(--ink);border-radius:20px;padding:16px;width:min(80vw,340px);aspect-ratio:1;margin:0 auto}
@@ -78,11 +80,14 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .chips button{border:2px solid var(--ink);border-radius:99px;background:#fff;padding:6px 14px;font-weight:700;cursor:pointer}
 .chips button.on{background:var(--red);border-color:var(--red);color:#fff}
 .chips button.off{opacity:.55}
-.dare{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
+.dare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line)}
 .dare.inactive textarea{opacity:.5}
 .dare .acts{display:grid;gap:6px;justify-items:start;min-width:110px}
 .dare label{font-size:.85rem;display:flex;gap:6px;align-items:center;cursor:pointer}
-@media (max-width:700px){.dare{grid-template-columns:1fr}}
+@media (max-width:900px){.dare{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.dare{grid-template-columns:1fr}}
+#addDare{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto auto;gap:10px;align-items:end}
+@media (max-width:900px){#addDare{grid-template-columns:1fr}}
 .lbl{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:3px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
 .row > *{flex:1;min-width:140px}
@@ -465,11 +470,17 @@ function passState(p){
   return p.members.length >= p.seats ? 'full' : 'active';
 }
 function paintSeatPick(){
-  $('seatPick').innerHTML = [1,2,3,4,5,6,8,10].map(n => '<button type="button" data-n="' + n + '" class="' + (n === seats ? 'on' : '') + '">' + n + '</button>').join('');
+  if (!$('seatPick').children.length){
+    $('seatPick').innerHTML = [1,2,3,4,5,6].map(n => '<button type="button" data-n="' + n + '">' + n + '</button>').join('') +
+      '<input type="number" id="seatMore" min="7" max="30" inputmode="numeric" placeholder="7+" aria-label="More seats" style="width:84px">';
+    $('seatMore').oninput = () => { const v = parseInt($('seatMore').value, 10); if (v >= 1 && v <= 30){ seats = v; paintSeatPick(); } };
+  }
+  $('seatPick').querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.n === seats));
+  $('seatMore').classList.toggle('on', seats > 6);
   const free = $('sellPay').value.startsWith('Free');
   $('sellBtn').textContent = 'Create code · ' + seats + (seats === 1 ? ' seat' : ' seats') + (free ? ' · free' : ' · ' + euro(seats * SEAT));
 }
-$('seatPick').onclick = e => { const b = e.target.closest('button'); if (!b) return; seats = +b.dataset.n; paintSeatPick(); };
+$('seatPick').onclick = e => { const b = e.target.closest('button'); if (!b) return; seats = +b.dataset.n; $('seatMore').value = ''; paintSeatPick(); };
 $('sellPay').onchange = paintSeatPick;
 paintSeatPick();
 function leftStr(d){ const ms = new Date(d) - Date.now(); if (ms <= 0) return 'ended ' + ago(d); const h = Math.floor(ms / 36e5), m = Math.floor(ms / 6e4) % 60; return h + 'h ' + m + 'm left'; }
@@ -543,7 +554,9 @@ function showQr(p){
 }
 $('qrClose').onclick = () => { $('qrFull').hidden = true; };
 $('sellForm').onsubmit = async e => {
-  e.preventDefault(); const btn = $('sellBtn'); btn.disabled = true;
+  e.preventDefault();
+  if (!(seats >= 1 && seats <= 30)) return toast('Seats: 1 to 30');
+  const btn = $('sellBtn'); btn.disabled = true;
   const free = $('sellPay').value.startsWith('Free');
   const { data, error } = await sb.from('passes').insert({ seats, payment: $('sellPay').value, price_cents: free ? 0 : SEAT * 100, note: $('sellNote').value.trim() || null }).select('id, code').single();
   btn.disabled = false;
@@ -557,7 +570,7 @@ async function openFeed(p, quiet){
   openFeedId = p.night.id;
   const id = p.night.id;
   const [{ data: m }, { data: pl }, { data: ds }, { data: info }] = await Promise.all([
-    sb.from('night_messages').select('*').eq('night_id', id).order('created_at', { ascending: false }).limit(300),
+    sb.from('night_messages').select('*').eq('night_id', id).order('created_at', { ascending: true }).limit(500),
     sb.from('night_plays').select('*').eq('night_id', id),
     sb.from('pass_dares').select('id, en, feed_en'),
     sb.rpc('night_info', { p_night: id })

@@ -37,9 +37,9 @@ let DICT = { en:{} };
 const t = k => (DICT[LANG] && DICT[LANG][k]) ?? (DICT.en[k] ?? k);
 /* ----- account links: "Log in" in the header, "Log in" + "Create account" in the menu ----- */
 const ACCT = {
-  en:{ pass:'Shirtless Pass 🎟️', passS:'No shirt? Play tonight with your friends', login:'Log in', me:'Profile', signup:'Create account', loginS:'Your profile, your shirts, your stats', signupS:'Got a shirt? Claim it here', meS:'Your photo, your shirts and your stats' },
-  hu:{ pass:'Shirtless Pass 🎟️', passS:'Nincs pólód? Játssz ma este a barátaiddal', login:'Belépés', me:'Profil', signup:'Fiók létrehozása', loginS:'A profilod, a pólóid, a statisztikáid', signupS:'Van pólód? Itt igényelheted', meS:'A fotód, a pólóid és a statisztikáid' },
-  es:{ pass:'Shirtless Pass 🎟️', passS:'¿Sin camiseta? Juega esta noche con tus amigos', login:'Entrar', me:'Perfil', signup:'Crear cuenta', loginS:'Tu perfil, tus camisetas, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tu foto, tus camisetas y tus estadísticas' }
+  en:{ contact:'Contact ✉️', contactS:'Questions, collabs, press', pass:'Shirtless Pass 🎟️', passS:'No shirt? Play tonight with your friends', login:'Log in', me:'Profile', signup:'Create account', loginS:'Your profile, your shirts, your stats', signupS:'Got a shirt? Claim it here', meS:'Your photo, your shirts and your stats' },
+  hu:{ contact:'Kapcsolat ✉️', contactS:'Kérdések, együttműködés, sajtó', pass:'Shirtless Pass 🎟️', passS:'Nincs pólód? Játssz ma este a barátaiddal', login:'Belépés', me:'Profil', signup:'Fiók létrehozása', loginS:'A profilod, a pólóid, a statisztikáid', signupS:'Van pólód? Itt igényelheted', meS:'A fotód, a pólóid és a statisztikáid' },
+  es:{ contact:'Contacto ✉️', contactS:'Preguntas, colaboraciones, prensa', pass:'Shirtless Pass 🎟️', passS:'¿Sin camiseta? Juega esta noche con tus amigos', login:'Entrar', me:'Perfil', signup:'Crear cuenta', loginS:'Tu perfil, tus camisetas, tus estadísticas', signupS:'¿Tienes camiseta? Reclámala aquí', meS:'Tu foto, tus camisetas y tus estadísticas' }
 };
 const loggedIn = () => !!store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token');
 function paintAccount(){
@@ -49,8 +49,10 @@ function paintAccount(){
   if (menu && !$('mLogin')){
     const foot = menu.querySelector('.foot');
     const mk = id => { const el = document.createElement('a'); el.id = id; el.innerHTML = '<span></span><small></small>'; menu.insertBefore(el, foot); return el; };
-    mk('mPass'); mk('mLogin'); mk('mSignup');
+    mk('mPass'); mk('mLogin'); mk('mSignup'); mk('mContact');
   }
+  const mc = $('mContact');
+  if (mc){ mc.href = '/contact/'; mc.querySelector('span').textContent = a.contact; mc.querySelector('small').textContent = a.contactS; }
   const mp = $('mPass');
   if (mp){ mp.href = '/pass/'; mp.querySelector('span').textContent = a.pass; mp.querySelector('small').textContent = a.passS; }
   paintPassBar();

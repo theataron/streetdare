@@ -21,7 +21,7 @@ if (SHIRT) $('tryLink').href = 'p/?s=' + SHIRT;
 
 function chips(){
   const pickText = q => LANG === 'hu' ? (q[3] || q[0]) : LANG === 'es' ? q[1] : q[0];
-  $('chips').innerHTML = QUESTS.classic.slice(0,8).map(q => '<span class="chip">'+pickText(q)+'</span>').join('');
+  $('chips').innerHTML = QUESTS.classic.slice(0,5).map(q => '<span class="chip">'+pickText(q)+'</span>').join('');
 }
 
 /* ----- wall ----- */

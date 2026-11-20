@@ -695,3 +695,22 @@ body.showing .consent{display:none}
 /* Shirtless Pass live bar */
 .passbar{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:700;font-size:.9rem;padding:9px 20px;position:sticky;top:0;z-index:20}
 .passbar b{font-weight:800}
+
+/* ===== Night mode (html.night, set by js/night.js) ===== */
+html.night{--bg:#121012;--card:#1e1a19;--ink:#f3ece3;--blush:#3a201d;--mute:#a99c94;--redt:#ff5c50;--red:#d8261c;--red-d:#a51a12;--sh:4px 4px 0 #000;color-scheme:dark}
+html.night body{background:var(--bg);color:var(--ink)}
+html.night .btn.red{color:#fff;border-color:#000}
+html.night .btn{border-color:#000}
+html.night .langlist{background:var(--card);color:var(--ink)}
+html.night .menu{background:#7e1009}
+html.night .adult{color:#1b1412}
+html.night .refbanner{color:#1b1412}
+.nightbtn{font-size:1.05rem;background:none;border:2px solid var(--ink);border-radius:99px;width:38px;height:34px;cursor:pointer;line-height:1;padding:0}
+/* the logo next to every dare (swap .sdlogo for the final logo file later) */
+.sdlogo{font-family:"Bagel Fat One","Arial Black",sans-serif;font-weight:400;letter-spacing:.02em;line-height:1;display:inline-block;transform:rotate(-2deg)}
+/* night: boxes that are "ink on cream" by day stay dark boxes at night */
+html.night .wlbox,html.night .group,html.night .toast,html.night .consent,html.night .nextstep,html.night .showmode,html.night .igcard,html.night .passbar,html.night .art.packs.dev .pk{background:#000;color:#fff}
+html.night .seg button.on{background:var(--ink);color:#121012}
+html.night .how b{background:var(--red);color:#fff}
+html.night .consent button{border-color:#fff;color:#fff}
+@media (max-width:430px){ body.scanpage #acctBtn{display:none} }

@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#fbf8ef">
 <link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../css/style.css">
+<script src="../js/night.js"></script>
 <style>
 .pp{padding:4px 0 90px}
 .pp h1{font-size:clamp(2.2rem,10vw,3rem);color:var(--red);transform:rotate(-2deg);margin:12px 0 10px}
@@ -78,17 +79,25 @@
 .photopick{display:flex;align-items:center;gap:12px;background:#fff;border:2.5px dashed var(--ink);border-radius:16px;padding:12px;cursor:pointer}
 .photopick img{width:64px;height:64px;object-fit:cover;border-radius:10px}
 .photopick .ph{width:64px;height:64px;border-radius:10px;background:var(--blush);display:grid;place-items:center;font-size:1.7rem;flex:none}
-.photopick b{display:block}
-.photopick small{color:var(--mute);font-size:.85rem}
+.photopick b{display:block;text-transform:none;letter-spacing:0;color:var(--ink);font-size:.98rem}
+.photopick small{color:var(--mute);font-size:.85rem;text-transform:none;letter-spacing:0;font-weight:500}
+/* logo on every pass dare */
+.darecard .brand{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.darecard .brand .sdlogo{font-size:1.25rem;color:#fff}
+.darecard .brand small{font-weight:800;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+.sheetbrand{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.sheetbrand .sdlogo{font-size:1.15rem;color:var(--redt)}
+.sheetbrand small{color:var(--mute);font-size:.8rem;font-weight:700}
+.sheetdare{background:var(--red);color:#fff;border-radius:16px;padding:12px 14px;font-weight:700;margin:0 0 14px;line-height:1.35}
 /* feed */
 .notice{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:10px 12px;font-size:.86rem;margin:0 0 10px;display:flex;gap:8px}
 .notice.warn{background:var(--blush);border-color:var(--red)}
-.compose{display:grid;gap:8px;margin:6px 0 14px}
+.compose{display:grid;gap:8px;margin:6px 0 0;border-top:1.5px solid #eadfd2;padding-top:12px}
 .compose textarea{min-height:52px;resize:vertical}
 .compose .row{display:flex;gap:8px;align-items:center}
 .compose .row .btn{width:auto;flex:1;padding:12px 16px}
 .replying{font-size:.85rem;background:var(--blush);border-radius:12px;padding:6px 10px;display:flex;justify-content:space-between;gap:8px}
-.msgs{list-style:none;padding:0;margin:0}
+.msgs{display:block;list-style:none;padding:0 4px 0 0;margin:0 0 10px;max-height:62dvh;overflow-y:auto;overscroll-behavior:contain}
 .msgs li{padding:12px 0;border-top:1.5px solid #eadfd2;display:flex;gap:10px}
 .msgs li:first-child{border-top:0}
 .msgs .av{width:34px;height:34px;font-size:.85rem}
@@ -99,9 +108,9 @@
 .msgs .play{font-weight:700}
 .msgs .play.void{text-decoration:line-through;opacity:.55}
 .msgs .join{color:var(--mute);font-size:.9rem;font-style:italic}
-.msgs img.pic{display:block;max-width:100%;max-height:340px;border-radius:14px;border:2px solid var(--ink);margin-top:8px;object-fit:cover;background:var(--blush)}
+.msgs img.pic{display:block;width:100%;height:280px;border-radius:14px;border:2px solid var(--ink);margin-top:8px;object-fit:cover;background:var(--blush)}
 .msgs .gone{font-size:.85rem;color:var(--mute);margin-top:6px}
-.msgs .quote{border-left:3px solid var(--red);padding:2px 8px;margin:4px 0;font-size:.85rem;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msgs .rq{border-left:3px solid var(--red);padding:2px 8px;margin:4px 0;font-size:.85rem;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .msgs .acts{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
 .msgs .acts button{background:none;border:0;font:600 .8rem "DM Sans",sans-serif;color:var(--mute);cursor:pointer;padding:4px 6px}
 .msgs .acts button.on{color:var(--red)}
@@ -123,14 +132,41 @@
 .howto h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.4rem;margin-bottom:8px}
 .howto ol{margin:0 0 14px 1.1em;padding:0;display:grid;gap:6px}
 .howto .btn{background:#fff;color:var(--ink)}
+/* night mode */
+html.night .in,html.night .field input,html.night .field textarea,html.night .at,html.night .chips button,html.night .photopick,html.night .notice,html.night .mini{background:#2a2422;color:var(--ink)}
+html.night .chips button.on{background:var(--ink);color:#121012}
+html.night .notice.warn{background:var(--blush);border-color:var(--red)}
+html.night .board li,html.night .msgs li,html.night .nights li,html.night .compose{border-color:#2f2826}
+html.night .board li.me{background:var(--blush)}
+html.night .nighthead,html.night .howto,html.night .ended,html.night .handoff{background:#000;color:#fff}
+html.night .ptag{background:#173d27;color:#7fe0a5}
+html.night .qr{background:#fff}
+html.night .sheet .box{background:var(--bg)}
+html.night .toast{background:#f3ece3;color:#121012}
+html.night .darecard .btn{background:#fff;color:#1b1412}
+html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!important}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top" id="top">
     <a class="mark display" href="/?home=1">STREETDARE</a>
-    <div class="right"><button class="lang" id="lang" aria-label="Language">EN</button></div>
+    <div class="right" style="display:flex;gap:8px;align-items:center">
+      <button class="nightbtn" id="nightBtn" type="button" aria-label="Night mode">🌙</button>
+      <button class="lang" id="lang" aria-label="Language">EN</button>
+      <button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button>
+    </div>
   </header>
+
+  <nav class="menu" id="menu" hidden>
+    <button class="x" id="menuClose" aria-label="Close">✕</button>
+    <a href="/pass/?all=1" id="mnPass"><span></span><small></small></a>
+    <a href="/?home=1" id="mnHome"><span></span><small></small></a>
+    <a href="/p/?s=demo" id="mnTry"><span></span><small></small></a>
+    <a href="/me/?stay=1" id="mnMe"><span></span><small></small></a>
+    <a href="/contact/" id="mnContact"><span></span><small></small></a>
+    <div class="foot">STREETDARE · Madrid</div>
+  </nav>
 
   <main class="pp">
     <p class="loading" id="v-loading">…</p>
@@ -241,6 +277,7 @@
 
       <div id="nPlay">
         <div class="darecard" id="dCard">
+          <div class="brand"><span class="sdlogo">STREETDARE</span><small>Shirtless Pass</small></div>
           <div class="k"><span id="dK"></span><span class="ptsbadge" id="dPts"></span></div>
           <p id="dText"></p>
           <div class="tags" id="dTags"></div>
@@ -260,6 +297,8 @@
         <h2 id="feedH"></h2>
         <div class="notice"><span>🔒</span><span id="privNote"></span></div>
         <div class="notice warn" id="photoNote"><span>📸</span><span><span id="photoNoteTxt"></span> <button class="mini" type="button" id="saveAll" style="margin-top:6px"></button></span></div>
+
+        <ul class="msgs" id="msgs"></ul>
         <form class="compose" id="cForm" novalidate>
           <div class="replying" id="cReply" hidden><span id="cReplyTxt"></span><button class="mini plain" type="button" id="cReplyX">✕</button></div>
           <textarea class="in" id="cText" maxlength="500"></textarea>
@@ -270,7 +309,6 @@
           </div>
           <div id="cPreview" hidden class="photopick" style="border-style:solid;cursor:default"><img id="cPreviewImg" alt=""><span style="flex:1"><b id="cPreviewTxt"></b></span><button class="mini plain" type="button" id="cPreviewX">✕</button></div>
         </form>
-        <ul class="msgs" id="msgs"></ul>
       </section>
 
       <section class="panel invite" id="inv">
@@ -292,7 +330,9 @@
 <!-- finishing a dare -->
 <div class="sheet" id="sheet" hidden>
   <div class="box">
+    <div class="sheetbrand"><span class="sdlogo">STREETDARE</span><small id="sBrandS"></small></div>
     <h2 id="sH"></h2>
+    <div class="sheetdare" id="sDare"></div>
     <div class="handoff" id="sAnsBox" hidden>
       <b id="sAnsH"></b><small id="sAnsS"></small>
       <input class="in" id="sAns" maxlength="60" autocomplete="off">
@@ -339,6 +379,7 @@ const PHOTO_DAYS = 7;
 
 const T = {
   en:{
+    mnPass:'My nights 🎟️', mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
     gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
     gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
     gGoogle:'Continue with Google', gEmail:'Continue with email', gSmall:'New here or been before, it’s the same button.',
@@ -376,6 +417,7 @@ const T = {
     days1:'1 day', daysN:'{d} days', hours:'less than a day', timeLeft:'{h}h {m}m'
   },
   es:{
+    mnPass:'Mis noches 🎟️', mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
     gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
     gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
     gGoogle:'Continuar con Google', gEmail:'Continuar con email', gSmall:'Si eres nuevo o ya has jugado, es el mismo botón.',
@@ -413,6 +455,7 @@ const T = {
     days1:'1 día', daysN:'{d} días', hours:'menos de un día', timeLeft:'{h} h {m} min'
   },
   hu:{
+    mnPass:'Az estéim 🎟️', mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
     gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
     gGoogle:'Folytatás Google-fiókkal', gEmail:'Folytatás e-maillel', gSmall:'Akár új vagy, akár játszottál már, ugyanez a gomb.',
@@ -476,6 +519,11 @@ function paint(){
   ['gH','gP','gSmall','pfH','pfP','pfNameL','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
    'nAll','nProfile','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','feedH','privNote','saveAll','cSend','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel','svH','svX']
     .forEach(k => { if ($(k)) $(k).textContent = t(k); });
+  [['mnPass','mnPass'],['mnHome','mnHome'],['mnTry','mnTry'],['mnContact','mnContact']].forEach(([id, k]) => { $(id).querySelector('span').textContent = t(k); $(id).querySelector('small').textContent = t(k + 'S'); });
+  const mk = user ? 'mnMe' : 'mnLogin';
+  $('mnMe').href = user ? '/me/?stay=1' : '/login/?next=/pass/';
+  $('mnMe').querySelector('span').textContent = t(mk); $('mnMe').querySelector('small').textContent = t(mk + 'S');
+  $('sBrandS').textContent = t('sBrandS');
   $('gGoogleTxt').textContent = t('gGoogle'); $('gEmail').textContent = t('gEmail');
   $('fName').placeholder = t('fPh'); $('cText').placeholder = t('cPh');
   $('mWa').textContent = $('hWa').textContent = $('invWa').textContent = t('waBtn');
@@ -486,6 +534,11 @@ function paint(){
   renderHook();
 }
 window.paintLangPick = langPicker($('lang'), () => L, c => { L = c; setLang(L); if (profile && user){ sb.from('profiles').update({ lang: L }).eq('id', user.id).then(() => {}); } paint(); });
+
+/* ---------- menu ---------- */
+$('burger').onclick = () => { $('menu').hidden = false; document.body.style.overflow = 'hidden'; };
+$('menuClose').onclick = () => { $('menu').hidden = true; document.body.style.overflow = ''; };
+$('menu').addEventListener('click', e => { if (e.target.closest('a')) { $('menu').hidden = true; document.body.style.overflow = ''; } });
 
 /* ---------- start ---------- */
 (async () => {
@@ -746,6 +799,7 @@ function openSheet(){
   withSel = new Set(); sheetBlob = null;
   $('sErr').hidden = true; $('sAns').value = ''; $('sImg').hidden = true; $('sPh').hidden = false; $('sFile').value = '';
   $('sH').textContent = t('sH');
+  $('sDare').textContent = dare[L] || dare.en;
   $('sAnsBox').hidden = !dare.needs_answer;
   $('sAns').placeholder = dl(dare, 'ask');
   const others = info.members.filter(m => m.id !== user.id);
@@ -824,7 +878,7 @@ async function signAll(paths){
 let playsById = new Map();
 async function loadMsgs(){
   const [{ data: m }, { data: p }] = await Promise.all([
-    sb.from('night_messages').select('*').eq('night_id', night).order('created_at', { ascending: false }).limit(300),
+    sb.from('night_messages').select('*').eq('night_id', night).order('created_at', { ascending: false }).limit(300).then(r => ({ data: (r.data || []).reverse() })),
     sb.from('night_plays').select('id, profile_id, dare_id, answer, with_ids, points, bonus, challenged_by, voided').eq('night_id', night)
   ]);
   msgs = m || []; playsById = new Map((p || []).map(x => [x.id, x]));
@@ -843,6 +897,8 @@ function renderMsgs(){
   const live = isLive();
   if (!msgs.length){ $('msgs').innerHTML = '<li class="join">' + esc(t('empty')) + '</li>'; return; }
   const byId = new Map(msgs.map(m => [m.id, m]));
+  const box = $('msgs'), atBottom = !box.dataset.done || box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+  queueMicrotask(() => { if (atBottom) box.scrollTop = box.scrollHeight; box.dataset.done = '1'; });
   $('msgs').innerHTML = msgs.map(m => {
     const who = memberById(m.profile_id) || { name: '?' };
     const time = new Date(m.created_at).toLocaleTimeString(L, { hour:'2-digit', minute:'2-digit' });
@@ -859,12 +915,12 @@ function renderMsgs(){
     } else {
       if (m.deleted) return '';
       const q = m.reply_to && byId.get(m.reply_to);
-      if (q) body += '<div class="quote">↪ ' + esc((memberById(q.profile_id) || {}).name || '?') + ': ' + esc(q.deleted ? '…' : (q.body || '📷')) + '</div>';
+      if (q) body += '<div class="rq">↪ ' + esc((memberById(q.profile_id) || {}).name || '?') + ': ' + esc(q.deleted ? '…' : (q.body || '📷')) + '</div>';
       if (m.body) body += '<div class="txt">' + esc(m.body) + '</div>';
     }
     if (m.photo_path && !m.deleted){
       if (photoExpired(m)) body += '<div class="gone">' + esc(t('photoGone')) + '</div>';
-      else if (signed.get(m.photo_path)) body += '<img class="pic" loading="lazy" src="' + esc(signed.get(m.photo_path)) + '" alt="">';
+      else if (signed.get(m.photo_path)) body += '<img class="pic" src="' + esc(signed.get(m.photo_path)) + '" alt="">';
     }
     if (live && m.kind === 'chat') acts += '<button type="button" data-re="' + esc(m.id) + '">' + esc(t('reply')) + '</button>';
     if (mine && !m.deleted && (m.kind === 'chat' || m.photo_path)) acts += '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>';
