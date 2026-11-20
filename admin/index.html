@@ -55,6 +55,14 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .feed time{color:var(--mute);min-width:70px;font-variant-numeric:tabular-nums}
 .tag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:2px 8px;background:var(--blush);color:var(--red);white-space:nowrap}
 .tag.done{background:#d9f0e2;color:var(--ok)}
+.pdare .tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:10px}
+@media (max-width:900px){.pdare .tri{grid-template-columns:1fr}}
+.pdare .opts{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:10px;font-weight:700;font-size:.9rem}
+.pdare select{border:2px solid var(--ink);border-radius:10px;padding:4px 8px;font-weight:800;margin-left:4px}
+.pdare.row-item{border-top:1.5px solid var(--line);padding:16px 0}
+.pdare.row-item:first-child{border-top:0}
+.pdare.inactive{opacity:.5}
+.pdare .acts{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-weight:700;font-size:.9rem}
 .seatpick{display:flex;gap:6px;flex-wrap:wrap}
 .seatpick button{border:2px solid var(--ink);background:#fff;border-radius:12px;min-width:44px;padding:8px 10px;font-weight:800;cursor:pointer}
 .seatpick button.on{background:var(--ink);color:var(--bg)}
@@ -164,6 +172,33 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
           <div><div class="lbl">Español</div><textarea id="newEs" rows="2" maxlength="300" required></textarea></div>
           <div><div class="lbl">Magyar</div><textarea id="newHu" rows="2" maxlength="300"></textarea></div>
           <label style="font-weight:700;align-self:center"><input type="checkbox" id="newAdult"> 18+</label>
+          <button class="btn red" type="submit">Add</button>
+        </form>
+      </div>
+      <div class="card" id="addPassCard" hidden>
+        <h3>Add a Shirtless deck dare</h3>
+        <form id="addPass" class="pdare">
+          <div class="tri">
+            <div><div class="lbl">English</div><textarea name="en" rows="2" maxlength="300" required></textarea></div>
+            <div><div class="lbl">Español</div><textarea name="es" rows="2" maxlength="300" required></textarea></div>
+            <div><div class="lbl">Magyar</div><textarea name="hu" rows="2" maxlength="300"></textarea></div>
+          </div>
+          <div class="opts">
+            <label>Points <select name="points"><option>1</option><option selected>2</option><option>3</option></select></label>
+            <label><input type="checkbox" name="needs_answer"> The stranger types an answer</label>
+            <label><input type="checkbox" name="needs_photo"> Needs a photo</label>
+          </div>
+          <div class="tri asks" hidden>
+            <div><div class="lbl">Answer field label (EN)</div><input type="text" name="ask_en" maxlength="60" placeholder="e.g. Celebrity"></div>
+            <div><div class="lbl">Etiqueta (ES)</div><input type="text" name="ask_es" maxlength="60" placeholder="p. ej. Famoso"></div>
+            <div><div class="lbl">Címke (HU)</div><input type="text" name="ask_hu" maxlength="60" placeholder="pl. Híresség"></div>
+          </div>
+          <div class="tri">
+            <div><div class="lbl">Group Feed line (EN)</div><textarea name="feed_en" rows="2" maxlength="300" required placeholder="A stranger thinks {name} looks like {answer}"></textarea></div>
+            <div><div class="lbl">Línea del feed (ES)</div><textarea name="feed_es" rows="2" maxlength="300" required placeholder="Un desconocido cree que {name} se parece a {answer}"></textarea></div>
+            <div><div class="lbl">Feed sor (HU)</div><textarea name="feed_hu" rows="2" maxlength="300"></textarea></div>
+          </div>
+          <p class="muted" style="font-size:.84rem;margin:2px 0 10px">In the feed line, <b>{name}</b> becomes the player's name (or "Lea & Tom" when friends join) and <b>{answer}</b> becomes what the stranger typed. Tip: make the stranger the subject ("A stranger taught {name}…") so it reads right for one or several players.</p>
           <button class="btn red" type="submit">Add</button>
         </form>
       </div>
@@ -335,14 +370,17 @@ async function loadDecks(){
 function paintChips(){
   $('deckChips').innerHTML =
     decks.map(d => '<button data-deck="' + d.id + '" class="' + (scope.deck_id === d.id ? 'on' : '') + (d.active ? '' : ' off') + '">' + esc(d.name_en) + '</button>').join('') +
+    '<button data-pass="1" class="' + (scope.pass ? 'on' : '') + '">🎟️ Shirtless deck</button>' +
     shirtsAll.map(s => '<button data-shirt="' + s.id + '" class="' + (scope.shirt_id === s.id ? 'on' : '') + '">👕 ' + esc(s.name) + '</button>').join('');
   $('deckChips').querySelectorAll('button').forEach(b => b.onclick = () => {
-    scope = b.dataset.deck ? { deck_id: b.dataset.deck } : { shirt_id: b.dataset.shirt };
+    scope = b.dataset.pass ? { pass: true } : b.dataset.deck ? { deck_id: b.dataset.deck } : { shirt_id: b.dataset.shirt };
     paintChips(); paintDeckSettings(); loadDares();
   });
 }
 function paintDeckSettings(){
   const box = $('deckSettings');
+  $('addDare').closest('.card').hidden = !!scope.pass; $('addPassCard').hidden = !scope.pass;
+  if (scope.pass){ box.innerHTML = '<h3>🎟️ Shirtless deck</h3><p class="muted">The dares people get with a Shirtless Pass: they go up to strangers themselves, without a shirt. Each dare has points (1 easy · 2 medium · 3 bold), can let the stranger type an answer on the player\'s phone, can require a photo, and writes a line in the Group Feed when it\'s done. Changes are live straight away.</p>'; return; }
   if (scope.shirt_id){ const s = shirtsAll.find(x => x.id === scope.shirt_id); box.innerHTML = '<h3>' + esc(s ? s.name : scope.shirt_id) + "'s own dares</h3><p class=\"muted\">These only show up when someone scans this shirt, mixed into the Party deck.</p>"; return; }
   const d = decks.find(x => x.id === scope.deck_id); if (!d){ box.innerHTML = ''; return; }
   box.innerHTML =
@@ -364,6 +402,7 @@ function paintDeckSettings(){
   };
 }
 async function loadDares(){
+  if (scope.pass) return loadPassDares();
   let q = sb.from('dares').select('*').order('sort').order('id');
   q = scope.deck_id ? q.eq('deck_id', scope.deck_id) : q.eq('shirt_id', scope.shirt_id);
   const { data, error } = await q;
@@ -415,6 +454,63 @@ async function loadDares(){
     };
   });
 }
+async function loadPassDares(){
+  const { data, error } = await sb.from('pass_dares').select('*').order('sort').order('id');
+  if (error) return toast('Error: ' + error.message);
+  $('dareTitle').textContent = data.length + ' dares · ' + data.filter(x => x.active).length + ' live';
+  const ta = (n, v, ph) => '<textarea name="' + n + '" rows="2" maxlength="300"' + (ph ? ' placeholder="' + ph + '"' : '') + '>' + esc(v || '') + '</textarea>';
+  const inp = (n, v) => '<input type="text" name="' + n + '" maxlength="60" value="' + esc(v || '') + '">';
+  $('dareList').innerHTML = data.length ? data.map(r =>
+    '<div class="pdare row-item' + (r.active ? '' : ' inactive') + '" data-id="' + r.id + '">' +
+      '<div class="tri"><div><div class="lbl">English</div>' + ta('en', r.en) + '</div><div><div class="lbl">Español</div>' + ta('es', r.es) + '</div><div><div class="lbl">Magyar</div>' + ta('hu', r.hu) + '</div></div>' +
+      '<div class="opts"><label>Points <select name="points">' + [1,2,3].map(n => '<option' + (n === r.points ? ' selected' : '') + '>' + n + '</option>').join('') + '</select></label>' +
+        '<label><input type="checkbox" name="needs_answer"' + (r.needs_answer ? ' checked' : '') + '> The stranger types an answer</label>' +
+        '<label><input type="checkbox" name="needs_photo"' + (r.needs_photo ? ' checked' : '') + '> Needs a photo</label></div>' +
+      '<div class="tri asks"' + (r.needs_answer ? '' : ' hidden') + '><div><div class="lbl">Answer label (EN)</div>' + inp('ask_en', r.ask_en) + '</div><div><div class="lbl">Etiqueta (ES)</div>' + inp('ask_es', r.ask_es) + '</div><div><div class="lbl">Címke (HU)</div>' + inp('ask_hu', r.ask_hu) + '</div></div>' +
+      '<div class="tri"><div><div class="lbl">Group Feed line (EN)</div>' + ta('feed_en', r.feed_en) + '</div><div><div class="lbl">Línea del feed (ES)</div>' + ta('feed_es', r.feed_es) + '</div><div><div class="lbl">Feed sor (HU)</div>' + ta('feed_hu', r.feed_hu) + '</div></div>' +
+      '<div class="acts"><label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
+        '<button class="btn sm red" name="save" disabled>Save</button><button class="btn ghost sm" name="del">Delete</button></div>' +
+    '</div>').join('') : '<p class="empty">No dares here yet. Add the first one above.</p>';
+  $('dareList').querySelectorAll('.pdare').forEach(row => {
+    const id = row.dataset.id, save = row.querySelector('[name=save]'), v = n => row.querySelector('[name=' + n + ']');
+    row.querySelectorAll('textarea,input[type=text],select,input[name=needs_answer],input[name=needs_photo]').forEach(el => { el.oninput = el.onchange = () => { save.disabled = false; row.querySelector('.asks').hidden = !v('needs_answer').checked; }; });
+    save.onclick = async () => {
+      const upd = { en: v('en').value.trim(), es: v('es').value.trim(), hu: v('hu').value.trim() || null, points: +v('points').value,
+        needs_answer: v('needs_answer').checked, needs_photo: v('needs_photo').checked,
+        ask_en: v('ask_en').value.trim() || null, ask_es: v('ask_es').value.trim() || null, ask_hu: v('ask_hu').value.trim() || null,
+        feed_en: v('feed_en').value.trim(), feed_es: v('feed_es').value.trim(), feed_hu: v('feed_hu').value.trim() || null };
+      if (upd.en.length < 2 || upd.es.length < 2) return toast('English and Spanish are needed');
+      if (!upd.feed_en || !upd.feed_es) return toast('The feed line is needed in English and Spanish');
+      if (upd.needs_answer && (!upd.ask_en || !upd.ask_es)) return toast('Write the answer label in English and Spanish');
+      const { error } = await sb.from('pass_dares').update(upd).eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      save.disabled = true; toast('Saved - live in the Shirtless Pass now');
+    };
+    v('active').onchange = async e => {
+      const { error } = await sb.from('pass_dares').update({ active: e.target.checked }).eq('id', id);
+      if (error) return toast('Error: ' + error.message);
+      toast(e.target.checked ? 'Dare is live' : 'Dare hidden from the Shirtless Pass'); loadPassDares();
+    };
+    v('del').onclick = async () => {
+      if (!confirm('Delete this dare for good? (Untick "Live" instead if you might want it back.)')) return;
+      const { error } = await sb.from('pass_dares').delete().eq('id', id);
+      if (error) return toast(/foreign key|violates/i.test(error.message) ? 'Someone already played this dare, so it can\'t be deleted. Untick "Live" instead.' : 'Error: ' + error.message);
+      toast('Deleted'); loadPassDares();
+    };
+  });
+}
+$('addPass').querySelector('[name=needs_answer]').onchange = e => { $('addPass').querySelector('.asks').hidden = !e.target.checked; };
+$('addPass').onsubmit = async e => {
+  e.preventDefault(); const f = e.target, g = n => f.querySelector('[name=' + n + ']');
+  const row = { en: g('en').value.trim(), es: g('es').value.trim(), hu: g('hu').value.trim() || null, points: +g('points').value,
+    needs_answer: g('needs_answer').checked, needs_photo: g('needs_photo').checked,
+    ask_en: g('ask_en').value.trim() || null, ask_es: g('ask_es').value.trim() || null, ask_hu: g('ask_hu').value.trim() || null,
+    feed_en: g('feed_en').value.trim(), feed_es: g('feed_es').value.trim(), feed_hu: g('feed_hu').value.trim() || null, sort: 999 };
+  if (row.needs_answer && (!row.ask_en || !row.ask_es)) return toast('Write the answer label in English and Spanish');
+  const { error } = await sb.from('pass_dares').insert(row);
+  if (error) return toast('Error: ' + error.message);
+  f.reset(); f.querySelector('.asks').hidden = true; toast('Dare added - live in the Shirtless Pass now'); loadPassDares();
+};
 $('addDare').onsubmit = async e => {
   e.preventDefault();
   const en = $('newEn').value.trim(), es = $('newEs').value.trim(), hu = $('newHu').value.trim();
