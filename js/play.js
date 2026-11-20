@@ -65,11 +65,11 @@ async function loadLiveDecks(){
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
 const EXTRA = {
   en:{ igH:'Don’t lose each other 👀', igP:'You just did a dare with {name}. Follow them now, so you can find each other after tonight.', ig:'Follow @{ig} on Instagram',
-       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing night 🙌 Scan again whenever you want another dare.', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
+       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing time 🙌 Scan again whenever you want another dare.', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
   es:{ igH:'No os perdáis 👀', igP:'Acabas de hacer un reto con {name}. Síguele ahora para encontraros después de esta noche.', ig:'Sigue a @{ig} en Instagram',
-       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'Que tengas una noche increíble 🙌 Escanea otra vez cuando quieras otro reto.', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
+       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'¡Que lo pases genial! 🙌 Escanea otra vez cuando quieras otro reto.', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
   hu:{ igH:'Ne veszítsétek el egymást 👀', igP:'Most csináltál meg egy kihívást vele: {name}. Kövesd be most, hogy ma este után is megtaláljátok egymást.', ig:'Kövesd: @{ig} Instagramon',
-       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Legyen fantasztikus estéd 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
+       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Érezd jól magad 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
 };
 let verified = false;
 function paintExtras(){
@@ -213,7 +213,7 @@ async function finishVerified(){
 
 /* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
 const practice = () => demo || !!window.STAGE;
-function finishDare(counted, igHandle){ verified = !!counted; $('exits').hidden = false; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+function finishDare(counted, igHandle){ verified = !!counted; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
 $('codeIn').oninput = () => {
   $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
   if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();
@@ -251,7 +251,8 @@ $('ownerPic').onclick = igTip;
 $('ownerPic').onkeydown = e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); igTip(); } };
 $('igLockBtn').onclick = () => askCode('late');
 /* clean way out */
-function byeBye(){ $('exits').hidden = true; $('igCard').hidden = true; $('igLocked').hidden = true; $('byeMsg').hidden = false; }
+/* after leaving (or following on Instagram) "Another dare" stays, in case they come back */
+function byeBye(){ $('leaveBtn').hidden = true; $('igLocked').hidden = true; $('byeMsg').hidden = false; }
 $('leaveBtn').onclick = byeBye;
 $('igReveal').addEventListener('click', () => setTimeout(byeBye, 400));
 
