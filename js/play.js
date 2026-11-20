@@ -332,7 +332,7 @@ async function farCheck(){
   }catch(e){}
 }
 
-if (!restoreCur()){ show('spin'); farCheck(); }
+if (!restoreCur()) show('spin');
 try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
 loadLiveDecks();
 loadRecent();
