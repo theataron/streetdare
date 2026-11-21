@@ -223,8 +223,7 @@ body.inapp .wrap{display:none}
 .newbelow{position:absolute;left:50%;transform:translateX(-50%);bottom:76px;background:var(--red);color:#fff;border-radius:99px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;z-index:3;box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .composer{flex:none;background:var(--card);border-top:1.5px solid #e6dccf;padding:8px 10px}
 .composer .crow{display:flex;align-items:flex-end;gap:8px}
-.composer .ctext{flex:1;min-width:0;max-height:120px;overflow-y:auto;font:500 1rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:20px;padding:9px 14px;background:#fff;color:var(--ink);line-height:1.3;outline:none;white-space:pre-wrap;word-break:break-word;-webkit-user-select:text;user-select:text}
-.composer .ctext:empty::before{content:attr(data-ph);color:var(--mute);pointer-events:none}
+.composer textarea{flex:1;resize:none;max-height:120px;font:500 1rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:20px;padding:9px 14px;background:#fff;color:var(--ink);line-height:1.3}
 .cbtn{font-size:1.3rem;cursor:pointer;padding:6px 4px;line-height:1}
 .csend{width:42px;height:42px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:1.1rem;cursor:pointer;flex:none}
 .csend:disabled{opacity:.5}
@@ -437,7 +436,7 @@ html.night .badge{border-color:#211b19}
         <div class="crow">
           <label class="cbtn" for="cFile" aria-label="Photo">📷</label>
           <input type="file" id="cFile" accept="image/*" hidden>
-          <div id="cText" class="ctext" role="textbox" aria-multiline="true" contenteditable="plaintext-only" enterkeyhint="send" autocapitalize="sentences" spellcheck="true" data-lpignore="true" data-1p-ignore="true"></div>
+          <textarea id="cText" rows="1" maxlength="500" autocomplete="off" autocorrect="on" autocapitalize="sentences" enterkeyhint="send" name="sd-msg" data-lpignore="true" data-1p-ignore="true"></textarea>
           <button class="csend" type="submit" id="cSend" aria-label="Send">➤</button>
         </div>
       </form>
@@ -569,6 +568,7 @@ const T = {
     nAll:'← All my nights', nProfile:'My profile →', nSub:'{n} in the group',
     howH:'How it works', how1:'Go up to strangers and do the dares on your phone.', how2:'Every dare gives you points. Friends from your group can jump in, and everyone who joins gets the points.', how3:'Most points when the timer hits zero wins the night.', howBtn:'Let’s go 🔥',
     endH:'The night is over 🌙', endP:'{name} won with {p} points 👑',
+    skipWarn:'Skipped dares don’t come back tonight. {n} left.', skipNone:'No dares left tonight. Skipped ones don’t come back.', noneLeft:'No dares left tonight. The ones you skipped don’t come back 😅 ',
     dK:'Your dare', pts:'+{p}', tagAns:'✍️ The stranger types', tagPhoto:'📸 Photo', dDone:'We did it ✅', dNext:'Give me another one', allDone:'You did every dare tonight 🤯 Legend.',
     sH:'Nice! 🔥', sAnsH:'Hand your phone to the stranger 👋', sAnsS:'Keep holding it while they type.', sWithL:'Who from your group did it with you?', sPhotoL:'Photo',
     sPhotoNeed:'Add the photo', sPhotoNeedS:'This dare needs a photo for the group.', sPhotoOpt:'Selfie with them? +1 point', sPhotoOptS:'Ask them first. Your group sees it for 7 days.', sPhotoOk:'Photo ready ✓', sPhotoChange:'Tap to change it',
@@ -611,6 +611,7 @@ const T = {
     nAll:'← Todas mis noches', nProfile:'Mi perfil →', nSub:'{n} en el grupo',
     howH:'Cómo funciona', how1:'Acércate a desconocidos y haz los retos del móvil.', how2:'Cada reto da puntos. Tus amigos del grupo pueden unirse, y todos los que se unen se llevan los puntos.', how3:'Quien tenga más puntos cuando el contador llegue a cero gana la noche.', howBtn:'Vamos 🔥',
     endH:'La noche se ha acabado 🌙', endP:'{name} ha ganado con {p} puntos 👑',
+    skipWarn:'Los retos que saltas no vuelven esta noche. Quedan {n}.', skipNone:'No quedan retos esta noche. Los que saltas no vuelven.', noneLeft:'No quedan retos esta noche. Los que has saltado no vuelven 😅 ',
     dK:'Tu reto', pts:'+{p}', tagAns:'✍️ El desconocido escribe', tagPhoto:'📸 Foto', dDone:'¡Hecho! ✅', dNext:'Dame otro', allDone:'Has hecho todos los retos de esta noche 🤯 Leyenda.',
     sH:'¡Bien! 🔥', sAnsH:'Pásale el móvil al desconocido 👋', sAnsS:'No lo sueltes mientras escribe.', sWithL:'¿Quién de tu grupo lo ha hecho contigo?', sPhotoL:'Foto',
     sPhotoNeed:'Añade la foto', sPhotoNeedS:'Este reto necesita una foto para el grupo.', sPhotoOpt:'¿Selfie con esa persona? +1 punto', sPhotoOptS:'Pregúntale antes. Tu grupo la ve durante 7 días.', sPhotoOk:'Foto lista ✓', sPhotoChange:'Toca para cambiarla',
@@ -653,6 +654,7 @@ const T = {
     nAll:'← Az összes estém', nProfile:'A profilom →', nSub:'{n} fő a csapatban',
     howH:'Hogy működik', how1:'Menj oda idegenekhez, és csináld meg a kihívásokat a telefonodról.', how2:'Minden kihívás pontot ér. A csapatodból bárki beszállhat, és mindenki megkapja a pontokat, aki részt vett.', how3:'Akinek a legtöbb pontja van, amikor lejár az idő, az nyeri az estét.', howBtn:'Mehet 🔥',
     endH:'Vége az estének 🌙', endP:'{name} nyert {p} ponttal 👑',
+    skipWarn:'A kihagyott kihívás ma este nem jön vissza. Még {n} maradt.', skipNone:'Ma estére nincs több kihívás. A kihagyottak nem jönnek vissza.', noneLeft:'Ma estére elfogytak a kihívások. A kihagyottak nem jönnek vissza 😅 ',
     dK:'A kihívásod', pts:'+{p}', tagAns:'✍️ Az idegen írja be', tagPhoto:'📸 Fotó', dDone:'Megcsináltuk ✅', dNext:'Kérek egy másikat', allDone:'Ma este minden kihívást megcsináltál 🤯 Legenda.',
     sH:'Szép! 🔥', sAnsH:'Add oda a telefonod az idegennek 👋', sAnsS:'Tartsd a kezedben, amíg beírja.', sWithL:'Ki csinálta veled a csapatodból?', sPhotoL:'Fotó',
     sPhotoNeed:'Add hozzá a fotót', sPhotoNeedS:'Ehhez a kihíváshoz fotó kell a csapatnak.', sPhotoOpt:'Egy szelfi vele? +1 pont', sPhotoOptS:'Előbb kérdezd meg. A csapatod 7 napig látja.', sPhotoOk:'A fotó kész ✓', sPhotoChange:'Koppints a cseréhez',
@@ -701,7 +703,7 @@ function paint(){
   $('mnMe').querySelector('span').textContent = t(mk); $('mnMe').querySelector('small').textContent = t(mk + 'S');
   $('sBrandS').textContent = t('sBrandS');
   $('gGoogleTxt').textContent = t('gGoogle'); $('gEmail').textContent = t('gEmail');
-  $('fName').placeholder = t('fPh'); $('cText').dataset.ph = t('cPh');
+  $('fName').placeholder = t('fPh'); $('cText').placeholder = t('cPh');
   $('mWa').textContent = $('hWa').textContent = $('invWa').textContent = t('waBtn');
   $('mWa').href = $('hWa').href = $('invWa').href = waLink();
   $('mHub').textContent = t('hubBtn');
@@ -1123,21 +1125,32 @@ $('invShare').onclick = async () => {
 /* ---------- dares ---------- */
 let dare = null;
 function myDone(){ return new Set(info.my_dares || []); }
+const skipKey = () => 'sd_skip_' + night;
+const skipped = () => { try{ return new Set(JSON.parse(store.get(skipKey()) || '[]')); }catch(e){ return new Set(); } };
 function pickDare(){
-  const done = myDone();
-  const pool = dares.filter(d => !done.has(d.id) && (!dare || d.id !== dare.id));
-  dare = pool.length ? pool[Math.floor(Math.random() * pool.length)] : (dares.filter(d => !done.has(d.id))[0] || null);
+  const done = myDone(), sk = skipped();
+  const pool = dares.filter(d => !done.has(d.id) && !sk.has(d.id) && (!dare || d.id !== dare.id));
+  dare = pool.length ? pool[Math.floor(Math.random() * pool.length)] : (dares.filter(d => !done.has(d.id) && !sk.has(d.id))[0] || null);
   renderDare();
+}
+// "Give me another one": the dare you skip does not come back tonight
+function skipDare(){
+  if (!dare) return;
+  const sk = skipped(); sk.add(dare.id); store.set(skipKey(), JSON.stringify([...sk]));
+  const done = myDone();
+  const left = dares.filter(d => !done.has(d.id) && !sk.has(d.id)).length;
+  pickDare();
+  toast(t(left ? 'skipWarn' : 'skipNone', { n: left }));
 }
 const dl = (d, k) => d[k + '_' + L] || d[k + '_en'] || d[k + '_es'] || '';
 function renderDare(){
-  if (!dare){ $('dText').textContent = t('allDone'); $('dPts').textContent = ''; $('dTags').innerHTML = ''; $('dDone').hidden = true; $('dNext').hidden = true; return; }
+  if (!dare){ $('dText').textContent = skipped().size ? t('noneLeft') : t('allDone'); $('dPts').textContent = ''; $('dTags').innerHTML = ''; $('dDone').hidden = true; $('dNext').hidden = true; return; }
   $('dDone').hidden = $('dNext').hidden = false;
   $('dText').textContent = dare[L] || dare.en;
   $('dPts').textContent = t('pts', { p: dare.points });
   $('dTags').innerHTML = (dare.needs_answer ? '<span>' + esc(t('tagAns')) + '</span>' : '') + (dare.needs_photo ? '<span>' + esc(t('tagPhoto')) + '</span>' : '');
 }
-$('dNext').onclick = pickDare;
+$('dNext').onclick = skipDare;
 $('dDone').onclick = () => openSheet();
 
 let withSel = new Set(), sheetBlob = null;
@@ -1390,8 +1403,7 @@ $('msgs').addEventListener('touchend', () => {
 $('cReplyX').onclick = () => { replyTo = null; $('cReply').hidden = true; };
 $('cText').addEventListener('focus', () => $('app').classList.add('typing'));
 $('cText').addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== $('cText')) $('app').classList.remove('typing'); }, 150));
-$('cText').addEventListener('input', () => { const x = $('cText'); if (!x.textContent.trim() && !x.querySelector('img')) x.innerHTML = ''; });
-$('cText').addEventListener('paste', e => { e.preventDefault(); const tx = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, tx); });
+$('cText').addEventListener('input', () => { const x = $('cText'); x.style.height = 'auto'; x.style.height = Math.min(x.scrollHeight, 120) + 'px'; });
 $('cText').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer:fine)').matches){ e.preventDefault(); $('cForm').requestSubmit(); } });
 $('cFile').onchange = async () => {
   const f = $('cFile').files[0]; if (!f) return;
@@ -1400,7 +1412,7 @@ $('cFile').onchange = async () => {
 $('cPreviewX').onclick = () => { chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true; };
 $('cForm').onsubmit = async e => {
   e.preventDefault();
-  const body = $('cText').innerText.replace(/\u00a0/g, ' ').trim().slice(0, 500);
+  const body = $('cText').value.trim().slice(0, 500);
   if (!body && !chatBlob) return;
   const b = $('cSend'); b.disabled = true;
   try{
@@ -1408,7 +1420,7 @@ $('cForm').onsubmit = async e => {
     if (chatBlob){ path = await upload(chatBlob); }
     const { error } = await sb.from('night_messages').insert({ night_id: night, profile_id: user.id, body: body || null, photo_path: path, reply_to: replyTo ? replyTo.id : null });
     if (error){ if (path) sb.storage.from('night-photos').remove([path]); throw error; }
-    $('cText').innerHTML = ''; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
+    $('cText').value = ''; $('cText').style.height = 'auto'; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
     await refreshNow(); scrollChat(true); markRead();
   }catch(x){ toast(t('err')); }
   finally{ b.disabled = false; }
