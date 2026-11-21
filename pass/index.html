@@ -110,6 +110,10 @@
 .nights b{display:block}
 .nights small{color:var(--mute)}
 .ended{background:var(--ink);color:#fff;border-radius:20px;padding:18px;margin:16px 0;text-align:center}
+.shirtcard{background:var(--card);border:2.5px solid var(--ink);border-radius:20px;padding:16px 18px;margin:14px 0;box-shadow:var(--sh)}
+.shirtcard h3{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.35rem;line-height:1.05;color:var(--redt);margin-bottom:6px}
+.shirtcard p{font-size:.95rem;line-height:1.4;margin-bottom:12px}
+.shirtcard .btn{display:block;text-align:center;text-decoration:none}
 .ended h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.6rem}
 .howto{background:var(--ink);color:#fff;border-radius:20px;padding:18px;margin:16px 0}
 .howto h2{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.4rem;margin-bottom:8px}
@@ -408,6 +412,7 @@ html.night .badge{border-color:#211b19}
         <button class="btn" type="button" id="howBtn"></button>
       </div>
       <div class="ended" id="nEnded" hidden><h2 id="endH"></h2><p id="endP"></p><p class="endchat" id="endChat"></p></div>
+      <div class="shirtcard" id="shirtEnd" hidden></div>
       <div id="nPlay">
         <div class="darecard" id="dCard">
           <div class="brand"><span class="sdlogo">STREETDARE</span><small>Shirtless Pass</small></div>
@@ -445,6 +450,7 @@ html.night .badge{border-color:#211b19}
     <!-- RESULTS -->
     <section class="pane" id="pane-results" hidden>
       <div class="winner" id="winner" hidden></div>
+      <div class="shirtcard" id="shirtRes" hidden></div>
       <section class="panel">
         <h2 id="bH"></h2>
         <ul class="board" id="board"></ul>
@@ -569,6 +575,7 @@ const T = {
     howH:'How it works', how1:'Go up to strangers and do the dares on your phone.', how2:'Every dare gives you points. Friends from your group can jump in, and everyone who joins gets the points.', how3:'Most points when the timer hits zero wins the night.', howBtn:'Let’s go 🔥',
     endH:'The night is over 🌙', endP:'{name} won with {p} points 👑',
     skipWarn:'Skipped dares don’t come back tonight.', skipNone:'No dares left tonight. Skipped ones don’t come back.', noneLeft:'No dares left tonight. The ones you skipped don’t come back 😅 ',
+    shirtH:'Next time: let strangers come to you 👕', shirtP:'With the Shirtless Pass you walked up to strangers. With a STREETDARE shirt it flips: they scan your QR, and strangers walk up to you. The shirt says the opening line for you.', shirtBtn:'I want a shirt →',
     dK:'Your dare', pts:'+{p}', tagAns:'✍️ The stranger types', tagPhoto:'📸 Photo', dDone:'We did it ✅', dNext:'Give me another one', allDone:'You did every dare tonight 🤯 Legend.',
     sH:'Nice! 🔥', sAnsH:'Hand your phone to the stranger 👋', sAnsS:'Keep holding it while they type.', sWithL:'Who from your group did it with you?', sPhotoL:'Photo',
     sPhotoNeed:'Add the photo', sPhotoNeedS:'This dare needs a photo for the group.', sPhotoOpt:'Selfie with them? +1 point', sPhotoOptS:'Ask them first. Your group sees it for 7 days.', sPhotoOk:'Photo ready ✓', sPhotoChange:'Tap to change it',
@@ -612,6 +619,7 @@ const T = {
     howH:'Cómo funciona', how1:'Acércate a desconocidos y haz los retos del móvil.', how2:'Cada reto da puntos. Tus amigos del grupo pueden unirse, y todos los que se unen se llevan los puntos.', how3:'Quien tenga más puntos cuando el contador llegue a cero gana la noche.', howBtn:'Vamos 🔥',
     endH:'La noche se ha acabado 🌙', endP:'{name} ha ganado con {p} puntos 👑',
     skipWarn:'Los retos que saltas no vuelven esta noche.', skipNone:'No quedan retos esta noche. Los que saltas no vuelven.', noneLeft:'No quedan retos esta noche. Los que has saltado no vuelven 😅 ',
+    shirtH:'La próxima: que los desconocidos vengan a ti 👕', shirtP:'Con el Shirtless Pass fuiste tú a hablar con desconocidos. Con una camiseta STREETDARE se da la vuelta: escanean tu QR y son los desconocidos los que se acercan a ti. La camiseta dice la frase de entrada por ti.', shirtBtn:'Quiero una camiseta →',
     dK:'Tu reto', pts:'+{p}', tagAns:'✍️ El desconocido escribe', tagPhoto:'📸 Foto', dDone:'¡Hecho! ✅', dNext:'Dame otro', allDone:'Has hecho todos los retos de esta noche 🤯 Leyenda.',
     sH:'¡Bien! 🔥', sAnsH:'Pásale el móvil al desconocido 👋', sAnsS:'No lo sueltes mientras escribe.', sWithL:'¿Quién de tu grupo lo ha hecho contigo?', sPhotoL:'Foto',
     sPhotoNeed:'Añade la foto', sPhotoNeedS:'Este reto necesita una foto para el grupo.', sPhotoOpt:'¿Selfie con esa persona? +1 punto', sPhotoOptS:'Pregúntale antes. Tu grupo la ve durante 7 días.', sPhotoOk:'Foto lista ✓', sPhotoChange:'Toca para cambiarla',
@@ -655,6 +663,7 @@ const T = {
     howH:'Hogy működik', how1:'Menj oda idegenekhez, és csináld meg a kihívásokat a telefonodról.', how2:'Minden kihívás pontot ér. A csapatodból bárki beszállhat, és mindenki megkapja a pontokat, aki részt vett.', how3:'Akinek a legtöbb pontja van, amikor lejár az idő, az nyeri az estét.', howBtn:'Mehet 🔥',
     endH:'Vége az estének 🌙', endP:'{name} nyert {p} ponttal 👑',
     skipWarn:'A kihagyott kihívás ma este nem jön vissza.', skipNone:'Ma estére nincs több kihívás. A kihagyottak nem jönnek vissza.', noneLeft:'Ma estére elfogytak a kihívások. A kihagyottak nem jönnek vissza 😅 ',
+    shirtH:'Legközelebb: jöjjenek hozzád az idegenek 👕', shirtP:'A Shirtless Pass-szel te mentél oda idegenekhez. A STREETDARE pólóval megfordul: beolvassák a QR-kódodat, és az idegenek jönnek oda hozzád. A póló elmondja helyetted a nyitómondatot.', shirtBtn:'Kérek egy pólót →',
     dK:'A kihívásod', pts:'+{p}', tagAns:'✍️ Az idegen írja be', tagPhoto:'📸 Fotó', dDone:'Megcsináltuk ✅', dNext:'Kérek egy másikat', allDone:'Ma este minden kihívást megcsináltál 🤯 Legenda.',
     sH:'Szép! 🔥', sAnsH:'Add oda a telefonod az idegennek 👋', sAnsS:'Tartsd a kezedben, amíg beírja.', sWithL:'Ki csinálta veled a csapatodból?', sPhotoL:'Fotó',
     sPhotoNeed:'Add hozzá a fotót', sPhotoNeedS:'Ehhez a kihíváshoz fotó kell a csapatnak.', sPhotoOpt:'Egy szelfi vele? +1 pont', sPhotoOptS:'Előbb kérdezd meg. A csapatod 7 napig látja.', sPhotoOk:'A fotó kész ✓', sPhotoChange:'Koppints a cseréhez',
@@ -1083,6 +1092,8 @@ function renderNight(){
     $('endP').textContent = w && w.points ? t('endP', { name: w.name, p: w.points }) : '';
     $('endChat').textContent = t('endChat');
   }
+  const shirt = '<h3>' + esc(t('shirtH')) + '</h3><p>' + esc(t('shirtP')) + '</p><a class="btn red" href="/?home=1#join">' + esc(t('shirtBtn')) + '</a>';
+  ['shirtEnd','shirtRes'].forEach(id => { $(id).hidden = live; if (!live) $(id).innerHTML = shirt; });
   $('winner').hidden = live || !(w && w.points);
   if (!live && w && w.points) $('winner').innerHTML = '<b>👑 ' + esc(w.name) + '</b>' + esc(t('endP', { name: w.name, p: w.points }));
   // leaderboard
