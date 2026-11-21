@@ -97,23 +97,6 @@
 .compose .row{display:flex;gap:8px;align-items:center}
 .compose .row .btn{width:auto;flex:1;padding:12px 16px}
 .replying{font-size:.85rem;background:var(--blush);border-radius:12px;padding:6px 10px;display:flex;justify-content:space-between;gap:8px}
-.msgs{display:block;list-style:none;padding:0 4px 0 0;margin:0 0 10px;max-height:62dvh;overflow-y:auto;overscroll-behavior:contain}
-.msgs li{padding:12px 0;border-top:1.5px solid #eadfd2;display:flex;gap:10px}
-.msgs li:first-child{border-top:0}
-.msgs .av{width:34px;height:34px;font-size:.85rem}
-.msgs .body{flex:1;min-width:0}
-.msgs .who{font-size:.82rem;color:var(--mute)}
-.msgs .who b{color:var(--ink)}
-.msgs .txt{white-space:pre-wrap;overflow-wrap:anywhere}
-.msgs .play{font-weight:700}
-.msgs .play.void{text-decoration:line-through;opacity:.55}
-.msgs .join{color:var(--mute);font-size:.9rem;font-style:italic}
-.msgs img.pic{display:block;width:100%;height:280px;border-radius:14px;border:2px solid var(--ink);margin-top:8px;object-fit:cover;background:var(--blush)}
-.msgs .gone{font-size:.85rem;color:var(--mute);margin-top:6px}
-.msgs .rq{border-left:3px solid var(--red);padding:2px 8px;margin:4px 0;font-size:.85rem;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.msgs .acts{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
-.msgs .acts button{background:none;border:0;font:600 .8rem "DM Sans",sans-serif;color:var(--mute);cursor:pointer;padding:4px 6px}
-.msgs .acts button.on{color:var(--red)}
 .ptag{display:inline-block;background:#d9f0e2;color:#1d7a43;border-radius:99px;padding:1px 8px;font-size:.75rem;font-weight:800;margin-left:6px;vertical-align:middle}
 /* invite */
 .invite{text-align:center}
@@ -136,7 +119,6 @@
 html.night .in,html.night .field input,html.night .field textarea,html.night .at,html.night .chips button,html.night .photopick,html.night .notice,html.night .mini{background:#2a2422;color:var(--ink)}
 html.night .chips button.on{background:var(--ink);color:#121012}
 html.night .notice.warn{background:var(--blush);border-color:var(--red)}
-html.night .board li,html.night .msgs li,html.night .nights li,html.night .compose{border-color:#2f2826}
 html.night .board li.me{background:var(--blush)}
 html.night .nighthead,html.night .howto,html.night .ended,html.night .handoff{background:#000;color:#fff}
 html.night .ptag{background:#173d27;color:#7fe0a5}
@@ -144,7 +126,101 @@ html.night .qr{background:#fff}
 html.night .sheet .box{background:var(--bg)}
 html.night .toast{background:#f3ece3;color:#121012}
 html.night .darecard .btn{background:#fff;color:#1b1412}
+html.night .darecard .btn.plain{background:none;color:#fff}
 html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!important}
+html.night .board li,html.night .nights li{border-color:#2f2826}
+/* ===== the night as an app ===== */
+body.inapp{overflow:hidden}
+body.inapp .wrap{display:none}
+.app{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;height:100dvh}
+.app[hidden]{display:none}
+.apptop{flex:none;display:flex;align-items:center;gap:10px;background:#1b1412;color:#fff;padding:max(10px,env(safe-area-inset-top)) 12px 10px}
+.appback{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-decoration:none;min-width:44px;line-height:1}
+.appback span{font-size:1.35rem;font-weight:800}
+.appback small{font-size:.58rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-top:2px}
+.apptitle{flex:1;min-width:0}
+.apptitle b{display:block;font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.15rem;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.apptitle small{color:#d9cdc6;font-size:.78rem}
+.apptop .nightbtn{border-color:#fff;color:#fff;width:34px;height:32px;font-size:.95rem}
+.apptop .clock{font-size:1.05rem;padding:6px 8px 3px}
+.panes{flex:1;position:relative;overflow:hidden}
+.pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 24px;overscroll-behavior:contain}
+.pane[hidden]{display:none}
+.pane.chat{display:flex;flex-direction:column;padding:0}
+.tabs{flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:1.5px solid #e6dccf;padding:4px 0 max(6px,env(safe-area-inset-bottom))}
+.tabs button{position:relative;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer;color:var(--mute);font:700 .72rem "DM Sans",sans-serif}
+.tabs button i{font-style:normal;font-size:1.35rem;line-height:1;filter:grayscale(1);opacity:.65}
+.tabs button.on{color:var(--red)}
+.tabs button.on i{filter:none;opacity:1}
+.badge{position:absolute;top:2px;left:calc(50% + 6px);min-width:19px;height:19px;border-radius:10px;background:var(--red);color:#fff;font:800 .7rem/19px "DM Sans",sans-serif;padding:0 5px;border:2px solid var(--card)}
+.badge.inline{position:static;display:inline-block;vertical-align:middle;margin-left:6px;border:0}
+.minirank{text-align:center;color:var(--mute);font-size:.9rem;margin:6px 0 0}
+.endchat{margin-top:8px;font-weight:700;color:#ffc531}
+.winner{background:#1b1412;color:#fff;border-radius:20px;padding:18px;text-align:center;margin-bottom:14px}
+.winner b{display:block;font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:1.6rem;color:#ffc531}
+/* chat */
+.chatlist{flex:1;min-height:0;overflow-y:auto;padding:12px 12px 6px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chatnote{display:flex;gap:8px;font-size:.8rem;color:var(--mute);background:var(--card);border-radius:12px;padding:8px 10px;margin:0 auto 10px;max-width:420px}
+.msgs{list-style:none;padding:0;margin:0}
+.msgs li{display:flex;gap:8px;align-items:flex-end;margin:4px 0}
+.msgs li.me{flex-direction:row-reverse}
+.msgs li.cont .av{visibility:hidden}
+.msgs .av{width:30px;height:30px;font-size:.8rem;flex:none}
+.msgs .col{display:flex;flex-direction:column;max-width:78%;min-width:0}
+.msgs li.me .col{align-items:flex-end}
+.msgs .nm{font-size:.72rem;font-weight:700;color:var(--mute);margin:6px 0 2px 4px}
+.bub{background:var(--card);border:1.5px solid #e6dccf;border-radius:18px 18px 18px 6px;padding:8px 12px;overflow-wrap:anywhere;white-space:pre-wrap;cursor:pointer;line-height:1.35}
+.msgs li.me .bub{background:var(--red);border-color:var(--red);color:#fff;border-radius:18px 18px 6px 18px}
+.bub .tm{font-size:.66rem;opacity:.6;margin-left:8px;white-space:nowrap}
+.bub img.pic{display:block;width:220px;max-width:100%;height:220px;object-fit:cover;border-radius:12px;margin:2px 0 4px;background:var(--blush)}
+.bub .rq{border-left:3px solid currentColor;opacity:.75;padding:1px 8px;margin:2px 0 6px;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msgs .acts{display:flex;gap:4px;margin-top:2px}
+.msgs .acts button{background:none;border:0;font:700 .75rem "DM Sans",sans-serif;color:var(--mute);cursor:pointer;padding:3px 6px}
+.msgs .acts button.on{color:var(--red)}
+.msgs li.sys{justify-content:center;font-size:.78rem;color:var(--mute);margin:10px 0}
+.msgs li.day{justify-content:center;margin:14px 0 6px}
+.msgs li.day span{background:var(--card);border-radius:99px;padding:3px 12px;font-size:.72rem;font-weight:800;color:var(--mute)}
+.msgs li.play{justify-content:center}
+.dline{max-width:88%;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:10px 12px;text-align:center;box-shadow:3px 3px 0 var(--red)}
+.dline .ln{font-weight:700;line-height:1.35}
+.dline .ln.void{text-decoration:line-through;opacity:.55}
+.dline img.pic{display:block;width:100%;max-width:260px;height:220px;object-fit:cover;border-radius:12px;margin:8px auto 0;cursor:pointer;background:var(--blush)}
+.dline .meta{font-size:.72rem;color:var(--mute);margin-top:6px}
+.dline .acts{justify-content:center}
+.newbelow{position:absolute;left:50%;transform:translateX(-50%);bottom:76px;background:var(--red);color:#fff;border-radius:99px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;z-index:3;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.composer{flex:none;background:var(--card);border-top:1.5px solid #e6dccf;padding:8px 10px}
+.composer .crow{display:flex;align-items:flex-end;gap:8px}
+.composer textarea{flex:1;resize:none;max-height:120px;font:500 1rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:20px;padding:9px 14px;background:#fff;color:var(--ink);line-height:1.3}
+.cbtn{font-size:1.3rem;cursor:pointer;padding:6px 4px;line-height:1}
+.csend{width:42px;height:42px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:1.1rem;cursor:pointer;flex:none}
+.csend:disabled{opacity:.5}
+.replying,.cpreview{display:flex;align-items:center;gap:8px;font-size:.82rem;background:var(--blush);border-radius:12px;padding:6px 10px;margin-bottom:6px}
+.replying span,.cpreview span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cpreview img{width:40px;height:40px;object-fit:cover;border-radius:8px}
+.composer .x{background:none;border:0;font-size:1rem;cursor:pointer;color:var(--mute)}
+/* group pane */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:4px 0 12px}
+.grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;cursor:pointer;background:var(--blush)}
+.links{display:grid;gap:12px}
+.links a{font-weight:700;color:var(--ink)}
+/* photo viewer */
+.viewer{position:fixed;inset:0;z-index:60;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:max(50px,env(safe-area-inset-top)) 12px max(16px,env(safe-area-inset-bottom))}
+.viewer[hidden]{display:none}
+.viewer img{max-width:100%;max-height:72dvh;object-fit:contain;border-radius:12px;-webkit-touch-callout:default;user-select:auto}
+.viewer .vx{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:#1b1412;font-size:1.1rem;font-weight:800;cursor:pointer}
+.vbar{width:100%;max-width:420px;margin-top:14px;text-align:center}
+.vbar p{color:#d9cdc6;font-size:.85rem;margin-top:10px}
+/* language choice on the start screen */
+.langs{display:flex;gap:8px;flex-wrap:wrap}
+.langs button{border:2.5px solid var(--ink);border-radius:14px;background:#fff;padding:10px 14px;font:700 1rem "DM Sans",sans-serif;cursor:pointer;color:var(--ink)}
+.langs button.on{background:var(--ink);color:var(--bg)}
+html.night .langs button{background:#2a2422;color:var(--ink)}
+html.night .langs button.on{background:var(--ink);color:#121012}
+html.night .bub,html.night .chatnote,html.night .dline,html.night .composer,html.night .tabs,html.night .msgs li.day span{background:#211b19;border-color:#3a302d}
+html.night .dline{border-color:#f3ece3}
+html.night .composer textarea{background:#2a2422;color:var(--ink);border-color:#5a4b46}
+html.night .msgs li.me .bub{background:var(--red);border-color:var(--red);color:#fff}
+html.night .badge{border-color:#211b19}
 </style>
 </head>
 <body>
@@ -209,6 +285,7 @@ html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!i
       <p class="lead" id="fP"></p>
       <form id="fForm" novalidate>
         <div class="field"><input id="fName" maxlength="40" required></div>
+        <div class="field"><label id="fLangL"></label><div class="langs" id="fLangs"></div><small id="fLangS"></small></div>
         <p class="err" id="fErr" hidden></p>
         <button class="btn red big" type="submit" id="fBtn"></button>
       </form>
@@ -259,22 +336,28 @@ html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!i
       <p class="small" id="hLogin" hidden></p>
     </section>
 
-    <!-- the night -->
-    <section id="v-night" hidden>
-      <div class="nighthead">
-        <div style="min-width:0"><b id="nName"></b><small id="nSub"></small></div>
-        <div class="clock" id="nClock">--:--:--</div>
-      </div>
-      <div class="navrow"><a href="/pass/?all=1" id="nAll"></a><a href="/me/?stay=1" id="nProfile"></a></div>
+    <!-- the night: a full-screen app with tabs -->
+    <section id="v-night" hidden></section>
+  </main>
+</div>
 
+<div class="app" id="app" hidden>
+  <header class="apptop">
+    <a class="appback" href="/?home=1" id="appBack" aria-label="Back to the website"><span>←</span><small id="appBackTxt"></small></a>
+    <div class="apptitle"><b id="nName"></b><small id="nSub"></small></div>
+    <button class="nightbtn" id="nightBtn2" type="button" aria-label="Night mode">🌙</button>
+    <div class="clock" id="nClock">--:--:--</div>
+  </header>
+
+  <div class="panes">
+    <!-- DARES -->
+    <section class="pane" id="pane-dares">
       <div class="howto" id="nHow" hidden>
         <h2 id="howH"></h2>
         <ol><li id="how1"></li><li id="how2"></li><li id="how3"></li></ol>
         <button class="btn" type="button" id="howBtn"></button>
       </div>
-
-      <div class="ended" id="nEnded" hidden><h2 id="endH"></h2><p id="endP"></p></div>
-
+      <div class="ended" id="nEnded" hidden><h2 id="endH"></h2><p id="endP"></p><p class="endchat" id="endChat"></p></div>
       <div id="nPlay">
         <div class="darecard" id="dCard">
           <div class="brand"><span class="sdlogo">STREETDARE</span><small>Shirtless Pass</small></div>
@@ -286,31 +369,40 @@ html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!i
             <button class="btn plain" type="button" id="dNext"></button>
           </div>
         </div>
+        <p class="minirank" id="myRank"></p>
       </div>
+    </section>
 
+    <!-- CHAT -->
+    <section class="pane chat" id="pane-chat" hidden>
+      <div class="chatlist" id="chatList">
+        <div class="chatnote"><span>🔒</span><span id="privNote"></span></div>
+        <ul class="msgs" id="msgs"></ul>
+      </div>
+      <div class="newbelow" id="newBelow" hidden></div>
+      <form class="composer" id="cForm" novalidate>
+        <div class="replying" id="cReply" hidden><span id="cReplyTxt"></span><button class="x" type="button" id="cReplyX">✕</button></div>
+        <div class="cpreview" id="cPreview" hidden><img id="cPreviewImg" alt=""><span id="cPreviewTxt"></span><button class="x" type="button" id="cPreviewX">✕</button></div>
+        <div class="crow">
+          <label class="cbtn" for="cFile" aria-label="Photo">📷</label>
+          <input type="file" id="cFile" accept="image/*" hidden>
+          <textarea id="cText" rows="1" maxlength="500"></textarea>
+          <button class="csend" type="submit" id="cSend" aria-label="Send">➤</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="pane" id="pane-results" hidden>
+      <div class="winner" id="winner" hidden></div>
       <section class="panel">
         <h2 id="bH"></h2>
         <ul class="board" id="board"></ul>
       </section>
+    </section>
 
-      <section class="panel">
-        <h2 id="feedH"></h2>
-        <div class="notice"><span>🔒</span><span id="privNote"></span></div>
-        <div class="notice warn" id="photoNote"><span>📸</span><span><span id="photoNoteTxt"></span> <button class="mini" type="button" id="saveAll" style="margin-top:6px"></button></span></div>
-
-        <ul class="msgs" id="msgs"></ul>
-        <form class="compose" id="cForm" novalidate>
-          <div class="replying" id="cReply" hidden><span id="cReplyTxt"></span><button class="mini plain" type="button" id="cReplyX">✕</button></div>
-          <textarea class="in" id="cText" maxlength="500"></textarea>
-          <div class="row">
-            <label class="mini" for="cFile" id="cPhotoL" style="padding:12px 14px">📷</label>
-            <input type="file" id="cFile" accept="image/*" hidden>
-            <button class="btn red" type="submit" id="cSend"></button>
-          </div>
-          <div id="cPreview" hidden class="photopick" style="border-style:solid;cursor:default"><img id="cPreviewImg" alt=""><span style="flex:1"><b id="cPreviewTxt"></b></span><button class="mini plain" type="button" id="cPreviewX">✕</button></div>
-        </form>
-      </section>
-
+    <!-- GROUP -->
+    <section class="pane" id="pane-group" hidden>
       <section class="panel invite" id="inv">
         <h2 id="invH"></h2>
         <p class="sub" id="invP"></p>
@@ -319,13 +411,47 @@ html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!i
           <div class="bigcode" id="invCode"></div>
           <button class="mini" type="button" id="invShare"></button>
         </div>
-        <div id="invNone" hidden>
-          <a class="btn wa" id="invWa" target="_blank" rel="noopener"></a>
-        </div>
+        <div id="invNone" hidden><a class="btn wa" id="invWa" target="_blank" rel="noopener"></a></div>
+      </section>
+      <section class="panel">
+        <h2 id="phH"></h2>
+        <p class="sub" id="photoNoteTxt"></p>
+        <div class="grid" id="photoGrid"></div>
+        <button class="btn red" type="button" id="saveAll" hidden></button>
+        <p class="small" id="saveHintAll" hidden></p>
+      </section>
+      <section class="panel">
+        <h2 id="memH"></h2>
+        <ul class="board" id="members"></ul>
+        <p class="small" id="grpLang"></p>
+      </section>
+      <section class="panel links">
+        <a href="/pass/?all=1" id="nAll"></a>
+        <a href="/me/?stay=1" id="nProfile"></a>
+        <a href="/?home=1" id="nSite"></a>
+        <a href="/contact/" id="nContact"></a>
       </section>
     </section>
-  </main>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button type="button" data-tab="dares"><i>🎲</i><span id="tDares"></span></button>
+    <button type="button" data-tab="chat"><i>💬</i><span id="tChat"></span><b class="badge" id="chatBadge" hidden></b></button>
+    <button type="button" data-tab="results"><i>🏆</i><span id="tResults"></span></button>
+    <button type="button" data-tab="group"><i>👥</i><span id="tGroup"></span></button>
+  </nav>
 </div>
+
+<!-- photo viewer: long-press the photo or use the Save button to put it in the gallery -->
+<div class="viewer" id="viewer" hidden>
+  <button class="vx" type="button" id="vX" aria-label="Close">✕</button>
+  <img id="vImg" alt="">
+  <div class="vbar">
+    <button class="btn red" type="button" id="vSave"></button>
+    <p id="vHint"></p>
+  </div>
+</div>
+
 
 <!-- finishing a dare -->
 <div class="sheet" id="sheet" hidden>
@@ -354,19 +480,6 @@ html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!i
   </div>
 </div>
 
-<!-- save all photos: second tap shares (phones only allow sharing straight after a tap) -->
-<div class="sheet" id="saveSheet" hidden>
-  <div class="box">
-    <h2 id="svH"></h2>
-    <p class="sub" id="svP"></p>
-    <div class="stack" style="margin-top:12px">
-      <button class="btn red" type="button" id="svGo"></button>
-      <div id="svLinks" class="chips"></div>
-      <button class="btn plain" type="button" id="svX"></button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast" hidden></div>
 
 <script src="../js/langpick.js"></script>
@@ -379,6 +492,7 @@ const PHOTO_DAYS = 7;
 
 const T = {
   en:{
+    tDares:'Dares', tChat:'Chat', tResults:'Results', tGroup:'Group', appBackTxt:'Website', endedShort:'Ended', endChat:'No more dares, but the chat stays open 💬', myRank:'You’re #{r} of {n} with {p} points', grpLang:'Group language: {l}. The person who started the group chose it for everyone.', phH:'Photos', memH:'Who’s in', nSite:'← Back to the website', nContact:'Contact ✉️', savePhoto:'Save to Photos 📲', saveHint:'Or press and hold the photo, then tap “Save to Photos” (iPhone) or “Download image” (Android).', chatEmpty:'Say hi to your group 👋', newMsgs:'New messages ↓', fLangL:'Language for the whole group', fLangS:'Everyone in the group will play in this language: dares, chat and results. Choose one that everybody understands.',
     mnPass:'My nights 🎟️', mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
     gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
     gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
@@ -417,6 +531,7 @@ const T = {
     days1:'1 day', daysN:'{d} days', hours:'less than a day', timeLeft:'{h}h {m}m'
   },
   es:{
+    tDares:'Retos', tChat:'Chat', tResults:'Resultados', tGroup:'Grupo', appBackTxt:'Web', endedShort:'Terminada', endChat:'Se acabaron los retos, pero el chat sigue abierto 💬', myRank:'Vas #{r} de {n} con {p} puntos', grpLang:'Idioma del grupo: {l}. Lo eligió para todos quien creó el grupo.', phH:'Fotos', memH:'Quién está', nSite:'← Volver a la web', nContact:'Contacto ✉️', savePhoto:'Guardar en Fotos 📲', saveHint:'O mantén pulsada la foto y toca «Guardar en Fotos» (iPhone) o «Descargar imagen» (Android).', chatEmpty:'Saluda a tu grupo 👋', newMsgs:'Mensajes nuevos ↓', fLangL:'Idioma para todo el grupo', fLangS:'Todo el grupo jugará en este idioma: retos, chat y resultados. Elige uno que entienda todo el mundo.',
     mnPass:'Mis noches 🎟️', mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
     gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
     gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
@@ -455,6 +570,7 @@ const T = {
     days1:'1 día', daysN:'{d} días', hours:'menos de un día', timeLeft:'{h} h {m} min'
   },
   hu:{
+    tDares:'Kihívások', tChat:'Chat', tResults:'Eredmények', tGroup:'Csapat', appBackTxt:'Weboldal', endedShort:'Vége', endChat:'Több kihívás nincs, de a chat nyitva marad 💬', myRank:'{n} főből #{r}. vagy, {p} ponttal', grpLang:'A csapat nyelve: {l}. A csapat létrehozója választotta mindenkinek.', phH:'Fotók', memH:'Kik vannak bent', nSite:'← Vissza a weboldalra', nContact:'Kapcsolat ✉️', savePhoto:'Mentés a Fotókba 📲', saveHint:'Vagy tartsd lenyomva a fotót, és koppints a „Mentés a Fotókba” (iPhone) vagy a „Kép letöltése” (Android) lehetőségre.', chatEmpty:'Köszönj a csapatodnak 👋', newMsgs:'Új üzenetek ↓', fLangL:'Nyelv az egész csapatnak', fLangS:'Az egész csapat ezen a nyelven játszik: kihívások, chat és eredmények. Olyat válassz, amit mindenki ért.',
     mnPass:'Az estéim 🎟️', mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
     gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
@@ -517,7 +633,8 @@ function paint(){
   document.documentElement.lang = L;
   if (window.paintLangPick) window.paintLangPick();
   ['gH','gP','gSmall','pfH','pfP','pfNameL','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
-   'nAll','nProfile','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','feedH','privNote','saveAll','cSend','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel','svH','svX']
+   'nAll','nProfile','nSite','nContact','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','privNote','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel',
+   'tDares','tChat','tResults','tGroup','appBackTxt','phH','memH','fLangL','fLangS']
     .forEach(k => { if ($(k)) $(k).textContent = t(k); });
   [['mnPass','mnPass'],['mnHome','mnHome'],['mnTry','mnTry'],['mnContact','mnContact']].forEach(([id, k]) => { $(id).querySelector('span').textContent = t(k); $(id).querySelector('small').textContent = t(k + 'S'); });
   const mk = user ? 'mnMe' : 'mnLogin';
@@ -575,7 +692,8 @@ async function withCode(){
     return view('gate');
   }
   if (!profileReady()) return askProfile(() => withCode());
-  if (!p.started){ view('first'); setTimeout(() => $('fName').focus(), 50); return; }
+  if (!p.started){ view('first'); paintLangs(); setTimeout(() => $('fName').focus(), 50); return; }
+  if (p.lang && T[p.lang]) L = p.lang;
   const names = (p.members || []).filter(Boolean);
   renderHook = () => {
     if (current !== 'join') return;
@@ -595,11 +713,18 @@ async function activate(name){
   if (error || !data) return { status: 'err' };
   return data;
 }
+let groupLang = null;
+function paintLangs(){
+  if (!groupLang) groupLang = L;
+  $('fLangs').innerHTML = [['en','🇬🇧 English'],['es','🇪🇸 Español'],['hu','🇭🇺 Magyar']].map(([k, v]) => '<button type="button" data-l="' + k + '" class="' + (k === groupLang ? 'on' : '') + '">' + v + '</button>').join('');
+}
+$('fLangs').onclick = e => { const b = e.target.closest('button'); if (!b) return; groupLang = b.dataset.l; paintLangs(); };
 $('fForm').onsubmit = async e => {
   e.preventDefault(); $('fErr').hidden = true;
   const name = $('fName').value.trim(); if (!name){ $('fName').focus(); return; }
   const b = $('fBtn'); b.disabled = true;
-  const r = await activate(name); b.disabled = false;
+  const { data: r0, error: e0 } = await sb.rpc('start_night', { p_code: code, p_name: name, p_lang: groupLang || L });
+  const r = e0 || !r0 ? { status: 'err' } : r0; b.disabled = false;
   handleActivate(r, 'fErr');
 };
 $('jBtn').onclick = async () => {
@@ -609,7 +734,7 @@ $('jBtn').onclick = async () => {
 };
 function handleActivate(r, errId){
   if (r.status === 'ok' || r.status === 'member') return openNight(r.night, true);
-  if (r.status === 'need_name'){ view('first'); return; }
+  if (r.status === 'need_name'){ view('first'); paintLangs(); return; }
   if (r.status === 'profile') return askProfile(() => withCode());
   if (r.status === 'login') return location.reload();
   if (['bad','full','ended','expired','wait'].includes(r.status)) return msg(r.status);
@@ -673,12 +798,21 @@ async function hub(){
   }
   $('hLogin').hidden = !!user;
   $('hPast').hidden = !list.length;
+  // unread chat messages per night, counted from the last time this phone opened that chat
+  const unread = {};
+  await Promise.all(list.map(async n => {
+    const lr = Number(store.get('sd_read_' + n.id) || 0);
+    const { count } = await sb.from('night_messages').select('id', { count: 'exact', head: true }).eq('night_id', n.id)
+      .neq('profile_id', user.id).neq('kind', 'join').eq('deleted', false).gt('created_at', new Date(lr).toISOString());
+    unread[n.id] = count || 0;
+  }));
   renderHook = () => {
     if (current !== 'hub') return;
     $('hNights').innerHTML = list.map(n => {
       const d = new Date(n.started_at).toLocaleDateString(L, { day:'numeric', month:'short' });
       const sub = n.active ? '<span class="ptag">' + esc(t('active')) + '</span>' : esc(d);
-      return '<li><a href="/pass/?n=' + esc(n.id) + '"><b>' + esc(n.name) + '</b><small>' + sub + ' · ' + esc(t('rankOf', { r: n.rank || 1, n: n.members, p: n.points || 0 })) + '</small></a>' +
+      const u = unread[n.id] ? ' <span class="badge inline">' + (unread[n.id] > 99 ? '99+' : unread[n.id]) + '</span>' : '';
+      return '<li><a href="/pass/?n=' + esc(n.id) + '"><b>' + esc(n.name) + u + '</b><small>' + sub + ' · ' + esc(t('rankOf', { r: n.rank || 1, n: n.members, p: n.points || 0 })) + '</small></a>' +
         (n.active ? '' : '<a class="mini wa" href="' + waLink() + '" target="_blank" rel="noopener" style="flex:none">💬</a>') + '</li>';
     }).join('');
   };
@@ -691,7 +825,8 @@ $('hForm').onsubmit = e => {
   location.href = '/pass/?c=' + c;
 };
 
-/* ---------- the night ---------- */
+/* ---------- the night: full-screen app with tabs ---------- */
+let personalL = null, tab = null;
 async function openNight(id, fresh){
   night = id;
   if (params.get('n') !== id || params.get('c')) history.replaceState(null, '', '/pass/?n=' + id);
@@ -699,13 +834,20 @@ async function openNight(id, fresh){
   if (!d) return hub();
   info = d; dares = ds || [];
   skew = new Date(info.now).getTime() - Date.now();
+  // the whole group plays in the language the leader chose
+  if (personalL === null) personalL = L;
+  if (info.lang && T[info.lang]) L = info.lang;
   await loadMsgs();
   rememberActive();
   if (fresh || !store.get('sd_pass_how')) $('nHow').hidden = false;
   view('night');
+  document.body.classList.add('inapp');
+  $('app').hidden = false;
   renderHook = renderNight;
-  renderNight();
+  paint();
   if (!dare) pickDare();
+  let start = null; try{ start = sessionStorage.getItem('sd_tab_' + id); }catch(e){}
+  showTab(start || (isLive() ? 'dares' : 'chat'));
   clearInterval(clockT); clockT = setInterval(tickClock, 1000); tickClock();
   startRealtime();
 }
@@ -719,36 +861,80 @@ const isLive = () => info && new Date(info.ends_at).getTime() > now();
 function tickClock(){
   if (!info) return;
   const left = new Date(info.ends_at).getTime() - now();
-  $('nClock').textContent = clockStr(left);
+  $('nClock').textContent = left > 0 ? clockStr(left) : t('endedShort');
   if (left <= 0 && !$('nEnded').dataset.on){ $('nEnded').dataset.on = '1'; rememberActive(); renderNight(); }
 }
 const memberById = id => (info.members || []).find(m => m.id === id) || null;
 function nameList(ids){ return ids.map(i => (memberById(i) || {}).name).filter(Boolean); }
+
+/* tabs */
+function showTab(name){
+  if (!['dares','chat','results','group'].includes(name)) name = 'dares';
+  tab = name;
+  ['dares','chat','results','group'].forEach(n => { $('pane-' + n).hidden = n !== name; });
+  $('tabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  try{ sessionStorage.setItem('sd_tab_' + night, name); }catch(e){}
+  if (name === 'chat'){ scrollChat(true); markRead(); }
+  if (name === 'group') prepPhotos();
+}
+$('tabs').onclick = e => { const b = e.target.closest('button'); if (b) showTab(b.dataset.tab); };
+$('nightBtn2').onclick = () => { if (window.sdNight){ window.sdNight.toggle(); $('nightBtn2').textContent = window.sdNight.on() ? '☀️' : '🌙'; } };
+
+/* unread messages: counted per phone, from the last time this chat was open */
+const readKey = () => 'sd_read_' + night;
+const msgTime = m => new Date(m.created_at).getTime();
+function lastRead(){ return Number(store.get(readKey()) || 0); }
+function markRead(){
+  if (document.hidden || tab !== 'chat') return;
+  const last = msgs.length ? msgTime(msgs[msgs.length - 1]) : 0;
+  if (last > lastRead()) store.set(readKey(), String(last));
+  paintBadge();
+}
+function unreadCount(){
+  const lr = lastRead();
+  return msgs.filter(m => m.profile_id !== user.id && m.kind !== 'join' && !m.deleted && msgTime(m) > lr).length;
+}
+function paintBadge(){
+  const n = tab === 'chat' && !document.hidden ? 0 : unreadCount();
+  $('chatBadge').hidden = !n; $('chatBadge').textContent = n > 99 ? '99+' : n;
+  document.title = (n ? '(' + n + ') ' : '') + 'STREETDARE · ' + (info ? info.name : 'Shirtless Pass');
+}
 
 function renderNight(){
   if (!info || current !== 'night') return;
   const live = isLive();
   $('nName').textContent = info.name;
   $('nSub').textContent = t('nSub', { n: info.members.length });
-  $('nPlay').hidden = !live; $('cForm').hidden = !live; $('inv').hidden = !live;
+  $('nightBtn2').textContent = window.sdNight && window.sdNight.on() ? '☀️' : '🌙';
+  $('nPlay').hidden = !live;
   $('nEnded').hidden = live;
+  const w = info.members[0];
   if (!live){
-    const w = info.members[0];
     $('endH').textContent = t('endH');
     $('endP').textContent = w && w.points ? t('endP', { name: w.name, p: w.points }) : '';
+    $('endChat').textContent = t('endChat');
   }
+  $('winner').hidden = live || !(w && w.points);
+  if (!live && w && w.points) $('winner').innerHTML = '<b>👑 ' + esc(w.name) + '</b>' + esc(t('endP', { name: w.name, p: w.points }));
   // leaderboard
-  let rank = 0, prev = null;
+  let rank = 0, prev = null, myRank = 1;
   $('board').innerHTML = info.members.map((m, i) => {
     if (m.points !== prev){ rank = i + 1; prev = m.points; }
+    if (m.id === user.id) myRank = rank;
     const medal = ['🥇','🥈','🥉'][rank - 1] || rank;
     return '<li class="' + (m.id === user.id ? 'me' : '') + '"><span class="rk">' + (m.points ? medal : '·') + '</span>' + avatar(m) +
-      '<span class="nm"><b>' + esc(m.name) + (m.id === user.id ? ' <small>(' + esc(t('you')) + ')</small>' : '') + '</b><small>@' + esc(m.username || '') +
-      (m.instagram ? ' · <a href="https://instagram.com/' + encodeURIComponent(m.instagram) + '" target="_blank" rel="noopener">IG</a>' : '') + ' · ' + esc(m.dares === 1 ? t('dares1') : t('daresN', { n: m.dares })) + '</small></span>' +
+      '<span class="nm"><b>' + esc(m.name) + (m.id === user.id ? ' <small>(' + esc(t('you')) + ')</small>' : '') + '</b><small>@' + esc(m.username || '') + ' · ' + esc(m.dares === 1 ? t('dares1') : t('daresN', { n: m.dares })) + '</small></span>' +
       '<span class="pts">' + m.points + '<small>' + esc(t('ptsShort')) + '</small></span></li>';
   }).join('');
+  const me = memberById(user.id) || { points: 0 };
+  $('myRank').textContent = t('myRank', { r: myRank, n: info.members.length, p: me.points || 0 });
+  // members (with Instagram) in the Group tab
+  $('members').innerHTML = info.members.map(m => '<li>' + avatar(m) + '<span class="nm"><b>' + esc(m.name) + '</b><small>@' + esc(m.username || '') +
+    (m.instagram ? ' · <a href="https://instagram.com/' + encodeURIComponent(m.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '') + '</small></span></li>').join('');
+  $('grpLang').textContent = t('grpLang', { l: LANG_NAMES[info.lang] || info.lang });
   // invite
   const left = info.seats - info.used;
+  $('inv').hidden = !live;
   $('invP').textContent = left > 0 ? t('invP', { l: left, s: info.seats }) : t('invNone');
   $('invHas').hidden = !(left > 0 && info.code); $('invNone').hidden = left > 0;
   if (info.code && left > 0 && $('invQr').dataset.code !== info.code){
@@ -757,16 +943,9 @@ function renderNight(){
     $('invQr').dataset.code = info.code;
   }
   $('invCode').textContent = info.code ? fmtCode(info.code) : '';
-  // photo notice
-  const ends = new Date(info.ends_at).getTime();
-  const firstPhoto = msgs.filter(m => m.photo_path && !m.deleted).map(m => new Date(m.created_at).getTime()).sort((a, b) => a - b)[0];
-  if (!live && firstPhoto){
-    const daysLeft = Math.ceil((firstPhoto + PHOTO_DAYS * 864e5 - now()) / 864e5);
-    $('photoNoteTxt').textContent = daysLeft <= 0 ? t('photoNote') : t('photoNoteLeft', { d: daysLeft < 1 ? t('hours') : daysLeft === 1 ? t('days1') : t('daysN', { d: daysLeft }) });
-  } else $('photoNoteTxt').textContent = t('photoNote');
-  $('saveAll').hidden = !msgs.some(m => m.photo_path && !m.deleted);
-  renderDare(); renderMsgs();
+  renderPhotos(); renderDare(); renderMsgs(); paintBadge();
 }
+const LANG_NAMES = { en: 'English', es: 'Español', hu: 'Magyar' };
 const joinUrl = () => location.origin + '/pass/?c=' + info.code;
 $('invShare').onclick = async () => {
   const url = joinUrl();
@@ -874,17 +1053,82 @@ async function signAll(paths){
   (data || []).forEach(r => { if (r.signedUrl) signed.set(r.path, r.signedUrl); else signed.set(r.path, ''); });
 }
 
-/* ---------- feed ---------- */
+/* ---------- saving photos to the phone's gallery ----------
+   iPhone: the share sheet's "Save Image" puts photos in Photos (a download only lands in Files).
+   Phones only open the share sheet straight after a tap, so the files are fetched before the tap.
+   Without a share sheet: press and hold the photo → "Save to Photos" / "Download image". */
+const files = new Map();
+const livePhotos = () => msgs.filter(m => m.photo_path && !m.deleted && !photoExpired(m) && signed.get(m.photo_path));
+async function fileFor(path, i){
+  if (files.has(path)) return files.get(path);
+  const r = await fetch(signed.get(path)); if (!r.ok) throw new Error('photo');
+  const b = await r.blob();
+  const slug = (info.name || 'streetdare').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'streetdare';
+  const f = new File([b], 'streetdare-' + slug + '-' + (i + 1) + '.jpg', { type: 'image/jpeg' });
+  files.set(path, f); return f;
+}
+const canShareFiles = fs => { try{ return !!(navigator.canShare && navigator.share && navigator.canShare({ files: fs })); }catch(e){ return false; } };
+let prepping = false;
+async function prepPhotos(){
+  const list = livePhotos();
+  renderPhotos();
+  if (prepping || !list.length) return;
+  prepping = true;
+  await Promise.all(list.map((m, i) => fileFor(m.photo_path, i).catch(() => null)));
+  prepping = false; renderPhotos();
+}
+function renderPhotos(){
+  if (!info) return;
+  const list = livePhotos();
+  const live = isLive();
+  const firstPhoto = list.map(msgTime).sort((a, b) => a - b)[0];
+  if (!live && firstPhoto){
+    const daysLeft = Math.ceil((firstPhoto + PHOTO_DAYS * 864e5 - now()) / 864e5);
+    $('photoNoteTxt').textContent = daysLeft <= 0 ? t('photoNote') : t('photoNoteLeft', { d: daysLeft < 1 ? t('hours') : daysLeft === 1 ? t('days1') : t('daysN', { d: daysLeft }) });
+  } else $('photoNoteTxt').textContent = list.length ? t('photoNote') : t('svNone');
+  $('photoGrid').innerHTML = list.map(m => '<img src="' + esc(signed.get(m.photo_path)) + '" data-path="' + esc(m.photo_path) + '" alt="">').join('');
+  const ready = list.filter(m => files.has(m.photo_path)).map(m => files.get(m.photo_path));
+  $('saveAll').hidden = !list.length;
+  const share = ready.length && canShareFiles(ready);
+  $('saveAll').disabled = !(ready.length === list.length);
+  $('saveAll').textContent = ready.length === list.length ? t('svGo', { n: list.length }) : t('svPrep');
+  $('saveHintAll').hidden = !(list.length && ready.length === list.length && !share);
+  $('saveHintAll').textContent = t('saveHint');
+}
+$('photoGrid').onclick = e => { const i = e.target.closest('img'); if (i) openViewer(i.dataset.path); };
+$('saveAll').onclick = async () => {
+  const fs = livePhotos().map(m => files.get(m.photo_path)).filter(Boolean);
+  if (canShareFiles(fs)){ try{ await navigator.share({ files: fs }); }catch(e){} return; }
+  openViewer(livePhotos()[0].photo_path);
+};
+let viewPath = null;
+async function openViewer(path){
+  viewPath = path;
+  $('vImg').src = signed.get(path);
+  $('viewer').hidden = false;
+  $('vSave').textContent = t('savePhoto'); $('vSave').disabled = true; $('vSave').hidden = false;
+  $('vHint').textContent = t('saveHint');
+  const i = livePhotos().findIndex(m => m.photo_path === path);
+  try{
+    const f = await fileFor(path, Math.max(i, 0));
+    if (viewPath !== path) return;
+    if (canShareFiles([f])) $('vSave').disabled = false; else $('vSave').hidden = true;
+  }catch(e){ $('vSave').hidden = true; }
+}
+$('vSave').onclick = async () => { const f = files.get(viewPath); if (f){ try{ await navigator.share({ files: [f] }); }catch(e){} } };
+$('vX').onclick = () => { $('viewer').hidden = true; viewPath = null; };
+
+/* ---------- chat ---------- */
 let playsById = new Map();
 async function loadMsgs(){
   const [{ data: m }, { data: p }] = await Promise.all([
-    sb.from('night_messages').select('*').eq('night_id', night).order('created_at', { ascending: false }).limit(300).then(r => ({ data: (r.data || []).reverse() })),
+    sb.from('night_messages').select('*').eq('night_id', night).order('created_at', { ascending: false }).limit(400).then(r => ({ data: (r.data || []).reverse() })),
     sb.from('night_plays').select('id, profile_id, dare_id, answer, with_ids, points, bonus, challenged_by, voided').eq('night_id', night)
   ]);
   msgs = m || []; playsById = new Map((p || []).map(x => [x.id, x]));
   await signAll(msgs.filter(x => x.photo_path && !x.deleted && !photoExpired(x)).map(x => x.photo_path));
 }
-const photoExpired = m => now() - new Date(m.created_at).getTime() > PHOTO_DAYS * 864e5;
+const photoExpired = m => now() - msgTime(m) > PHOTO_DAYS * 864e5;
 function feedLine(m){
   const p = playsById.get(m.play_id); if (!p) return '';
   const d = dares.find(x => x.id === p.dare_id); if (!d) return '';
@@ -892,54 +1136,74 @@ function feedLine(m){
   const nm = names.map(n => '<b>' + esc(n) + '</b>').join(esc(t('and2')));
   return esc(dl(d, 'feed')).split('{name}').join(nm).split('{answer}').join('<b>' + esc(p.answer || '') + '</b>');
 }
+let selMsg = null;
+function scrollChat(force){
+  const box = $('chatList');
+  requestAnimationFrame(() => { if (force || box.scrollHeight - box.scrollTop - box.clientHeight < 140) box.scrollTop = box.scrollHeight; });
+}
 function renderMsgs(){
   if (!info) return;
-  const live = isLive();
-  if (!msgs.length){ $('msgs').innerHTML = '<li class="join">' + esc(t('empty')) + '</li>'; return; }
+  const live = isLive(), box = $('chatList');
+  const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
+  if (!msgs.length){ $('msgs').innerHTML = '<li class="sys">' + esc(t('chatEmpty')) + '</li>'; return; }
   const byId = new Map(msgs.map(m => [m.id, m]));
-  const box = $('msgs'), atBottom = !box.dataset.done || box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-  queueMicrotask(() => { if (atBottom) box.scrollTop = box.scrollHeight; box.dataset.done = '1'; });
+  let prevDay = '', prevWho = null;
   $('msgs').innerHTML = msgs.map(m => {
     const who = memberById(m.profile_id) || { name: '?' };
-    const time = new Date(m.created_at).toLocaleTimeString(L, { hour:'2-digit', minute:'2-digit' });
-    if (m.kind === 'join') return '<li><span class="join">' + esc(t('joined', { name: who.name })) + ' · ' + time + '</span></li>';
-    const mine = m.profile_id === user.id;
-    let body = '', acts = '';
+    const dt = new Date(m.created_at);
+    const day = dt.toLocaleDateString(L, { weekday:'short', day:'numeric', month:'short' });
+    const time = dt.toLocaleTimeString(L, { hour:'2-digit', minute:'2-digit' });
+    let out = '';
+    if (day !== prevDay){ out += '<li class="day"><span>' + esc(day) + '</span></li>'; prevDay = day; prevWho = null; }
+    if (m.kind === 'join'){ prevWho = null; return out + '<li class="sys">' + esc(t('joined', { name: who.name })) + ' · ' + time + '</li>'; }
     if (m.kind === 'play'){
+      prevWho = null;
       const p = playsById.get(m.play_id) || {};
-      body = '<div class="play' + (p.voided ? ' void' : '') + '">' + feedLine(m) + '<span class="ptag">+' + ((p.points || 0) + (p.bonus || 0)) + '</span></div>' + (p.voided ? '<div class="gone">' + esc(t('voided')) + '</div>' : '');
       const involved = p.profile_id === user.id || (p.with_ids || []).includes(user.id);
       const n = (p.challenged_by || []).length;
+      let acts = '';
       if (live && !involved) acts += '<button type="button" data-ch="' + esc(p.id) + '" class="' + ((p.challenged_by || []).includes(user.id) ? 'on' : '') + '">' + esc(n ? t('challenged', { n }) : t('challenge')) + '</button>';
       else if (n) acts += '<button type="button" disabled>' + esc(t('challenged', { n })) + '</button>';
-    } else {
-      if (m.deleted) return '';
-      const q = m.reply_to && byId.get(m.reply_to);
-      if (q) body += '<div class="rq">↪ ' + esc((memberById(q.profile_id) || {}).name || '?') + ': ' + esc(q.deleted ? '…' : (q.body || '📷')) + '</div>';
-      if (m.body) body += '<div class="txt">' + esc(m.body) + '</div>';
+      if (m.profile_id === user.id && m.photo_path && !m.deleted) acts += '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>';
+      let pic = '';
+      if (m.photo_path && !m.deleted) pic = photoExpired(m) ? '<div class="meta">' + esc(t('photoGone')) + '</div>' : (signed.get(m.photo_path) ? '<img class="pic" data-path="' + esc(m.photo_path) + '" src="' + esc(signed.get(m.photo_path)) + '" alt="">' : '');
+      return out + '<li class="play"><div class="dline"><div class="ln' + (p.voided ? ' void' : '') + '">' + feedLine(m) + ' <span class="ptag">+' + ((p.points || 0) + (p.bonus || 0)) + '</span></div>' +
+        (p.voided ? '<div class="meta">' + esc(t('voided')) + '</div>' : '') + pic + '<div class="meta">' + time + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div></li>';
     }
-    if (m.photo_path && !m.deleted){
-      if (photoExpired(m)) body += '<div class="gone">' + esc(t('photoGone')) + '</div>';
-      else if (signed.get(m.photo_path)) body += '<img class="pic" src="' + esc(signed.get(m.photo_path)) + '" alt="">';
-    }
-    if (live && m.kind === 'chat') acts += '<button type="button" data-re="' + esc(m.id) + '">' + esc(t('reply')) + '</button>';
-    if (mine && !m.deleted && (m.kind === 'chat' || m.photo_path)) acts += '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>';
-    return '<li>' + avatar(who) + '<div class="body"><div class="who"><b>' + esc(who.name) + '</b> · ' + time + '</div>' + body + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div></li>';
+    if (m.deleted) return out;
+    const mine = m.profile_id === user.id, cont = prevWho === m.profile_id;
+    prevWho = m.profile_id;
+    let body = '';
+    const q = m.reply_to && byId.get(m.reply_to);
+    if (q) body += '<div class="rq">↪ ' + esc((memberById(q.profile_id) || {}).name || '?') + ': ' + esc(q.deleted ? '…' : (q.body || '📷')) + '</div>';
+    if (m.photo_path) body += photoExpired(m) ? '<div class="rq">' + esc(t('photoGone')) + '</div>' : (signed.get(m.photo_path) ? '<img class="pic" data-path="' + esc(m.photo_path) + '" src="' + esc(signed.get(m.photo_path)) + '" alt="">' : '');
+    if (m.body) body += esc(m.body);
+    body += '<span class="tm">' + time + '</span>';
+    const acts = selMsg === m.id ? '<div class="acts"><button type="button" data-re="' + esc(m.id) + '">↪ ' + esc(t('reply')) + '</button>' + (mine ? '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>' : '') + '</div>' : '';
+    return out + '<li class="' + (mine ? 'me' : '') + (cont ? ' cont' : '') + '">' + (mine ? '' : avatar(who)) + '<div class="col">' + (!mine && !cont ? '<span class="nm">' + esc(who.name) + '</span>' : '') +
+      '<div class="bub" data-sel="' + esc(m.id) + '">' + body + '</div>' + acts + '</div></li>';
   }).join('');
+  if (nearBottom) scrollChat(true);
 }
+$('chatList').addEventListener('scroll', () => { const box = $('chatList'); if (box.scrollHeight - box.scrollTop - box.clientHeight < 60){ $('newBelow').hidden = true; markRead(); } }, { passive: true });
+$('newBelow').onclick = () => { scrollChat(true); $('newBelow').hidden = true; markRead(); };
 $('msgs').onclick = async e => {
-  const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.re){ const m = msgs.find(x => x.id === b.dataset.re); replyTo = m; $('cReply').hidden = false; $('cReplyTxt').textContent = t('cReplyTo', { name: (memberById(m.profile_id) || {}).name || '?' }); $('cText').focus(); return; }
+  const img = e.target.closest('img.pic'); if (img){ openViewer(img.dataset.path); return; }
+  const b = e.target.closest('button');
+  if (!b){ const s = e.target.closest('[data-sel]'); if (s){ selMsg = selMsg === s.dataset.sel ? null : s.dataset.sel; renderMsgs(); } return; }
+  if (b.dataset.re){ const m = msgs.find(x => x.id === b.dataset.re); replyTo = m; selMsg = null; $('cReply').hidden = false; $('cReplyTxt').textContent = t('cReplyTo', { name: (memberById(m.profile_id) || {}).name || '?' }); renderMsgs(); $('cText').focus(); return; }
   if (b.dataset.del){
     if (!confirm(t('delQ'))) return;
     const { data } = await sb.rpc('delete_night_message', { p_id: b.dataset.del });
     if (data && data.photo) sb.storage.from('night-photos').remove([data.photo]);
-    refresh(); return;
+    selMsg = null; refresh(); return;
   }
   if (b.dataset.ch){ b.disabled = true; await sb.rpc('challenge_play', { p_play: b.dataset.ch }); refresh(); }
 };
 let replyTo = null, chatBlob = null;
 $('cReplyX').onclick = () => { replyTo = null; $('cReply').hidden = true; };
+$('cText').addEventListener('input', () => { const x = $('cText'); x.style.height = 'auto'; x.style.height = Math.min(x.scrollHeight, 120) + 'px'; });
+$('cText').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer:fine)').matches){ e.preventDefault(); $('cForm').requestSubmit(); } });
 $('cFile').onchange = async () => {
   const f = $('cFile').files[0]; if (!f) return;
   try{ chatBlob = await shrink(f); $('cPreviewImg').src = URL.createObjectURL(chatBlob); $('cPreviewTxt').textContent = t('cPreview'); $('cPreview').hidden = false; }catch(e){ chatBlob = null; toast(t('err')); }
@@ -952,25 +1216,30 @@ $('cForm').onsubmit = async e => {
   const b = $('cSend'); b.disabled = true;
   try{
     let path = null;
-    if (chatBlob){ b.textContent = t('uploading'); path = await upload(chatBlob); }
+    if (chatBlob){ path = await upload(chatBlob); }
     const { error } = await sb.from('night_messages').insert({ night_id: night, profile_id: user.id, body: body || null, photo_path: path, reply_to: replyTo ? replyTo.id : null });
     if (error){ if (path) sb.storage.from('night-photos').remove([path]); throw error; }
-    $('cText').value = ''; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
-    refresh();
+    $('cText').value = ''; $('cText').style.height = 'auto'; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
+    await refreshNow(); scrollChat(true); markRead();
   }catch(x){ toast(t('err')); }
-  finally{ b.disabled = false; b.textContent = t('cSend'); }
+  finally{ b.disabled = false; }
 };
 
 /* ---------- live updates ---------- */
 let refT, chan;
-function refresh(){
-  clearTimeout(refT);
-  refT = setTimeout(async () => {
-    const { data } = await sb.rpc('night_info', { p_night: night });
-    if (data){ info = data; }
-    await loadMsgs(); renderNight();
-  }, 250);
+async function refreshNow(){
+  const before = msgs.length ? msgTime(msgs[msgs.length - 1]) : 0;
+  const { data } = await sb.rpc('night_info', { p_night: night });
+  if (data){ info = data; }
+  await loadMsgs(); renderNight();
+  const newest = msgs.length ? msgs[msgs.length - 1] : null;
+  if (newest && msgTime(newest) > before && newest.profile_id !== user.id && tab === 'chat'){
+    const box = $('chatList');
+    if (box.scrollHeight - box.scrollTop - box.clientHeight > 140){ $('newBelow').textContent = t('newMsgs'); $('newBelow').hidden = false; }
+    else markRead();
+  }
 }
+function refresh(){ clearTimeout(refT); refT = setTimeout(refreshNow, 250); }
 function startRealtime(){
   if (chan) return;
   const f = 'night_id=eq.' + night;
@@ -979,29 +1248,8 @@ function startRealtime(){
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_plays', filter: f }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_members', filter: f }, refresh)
     .subscribe();
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden){ refresh(); markRead(); } else paintBadge(); });
 }
-
-/* ---------- save all photos ---------- */
-let files = [];
-$('saveAll').onclick = async () => {
-  const list = msgs.filter(m => m.photo_path && !m.deleted && !photoExpired(m));
-  $('saveSheet').hidden = false; $('svLinks').innerHTML = ''; files = [];
-  if (!list.length){ $('svP').textContent = t('svNone'); $('svGo').hidden = true; return; }
-  $('svGo').hidden = false; $('svGo').disabled = true; $('svGo').textContent = t('svPrep'); $('svP').textContent = t('svP', { n: list.length, name: info.name });
-  await signAll(list.map(m => m.photo_path));
-  const slug = info.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'streetdare';
-  for (let i = 0; i < list.length; i++){
-    try{ const r = await fetch(signed.get(list[i].photo_path)); const b = await r.blob(); files.push(new File([b], slug + '-' + (i + 1) + '.jpg', { type: 'image/jpeg' })); }catch(e){}
-  }
-  $('svGo').disabled = false; $('svGo').textContent = t('svGo', { n: files.length });
-};
-$('svGo').onclick = async () => {
-  if (navigator.canShare && navigator.canShare({ files })){ try{ await navigator.share({ files }); }catch(e){} return; }
-  $('svLinks').innerHTML = files.map((f, i) => '<a class="mini" download="' + esc(f.name) + '" href="' + URL.createObjectURL(f) + '">📸 ' + (i + 1) + '</a>').join('');
-  files.forEach((f, i) => { const a = $('svLinks').children[i]; if (a) a.click(); });
-};
-$('svX').onclick = () => { $('saveSheet').hidden = true; };
 </script>
 </body>
 </html>
