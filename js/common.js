@@ -55,7 +55,6 @@ function paintAccount(){
   if (mc){ mc.href = '/contact/'; mc.querySelector('span').textContent = a.contact; mc.querySelector('small').textContent = a.contactS; }
   const mp = $('mPass');
   if (mp){ mp.href = '/pass/'; mp.querySelector('span').textContent = a.pass; mp.querySelector('small').textContent = a.passS; }
-  paintPassBar();
   const btn = $('acctBtn');
   if (btn){
     btn.href = loggedIn() ? '/me/' : '/login/'; btn.textContent = loggedIn() ? a.me : a.login;
@@ -84,7 +83,6 @@ function paintPassBar(){
   bar.innerHTML = '<span>⏱ ' + h + 'h ' + m + 'm · <b></b></span><span>→</span>';
   bar.querySelector('b').textContent = p.name;
 }
-setInterval(paintPassBar, 30000);
 function applyLang(){
   paintAccount();
   document.documentElement.lang = LANG;

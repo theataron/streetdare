@@ -127,6 +127,7 @@ html.night .sheet .box{background:var(--bg)}
 html.night .toast{background:#f3ece3;color:#121012}
 html.night .darecard .btn{background:#fff;color:#1b1412}
 html.night .darecard .btn.plain{background:none;color:#fff}
+html.night .howto .btn{background:#fff;color:#1b1412}
 html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!important}
 html.night .board li,html.night .nights li{border-color:#2f2826}
 /* ===== the night as an app ===== */
@@ -147,6 +148,7 @@ body.inapp .wrap{display:none}
 .pane{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 24px;overscroll-behavior:contain}
 .pane[hidden]{display:none}
 .pane.chat{display:flex;flex-direction:column;padding:0}
+.app.typing .tabs{display:none}
 .tabs{flex:none;display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border-top:1.5px solid #e6dccf;padding:4px 0 max(6px,env(safe-area-inset-bottom))}
 .tabs button{position:relative;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer;color:var(--mute);font:700 .72rem "DM Sans",sans-serif}
 .tabs button i{font-style:normal;font-size:1.35rem;line-height:1;filter:grayscale(1);opacity:.65}
@@ -171,6 +173,8 @@ body.inapp .wrap{display:none}
 .msgs .nm{font-size:.72rem;font-weight:700;color:var(--mute);margin:6px 0 2px 4px}
 .bub{background:var(--card);border:1.5px solid #e6dccf;border-radius:18px 18px 18px 6px;padding:8px 12px;overflow-wrap:anywhere;white-space:pre-wrap;cursor:pointer;line-height:1.35}
 .msgs li.me .bub{background:var(--red);border-color:var(--red);color:#fff;border-radius:18px 18px 6px 18px}
+.bub{position:relative;touch-action:pan-y}
+.bub.swiping::before{content:"↪";position:absolute;left:-34px;top:50%;transform:translateY(-50%);font-size:1.1rem;color:var(--red)}
 .bub .tm{font-size:.66rem;opacity:.6;margin-left:8px;white-space:nowrap}
 .bub img.pic{display:block;width:220px;max-width:100%;height:220px;object-fit:cover;border-radius:12px;margin:2px 0 4px;background:var(--blush)}
 .bub .rq{border-left:3px solid currentColor;opacity:.75;padding:1px 8px;margin:2px 0 6px;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -417,8 +421,7 @@ html.night .badge{border-color:#211b19}
         <h2 id="phH"></h2>
         <p class="sub" id="photoNoteTxt"></p>
         <div class="grid" id="photoGrid"></div>
-        <button class="btn red" type="button" id="saveAll" hidden></button>
-        <p class="small" id="saveHintAll" hidden></p>
+        <p class="small" id="saveHintAll"></p>
       </section>
       <section class="panel">
         <h2 id="memH"></h2>
@@ -492,6 +495,7 @@ const PHOTO_DAYS = 7;
 
 const T = {
   en:{
+    tapToSave:'Tap a photo, then “Save to Photos” to keep it on your phone.',
     tDares:'Dares', tChat:'Chat', tResults:'Results', tGroup:'Group', appBackTxt:'Website', endedShort:'Ended', endChat:'No more dares, but the chat stays open 💬', myRank:'You’re #{r} of {n} with {p} points', grpLang:'Group language: {l}. The person who started the group chose it for everyone.', phH:'Photos', memH:'Who’s in', nSite:'← Back to the website', nContact:'Contact ✉️', savePhoto:'Save to Photos 📲', saveHint:'Or press and hold the photo, then tap “Save to Photos” (iPhone) or “Download image” (Android).', chatEmpty:'Say hi to your group 👋', newMsgs:'New messages ↓', fLangL:'Language for the whole group', fLangS:'Everyone in the group will play in this language: dares, chat and results. Choose one that everybody understands.',
     mnPass:'My nights 🎟️', mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
     gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
@@ -522,7 +526,7 @@ const T = {
     sGo:'Count it', sCancel:'Back', sNeedAns:'Let them type their answer first.', sNeedPhoto:'This one needs a photo.', sDoneBefore:'You already did this dare tonight.', sEnded:'The night is over.',
     gotPts:'+{p} points 🔥', uploading:'Uploading…', saving:'Saving…', err:'Something went wrong. Try again.',
     bH:'Leaderboard', you:'you', ptsShort:'pts', daresN:'{n} dares', dares1:'1 dare',
-    feedH:'Group Feed', privNote:'Only your group sees this feed. During the launch phase, STREETDARE (Aron) can see it too, to learn how the game is played.',
+    feedH:'Group Feed', privNote:'Only your group sees this chat. During the launch phase, the STREETDARE team can also see it, to analyze how the game is used and make it better for you.',
     photoNote:'Photos stay here for 7 days, then they disappear.', photoNoteLeft:'Photos disappear in {d}. Save them before they’re gone.', saveAll:'Save all photos',
     cPh:'Write to your group…', cSend:'Send', cReplyTo:'Replying to {name}', cPreview:'Photo ready', reply:'Reply', del:'Delete', delQ:'Delete this?', challenge:'❌ Didn’t happen', challenged:'❌ {n}', voided:'Doesn’t count (the group said it didn’t happen)',
     joined:'🎟️ {name} joined the night', photoGone:'📸 This photo has disappeared (7 days).', and2:' & ', empty:'Nothing yet. Do the first dare 👆',
@@ -531,6 +535,7 @@ const T = {
     days1:'1 day', daysN:'{d} days', hours:'less than a day', timeLeft:'{h}h {m}m'
   },
   es:{
+    tapToSave:'Toca una foto y luego «Guardar en Fotos» para tenerla en tu móvil.',
     tDares:'Retos', tChat:'Chat', tResults:'Resultados', tGroup:'Grupo', appBackTxt:'Web', endedShort:'Terminada', endChat:'Se acabaron los retos, pero el chat sigue abierto 💬', myRank:'Vas #{r} de {n} con {p} puntos', grpLang:'Idioma del grupo: {l}. Lo eligió para todos quien creó el grupo.', phH:'Fotos', memH:'Quién está', nSite:'← Volver a la web', nContact:'Contacto ✉️', savePhoto:'Guardar en Fotos 📲', saveHint:'O mantén pulsada la foto y toca «Guardar en Fotos» (iPhone) o «Descargar imagen» (Android).', chatEmpty:'Saluda a tu grupo 👋', newMsgs:'Mensajes nuevos ↓', fLangL:'Idioma para todo el grupo', fLangS:'Todo el grupo jugará en este idioma: retos, chat y resultados. Elige uno que entienda todo el mundo.',
     mnPass:'Mis noches 🎟️', mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
     gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
@@ -561,7 +566,7 @@ const T = {
     sGo:'Que cuente', sCancel:'Volver', sNeedAns:'Deja primero que escriba su respuesta.', sNeedPhoto:'Este reto necesita una foto.', sDoneBefore:'Ya has hecho este reto esta noche.', sEnded:'La noche se ha acabado.',
     gotPts:'+{p} puntos 🔥', uploading:'Subiendo…', saving:'Guardando…', err:'Algo ha fallado. Inténtalo otra vez.',
     bH:'Clasificación', you:'tú', ptsShort:'pts', daresN:'{n} retos', dares1:'1 reto',
-    feedH:'Group Feed', privNote:'Solo tu grupo ve este feed. Durante la fase de lanzamiento, STREETDARE (Aron) también puede verlo, para aprender cómo se juega.',
+    feedH:'Group Feed', privNote:'Solo tu grupo ve este chat. Durante la fase de lanzamiento, el equipo de STREETDARE también puede verlo, para analizar cómo se usa el juego y mejorarlo para ti.',
     photoNote:'Las fotos se quedan aquí 7 días y luego desaparecen.', photoNoteLeft:'Las fotos desaparecen en {d}. Guárdalas antes de que se vayan.', saveAll:'Guardar todas las fotos',
     cPh:'Escribe a tu grupo…', cSend:'Enviar', cReplyTo:'Respondiendo a {name}', cPreview:'Foto lista', reply:'Responder', del:'Borrar', delQ:'¿Borrar esto?', challenge:'❌ No pasó', challenged:'❌ {n}', voided:'No cuenta (el grupo dice que no pasó)',
     joined:'🎟️ {name} se ha unido a la noche', photoGone:'📸 Esta foto ha desaparecido (7 días).', and2:' y ', empty:'Todavía nada. Haced el primer reto 👆',
@@ -570,6 +575,7 @@ const T = {
     days1:'1 día', daysN:'{d} días', hours:'menos de un día', timeLeft:'{h} h {m} min'
   },
   hu:{
+    tapToSave:'Koppints egy fotóra, majd a „Mentés a Fotókba” gombra, hogy a telefonodon maradjon.',
     tDares:'Kihívások', tChat:'Chat', tResults:'Eredmények', tGroup:'Csapat', appBackTxt:'Weboldal', endedShort:'Vége', endChat:'Több kihívás nincs, de a chat nyitva marad 💬', myRank:'{n} főből #{r}. vagy, {p} ponttal', grpLang:'A csapat nyelve: {l}. A csapat létrehozója választotta mindenkinek.', phH:'Fotók', memH:'Kik vannak bent', nSite:'← Vissza a weboldalra', nContact:'Kapcsolat ✉️', savePhoto:'Mentés a Fotókba 📲', saveHint:'Vagy tartsd lenyomva a fotót, és koppints a „Mentés a Fotókba” (iPhone) vagy a „Kép letöltése” (Android) lehetőségre.', chatEmpty:'Köszönj a csapatodnak 👋', newMsgs:'Új üzenetek ↓', fLangL:'Nyelv az egész csapatnak', fLangS:'Az egész csapat ezen a nyelven játszik: kihívások, chat és eredmények. Olyat válassz, amit mindenki ért.',
     mnPass:'Az estéim 🎟️', mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
     gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
@@ -600,7 +606,7 @@ const T = {
     sGo:'Számoljuk', sCancel:'Vissza', sNeedAns:'Előbb hadd írja be a válaszát.', sNeedPhoto:'Ehhez fotó kell.', sDoneBefore:'Ezt a kihívást ma már megcsináltad.', sEnded:'Vége az estének.',
     gotPts:'+{p} pont 🔥', uploading:'Feltöltés…', saving:'Mentés…', err:'Valami hiba történt. Próbáld újra.',
     bH:'Ranglista', you:'te', ptsShort:'pont', daresN:'{n} kihívás', dares1:'1 kihívás',
-    feedH:'Group Feed', privNote:'Ezt a feedet csak a csapatod látja. A bevezető időszakban a STREETDARE (Áron) is látja, hogy tanuljon belőle, hogyan játsszátok.',
+    feedH:'Group Feed', privNote:'Ezt a chatet csak a csapatod látja. A bevezető időszakban a STREETDARE csapata is láthatja, hogy elemezze, hogyan használjátok a játékot, és jobbá tegye nektek.',
     photoNote:'A fotók 7 napig maradnak itt, utána eltűnnek.', photoNoteLeft:'A fotók {d} múlva eltűnnek. Mentsd el őket, mielőtt eltűnnek.', saveAll:'Az összes fotó mentése',
     cPh:'Írj a csapatnak…', cSend:'Küldés', cReplyTo:'Válasz neki: {name}', cPreview:'A fotó kész', reply:'Válasz', del:'Törlés', delQ:'Törlöd?', challenge:'❌ Nem történt meg', challenged:'❌ {n}', voided:'Nem számít (a csapat szerint nem történt meg)',
     joined:'🎟️ {name} csatlakozott az estéhez', photoGone:'📸 Ez a fotó eltűnt (7 nap).', and2:' és ', empty:'Még semmi. Csináljátok meg az első kihívást 👆',
@@ -875,7 +881,7 @@ function showTab(name){
   $('tabs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
   try{ sessionStorage.setItem('sd_tab_' + night, name); }catch(e){}
   if (name === 'chat'){ scrollChat(true); markRead(); }
-  if (name === 'group') prepPhotos();
+  if (name === 'group') renderPhotos();
 }
 $('tabs').onclick = e => { const b = e.target.closest('button'); if (b) showTab(b.dataset.tab); };
 $('nightBtn2').onclick = () => { if (window.sdNight){ window.sdNight.toggle(); $('nightBtn2').textContent = window.sdNight.on() ? '☀️' : '🌙'; } };
@@ -1087,20 +1093,10 @@ function renderPhotos(){
     $('photoNoteTxt').textContent = daysLeft <= 0 ? t('photoNote') : t('photoNoteLeft', { d: daysLeft < 1 ? t('hours') : daysLeft === 1 ? t('days1') : t('daysN', { d: daysLeft }) });
   } else $('photoNoteTxt').textContent = list.length ? t('photoNote') : t('svNone');
   $('photoGrid').innerHTML = list.map(m => '<img src="' + esc(signed.get(m.photo_path)) + '" data-path="' + esc(m.photo_path) + '" alt="">').join('');
-  const ready = list.filter(m => files.has(m.photo_path)).map(m => files.get(m.photo_path));
-  $('saveAll').hidden = !list.length;
-  const share = ready.length && canShareFiles(ready);
-  $('saveAll').disabled = !(ready.length === list.length);
-  $('saveAll').textContent = ready.length === list.length ? t('svGo', { n: list.length }) : t('svPrep');
-  $('saveHintAll').hidden = !(list.length && ready.length === list.length && !share);
-  $('saveHintAll').textContent = t('saveHint');
+  $('saveHintAll').hidden = !list.length;
+  $('saveHintAll').textContent = t('tapToSave');
 }
 $('photoGrid').onclick = e => { const i = e.target.closest('img'); if (i) openViewer(i.dataset.path); };
-$('saveAll').onclick = async () => {
-  const fs = livePhotos().map(m => files.get(m.photo_path)).filter(Boolean);
-  if (canShareFiles(fs)){ try{ await navigator.share({ files: fs }); }catch(e){} return; }
-  openViewer(livePhotos()[0].photo_path);
-};
 let viewPath = null;
 async function openViewer(path){
   viewPath = path;
@@ -1179,7 +1175,8 @@ function renderMsgs(){
     if (m.photo_path) body += photoExpired(m) ? '<div class="rq">' + esc(t('photoGone')) + '</div>' : (signed.get(m.photo_path) ? '<img class="pic" data-path="' + esc(m.photo_path) + '" src="' + esc(signed.get(m.photo_path)) + '" alt="">' : '');
     if (m.body) body += esc(m.body);
     body += '<span class="tm">' + time + '</span>';
-    const acts = selMsg === m.id ? '<div class="acts"><button type="button" data-re="' + esc(m.id) + '">↪ ' + esc(t('reply')) + '</button>' + (mine ? '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>' : '') + '</div>' : '';
+    const fine = window.matchMedia('(pointer:fine)').matches;
+    const acts = selMsg === m.id && (mine || fine) ? '<div class="acts">' + (fine ? '<button type="button" data-re="' + esc(m.id) + '">↪ ' + esc(t('reply')) + '</button>' : '') + (mine ? '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>' : '') + '</div>' : '';
     return out + '<li class="' + (mine ? 'me' : '') + (cont ? ' cont' : '') + '">' + (mine ? '' : avatar(who)) + '<div class="col">' + (!mine && !cont ? '<span class="nm">' + esc(who.name) + '</span>' : '') +
       '<div class="bub" data-sel="' + esc(m.id) + '">' + body + '</div>' + acts + '</div></li>';
   }).join('');
@@ -1191,7 +1188,7 @@ $('msgs').onclick = async e => {
   const img = e.target.closest('img.pic'); if (img){ openViewer(img.dataset.path); return; }
   const b = e.target.closest('button');
   if (!b){ const s = e.target.closest('[data-sel]'); if (s){ selMsg = selMsg === s.dataset.sel ? null : s.dataset.sel; renderMsgs(); } return; }
-  if (b.dataset.re){ const m = msgs.find(x => x.id === b.dataset.re); replyTo = m; selMsg = null; $('cReply').hidden = false; $('cReplyTxt').textContent = t('cReplyTo', { name: (memberById(m.profile_id) || {}).name || '?' }); renderMsgs(); $('cText').focus(); return; }
+  if (b.dataset.re){ startReply(b.dataset.re); return; }
   if (b.dataset.del){
     if (!confirm(t('delQ'))) return;
     const { data } = await sb.rpc('delete_night_message', { p_id: b.dataset.del });
@@ -1201,7 +1198,37 @@ $('msgs').onclick = async e => {
   if (b.dataset.ch){ b.disabled = true; await sb.rpc('challenge_play', { p_play: b.dataset.ch }); refresh(); }
 };
 let replyTo = null, chatBlob = null;
+function startReply(id){
+  const m = msgs.find(x => x.id === id); if (!m) return;
+  replyTo = m; selMsg = null;
+  $('cReply').hidden = false; $('cReplyTxt').textContent = t('cReplyTo', { name: (memberById(m.profile_id) || {}).name || '?' }) + ': ' + (m.body || '📷');
+  renderMsgs(); $('cText').focus();
+}
+// swipe right on a bubble to reply
+let sw = null;
+$('msgs').addEventListener('touchstart', e => {
+  const b = e.target.closest('.bub'); if (!b) return;
+  const tc = e.touches[0]; sw = { el: b, id: b.dataset.sel, x: tc.clientX, y: tc.clientY, dx: 0, locked: null };
+}, { passive: true });
+$('msgs').addEventListener('touchmove', e => {
+  if (!sw) return;
+  const tc = e.touches[0], dx = tc.clientX - sw.x, dy = tc.clientY - sw.y;
+  if (sw.locked === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) sw.locked = Math.abs(dx) > Math.abs(dy) && dx > 0 ? 'x' : 'y';
+  if (sw.locked !== 'x') return;
+  sw.dx = Math.max(0, Math.min(dx, 80));
+  sw.el.style.transform = 'translateX(' + sw.dx + 'px)';
+  sw.el.classList.toggle('swiping', sw.dx > 50);
+}, { passive: true });
+$('msgs').addEventListener('touchend', () => {
+  if (!sw) return;
+  const { el, id, dx } = sw; sw = null;
+  el.style.transition = 'transform .18s'; el.style.transform = ''; el.classList.remove('swiping');
+  setTimeout(() => { el.style.transition = ''; }, 200);
+  if (dx > 50){ if (navigator.vibrate) navigator.vibrate(10); startReply(id); }
+});
 $('cReplyX').onclick = () => { replyTo = null; $('cReply').hidden = true; };
+$('cText').addEventListener('focus', () => $('app').classList.add('typing'));
+$('cText').addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== $('cText')) $('app').classList.remove('typing'); }, 150));
 $('cText').addEventListener('input', () => { const x = $('cText'); x.style.height = 'auto'; x.style.height = Math.min(x.scrollHeight, 120) + 'px'; });
 $('cText').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer:fine)').matches){ e.preventDefault(); $('cForm').requestSubmit(); } });
 $('cFile').onchange = async () => {

@@ -65,11 +65,11 @@ async function loadLiveDecks(){
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
 const EXTRA = {
   en:{ igH:'Don’t lose each other 👀', igP:'You just did a dare with {name}. Follow them now, so you can find each other after tonight.', ig:'Follow @{ig} on Instagram',
-       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing time 🙌 Scan again whenever you want another dare.', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
+       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing time 🙌 Scan again whenever you want another dare.', rateL:'How was this dare?', rateThx:'Thanks! 🙌', star:'{n} out of 5 stars', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
   es:{ igH:'No os perdáis 👀', igP:'Acabas de hacer un reto con {name}. Síguele ahora para encontraros después de esta noche.', ig:'Sigue a @{ig} en Instagram',
-       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'¡Que lo pases genial! 🙌 Escanea otra vez cuando quieras otro reto.', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
+       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'¡Que lo pases genial! 🙌 Escanea otra vez cuando quieras otro reto.', rateL:'¿Qué tal este reto?', rateThx:'¡Gracias! 🙌', star:'{n} de 5 estrellas', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
   hu:{ igH:'Ne veszítsétek el egymást 👀', igP:'Most csináltál meg egy kihívást vele: {name}. Kövesd be most, hogy ma este után is megtaláljátok egymást.', ig:'Kövesd: @{ig} Instagramon',
-       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Érezd jól magad 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
+       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Érezd jól magad 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', rateL:'Milyen volt ez a kihívás?', rateThx:'Köszönjük! 🙌', star:'{n} csillag az 5-ből', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
 };
 let verified = false;
 function paintExtras(){
@@ -85,6 +85,7 @@ function paintExtras(){
   }
   $('igLockP').textContent = x.lock.replace('{name}', who()); $('igLockBtn').textContent = x.lockBtn;
   $('leaveBtn').textContent = x.leave; $('leaveBtn').hidden = false; $('byeMsg').textContent = x.bye;
+  paintStars();
   const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') && !demo && !window.STAGE); }
 }
 document.addEventListener('langchange', paintExtras);
@@ -213,7 +214,24 @@ async function finishVerified(){
 
 /* ----- a dare only counts on the owner's profile when the scanner types the owner's 4-digit code ----- */
 const practice = () => demo || !!window.STAGE;
-function finishDare(counted, igHandle){ verified = !!counted; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+/* ----- rate the dare: 1–5 empty stars, tap one; tapping another star changes it ----- */
+let rated = 0, ratedDare = null;
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.4l-5.8 3.1 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>';
+function paintStars(){
+  const x = EXTRA[LANG] || EXTRA.en;
+  $('rateL').textContent = rated ? x.rateThx : x.rateL;
+  $('stars').innerHTML = [1,2,3,4,5].map(n => '<button type="button" role="radio" aria-checked="' + (n === rated) + '" aria-label="' + x.star.replace('{n}', n) + '" data-n="' + n + '" class="' + (n <= rated ? 'on' : '') + '">' + STAR + '</button>').join('');
+}
+$('stars').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  rated = +b.dataset.n; paintStars();
+  const q = ratedDare || [];
+  track('rate', { quest: q[0], rating: rated });
+  if (practice()) return;
+  fetch(SB.url + '/rest/v1/rpc/rate_dare', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
+    body: JSON.stringify({ p_shirt: SHIRT.toLowerCase(), p_device: deviceId(), p_dare_id: q.id || null, p_dare_text: q[0] || null, p_rating: rated, p_verified: verified, p_lang: LANG }) }).catch(() => {});
+};
+function finishDare(counted, igHandle){ rated = 0; ratedDare = current; verified = !!counted; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
 $('codeIn').oninput = () => {
   $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
   if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();

@@ -63,6 +63,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .pdare.row-item:first-child{border-top:0}
 .pdare.inactive{opacity:.5}
 .pdare .acts{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-weight:700;font-size:.9rem}
+.stars-avg{font-weight:800;color:#b07d00;white-space:nowrap}.stars-avg.none{color:var(--mute);font-weight:600}.stars-avg small{font-weight:600;color:var(--mute)}
 .seatpick{display:flex;gap:6px;flex-wrap:wrap}
 .seatpick button{border:2px solid var(--ink);background:#fff;border-radius:12px;min-width:44px;padding:8px 10px;font-weight:800;cursor:pointer}
 .seatpick button.on{background:var(--ink);color:var(--bg)}
@@ -420,8 +421,9 @@ async function loadDares(){
   if (scope.pass) return loadPassDares();
   let q = sb.from('dares').select('*').order('sort').order('id');
   q = scope.deck_id ? q.eq('deck_id', scope.deck_id) : q.eq('shirt_id', scope.shirt_id);
-  const { data, error } = await q;
+  const [{ data, error }, { data: rs }] = await Promise.all([q, sb.from('dare_rating_stats').select('*')]);
   if (error) return toast('Error: ' + error.message);
+  const stars = Object.fromEntries((rs || []).map(x => [x.dare_id, x]));
   const live = data.filter(x => x.active).length;
   $('dareTitle').textContent = data.length + ' dares · ' + live + ' live';
   $('dareList').innerHTML = data.length ? data.map(r =>
@@ -429,7 +431,8 @@ async function loadDares(){
       '<div><div class="lbl">English</div><textarea name="en" rows="2" maxlength="300">' + esc(r.text_en) + '</textarea></div>' +
       '<div><div class="lbl">Español</div><textarea name="es" rows="2" maxlength="300">' + esc(r.text_es) + '</textarea></div>' +
       '<div><div class="lbl">Magyar</div><textarea name="hu" rows="2" maxlength="300">' + esc(r.text_hu || '') + '</textarea></div>' +
-      '<div class="acts"><label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
+      '<div class="acts">' + (stars[r.id] ? '<span class="stars-avg" title="' + stars[r.id].ratings + ' ratings">★ ' + stars[r.id].avg_rating + ' <small>(' + stars[r.id].ratings + ')</small></span>' : '<span class="stars-avg none" title="No ratings yet">☆ –</span>') +
+      '<label><input type="checkbox" name="active"' + (r.active ? ' checked' : '') + '> Live</label>' +
       '<label title="Shows an 18+ tag on the dare"><input type="checkbox" name="adult"' + (r.adult ? ' checked' : '') + '> 18+</label>' +
       (r.shirt_id ? '<label title="Owner can\'t switch it back on"><input type="checkbox" name="hide"' + (r.hidden_by_admin ? ' checked' : '') + '> Hidden by admin</label>' : '') +
       '<button class="btn sm red" name="save" disabled>Save</button><button class="btn ghost sm" name="del">Delete</button></div>' +

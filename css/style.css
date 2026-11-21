@@ -721,3 +721,37 @@ html.night .bigcard .byline,html.night .bigcard .byline *{color:#5b4f49}
 html.night .igcard.locked{background:var(--card);color:var(--ink)}
 html.night body.hot .nextstep{background:#fff;color:#1b1412}
 html.night .sdclose{background:#fff;color:#1b1412;border-color:#1b1412}
+/* live Shirtless Pass group bar (js/passbar.js), under the header */
+.livebar{display:flex;align-items:center;gap:10px;background:#1b1412;color:#fff;text-decoration:none;border-radius:16px;padding:10px 14px;margin:4px 0 12px;box-shadow:var(--sh)}
+.livebar .lbdot{width:10px;height:10px;border-radius:50%;background:#2bd46b;box-shadow:0 0 0 4px rgba(43,212,107,.25);flex:none;animation:lbpulse 1.6s infinite}
+@keyframes lbpulse{50%{box-shadow:0 0 0 7px rgba(43,212,107,0)}}
+.livebar .lbtxt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.livebar .lbtxt b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.livebar .lbtxt small{color:#d9cdc6;font-size:.75rem}
+.livebar .lbclock{font:400 1.05rem "Bagel Fat One",sans-serif;font-variant-numeric:tabular-nums;background:var(--red);border-radius:10px;padding:5px 8px 2px}
+.livebar .lbgo{font-weight:800;font-size:.85rem;text-decoration:underline;white-space:nowrap}
+html.night .livebar{background:#000}
+/* rate the dare (scan page, Dare complete) */
+.rate{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:8px 12px;margin:2px 0 12px}
+.rate .ratel{font-weight:800;font-size:.95rem}
+.stars{display:flex;gap:2px}
+.stars button{background:none;border:0;padding:3px;cursor:pointer;line-height:0}
+.stars svg{width:30px;height:30px;fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linejoin:round;transition:transform .12s}
+.stars button.on svg{fill:#F7B500;stroke:#c98f00}
+.stars button:active svg{transform:scale(1.2)}
+.ratet{font-size:.85rem;color:var(--mute);margin:-6px 0 12px;text-align:center}
+body.hot .rate{color:#1b1412;background:#fff}
+body.hot .rate .stars svg{stroke:#1b1412}
+/* Dare complete: keep "Want your own shirt?" above the fold */
+#v-done h1{font-size:clamp(1.9rem,8.6vw,2.6rem);margin:4px 0 4px;white-space:nowrap}
+#v-done > .sub{margin-bottom:10px;font-size:.95rem}
+#v-done .rate{padding:6px 10px;margin:0 0 10px}
+#v-done .rate .ratel{font-size:.9rem;line-height:1.15}
+#v-done .stars svg{width:27px;height:27px}
+#v-done .igcard{margin:10px 0 6px;padding:14px 14px}
+#v-done .igcard h2{margin:2px 0 10px;font-size:1.35rem}
+#v-done .igcard .igpic{width:52px;height:52px}
+#v-done .igcard.locked p{font-size:.9rem;margin-bottom:10px}
+#v-done .exits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+#v-done .exits .btn{padding:13px 10px;font-size:.95rem}
+#v-done .wlbox{margin:16px 0 22px!important}

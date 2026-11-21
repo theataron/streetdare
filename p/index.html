@@ -124,6 +124,11 @@
     <section class="play" id="v-done" hidden>
       <h1 class="display" data-i18n="doneTitle"></h1>
       <p class="sub" data-i18n="doneSub"></p>
+      <!-- rate the dare: empty stars, tap one -->
+      <div class="rate" id="rateBox">
+        <span class="ratel" id="rateL"></span>
+        <div class="stars" id="stars" role="radiogroup"></div>
+      </div>
       <!-- after a confirmed dare: a big nudge to follow the wearer -->
       <div class="igcard" id="igCard" hidden>
         <img class="igpic" id="igPic" alt="" hidden>
@@ -176,5 +181,6 @@
 <script src="../js/quests.js"></script>
 <script src="../js/shirts.js"></script>
 <script src="../js/play.js"></script>
+<script src="../js/passbar.js"></script>
 </body>
 </html>
