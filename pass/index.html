@@ -31,7 +31,7 @@
 .gbtn svg{width:20px;height:20px}
 .seatline{display:inline-block;background:var(--blush);color:var(--red);font-weight:800;border-radius:99px;padding:6px 14px;font-size:.92rem;margin-bottom:16px}
 .loading{text-align:center;color:var(--mute);padding:60px 0}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:.92rem;z-index:30;max-width:90vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:.92rem;z-index:60;max-width:90vw;text-align:center}
 .wa{background:#1f8f4e!important;color:#fff!important}
 .mini{font:700 .85rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:99px;background:var(--card);padding:7px 13px;cursor:pointer;color:var(--ink);white-space:nowrap;text-decoration:none;display:inline-block}
 .mini.red{background:var(--red);color:#fff}
@@ -130,6 +130,35 @@ html.night .darecard .btn.plain{background:none;color:#fff}
 html.night .howto .btn{background:#fff;color:#1b1412}
 html.night .mini.wa,html.night .btn.wa{background:#1f8f4e!important;color:#fff!important}
 html.night .board li,html.night .nights li{border-color:#2f2826}
+/* ===== the waiting room (lobby) ===== */
+.lobby{position:fixed;inset:0;z-index:40;background:var(--red);color:#fff4ea;display:flex;flex-direction:column;padding:max(16px,env(safe-area-inset-top)) 22px max(18px,env(safe-area-inset-bottom));overflow-y:auto;-webkit-user-select:none;user-select:none}
+.lobby[hidden]{display:none}
+.lbtop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.lbtop .sdlogo{font-size:1.25rem;color:#fff}
+.lbtop small{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.68rem;opacity:.8}
+.lbhi{font-family:"Bagel Fat One","Arial Black",sans-serif;font-weight:400;font-size:clamp(3.4rem,20vw,6rem);line-height:.92;margin:22px 0 8px;color:#fff;word-break:break-word}
+.lbgroup{font-weight:800;font-size:1.05rem;opacity:.92;margin-bottom:16px}
+.lbnames{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.lbnames li{display:flex;align-items:center;gap:7px;padding:7px 14px 7px 8px;border-radius:99px;background:rgba(255,255,255,.14);border:2px solid transparent;font-weight:800;font-size:.95rem;transition:background .15s,border-color .15s,transform .15s}
+.lbnames li .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.35);margin-left:4px}
+.lbnames li.hold{background:#fff;color:var(--red);transform:scale(1.04)}
+.lbnames li.hold .dot{background:#1fc16b;box-shadow:0 0 0 4px rgba(31,193,107,.3)}
+.lbnames li.free{background:none;border:2px dashed rgba(255,255,255,.4);font-weight:600;opacity:.75}
+.lbrules{margin:0 0 18px 1.2em;font-weight:600;font-size:.98rem;line-height:1.35;opacity:.95}
+.lbrules li{margin-bottom:6px}
+.lbbottom{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:10px}
+.lbthumb{position:relative;width:132px;height:132px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;transition:background .15s,transform .15s}
+.lbthumb svg{width:70px;height:70px}
+.lbthumb::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:3px solid rgba(255,255,255,.35);animation:lbpulse 1.8s ease-out infinite}
+.lbthumb.on{background:#fff;color:var(--red);transform:scale(.96)}
+.lbthumb.on::after{border-color:#1fc16b;animation:none;inset:-10px}
+.lbthumb.count svg{opacity:0}
+.lbcount{position:absolute;font-family:"Bagel Fat One","Arial Black",sans-serif;font-size:4.2rem;line-height:1;color:var(--red)}
+@keyframes lbpulse{0%{transform:scale(.92);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+.lbhint{font-weight:700;font-size:.92rem;text-align:center;min-height:1.3em}
+.lbinvite{background:none;border:2px solid rgba(255,255,255,.55);color:#fff;border-radius:99px;padding:8px 16px;font:700 .82rem "DM Sans",sans-serif;cursor:pointer}
+.lbhost{background:none;border:0;color:#fff;opacity:.75;text-decoration:underline;font:600 .8rem "DM Sans",sans-serif;cursor:pointer;padding:4px}
+@media (max-height:700px){.lbhi{font-size:3.4rem;margin:12px 0 4px}.lbrules{font-size:.9rem;margin-bottom:10px}.lbthumb{width:108px;height:108px}.lbthumb svg{width:56px;height:56px}}
 /* ===== the night as an app ===== */
 body.inapp{overflow:hidden}
 body.inapp .wrap{display:none}
@@ -194,7 +223,8 @@ body.inapp .wrap{display:none}
 .newbelow{position:absolute;left:50%;transform:translateX(-50%);bottom:76px;background:var(--red);color:#fff;border-radius:99px;padding:6px 14px;font-weight:800;font-size:.8rem;cursor:pointer;z-index:3;box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .composer{flex:none;background:var(--card);border-top:1.5px solid #e6dccf;padding:8px 10px}
 .composer .crow{display:flex;align-items:flex-end;gap:8px}
-.composer textarea{flex:1;resize:none;max-height:120px;font:500 1rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:20px;padding:9px 14px;background:#fff;color:var(--ink);line-height:1.3}
+.composer .ctext{flex:1;min-width:0;max-height:120px;overflow-y:auto;font:500 1rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:20px;padding:9px 14px;background:#fff;color:var(--ink);line-height:1.3;outline:none;white-space:pre-wrap;word-break:break-word;-webkit-user-select:text;user-select:text}
+.composer .ctext:empty::before{content:attr(data-ph);color:var(--mute);pointer-events:none}
 .cbtn{font-size:1.3rem;cursor:pointer;padding:6px 4px;line-height:1}
 .csend{width:42px;height:42px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:1.1rem;cursor:pointer;flex:none}
 .csend:disabled{opacity:.5}
@@ -345,6 +375,23 @@ html.night .badge{border-color:#211b19}
   </main>
 </div>
 
+<div class="lobby" id="lobby" hidden>
+  <div class="lbtop"><a class="sdlogo" href="/?home=1" style="text-decoration:none">STREETDARE</a><small>Shirtless Pass</small></div>
+  <h1 class="lbhi" id="lbHi"></h1>
+  <p class="lbgroup" id="lbGroup"></p>
+  <ul class="lbnames" id="lbNames"></ul>
+  <ol class="lbrules"><li id="lbR1"></li><li id="lbR2"></li><li id="lbR3"></li></ol>
+  <div class="lbbottom">
+    <button class="lbthumb" id="lbThumb" type="button" aria-label="Hold">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M9 30a23 23 0 0 1 46 0"/><path d="M16 54c-2-7-2-14-2-21a18 18 0 0 1 36 0c0 8 0 14 2 21"/><path d="M23 57c-2-8-2-15-2-23a11 11 0 0 1 22 0c0 8 0 14 2 21"/><path d="M32 34v12"/></svg>
+      <span class="lbcount" id="lbCount"></span>
+    </button>
+    <p class="lbhint" id="lbHint"></p>
+    <button class="lbinvite" id="lbInvite" type="button"></button>
+    <button class="lbhost" id="lbHost" type="button" hidden></button>
+  </div>
+</div>
+
 <div class="app" id="app" hidden>
   <header class="apptop">
     <a class="appback" href="/?home=1" id="appBack" aria-label="Back to the website"><span>←</span><small id="appBackTxt"></small></a>
@@ -384,13 +431,13 @@ html.night .badge{border-color:#211b19}
         <ul class="msgs" id="msgs"></ul>
       </div>
       <div class="newbelow" id="newBelow" hidden></div>
-      <form class="composer" id="cForm" novalidate>
+      <form class="composer" id="cForm" novalidate autocomplete="off">
         <div class="replying" id="cReply" hidden><span id="cReplyTxt"></span><button class="x" type="button" id="cReplyX">✕</button></div>
         <div class="cpreview" id="cPreview" hidden><img id="cPreviewImg" alt=""><span id="cPreviewTxt"></span><button class="x" type="button" id="cPreviewX">✕</button></div>
         <div class="crow">
           <label class="cbtn" for="cFile" aria-label="Photo">📷</label>
           <input type="file" id="cFile" accept="image/*" hidden>
-          <textarea id="cText" rows="1" maxlength="500"></textarea>
+          <div id="cText" class="ctext" role="textbox" aria-multiline="true" contenteditable="plaintext-only" enterkeyhint="send" autocapitalize="sentences" spellcheck="true" data-lpignore="true" data-1p-ignore="true"></div>
           <button class="csend" type="submit" id="cSend" aria-label="Send">➤</button>
         </div>
       </form>
@@ -506,6 +553,8 @@ const T = {
     ucFree:'@{u} is free ✓', ucTaken:'@{u} is taken. Try another one.', ucBlocked:'Pick a different username.', ucBad:'3 to 20 characters: letters, numbers, . and _',
     needName:'Write your name first.', needUser:'Pick a free username first.',
     fH:'You’re the first one here 🎉', fP:'Give your night a name. Everyone in your group will see it.', fPh:'Chaos Night', fBtn:'Start the night ⏱', fSmall:'The 24 hours start now, for the whole group.',
+    jPLobby:'{names} {are} already in. The 24 hours start when everyone is ready.', lbHi:'Hi, {name}.', lbGroup:'{g} · {n} in the group', lbR1:'Your 24 hours start when everyone holds the thumb together.', lbR2:'Every dare is done with a stranger.', lbR3:'Stay safe and kind. Nothing illegal, nobody hurt.',
+    lbFree:'Free seat', lbHint0:'Everyone holds the thumb at the same time to start.', lbHintN:'{a} of {b} holding. Everyone together!', lbHintAll:'Don’t let go…', lbStarting:'Starting…', lbInvite:'Invite: {code} · {l} free', lbShared:'Link copied', lbHostGo:'Host: start now without waiting', lbHostSure:'Tap again to start for everyone', lobbyTag:'Waiting to start',
     jH:'Welcome to {name} 🔥', jP:'{names} {are} already in. You all have {time} left.', jPEmpty:'You all have {time} left.', jBtn:'I’m in', isOne:'is', areMany:'are', and:'and',
     badH:'That code doesn’t work 🤔', badP:'Check the code, or message Aron and he’ll sort it out.',
     fullH:'This pass is full', fullP:'All the seats are taken. Message Aron and he’ll add one more for €5.',
@@ -546,6 +595,8 @@ const T = {
     ucFree:'@{u} está libre ✓', ucTaken:'@{u} ya está cogido. Prueba otro.', ucBlocked:'Elige otro usuario.', ucBad:'De 3 a 20 caracteres: letras, números, . y _',
     needName:'Escribe primero tu nombre.', needUser:'Elige primero un usuario libre.',
     fH:'Eres el primero 🎉', fP:'Ponle nombre a vuestra noche. Todo tu grupo lo verá.', fPh:'Noche Caos', fBtn:'Empezar la noche ⏱', fSmall:'Las 24 horas empiezan ahora, para todo el grupo.',
+    jPLobby:'{names} ya {are} dentro. Las 24 horas empiezan cuando todos estéis listos.', lbHi:'Hola, {name}.', lbGroup:'{g} · {n} en el grupo', lbR1:'Vuestras 24 horas empiezan cuando todos mantengáis el pulgar a la vez.', lbR2:'Cada reto se hace con un desconocido.', lbR3:'Con cabeza y buen rollo. Nada ilegal, nadie herido.',
+    lbFree:'Plaza libre', lbHint0:'Todos mantenéis el pulgar a la vez para empezar.', lbHintN:'{a} de {b} mantienen. ¡Todos juntos!', lbHintAll:'No sueltes…', lbStarting:'Empezando…', lbInvite:'Invita: {code} · {l} libres', lbShared:'Enlace copiado', lbHostGo:'Anfitrión: empezar ya sin esperar', lbHostSure:'Toca otra vez para empezar para todos', lobbyTag:'Esperando para empezar',
     jH:'Bienvenido a {name} 🔥', jP:'{names} ya {are} dentro. Os quedan {time}.', jPEmpty:'Os quedan {time}.', jBtn:'Me apunto', isOne:'está', areMany:'están', and:'y',
     badH:'Ese código no funciona 🤔', badP:'Revisa el código o escríbele a Aron y lo arregla.',
     fullH:'Este pase está lleno', fullP:'Todas las plazas están cogidas. Escríbele a Aron y añade una más por 5 €.',
@@ -586,6 +637,8 @@ const T = {
     ucFree:'@{u} szabad ✓', ucTaken:'@{u} már foglalt. Próbálj másikat.', ucBlocked:'Válassz másik felhasználónevet.', ucBad:'3–20 karakter: betűk, számok, . és _',
     needName:'Előbb írd be a neved.', needUser:'Előbb válassz egy szabad felhasználónevet.',
     fH:'Te vagy itt az első 🎉', fP:'Adj nevet az estének. Az egész csapatod látni fogja.', fPh:'Káosz Este', fBtn:'Kezdődjön az este ⏱', fSmall:'A 24 óra most indul, az egész csapatnak.',
+    jPLobby:'{names} már bent {are}. A 24 óra akkor indul, amikor mindenki kész.', lbHi:'Szia, {name}.', lbGroup:'{g} · {n} fő a csapatban', lbR1:'A 24 órátok akkor indul, amikor mindenki egyszerre nyomja a hüvelykujját.', lbR2:'Minden kihívást egy idegennel csináltok meg.', lbR3:'Biztonságosan és kedvesen. Semmi illegális, senki nem sérül.',
+    lbFree:'Szabad hely', lbHint0:'Mindenki egyszerre nyomja az ujját, és indul.', lbHintN:'{a} / {b} nyomja. Mindenki együtt!', lbHintAll:'Ne engedd el…', lbStarting:'Indul…', lbInvite:'Meghívó: {code} · {l} szabad', lbShared:'Link kimásolva', lbHostGo:'Házigazda: indítás várakozás nélkül', lbHostSure:'Koppints még egyszer, és indul mindenkinek', lobbyTag:'Várunk az indulásra',
     jH:'Üdv itt: {name} 🔥', jP:'{names} már bent {are}. Még {time} van hátra.', jPEmpty:'Még {time} van hátra.', jBtn:'Benne vagyok', isOne:'van', areMany:'vannak', and:'és',
     badH:'Ez a kód nem működik 🤔', badP:'Nézd meg a kódot, vagy írj Áronnak, és elintézi.',
     fullH:'Ez a pass betelt', fullP:'Minden hely foglalt. Írj Áronnak, és 5 €-ért hozzáad még egyet.',
@@ -648,7 +701,7 @@ function paint(){
   $('mnMe').querySelector('span').textContent = t(mk); $('mnMe').querySelector('small').textContent = t(mk + 'S');
   $('sBrandS').textContent = t('sBrandS');
   $('gGoogleTxt').textContent = t('gGoogle'); $('gEmail').textContent = t('gEmail');
-  $('fName').placeholder = t('fPh'); $('cText').placeholder = t('cPh');
+  $('fName').placeholder = t('fPh'); $('cText').dataset.ph = t('cPh');
   $('mWa').textContent = $('hWa').textContent = $('invWa').textContent = t('waBtn');
   $('mWa').href = $('hWa').href = $('invWa').href = waLink();
   $('mHub').textContent = t('hubBtn');
@@ -705,6 +758,7 @@ async function withCode(){
     if (current !== 'join') return;
     $('jH').textContent = t('jH', { name: p.name });
     const time = timeLeft(new Date(p.ends_at) - Date.now());
+    if (!p.begun){ $('jP').textContent = names.length ? t('jPLobby', { names: joinNames(names), are: names.length === 1 ? t('isOne') : t('areMany') }) : ''; return; }
     $('jP').textContent = names.length ? t('jP', { names: joinNames(names), are: names.length === 1 ? t('isOne') : t('areMany'), time }) : t('jPEmpty', { time });
   };
   view('join');
@@ -816,7 +870,7 @@ async function hub(){
     if (current !== 'hub') return;
     $('hNights').innerHTML = list.map(n => {
       const d = new Date(n.started_at).toLocaleDateString(L, { day:'numeric', month:'short' });
-      const sub = n.active ? '<span class="ptag">' + esc(t('active')) + '</span>' : esc(d);
+      const sub = n.lobby ? '<span class="ptag">' + esc(t('lobbyTag')) + '</span>' : n.active ? '<span class="ptag">' + esc(t('active')) + '</span>' : esc(d);
       const u = unread[n.id] ? ' <span class="badge inline">' + (unread[n.id] > 99 ? '99+' : unread[n.id]) + '</span>' : '';
       return '<li><a href="/pass/?n=' + esc(n.id) + '"><b>' + esc(n.name) + u + '</b><small>' + sub + ' · ' + esc(t('rankOf', { r: n.rank || 1, n: n.members, p: n.points || 0 })) + '</small></a>' +
         (n.active ? '' : '<a class="mini wa" href="' + waLink() + '" target="_blank" rel="noopener" style="flex:none">💬</a>') + '</li>';
@@ -831,6 +885,111 @@ $('hForm').onsubmit = e => {
   location.href = '/pass/?c=' + c;
 };
 
+
+/* ---------- waiting room: the 24 hours start when everybody holds the thumb together ---------- */
+let lobbyChan = null, lobbyPoll = null, holders = new Set(), myHold = false, cdT = null, cdN = 0, starting = false, hostSure = false;
+function showLobby(){
+  document.body.classList.add('inapp');
+  $('app').hidden = true; $('lobby').hidden = false;
+  current = 'lobby'; renderHook = paintLobby;
+  holders = new Set(); myHold = false; starting = false; hostSure = false;
+  if (!lobbyChan){
+    lobbyChan = sb.channel('lobby-' + night, { config: { presence: { key: user.id } } })
+      .on('presence', { event: 'sync' }, () => {
+        const st = lobbyChan.presenceState(); const h = new Set();
+        Object.keys(st).forEach(k => { if (k !== user.id && (st[k] || []).some(x => x.holding)) h.add(k); });
+        if (myHold) h.add(user.id);
+        holders = h; paintLobby(); checkAll();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'nights', filter: 'id=eq.' + night }, refreshLobby)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'night_members', filter: 'night_id=eq.' + night }, refreshLobby)
+      .subscribe(st => { if (st === 'SUBSCRIBED') lobbyChan.track({ holding: myHold }); });
+  }
+  clearInterval(lobbyPoll); lobbyPoll = setInterval(refreshLobby, 3000);
+  paint();
+}
+function stopLobby(){
+  clearInterval(lobbyPoll); lobbyPoll = null; cancelCount();
+  if (lobbyChan){ try{ sb.removeChannel(lobbyChan); }catch(e){} lobbyChan = null; }
+  $('lobby').hidden = true;
+}
+async function refreshLobby(){
+  if (current !== 'lobby') return;
+  const { data } = await sb.rpc('night_info', { p_night: night });
+  if (!data) return;
+  info = data;
+  skew = new Date(info.now).getTime() - Date.now();
+  if (info.begun_at) return openNight(night);
+  paintLobby(); checkAll();
+}
+function paintLobby(){
+  if (current !== 'lobby' || !info) return;
+  const me = memberById(user.id) || { name: (profile && profile.name) || '' };
+  const first = String(me.name || '').trim().split(/\s+/)[0];
+  $('lbHi').textContent = t('lbHi', { name: first });
+  $('lbGroup').textContent = t('lbGroup', { g: info.name, n: info.members.length });
+  ['lbR1','lbR2','lbR3'].forEach(k => { $(k).textContent = t(k); });
+  const free = Math.max(0, (info.seats || 0) - info.members.length);
+  $('lbNames').innerHTML = info.members.map(m => '<li class="' + (holders.has(m.id) ? 'hold' : '') + '"><span class="dot"></span>' + esc(m.name) + '</li>').join('') +
+    Array.from({ length: Math.min(free, 6) }, () => '<li class="free">' + esc(t('lbFree')) + '</li>').join('');
+  const all = holdersAll(), n = info.members.filter(m => holders.has(m.id)).length;
+  $('lbHint').textContent = starting ? t('lbStarting') : all ? t('lbHintAll') : n ? t('lbHintN', { a: n, b: info.members.length }) : t('lbHint0');
+  $('lbThumb').classList.toggle('on', myHold);
+  $('lbThumb').classList.toggle('count', !!cdT);
+  $('lbCount').textContent = cdT ? cdN : '';
+  const left = Math.max(0, free);
+  $('lbInvite').hidden = !info.code || !left;
+  $('lbInvite').textContent = t('lbInvite', { code: info.code ? fmtCode(info.code) : '', l: left });
+  const host = info.host === user.id;
+  $('lbHost').hidden = !host;
+  $('lbHost').textContent = hostSure ? t('lbHostSure') : t('lbHostGo');
+}
+const holdersAll = () => info && info.members.length > 0 && info.members.every(m => holders.has(m.id));
+function setHold(on){
+  if (myHold === on || starting) return;
+  myHold = on;
+  if (on) holders.add(user.id); else holders.delete(user.id);
+  if (lobbyChan) lobbyChan.track({ holding: on });
+  paintLobby(); checkAll();
+}
+function checkAll(){
+  if (starting) return;
+  if (holdersAll()){ if (!cdT) startCount(); }
+  else if (cdT) cancelCount();
+}
+function startCount(){
+  cdN = 3; paintLobby(); if (navigator.vibrate) navigator.vibrate(30);
+  cdT = setInterval(() => {
+    if (!holdersAll()){ cancelCount(); return; }
+    cdN--;
+    if (cdN <= 0){ clearInterval(cdT); cdT = null; goGame(); return; }
+    if (navigator.vibrate) navigator.vibrate(30);
+    paintLobby();
+  }, 1000);
+}
+function cancelCount(){ if (cdT){ clearInterval(cdT); cdT = null; } cdN = 0; paintLobby(); }
+async function goGame(){
+  if (starting) return; starting = true; if (navigator.vibrate) navigator.vibrate([60, 40, 120]);
+  paintLobby();
+  await sb.rpc('start_game', { p_night: night });
+  starting = false;
+  await refreshLobby();
+}
+(() => {
+  const b = $('lbThumb');
+  b.addEventListener('pointerdown', e => { e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(x){} setHold(true); });
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev => b.addEventListener(ev, () => setHold(false)));
+  b.addEventListener('contextmenu', e => e.preventDefault());
+  b.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); setHold(true); } });
+  b.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') setHold(false); });
+  $('lbHost').onclick = () => { if (!hostSure){ hostSure = true; paintLobby(); setTimeout(() => { hostSure = false; paintLobby(); }, 4000); } else { hostSure = false; goGame(); } };
+  $('lbInvite').onclick = async () => {
+    const url = location.origin + '/pass/?c=' + (info.code || '');
+    try{ if (navigator.share){ await navigator.share({ title: info.name, url }); return; } }catch(e){ return; }
+    try{ await navigator.clipboard.writeText(url); toast(t('lbShared')); }catch(e){}
+  };
+})();
+
 /* ---------- the night: full-screen app with tabs ---------- */
 let personalL = null, tab = null;
 async function openNight(id, fresh){
@@ -843,6 +1002,8 @@ async function openNight(id, fresh){
   // the whole group plays in the language the leader chose
   if (personalL === null) personalL = L;
   if (info.lang && T[info.lang]) L = info.lang;
+  if (!info.begun_at){ view('night'); return showLobby(); }
+  stopLobby();
   await loadMsgs();
   rememberActive();
   if (fresh || !store.get('sd_pass_how')) $('nHow').hidden = false;
@@ -1229,7 +1390,8 @@ $('msgs').addEventListener('touchend', () => {
 $('cReplyX').onclick = () => { replyTo = null; $('cReply').hidden = true; };
 $('cText').addEventListener('focus', () => $('app').classList.add('typing'));
 $('cText').addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== $('cText')) $('app').classList.remove('typing'); }, 150));
-$('cText').addEventListener('input', () => { const x = $('cText'); x.style.height = 'auto'; x.style.height = Math.min(x.scrollHeight, 120) + 'px'; });
+$('cText').addEventListener('input', () => { const x = $('cText'); if (!x.textContent.trim() && !x.querySelector('img')) x.innerHTML = ''; });
+$('cText').addEventListener('paste', e => { e.preventDefault(); const tx = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, tx); });
 $('cText').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer:fine)').matches){ e.preventDefault(); $('cForm').requestSubmit(); } });
 $('cFile').onchange = async () => {
   const f = $('cFile').files[0]; if (!f) return;
@@ -1238,7 +1400,7 @@ $('cFile').onchange = async () => {
 $('cPreviewX').onclick = () => { chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true; };
 $('cForm').onsubmit = async e => {
   e.preventDefault();
-  const body = $('cText').value.trim().slice(0, 500);
+  const body = $('cText').innerText.replace(/\u00a0/g, ' ').trim().slice(0, 500);
   if (!body && !chatBlob) return;
   const b = $('cSend'); b.disabled = true;
   try{
@@ -1246,7 +1408,7 @@ $('cForm').onsubmit = async e => {
     if (chatBlob){ path = await upload(chatBlob); }
     const { error } = await sb.from('night_messages').insert({ night_id: night, profile_id: user.id, body: body || null, photo_path: path, reply_to: replyTo ? replyTo.id : null });
     if (error){ if (path) sb.storage.from('night-photos').remove([path]); throw error; }
-    $('cText').value = ''; $('cText').style.height = 'auto'; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
+    $('cText').innerHTML = ''; replyTo = null; $('cReply').hidden = true; chatBlob = null; $('cFile').value = ''; $('cPreview').hidden = true;
     await refreshNow(); scrollChat(true); markRead();
   }catch(x){ toast(t('err')); }
   finally{ b.disabled = false; }

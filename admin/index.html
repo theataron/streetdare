@@ -599,6 +599,7 @@ function passState(p){
   if (p.status === 'void') return 'void';
   if (!p.night) return new Date(p.redeem_by) < new Date() ? 'expired' : 'unused';
   if (new Date(p.night.ends_at) <= new Date()) return 'ended';
+  if (!p.night.begun_at) return 'waiting';
   return p.members.length >= p.seats ? 'full' : 'active';
 }
 function paintSeatPick(){
@@ -642,7 +643,7 @@ async function loadPasses(){
       '<td class="n">' + p.members.length + ' / ' + p.seats + '</td>' +
       '<td>' + (n ? '<b>' + esc(n.name) + '</b><br><small class="muted">' + n.plays + ' dares · ' + n.messages + ' messages</small>' : '<span class="muted">-</span>') + '</td>' +
       '<td>' + (who || '<span class="muted">-</span>') + '</td>' +
-      '<td>' + (n ? leftStr(n.ends_at) : '<small class="muted">use by ' + new Date(p.redeem_by).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + '</small>') + '</td>' +
+      '<td>' + (n ? (n.begun_at ? leftStr(n.ends_at) : '<small class="muted">in the waiting room</small>') : '<small class="muted">use by ' + new Date(p.redeem_by).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + '</small>') + '</td>' +
       '<td>' + (p.payment.startsWith('Free') ? 'free' : euro(p.seats * p.price_cents / 100)) + '<br><small class="muted">' + esc(p.payment) + ' · ' + hhmm(p.created_at) + '</small></td>' +
       '<td><div class="pacts">' +
         (s !== 'void' && s !== 'ended' && s !== 'expired' ? '<button class="btn sm" name="qr">QR</button><button class="btn sm" name="seat" title="They paid for one more person">+1 seat</button>' : '') +
