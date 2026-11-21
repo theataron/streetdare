@@ -714,3 +714,10 @@ html.night .seg button.on{background:var(--ink);color:#121012}
 html.night .how b{background:var(--red);color:#fff}
 html.night .consent button{border-color:#fff;color:#fff}
 @media (max-width:430px){ body.scanpage #acctBtn{display:none} }
+/* night: white cards keep dark text */
+html.night .bigcard{color:#1b1412;background:#fff}
+html.night .bigcard .flip{color:#1b1412;background:#fff;border-color:#1b1412}
+html.night .bigcard .byline,html.night .bigcard .byline *{color:#5b4f49}
+html.night .igcard.locked{background:var(--card);color:var(--ink)}
+html.night body.hot .nextstep{background:#fff;color:#1b1412}
+html.night .sdclose{background:#fff;color:#1b1412;border-color:#1b1412}
