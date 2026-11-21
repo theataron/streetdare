@@ -213,6 +213,14 @@ const WL_TEXT = {
   hu:{ member:'Már a STREETDARE közösség tagja vagy ✓', optL:'Írjatok, hogy ne maradjak le az új pólókról, paklikról, funkciókról és eseményekről', optOn:'Fent vagy a listán ✓', optFail:'Lejárt a bejelentkezésed. <a href="{login}">Lépj be újra</a>, és bekapcsolhatod.', note:'Egy e-mail, amikor kijönnek a pólók, és néha hírek az új paklikról, funkciókról és eseményekről. Spam nincs, egy válasszal leiratkozhatsz. <a href="/privacy/">Adatvédelem</a>', ph:'Az e-mail-címed', send:'Feliratkozom az értesítőre 🎟️', sending:'Küldés…', ok:'Bent vagy 🎉 Üdv a STREETDARE közösségben! Nem maradsz le az indulásról.', bad:'Ez az e-mail-cím nem tűnik jónak.', err:'Nem sikerült csatlakozni. Próbáld újra.', demo:'Demó mód: a feliratkozásokat még nem mentjük.' },
   es:{ member:'Ya estás en la comunidad STREETDARE ✓', optL:'Escribidme para no perderme camisetas, barajas y funciones nuevas, ni eventos', optOn:'Estás en la lista ✓', optFail:'Tu sesión ha caducado. <a href="{login}">Vuelve a entrar</a> y podrás activarlo.', note:'Un email cuando salgan las camisetas y, de vez en cuando, novedades sobre barajas, funciones y eventos. Sin spam, te das de baja con una respuesta. <a href="/privacy/">Privacidad</a>', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE. No te vas a perder el lanzamiento.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
+/* ----- consent log: every waitlist sign-up and email switch is saved with the exact wording shown ----- */
+const plainText = h => { const d = document.createElement('div'); d.innerHTML = h; return (d.textContent || '').replace(/\s+/g, ' ').trim(); };
+async function sbRpc(fn, args, token){
+  const r = await fetch(SB.url + '/rest/v1/rpc/' + fn, { method:'POST',
+    headers: Object.assign({ apikey: SB.key, 'Content-Type':'application/json' }, token ? { Authorization: 'Bearer ' + token } : {}), body: JSON.stringify(args) });
+  if (!r.ok) throw new Error('rpc ' + r.status);
+  return r.json();
+}
 function initWaitlist(){
   /* account holders are already members: no email form, just a pointer to the email switch in their profile */
   if (loggedIn() && !window.STAGE){ initMemberOptIn(); return; }
@@ -231,7 +239,13 @@ function initWaitlist(){
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){ err.textContent = w.bad; err.hidden = false; return; }
       err.hidden = true; btn.disabled = true; btn.textContent = w.sending;
       try{
-        await api('joinWaitlist', { email:v, source:(window.STAGE ? 'stage-' : '') + (form.dataset.source||'') });
+        const src = (window.STAGE ? 'stage-' : '') + (form.dataset.source||'');
+        const wording = label() + ' | ' + plainText((WL_TEXT[LANG] || WL_TEXT.en).note);
+        const res = await Promise.allSettled([
+          window.STAGE ? Promise.reject('stage') : sbRpc('join_waitlist', { p_email: v, p_wording: wording, p_lang: LANG, p_page: location.pathname, p_source: src }),
+          api('joinWaitlist', { email:v, source: src })
+        ]);
+        if (!res.some(x => x.status === 'fulfilled')) throw new Error('both failed');
         store.set('sd_joined','1');
         document.querySelectorAll('form.wl').forEach(f => { const p = document.createElement('p'); p.className = 'wlmsg'; p.textContent = w.ok; f.replaceWith(p); });
         document.querySelectorAll('.wlnote').forEach(n => n.remove());
@@ -282,10 +296,8 @@ async function initMemberOptIn(){
       const v = cb.checked; paint();
       try{
         ses = await sbSession(); if (!ses) throw 0;
-        const r = await fetch(SB.url + '/rest/v1/profiles?id=eq.' + ses.user.id, { method:'PATCH',
-          headers:{ apikey: SB.key, Authorization: 'Bearer ' + ses.access_token, 'Content-Type':'application/json', Prefer:'return=minimal' },
-          body: JSON.stringify({ marketing_opt_in: v, marketing_opt_in_at: new Date().toISOString() }) });
-        if (!r.ok) throw 0;
+        const ok = await sbRpc('record_consent', { p_granted: v, p_wording: w().optL + ' [' + (v ? 'switched on' : 'switched off') + '] ' + plainText(w().note), p_lang: LANG, p_page: location.pathname, p_source: 'member-switch' }, ses.access_token);
+        if (ok !== 'ok') throw 0;
         document.querySelectorAll('.wlmember input').forEach(x => { x.checked = v; });
         document.dispatchEvent(new Event('langchange'));
         if (v) track('optin', {});

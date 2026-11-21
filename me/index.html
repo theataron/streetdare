@@ -271,7 +271,7 @@ const T = {
        daresH:'Your own dares', daresP:'Dares only your shirt has. They’re mixed into the deck when someone scans you. Up to 10, and keep them fun and safe.', enL:'Your dare', esL:'Spanish version (optional)',
        addDare:'Add dare', limit:'You’ve reached 10 dares. Delete or edit one first.', tooShort:'Write a bit more.', daresEmpty:'No dares of your own yet. Add the first one below.', liveL:'On', del:'Delete', save:'Save', edit:'Edit',
        hidden:'Hidden by STREETDARE', added:'Dare added. It’s live on your shirt now.', delSure:'Delete this dare?',
-       decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', included:'Included', soon:'Coming soon', want:'I want this', wanted:'You’re on the list ✓',
+       decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', pickInfo:'Your shirt comes with 2 packs of your choice: {n} of 2 chosen. Pick the ones that fit how you go out.', pickDone:'You’ve chosen your 2 packs ✓ They unlock on your shirt as soon as they’re ready.', pickBtn:'Choose', picked:'Yours ✓', pickQ:'Add “{deck}” to your shirt? Your choice is final.', pickErr:'Couldn’t save your choice. Try again.', included:'Included', soon:'Coming soon', want:'I want this', wanted:'You’re on the list ✓',
        setupH:'Get set up 🚀', setupP:'Four quick steps and your shirt is ready for its first night out.', addClaim:'Claim another shirt',
        st1:'Add your photo', st1s:'People who scan you see it next to your name, so they know who they’re looking for.', st1b:'Add my photo',
        st2:'Learn your dare code', st2s:'After a dare, the person who scanned you types it so the dare counts. It’s further down, under your shirt.', st2b:'Show me',
@@ -300,7 +300,7 @@ const T = {
        daresH:'Saját kihívásaid', daresP:'Ezek csak a te pólódon vannak. Bekeverjük őket a pakliba, amikor valaki beszkennel. Legfeljebb 10, és legyenek viccesek és biztonságosak.', enL:'A kihívásod', esL:'Angol változat (nem kötelező)',
        addDare:'Kihívás hozzáadása', limit:'Elérted a 10 kihívást. Előbb törölj vagy szerkessz egyet.', tooShort:'Írj egy kicsit többet.', daresEmpty:'Még nincs saját kihívásod. Add hozzá az elsőt lent.', liveL:'Aktív', del:'Törlés', save:'Mentés', edit:'Szerkesztés',
        hidden:'A STREETDARE elrejtette', added:'Kihívás hozzáadva. Már él a pólódon.', delSure:'Törlöd ezt a kihívást?',
-       decksH:'A paklijaid', decksP:'Ezek vannak a pakliban, amikor valaki beszkenneli a pólódat.', included:'Benne van', soon:'Hamarosan', want:'Ezt kérem', wanted:'Feliratkoztál ✓',
+       decksH:'A paklijaid', decksP:'Ezek vannak a pakliban, amikor valaki beszkenneli a pólódat.', pickInfo:'A pólódhoz 2 pakli jár, te választod ki őket: {n}/2 kiválasztva. Válaszd azokat, amelyek illenek hozzád.', pickDone:'Kiválasztottad a 2 paklidat ✓ Amint elkészülnek, megjelennek a pólódon.', pickBtn:'Ezt kérem', picked:'A tiéd ✓', pickQ:'Hozzáadod a(z) „{deck}” paklit a pólódhoz? A választás végleges.', pickErr:'Nem sikerült menteni. Próbáld újra.', included:'Benne van', soon:'Hamarosan', want:'Ezt kérem', wanted:'Feliratkoztál ✓',
        setupH:'Állítsd be 🚀', setupP:'Négy gyors lépés, és a pólód készen áll az első estére.', addClaim:'Másik póló igénylése',
        st1:'Tölts fel egy fotót', st1s:'Aki beszkennel, a neved mellett látja, így tudja, kit keres.', st1b:'Fotót töltök fel',
        st2:'Ismerd meg a kihíváskódodat', st2s:'Egy kihívás után az, aki beszkennelt, beírja ezt a kódot, és így számít a kihívás. Lentebb találod, a pólódnál.', st2b:'Mutasd',
@@ -329,7 +329,7 @@ const T = {
        daresH:'Tus propios retos', daresP:'Retos que solo tiene tu camiseta. Se mezclan en la baraja cuando alguien te escanea. Hasta 10, y que sean divertidos y seguros.', enL:'Tu reto', esL:'Versión en inglés (opcional)',
        addDare:'Añadir reto', limit:'Ya tienes 10 retos. Borra o edita uno primero.', tooShort:'Escribe un poco más.', daresEmpty:'Aún no tienes retos propios. Añade el primero abajo.', liveL:'Activo', del:'Borrar', save:'Guardar', edit:'Editar',
        hidden:'Ocultado por STREETDARE', added:'Reto añadido. Ya está activo en tu camiseta.', delSure:'¿Borrar este reto?',
-       decksH:'Tus barajas', decksP:'Lo que hay en la baraja cuando alguien escanea tu camiseta.', included:'Incluida', soon:'Próximamente', want:'La quiero', wanted:'Estás en la lista ✓',
+       decksH:'Tus barajas', decksP:'Lo que hay en la baraja cuando alguien escanea tu camiseta.', pickInfo:'Tu camiseta incluye 2 packs a tu elección: {n} de 2 elegidos. Elige los que encajan con tu forma de salir.', pickDone:'Ya has elegido tus 2 packs ✓ Se activan en tu camiseta en cuanto estén listos.', pickBtn:'Elegir', picked:'Tuyo ✓', pickQ:'¿Añadir «{deck}» a tu camiseta? La elección es definitiva.', pickErr:'No se ha podido guardar. Inténtalo otra vez.', included:'Incluida', soon:'Próximamente', want:'La quiero', wanted:'Estás en la lista ✓',
        setupH:'Ponlo a punto 🚀', setupP:'Cuatro pasos rápidos y tu camiseta está lista para su primera noche.', addClaim:'Reclamar otra camiseta',
        st1:'Añade tu foto', st1s:'Quien te escanee la ve junto a tu nombre, así sabe a quién buscar.', st1b:'Añadir mi foto',
        st2:'Conoce tu código de reto', st2s:'Después de un reto, quien te ha escaneado lo escribe para que el reto cuente. Está más abajo, en tu camiseta.', st2b:'Enséñamelo',
@@ -502,12 +502,51 @@ $('dareForm').onsubmit = async e => {
 };
 
 /* ===== decks ===== */
+let picked = new Set(), pickedFor = null;
+async function loadPicked(){
+  pickedFor = shirt.id;
+  const { data } = await sb.from('shirt_decks').select('deck_id').eq('shirt_id', shirt.id);
+  picked = new Set((data || []).map(r => r.deck_id)); paintDecks();
+}
 function paintDecks(){
+  if (!shirt) return;
+  if (pickedFor !== shirt.id){ loadPicked(); return; }
+  const paid = decks.filter(d => !d.is_free), full = picked.size >= 2;
+  $('decksP').textContent = t('decksP') + ' ' + (full ? t('pickDone') : t('pickInfo').replace('{n}', picked.size));
+  const dn = d => (L === 'es' ? d.name_es : L === 'hu' ? d.name_hu : d.name_en) || d.name_en;
+  $('deckList').innerHTML = decks.filter(d => (d.is_free && d.active) || !d.is_free).map(d => {
+    const name = dn(d);
+    let right;
+    if (d.is_free) right = '<span class="pill">' + t('included') + '</span>';
+    else if (picked.has(d.id)) right = '<span class="pill">' + t('picked') + '</span>';
+    else if (!full) right = '<button class="mini red" data-pick="' + d.id + '">' + t('pickBtn') + '</button>';
+    else right = interest.has(d.id) ? '<span class="pill soon">' + t('wanted') + '</span>' : '<button class="mini" data-want="' + d.id + '">' + t('want') + '</button>';
+    return '<div class="deck"><div><b>' + esc(name) + '</b>' + (!d.is_free && !d.active ? '<small>' + t('soon') + '</small>' : '') + '</div>' + right + '</div>';
+  }).join('');
+  $('deckList').querySelectorAll('[data-pick]').forEach(b => b.onclick = async () => {
+    const d = decks.find(x => x.id === b.dataset.pick);
+    if (!confirm(t('pickQ').replace('{deck}', dn(d)))) return;
+    b.disabled = true;
+    const { data, error } = await sb.rpc('choose_shirt_decks', { p_shirt: shirt.id, p_decks: [d.id] });
+    if (error || (data !== 'ok' && data !== 'nothing')){ b.disabled = false; return toast(t('pickErr')); }
+    picked.add(d.id); paintDecks();
+  });
+  bindWant();
+}
+function paintDecksOld(){
   $('deckList').innerHTML = decks.map(d => {
     const name = (L === 'es' ? d.name_es : L === 'hu' ? d.name_hu : d.name_en) || d.name_en, inc = d.is_free && d.active;
     return '<div class="deck"><div><b>' + esc(name) + '</b></div>' + (inc ? '<span class="pill">' + t('included') + '</span>'
       : (interest.has(d.id) ? '<span class="pill soon">' + t('wanted') + '</span>' : '<button class="mini" data-want="' + d.id + '">' + t('want') + '</button>')) + '</div>';
   }).join('');
+  $('deckList').querySelectorAll('[data-want]').forEach(b => b.onclick = async () => {
+    b.disabled = true;
+    const { error } = await sb.from('pack_interest').insert({ deck_id: b.dataset.want });
+    if (error && error.code !== '23505'){ b.disabled = false; return toast(t('err')); }
+    interest.add(b.dataset.want); paintDecks();
+  });
+}
+function bindWant(){
   $('deckList').querySelectorAll('[data-want]').forEach(b => b.onclick = async () => {
     b.disabled = true;
     const { error } = await sb.from('pack_interest').insert({ deck_id: b.dataset.want });
@@ -528,6 +567,10 @@ $('profForm').onsubmit = async e => {
   if (un && un !== profile.username) upd.username = un;
   const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
   if (error){ $('profErr').textContent = upd.username ? unErr(error, un) : t('err'); $('profErr').hidden = false; return; }
+  if ('marketing_opt_in_at' in upd){
+    const plain = h => { const d = document.createElement('div'); d.innerHTML = h; return d.textContent.trim(); };
+    await sb.rpc('record_consent', { p_granted: upd.marketing_opt_in, p_wording: t('mktL') + ' [' + (upd.marketing_opt_in ? 'switched on' : 'switched off') + '] ' + plain(t('mktN')), p_lang: L, p_page: '/me/', p_source: 'profile' });
+  }
   Object.assign(profile, upd); toast(t('saved')); paint();
 };
 

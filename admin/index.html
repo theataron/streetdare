@@ -137,6 +137,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <button data-tab="decks">Decks &amp; dares</button>
       <button data-tab="shirts">Shirts</button>
       <button data-tab="passes">Shirtless Pass</button>
+      <button data-tab="emails">Waitlist & consent</button>
     </nav>
 
     <!-- LIVE -->
@@ -222,6 +223,20 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       <p class="muted" style="font-size:.85rem">A shirt's own dares (only shown when someone scans that shirt) are edited under Decks &amp; dares → pick the shirt.</p>
     </div>
 
+    <!-- WAITLIST & CONSENT -->
+    <div id="t-emails" hidden>
+      <div class="tiles" id="wTiles"></div>
+      <div class="card" style="overflow-x:auto">
+        <h3>Waitlist <small class="muted" style="font-weight:500">people who said yes to STREETDARE emails (launch discount, news)</small></h3>
+        <table><thead><tr><th>Email</th><th>Joined</th><th>Where</th><th>Lang</th><th>Status</th><th></th></tr></thead><tbody id="wRows"></tbody></table>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <h3>Consent log <small class="muted" style="font-weight:500">every yes and no, with the exact words the person saw</small></h3>
+        <table><thead><tr><th>When</th><th>Email</th><th>Choice</th><th>Page · form</th><th>Lang</th><th>Wording they saw</th></tr></thead><tbody id="cRows"></tbody></table>
+      </div>
+      <p class="muted" style="font-size:.85rem">Kept so you can show who agreed to marketing emails, when, where and to which words. Entries marked [Imported] came from before the log existed (Google Sheet waitlist and profile switches).</p>
+    </div>
+
     <!-- SHIRTLESS PASS -->
     <div id="t-passes" hidden>
       <div class="tiles" id="pTiles"></div>
@@ -299,7 +314,7 @@ async function boot(session){
   if (!me || me.role !== 'admin'){ $('naEmail').textContent = session.user.email; view('noaccess'); return; }
   $('meEmail').textContent = me.email; view('admin');
   if (location.hash.includes('access_token')) history.replaceState(null, '', location.pathname);
-  await Promise.all([loadLive(), loadDecks(), loadShirts(), loadPasses()]);
+  await Promise.all([loadLive(), loadDecks(), loadShirts(), loadPasses(), loadEmails()]);
   startRealtime(); startPassRealtime();
 }
 let booted = false;
@@ -311,7 +326,7 @@ sb.auth.onAuthStateChange((evt, session) => {
 /* ===== tabs ===== */
 document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('on', x === b));
-  ['live','decks','shirts','passes'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
+  ['live','decks','shirts','passes','emails'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
 });
 
 /* ===== live results ===== */
@@ -553,6 +568,24 @@ $('addShirt').onsubmit = async e => {
   if (error) return toast(error.code === '23505' ? 'That ID is already taken' : 'Error: ' + error.message);
   $('newShirtId').value = ''; $('newShirtName').value = ''; toast('Shirt added: streetdare.com/p/?s=' + id); loadShirts(); loadDecks();
 };
+
+/* ===== Waitlist & consent ===== */
+async function loadEmails(){
+  const [{ data: w }, { data: c }] = await Promise.all([
+    sb.from('waitlist').select('*').order('joined_at', { ascending: false }).limit(1000),
+    sb.from('consents').select('*').order('created_at', { ascending: false }).limit(500)
+  ]);
+  const wl = w || [], cl = c || [];
+  const on = wl.filter(x => x.subscribed).length;
+  $('wTiles').innerHTML = [[on, 'On the waitlist', 'subscribed'], [wl.length - on, 'Unsubscribed', ''], [cl.length, 'Consent records', 'yes and no']]
+    .map(t => '<div class="tile"><b>' + t[0] + '</b><span>' + t[1] + '</span><small>' + t[2] + '</small></div>').join('');
+  const d = v => v ? new Date(v).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : '';
+  $('wRows').innerHTML = wl.length ? wl.map(x => '<tr><td>' + esc(x.email) + '</td><td>' + d(x.joined_at) + '</td><td>' + esc((x.page || '') + (x.source ? ' · ' + x.source : '')) + '</td><td>' + esc(x.lang || '') + '</td><td>' +
+    (x.subscribed ? '<span class="tag done">subscribed</span>' : '<span class="tag">unsubscribed ' + d(x.unsubscribed_at) + '</span>') + '</td><td><button class="btn ghost sm" data-log="' + esc(x.email) + '">log</button></td></tr>').join('') : '<tr><td colspan="6" class="muted">Nobody yet.</td></tr>';
+  const rows = list => list.length ? list.map(x => '<tr><td style="white-space:nowrap">' + d(x.created_at) + '</td><td>' + esc(x.email) + '</td><td>' + (x.granted ? '<span class="tag done">yes</span>' : '<span class="tag">no</span>') + '</td><td>' + esc((x.page || '') + (x.source ? ' · ' + x.source : '')) + '</td><td>' + esc(x.lang || '') + '</td><td style="max-width:420px;font-size:.85rem">' + esc(x.wording) + '</td></tr>').join('') : '<tr><td colspan="6" class="muted">Nothing yet.</td></tr>';
+  $('cRows').innerHTML = rows(cl);
+  $('wRows').querySelectorAll('[data-log]').forEach(b => b.onclick = () => { $('cRows').innerHTML = rows(cl.filter(x => x.email === b.dataset.log)); $('cRows').closest('.card').scrollIntoView({ behavior:'smooth' }); });
+}
 
 /* ===== Shirtless Pass ===== */
 const SEAT = 5;
