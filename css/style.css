@@ -764,3 +764,46 @@ body.hot .rate .stars svg{stroke:#1b1412}
 .shlist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:7px}
 .shlist li{position:relative;padding-left:24px;color:var(--mute);font-size:.95rem}
 .shlist li::before{content:"✓";position:absolute;left:0;top:-1px;color:var(--redt);font-weight:800}
+
+/* ----- shop: little screens of the pass ----- */
+#v-shop .cardx{min-width:0}
+.shotsh{margin:18px 0 10px;font-weight:700}
+.shots{display:flex;max-width:100%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px 6px;-webkit-overflow-scrolling:touch}
+.shots::-webkit-scrollbar{display:none}
+.shot{margin:0;flex:0 0 164px;scroll-snap-align:center}
+.shot figcaption{margin-top:8px;font-size:.8rem;color:var(--mute);line-height:1.35}
+.ph{height:300px;border:2px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--bg);box-shadow:var(--sh);display:flex;flex-direction:column}
+.ph-top{background:#1b1412;color:#fbf8ef;padding:7px 8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.ph-top b{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:.62rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-top span{background:var(--red);color:#fff;border-radius:99px;padding:2px 6px;font-size:.52rem;font-weight:800;letter-spacing:.02em;flex:none}
+.ph-body{flex:1;padding:8px;overflow:hidden}
+.ph-tabs{display:flex;border-top:1px solid rgba(111,98,92,.3);background:var(--card)}
+.ph-tabs i{position:relative;flex:1;text-align:center;padding:5px 0 8px;font-size:.7rem;font-style:normal;opacity:.35;filter:grayscale(1)}
+.ph-tabs i.on{opacity:1;filter:none}
+.ph-tabs i.on::after{content:"";position:absolute;left:50%;bottom:3px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--redt)}
+.m-dare{background:var(--red);color:#fff;border-radius:14px;padding:9px;height:100%;display:flex;flex-direction:column}
+.m-row{display:flex;align-items:center;justify-content:space-between}
+.m-logo{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:.6rem}
+.m-pts{background:#fff;color:var(--red);border-radius:99px;padding:1px 6px;font-size:.55rem;font-weight:800}
+.m-k{font-size:.5rem;letter-spacing:.14em;opacity:.85;margin-top:8px}
+.m-dare p{color:#fff;font-size:.78rem;font-weight:700;line-height:1.25;margin-top:5px}
+.m-btn{margin-top:auto;background:#fff;color:#1b1412;border:2px solid #1b1412;border-radius:99px;text-align:center;padding:6px 4px;font-size:.62rem;font-weight:800}
+.m-skip{text-align:center;font-size:.55rem;text-decoration:underline;margin-top:7px;opacity:.9}
+.ph-body.feed{display:flex;flex-direction:column;gap:6px;justify-content:flex-end}
+.m-play{text-align:center;font-size:.5rem;color:var(--mute);border:1px dashed rgba(111,98,92,.45);border-radius:10px;padding:3px}
+.m-play em{color:var(--redt);font-style:normal;font-weight:800}
+.m-them,.m-me{max-width:88%;border-radius:12px;padding:5px 7px;font-size:.6rem;line-height:1.3}
+.m-them{background:var(--card);border:1px solid rgba(111,98,92,.3);align-self:flex-start}
+.m-them small{display:block;font-size:.5rem;color:var(--mute);margin-bottom:2px}
+.m-me{background:var(--red);color:#fff;align-self:flex-end}
+.m-img{display:block;height:46px;border-radius:8px;margin-bottom:4px;background:linear-gradient(135deg,#f6ddd3,#bd0a0a)}
+.m-board{border:2px solid var(--ink);border-radius:14px;padding:8px;background:var(--card);height:100%}
+.m-board>b{font-family:"Bagel Fat One",sans-serif;font-weight:400;font-size:.68rem;display:block;margin-bottom:5px}
+.m-r{display:flex;align-items:center;gap:5px;padding:4px 3px;font-size:.6rem;border-top:1px solid rgba(111,98,92,.22)}
+.m-r:first-of-type{border-top:0}
+.m-r.me{background:var(--blush);border-radius:8px;border-top:0}
+.m-r i{font-style:normal;font-size:.62rem;width:14px;text-align:center}
+.m-r span{flex:1;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-r small{font-weight:400;color:var(--mute)}
+.m-r em{font-style:normal;font-weight:800}
+@media(min-width:560px){.shots{overflow:visible;margin:0;padding:2px 0 6px}.shot{flex:1 1 0}}
