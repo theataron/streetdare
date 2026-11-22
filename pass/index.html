@@ -479,6 +479,7 @@ html.night .badge{border-color:#211b19}
         <h2 id="memH"></h2>
         <ul class="board" id="members"></ul>
         <p class="small" id="grpLang"></p>
+        <div class="langs" id="gLangs" hidden style="margin-top:10px"></div>
       </section>
       <section class="panel links">
         <a href="/pass/?all=1" id="nAll"></a>
@@ -548,7 +549,7 @@ const PHOTO_DAYS = 7;
 const T = {
   en:{
     tapToSave:'Tap a photo, then “Save to Photos” to keep it on your phone.',
-    tDares:'Dares', tChat:'Chat', tResults:'Results', tGroup:'Group', appBackTxt:'Website', endedShort:'Ended', endChat:'No more dares, but the chat stays open 💬', myRank:'You’re #{r} of {n} with {p} points', grpLang:'Group language: {l}. The person who started the group chose it for everyone.', phH:'Photos', memH:'Who’s in', nSite:'← Back to the website', nContact:'Contact ✉️', savePhoto:'Save to Photos 📲', saveHint:'Or press and hold the photo, then tap “Save to Photos” (iPhone) or “Download image” (Android).', chatEmpty:'Say hi to your group 👋', newMsgs:'New messages ↓', fLangL:'Language for the whole group', fLangS:'Everyone in the group will play in this language: dares, chat and results. Choose one that everybody understands.',
+    tDares:'Dares', tChat:'Chat', tResults:'Results', tGroup:'Group', appBackTxt:'Website', endedShort:'Ended', endChat:'No more dares, but the chat stays open 💬', myRank:'You’re #{r} of {n} with {p} points', grpLang:'Group language: {l}. {name} started the group and picks the language for everyone.', grpLangHost:'Group language: {l}. You started the group, so you can change it for everyone:', hostTag:'host', langSaved:'Everyone is now playing in {l} 🌐', phH:'Photos', memH:'Who’s in', nSite:'← Back to the website', nContact:'Contact ✉️', savePhoto:'Save to Photos 📲', saveHint:'Or press and hold the photo, then tap “Save to Photos” (iPhone) or “Download image” (Android).', chatEmpty:'Say hi to your group 👋', newMsgs:'New messages ↓', fLangL:'Language for the whole group', fLangS:'Everyone in the group will play in this language: dares, chat and results. Choose one that everybody understands.',
     mnPass:'My nights 🎟️', mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
     gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
     gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
@@ -592,7 +593,7 @@ const T = {
   },
   es:{
     tapToSave:'Toca una foto y luego «Guardar en Fotos» para tenerla en tu móvil.',
-    tDares:'Retos', tChat:'Chat', tResults:'Resultados', tGroup:'Grupo', appBackTxt:'Web', endedShort:'Terminada', endChat:'Se acabaron los retos, pero el chat sigue abierto 💬', myRank:'Vas #{r} de {n} con {p} puntos', grpLang:'Idioma del grupo: {l}. Lo eligió para todos quien creó el grupo.', phH:'Fotos', memH:'Quién está', nSite:'← Volver a la web', nContact:'Contacto ✉️', savePhoto:'Guardar en Fotos 📲', saveHint:'O mantén pulsada la foto y toca «Guardar en Fotos» (iPhone) o «Descargar imagen» (Android).', chatEmpty:'Saluda a tu grupo 👋', newMsgs:'Mensajes nuevos ↓', fLangL:'Idioma para todo el grupo', fLangS:'Todo el grupo jugará en este idioma: retos, chat y resultados. Elige uno que entienda todo el mundo.',
+    tDares:'Retos', tChat:'Chat', tResults:'Resultados', tGroup:'Grupo', appBackTxt:'Web', endedShort:'Terminada', endChat:'Se acabaron los retos, pero el chat sigue abierto 💬', myRank:'Vas #{r} de {n} con {p} puntos', grpLang:'Idioma del grupo: {l}. {name} creó el grupo y elige el idioma para todos.', grpLangHost:'Idioma del grupo: {l}. Creaste el grupo, así que puedes cambiarlo para todos:', hostTag:'anfitrión', langSaved:'Ahora todos juegan en {l} 🌐', phH:'Fotos', memH:'Quién está', nSite:'← Volver a la web', nContact:'Contacto ✉️', savePhoto:'Guardar en Fotos 📲', saveHint:'O mantén pulsada la foto y toca «Guardar en Fotos» (iPhone) o «Descargar imagen» (Android).', chatEmpty:'Saluda a tu grupo 👋', newMsgs:'Mensajes nuevos ↓', fLangL:'Idioma para todo el grupo', fLangS:'Todo el grupo jugará en este idioma: retos, chat y resultados. Elige uno que entienda todo el mundo.',
     mnPass:'Mis noches 🎟️', mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
     gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
     gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
@@ -636,7 +637,7 @@ const T = {
   },
   hu:{
     tapToSave:'Koppints egy fotóra, majd a „Mentés a Fotókba” gombra, hogy a telefonodon maradjon.',
-    tDares:'Kihívások', tChat:'Chat', tResults:'Eredmények', tGroup:'Csapat', appBackTxt:'Weboldal', endedShort:'Vége', endChat:'Több kihívás nincs, de a chat nyitva marad 💬', myRank:'{n} főből #{r}. vagy, {p} ponttal', grpLang:'A csapat nyelve: {l}. A csapat létrehozója választotta mindenkinek.', phH:'Fotók', memH:'Kik vannak bent', nSite:'← Vissza a weboldalra', nContact:'Kapcsolat ✉️', savePhoto:'Mentés a Fotókba 📲', saveHint:'Vagy tartsd lenyomva a fotót, és koppints a „Mentés a Fotókba” (iPhone) vagy a „Kép letöltése” (Android) lehetőségre.', chatEmpty:'Köszönj a csapatodnak 👋', newMsgs:'Új üzenetek ↓', fLangL:'Nyelv az egész csapatnak', fLangS:'Az egész csapat ezen a nyelven játszik: kihívások, chat és eredmények. Olyat válassz, amit mindenki ért.',
+    tDares:'Kihívások', tChat:'Chat', tResults:'Eredmények', tGroup:'Csapat', appBackTxt:'Weboldal', endedShort:'Vége', endChat:'Több kihívás nincs, de a chat nyitva marad 💬', myRank:'{n} főből #{r}. vagy, {p} ponttal', grpLang:'A csapat nyelve: {l}. A csapatot {name} hozta létre, és ő választja a nyelvet mindenkinek.', grpLangHost:'A csapat nyelve: {l}. Te hoztad létre a csapatot, szóval mindenkinek átállíthatod:', hostTag:'szervező', langSaved:'Innentől mindenki {l} nyelven játszik 🌐', phH:'Fotók', memH:'Kik vannak bent', nSite:'← Vissza a weboldalra', nContact:'Kapcsolat ✉️', savePhoto:'Mentés a Fotókba 📲', saveHint:'Vagy tartsd lenyomva a fotót, és koppints a „Mentés a Fotókba” (iPhone) vagy a „Kép letöltése” (Android) lehetőségre.', chatEmpty:'Köszönj a csapatodnak 👋', newMsgs:'Új üzenetek ↓', fLangL:'Nyelv az egész csapatnak', fLangS:'Az egész csapat ezen a nyelven játszik: kihívások, chat és eredmények. Olyat válassz, amit mindenki ért.',
     mnPass:'Az estéim 🎟️', mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
     gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
@@ -1109,9 +1110,10 @@ function renderNight(){
   const me = memberById(user.id) || { points: 0 };
   $('myRank').textContent = t('myRank', { r: myRank, n: info.members.length, p: me.points || 0 });
   // members (with Instagram) in the Group tab
-  $('members').innerHTML = info.members.map(m => '<li>' + avatar(m) + '<span class="nm"><b>' + esc(m.name) + '</b><small>@' + esc(m.username || '') +
+  $('members').innerHTML = info.members.map(m => '<li>' + avatar(m) + '<span class="nm"><b>' + esc(m.name) + (m.id === info.host ? ' 👑' : '') + '</b><small>' +
+    (m.id === info.host ? esc(t('hostTag')) + ' · ' : '') + '@' + esc(m.username || '') +
     (m.instagram ? ' · <a href="https://instagram.com/' + encodeURIComponent(m.instagram) + '" target="_blank" rel="noopener">Instagram</a>' : '') + '</small></span></li>').join('');
-  $('grpLang').textContent = t('grpLang', { l: LANG_NAMES[info.lang] || info.lang });
+  paintGroupLang();
   // invite
   const left = info.seats - info.used;
   $('inv').hidden = !live;
@@ -1126,6 +1128,24 @@ function renderNight(){
   renderPhotos(); renderDare(); renderMsgs(); paintBadge();
 }
 const LANG_NAMES = { en: 'English', es: 'Español', hu: 'Magyar' };
+const imHost = () => !!(info && user && info.host === user.id);
+function paintGroupLang(){
+  const now = LANG_NAMES[info.lang] || info.lang, host = memberById(info.host);
+  $('grpLang').textContent = imHost() ? t('grpLangHost', { l: now }) : t('grpLang', { l: now, name: (host && host.name) || '' });
+  $('gLangs').hidden = !imHost();
+  if (imHost()) $('gLangs').innerHTML = [['en','🇬🇧 English'],['es','🇪🇸 Español'],['hu','🇭🇺 Magyar']]
+    .map(([k, v]) => '<button type="button" data-l="' + k + '" class="' + (k === info.lang ? 'on' : '') + '">' + v + '</button>').join('');
+}
+$('gLangs').onclick = async e => {
+  const b = e.target.closest('button'); if (!b || !imHost() || b.dataset.l === info.lang) return;
+  const pick = b.dataset.l;
+  $('gLangs').querySelectorAll('button').forEach(x => x.disabled = true);
+  const { data, error } = await sb.rpc('set_night_lang', { p_night: night, p_lang: pick });
+  $('gLangs').querySelectorAll('button').forEach(x => x.disabled = false);
+  if (error || !data || data.status !== 'ok'){ toast(t('err')); return; }
+  info.lang = pick; L = pick; paint();
+  toast(t('langSaved', { l: LANG_NAMES[pick] }));
+};
 const joinUrl = () => location.origin + '/pass/?c=' + info.code;
 $('invShare').onclick = async () => {
   const url = joinUrl();
@@ -1447,7 +1467,11 @@ async function refreshNow(){
   const before = msgs.length ? msgTime(msgs[msgs.length - 1]) : 0;
   const { data } = await sb.rpc('night_info', { p_night: night });
   if (data){ info = data; }
-  await loadMsgs(); renderNight();
+  /* the host may have switched the group language: every phone follows */
+  const langSwitch = info && info.lang && T[info.lang] && L !== info.lang;
+  if (langSwitch) L = info.lang;
+  await loadMsgs();
+  if (langSwitch) paint(); else renderNight();
   const newest = msgs.length ? msgs[msgs.length - 1] : null;
   if (newest && msgTime(newest) > before && newest.profile_id !== user.id && tab === 'chat'){
     const box = $('chatList');
@@ -1463,6 +1487,7 @@ function startRealtime(){
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_messages', filter: f }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_plays', filter: f }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_members', filter: f }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'nights', filter: 'id=eq.' + night }, refresh)
     .subscribe();
   document.addEventListener('visibilitychange', () => { if (!document.hidden){ refresh(); markRead(); } else paintBadge(); });
 }
