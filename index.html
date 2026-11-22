@@ -33,6 +33,7 @@
   <nav class="menu" id="menu" hidden>
     <button class="x" id="menuClose" aria-label="Close">✕</button>
     <a href="#home"><span data-i18n="mHome"></span><small data-i18n="mHomeS"></small></a>
+    <a href="#shop"><span data-i18n="mShop"></span><small data-i18n="mShopS"></small></a>
     <a href="p/?s=demo" id="tryLink"><span data-i18n="mTry"></span><small data-i18n="mTryS"></small></a>
     <a href="#wall"><span data-i18n="mWall"></span><small data-i18n="mWallS"></small></a>
     <a href="#about"><span data-i18n="mAbout"></span><small data-i18n="mAboutS"></small></a>
@@ -140,7 +141,7 @@
         </div>
       </section>
 
-      <nav class="footlinks"><a href="#about" data-i18n="mAbout"></a><a href="#wall" data-i18n="mWall"></a><a href="#club" data-i18n="fComing"></a></nav>
+      <nav class="footlinks"><a href="#shop" data-i18n="mShop"></a><a href="#about" data-i18n="mAbout"></a><a href="#wall" data-i18n="mWall"></a><a href="#club" data-i18n="fComing"></a></nav>
     </section>
 
     <!-- ===== WALL ===== -->
@@ -189,7 +190,7 @@
       <p data-i18n="clIntro"></p>
       <div class="cards">
         <div class="cardx">
-          <div class="art"><svg viewBox="0 0 300 140" class="a-shirt" aria-hidden="true">
+          <div class="art tee"><svg viewBox="0 0 300 140" class="a-shirt" aria-hidden="true">
             <path class="tee tee-back" transform="translate(16 -4) rotate(7 110 73)" d="M70 30L95 18Q110 28 125 18L150 30 170 55 152 66 146 58V128H74V58L68 66 50 55Z"/>
             <path class="tee" d="M70 30L95 18Q110 28 125 18L150 30 170 55 152 66 146 58V128H74V58L68 66 50 55Z"/>
             <g class="qr"><rect x="92" y="62" width="36" height="36" rx="2" class="qbg"/>
@@ -234,7 +235,8 @@
               <div class="lr"><span>Marco</span><i style="--w:45%;--d:.4s"></i><b>3</b></div>
             </div>
           </div>
-          <span class="tag" data-i18n="tagPlan"></span><h3 data-i18n="c2h"></h3><p class="tagl" data-i18n="c2t"></p><p data-i18n="c2p"></p>
+          <span class="tag live" data-i18n="tagLive"></span><h3 data-i18n="c2h"></h3><p class="tagl" data-i18n="c2t"></p><p data-i18n="c2p"></p>
+          <a class="more" href="#shop" data-i18n="shPassGet"></a>
         </div>
         <div class="cardx">
           <div class="art squad" aria-hidden="true">
@@ -261,6 +263,58 @@
         </form>
         <p class="demo" hidden></p>
       </div>
+    </section>
+
+    <!-- ===== SHOP ===== -->
+    <section class="page" id="v-shop" hidden>
+      <div class="kicker" data-i18n="shKicker"></div>
+      <h1 class="display" data-i18n="shTitle"></h1>
+      <p class="sub" data-i18n="shIntro"></p>
+
+      <h2 class="shoph display" data-i18n="shNowH"></h2>
+      <div class="cards">
+        <div class="cardx">
+          <div data-art="pass"></div>
+          <span class="tag live" data-i18n="tagLive"></span>
+          <h3 data-i18n="c2h"></h3>
+          <p class="tagl" data-i18n="c2t"></p>
+          <p data-i18n="shPassP"></p>
+          <ul class="shlist">
+            <li data-i18n="shPass1"></li>
+            <li data-i18n="shPass2"></li>
+            <li data-i18n="shPass3"></li>
+          </ul>
+          <div class="stack">
+            <a class="btn red" href="https://wa.me/36308904103" target="_blank" rel="noopener" data-i18n="shPassCta"></a>
+          </div>
+          <p class="smallnote" data-i18n="shPassNote"></p>
+          <a class="more" href="pass/" data-i18n="shPassHow"></a>
+        </div>
+      </div>
+
+      <h2 class="shoph display" data-i18n="shSoonH"></h2>
+      <div class="cards">
+        <div class="cardx">
+          <div data-art="tee"></div>
+          <span class="tag" data-i18n="tagSoon"></span><h3 data-i18n="c1h"></h3><p data-i18n="c1p"></p>
+        </div>
+        <div class="cardx">
+          <div data-art="squad"></div>
+          <span class="tag" data-i18n="tagSoon"></span><h3 data-i18n="c3h"></h3><p data-i18n="c3p"></p>
+        </div>
+      </div>
+      <div class="wlbox">
+        <h2 class="display" data-i18n="listH"></h2>
+        <p class="sub" data-i18n="shSoonP"></p>
+        <div class="coupon"><span class="sc" aria-hidden="true">✂</span><b data-i18n="coupon"></b><small data-i18n="couponS"></small></div>
+        <form class="wl" data-source="shop" novalidate>
+          <input type="email" name="email" autocomplete="email" inputmode="email" autocapitalize="off" autocorrect="off" maxlength="120" aria-label="Email">
+          <p class="wlerr" hidden></p>
+          <button class="btn red" type="submit"></button>
+        </form>
+        <p class="demo" hidden></p>
+      </div>
+      <nav class="footlinks"><a href="#home" data-i18n="mHome"></a><a href="#club" data-i18n="fComing"></a><a href="#about" data-i18n="mAbout"></a></nav>
     </section>
   </main>
   <footer>STREETDARE · Madrid · <a href="privacy/">Privacy</a> · <a href="terms/">Terms</a> · <a href="contact/">Contact</a></footer>

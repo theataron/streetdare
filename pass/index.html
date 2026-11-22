@@ -275,6 +275,7 @@ html.night .badge{border-color:#211b19}
     <button class="x" id="menuClose" aria-label="Close">✕</button>
     <a href="/pass/?all=1" id="mnPass"><span></span><small></small></a>
     <a href="/?home=1" id="mnHome"><span></span><small></small></a>
+    <a href="/#shop" id="mnShop"><span></span><small></small></a>
     <a href="/p/?s=demo" id="mnTry"><span></span><small></small></a>
     <a href="/me/?stay=1" id="mnMe"><span></span><small></small></a>
     <a href="/contact/" id="mnContact"><span></span><small></small></a>
@@ -484,6 +485,7 @@ html.night .badge{border-color:#211b19}
       <section class="panel links">
         <a href="/pass/?all=1" id="nAll"></a>
         <a href="/me/?stay=1" id="nProfile"></a>
+        <a href="/#shop" id="nShop"></a>
         <a href="/?home=1" id="nSite"></a>
         <a href="/contact/" id="nContact"></a>
       </section>
@@ -550,7 +552,7 @@ const T = {
   en:{
     tapToSave:'Tap a photo, then “Save to Photos” to keep it on your phone.',
     tDares:'Dares', tChat:'Chat', tResults:'Results', tGroup:'Group', appBackTxt:'Website', endedShort:'Ended', endChat:'No more dares, but the chat stays open 💬', myRank:'You’re #{r} of {n} with {p} points', grpLang:'Group language: {l}. {name} started the group and picks the language for everyone.', grpLangHost:'Group language: {l}. You started the group, so you can change it for everyone:', hostTag:'host', langSaved:'Everyone is now playing in {l} 🌐', phH:'Photos', memH:'Who’s in', nSite:'← Back to the website', nContact:'Contact ✉️', savePhoto:'Save to Photos 📲', saveHint:'Or press and hold the photo, then tap “Save to Photos” (iPhone) or “Download image” (Android).', chatEmpty:'Say hi to your group 👋', newMsgs:'New messages ↓', fLangL:'Language for the whole group', fLangS:'Everyone in the group will play in this language: dares, chat and results. Choose one that everybody understands.',
-    mnPass:'My nights 🎟️', mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
+    mnPass:'My nights 🎟️', mnShop:'Shop 🛍️', mnShopS:'What you can get right now',  mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
     gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
     gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
     gGoogle:'Continue with Google', gEmail:'Continue with email', gSmall:'New here or been before, it’s the same button.',
@@ -572,7 +574,7 @@ const T = {
     hCodeH:'Got a code?', hCodeP:'Type it here, or scan the QR on Aron’s or a friend’s phone.', hBtn:'Take my seat',
     hPastH:'Your nights', active:'Live now', rankOf:'#{r} of {n} · {p} pts', hBuyH:'Want to play?', hBuyP:'Message Aron and tell him how many of you there are.',
     hLogin:'Played before? <a href="/login/?next=/pass/">Log in</a> to see your nights.',
-    nAll:'← All my nights', nProfile:'My profile →', nSub:'{n} in the group',
+    nAll:'← All my nights', nShop:'Shop 🛍️', nProfile:'My profile →', nSub:'{n} in the group',
     howH:'How it works', how1:'Go up to strangers and do the dares on your phone.', how2:'Every dare gives you points. Friends from your group can jump in, and everyone who joins gets the points.', how3:'Most points when the timer hits zero wins the night.', howBtn:'Let’s go 🔥',
     endH:'The night is over 🌙', endP:'{name} won with {p} points 👑',
     skipWarn:'Careful with skipping! Every dare shows up only once tonight, so try not to run out before the night ends.', skipNone:'No dares left tonight. Skipped ones don’t come back.', noneLeft:'No dares left tonight. The ones you skipped don’t come back 😅 ',
@@ -594,7 +596,7 @@ const T = {
   es:{
     tapToSave:'Toca una foto y luego «Guardar en Fotos» para tenerla en tu móvil.',
     tDares:'Retos', tChat:'Chat', tResults:'Resultados', tGroup:'Grupo', appBackTxt:'Web', endedShort:'Terminada', endChat:'Se acabaron los retos, pero el chat sigue abierto 💬', myRank:'Vas #{r} de {n} con {p} puntos', grpLang:'Idioma del grupo: {l}. {name} creó el grupo y elige el idioma para todos.', grpLangHost:'Idioma del grupo: {l}. Creaste el grupo, así que puedes cambiarlo para todos:', hostTag:'anfitrión', langSaved:'Ahora todos juegan en {l} 🌐', phH:'Fotos', memH:'Quién está', nSite:'← Volver a la web', nContact:'Contacto ✉️', savePhoto:'Guardar en Fotos 📲', saveHint:'O mantén pulsada la foto y toca «Guardar en Fotos» (iPhone) o «Descargar imagen» (Android).', chatEmpty:'Saluda a tu grupo 👋', newMsgs:'Mensajes nuevos ↓', fLangL:'Idioma para todo el grupo', fLangS:'Todo el grupo jugará en este idioma: retos, chat y resultados. Elige uno que entienda todo el mundo.',
-    mnPass:'Mis noches 🎟️', mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
+    mnPass:'Mis noches 🎟️', mnShop:'Tienda 🛍️', mnShopS:'Lo que ya puedes conseguir',  mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
     gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
     gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
     gGoogle:'Continuar con Google', gEmail:'Continuar con email', gSmall:'Si eres nuevo o ya has jugado, es el mismo botón.',
@@ -616,7 +618,7 @@ const T = {
     hCodeH:'¿Tienes un código?', hCodeP:'Escríbelo aquí o escanea el QR del móvil de Aron o de un amigo.', hBtn:'Coger mi plaza',
     hPastH:'Tus noches', active:'En directo', rankOf:'#{r} de {n} · {p} pts', hBuyH:'¿Queréis jugar?', hBuyP:'Escríbele a Aron y dile cuántos sois.',
     hLogin:'¿Ya has jugado? <a href="/login/?next=/pass/">Entra</a> para ver tus noches.',
-    nAll:'← Todas mis noches', nProfile:'Mi perfil →', nSub:'{n} en el grupo',
+    nAll:'← Todas mis noches', nShop:'Tienda 🛍️', nProfile:'Mi perfil →', nSub:'{n} en el grupo',
     howH:'Cómo funciona', how1:'Acércate a desconocidos y haz los retos del móvil.', how2:'Cada reto da puntos. Tus amigos del grupo pueden unirse, y todos los que se unen se llevan los puntos.', how3:'Quien tenga más puntos cuando el contador llegue a cero gana la noche.', howBtn:'Vamos 🔥',
     endH:'La noche se ha acabado 🌙', endP:'{name} ha ganado con {p} puntos 👑',
     skipWarn:'¡Cuidado con saltar! Cada reto sale una sola vez esta noche, así que intenta no quedarte sin retos antes de que acabe la noche.', skipNone:'No quedan retos esta noche. Los que saltas no vuelven.', noneLeft:'No quedan retos esta noche. Los que has saltado no vuelven 😅 ',
@@ -638,7 +640,7 @@ const T = {
   hu:{
     tapToSave:'Koppints egy fotóra, majd a „Mentés a Fotókba” gombra, hogy a telefonodon maradjon.',
     tDares:'Kihívások', tChat:'Chat', tResults:'Eredmények', tGroup:'Csapat', appBackTxt:'Weboldal', endedShort:'Vége', endChat:'Több kihívás nincs, de a chat nyitva marad 💬', myRank:'{n} főből #{r}. vagy, {p} ponttal', grpLang:'A csapat nyelve: {l}. A csapatot {name} hozta létre, és ő választja a nyelvet mindenkinek.', grpLangHost:'A csapat nyelve: {l}. Te hoztad létre a csapatot, szóval mindenkinek átállíthatod:', hostTag:'szervező', langSaved:'Innentől mindenki {l} nyelven játszik 🌐', phH:'Fotók', memH:'Kik vannak bent', nSite:'← Vissza a weboldalra', nContact:'Kapcsolat ✉️', savePhoto:'Mentés a Fotókba 📲', saveHint:'Vagy tartsd lenyomva a fotót, és koppints a „Mentés a Fotókba” (iPhone) vagy a „Kép letöltése” (Android) lehetőségre.', chatEmpty:'Köszönj a csapatodnak 👋', newMsgs:'Új üzenetek ↓', fLangL:'Nyelv az egész csapatnak', fLangS:'Az egész csapat ezen a nyelven játszik: kihívások, chat és eredmények. Olyat válassz, amit mindenki ért.',
-    mnPass:'Az estéim 🎟️', mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
+    mnPass:'Az estéim 🎟️', mnShop:'Bolt 🛍️', mnShopS:'Amit már most megszerezhetsz',  mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
     gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
     gGoogle:'Folytatás Google-fiókkal', gEmail:'Folytatás e-maillel', gSmall:'Akár új vagy, akár játszottál már, ugyanez a gomb.',
@@ -660,7 +662,7 @@ const T = {
     hCodeH:'Van kódod?', hCodeP:'Írd be ide, vagy szkenneld be a QR-t Áron vagy egy barátod telefonjáról.', hBtn:'Elfoglalom a helyem',
     hPastH:'Az estéid', active:'Élő', rankOf:'{n}-ből #{r} · {p} pont', hBuyH:'Játszanátok?', hBuyP:'Írj Áronnak, és mondd meg, hányan vagytok.',
     hLogin:'Játszottál már? <a href="/login/?next=/pass/">Lépj be</a>, és látod az estéidet.',
-    nAll:'← Az összes estém', nProfile:'A profilom →', nSub:'{n} fő a csapatban',
+    nAll:'← Az összes estém', nShop:'Bolt 🛍️', nProfile:'A profilom →', nSub:'{n} fő a csapatban',
     howH:'Hogy működik', how1:'Menj oda idegenekhez, és csináld meg a kihívásokat a telefonodról.', how2:'Minden kihívás pontot ér. A csapatodból bárki beszállhat, és mindenki megkapja a pontokat, aki részt vett.', how3:'Akinek a legtöbb pontja van, amikor lejár az idő, az nyeri az estét.', howBtn:'Mehet 🔥',
     endH:'Vége az estének 🌙', endP:'{name} nyert {p} ponttal 👑',
     skipWarn:'Vigyázz a kihagyással! Minden kihívás csak egyszer jön ma este, ezért próbálj meg nem elfogyni előlük, mielőtt véget ér az este.', skipNone:'Ma estére nincs több kihívás. A kihagyottak nem jönnek vissza.', noneLeft:'Ma estére elfogytak a kihívások. A kihagyottak nem jönnek vissza 😅 ',
@@ -704,10 +706,10 @@ function paint(){
   document.documentElement.lang = L;
   if (window.paintLangPick) window.paintLangPick();
   ['gH','gP','gSmall','pfH','pfP','pfNameL','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
-   'nAll','nProfile','nSite','nContact','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','privNote','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel',
+   'nAll','nProfile','nShop','nSite','nContact','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','privNote','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel',
    'tDares','tChat','tResults','tGroup','appBackTxt','phH','memH','fLangL','fLangS']
     .forEach(k => { if ($(k)) $(k).textContent = t(k); });
-  [['mnPass','mnPass'],['mnHome','mnHome'],['mnTry','mnTry'],['mnContact','mnContact']].forEach(([id, k]) => { $(id).querySelector('span').textContent = t(k); $(id).querySelector('small').textContent = t(k + 'S'); });
+  [['mnPass','mnPass'],['mnHome','mnHome'],['mnShop','mnShop'],['mnTry','mnTry'],['mnContact','mnContact']].forEach(([id, k]) => { $(id).querySelector('span').textContent = t(k); $(id).querySelector('small').textContent = t(k + 'S'); });
   const mk = user ? 'mnMe' : 'mnLogin';
   $('mnMe').href = user ? '/me/?stay=1' : '/login/?next=/pass/';
   $('mnMe').querySelector('span').textContent = t(mk); $('mnMe').querySelector('small').textContent = t(mk + 'S');

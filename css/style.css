@@ -755,3 +755,12 @@ body.hot .rate .stars svg{stroke:#1b1412}
 #v-done .exits{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 #v-done .exits .btn{padding:13px 10px;font-size:.95rem}
 #v-done .wlbox{margin:16px 0 22px!important}
+
+/* ----- shop ----- */
+.shoph{font-size:1.5rem;margin:26px 0 2px}
+#v-shop .cards{margin-top:12px}
+#v-shop .cardx .stack{margin-top:14px}
+#v-shop .cardx .more{margin-top:10px}
+.shlist{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:7px}
+.shlist li{position:relative;padding-left:24px;color:var(--mute);font-size:.95rem}
+.shlist li::before{content:"✓";position:absolute;left:0;top:-1px;color:var(--redt);font-weight:800}

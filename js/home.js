@@ -1,5 +1,5 @@
-/* ===== STREETDARE - home page (home, wall, about, club) ===== */
-const VIEWS = ['home','wall','about','club'];
+/* ===== STREETDARE - home page (home, wall, about, club, shop) ===== */
+const VIEWS = ['home','wall','about','club','shop'];
 function show(v){
   if (!VIEWS.includes(v)) v = 'home';
   VIEWS.forEach(n => $('v-'+n).hidden = n !== v);
@@ -18,6 +18,15 @@ $('menuClose').onclick = () => { $('menu').hidden = true; };
 document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', () => { $('menu').hidden = true; }));
 /* arrived from a shirt's page: the "spin" link goes back to that shirt */
 if (SHIRT) $('tryLink').href = 'p/?s=' + SHIRT;
+
+/* the shop shows the same pictures as the community page */
+document.querySelectorAll('#v-shop [data-art]').forEach(box => {
+  const src = document.querySelector('#v-club .art.' + box.dataset.art);
+  if (!src) return;
+  const c = src.cloneNode(true);
+  c.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+  box.replaceWith(c);
+});
 
 function chips(){
   const pickText = q => LANG === 'hu' ? (q[3] || q[0]) : LANG === 'es' ? q[1] : q[0];
