@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>STREETDARE · You got lost</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbf8ef">
+<link rel="preload" href="/fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/style.css">
+<script src="/js/night.js"></script>
+<style>
+.lost{min-height:100svh;display:grid;place-items:center;padding:28px 18px}
+.lost .in{width:100%;max-width:380px;text-align:center}
+.lost .sdlogo{display:inline-block;margin-bottom:26px}
+.lcard{position:relative;background:var(--card,#fff);border:3px solid var(--ink);border-radius:24px;box-shadow:var(--sh);padding:44px 22px 30px;transform:rotate(-2deg);animation:lin .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes lin{from{transform:rotate(-14deg) translateY(30px);opacity:0}}
+.lcard .k{font:800 .75rem "DM Sans",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.lcard h1{font:400 clamp(2rem,10vw,2.6rem)/1.05 "Bagel Fat One",sans-serif;color:var(--red);margin:8px 0 18px}
+.lcard .dare{font:700 1.3rem/1.35 "DM Sans",sans-serif;color:var(--ink)}
+.lcard .lstamp{position:absolute;right:14px;top:12px;font:400 .95rem "Bagel Fat One",sans-serif;letter-spacing:.06em;color:var(--red);border:2.5px solid var(--red);border-radius:10px;padding:2px 8px;transform:rotate(12deg);opacity:.9}
+.lost .btns{display:grid;gap:10px;margin-top:28px}
+.lost .hint{margin-top:18px;font-size:.86rem;color:var(--mute)}
+@media (prefers-reduced-motion:reduce){.lcard{animation:none}}
+</style>
+</head>
+<body>
+<main class="lost">
+  <div class="in">
+    <a href="/" class="sdlogo" aria-label="STREETDARE">STREETDARE</a>
+    <div class="lcard">
+      <span class="lstamp" id="stamp">DARE</span>
+      <div class="k" id="k"></div>
+      <h1 id="h"></h1>
+      <p class="dare" id="dare"></p>
+    </div>
+    <div class="btns">
+      <a class="btn red" href="/?home=1" id="home"></a>
+      <a class="btn" href="/p/?s=demo" id="try"></a>
+    </div>
+    <p class="hint" id="hint"></p>
+  </div>
+</main>
+<script>
+(function(){
+  var T = {
+    en:{ k:'Error 404 · page not found', h:'You got lost.', dare:'Your dare: ask a stranger for directions.', home:'Take me home', try:'Try a real dare', hint:'Page not found, but you found a dare. Not bad.', stamp:'DARE' },
+    es:{ k:'Error 404 · página no encontrada', h:'Te has perdido.', dare:'Tu reto: pregúntale a un desconocido cómo llegar.', home:'Llévame al inicio', try:'Prueba un reto de verdad', hint:'No encontraste la página, pero sí un reto. No está mal.', stamp:'RETO' },
+    hu:{ k:'404-es hiba · nincs ilyen oldal', h:'Eltévedtél.', dare:'A kihívásod: kérdezz meg egy idegent, merre kell menni.', home:'Vigyél haza', try:'Próbálj ki egy igazi kihívást', hint:'Az oldalt nem találtad meg, de egy kihívást igen. Nem rossz.', stamp:'KIHÍVÁS' }
+  };
+  var L = 'en';
+  try { L = localStorage.getItem('sd_lang') || ''; } catch(e) { L = ''; }
+  if (!T[L]) { var n = (navigator.language || 'en').slice(0,2).toLowerCase(); L = T[n] ? n : 'en'; }
+  document.documentElement.lang = L;
+  ['k','h','dare','home','try','hint','stamp'].forEach(function(id){ document.getElementById(id).textContent = T[L][id]; });
+})();
+</script>
+</body>
+</html>

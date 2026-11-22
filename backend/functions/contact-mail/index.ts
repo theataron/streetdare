@@ -5,7 +5,7 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 const RESEND = Deno.env.get("RESEND_API_KEY") ?? "";
-const TOPIC: Record<string, string> = { player: "Player / shirt question", collab: "Collaboration", press: "Press", other: "Other" };
+const TOPIC: Record<string, string> = { player: "Player / shirt question", collab: "Collaboration", press: "Press", other: "Other", safety: "Safety", report: "🚩 SAFETY REPORT" };
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
 
 Deno.serve(async (req) => {

@@ -8,7 +8,7 @@
 /* ----- emails -----
    WELCOME_ON: send the welcome email the moment someone joins the waitlist.
    LAUNCH_URL: the shop link for the launch email. Leave it empty until the shirts are on sale.
-   LAUNCH_CODE must also exist as a real discount code in your checkout (EUR 10 off, valid 1 week). */
+   LAUNCH_CODE must also exist as a real code in your checkout that gives the Founders' price (valid 1 week). */
 const WELCOME_ON  = true;
 const SENDER_NAME = 'Aron from STREETDARE';
 const REPLY_TO    = 'streetdare.official@gmail.com';
@@ -22,15 +22,15 @@ const MAIL = {
       'Hey,',
       'Welcome to the STREETDARE community! We\'re really glad you\'re here early.',
       'Most people out at bars and clubs actually want to meet new people, they just don\'t know how to take that first step. That\'s why we\'re creating STREETDARE in Madrid and Budapest: made-to-order streetwear with a live QR code on the back that gives strangers an easy, fun excuse to talk and become friends.',
-      'We\'re putting the finishing touches on the first shirts right now. You won\'t get annoying daily emails from us. We\'ll write when the shirts are ready to order (with an exclusive discount code, because you joined before launch), and now and then about new dare decks, features and STREETDARE nights.',
+      'We\'re putting the finishing touches on the first shirts right now. You won\'t get annoying daily emails from us. We\'ll write when the shirts are ready to order (with the Founders\' price, because you joined before launch), and now and then about new dare decks, features and STREETDARE nights.',
       'See you out there soon,\nAron & the STREETDARE crew'
     ],
-    launchSubject: 'STREETDARE is live - here is your early-community discount 🎟️',
+    launchSubject: 'STREETDARE is live - your Founders\' price is waiting 🎟️',
     launch: [
       'Hey,',
       'Thank you for being part of the STREETDARE community from the very beginning.',
       'Today, our made-to-order shirts are officially live! Each shirt comes with your personal QR code, your own dashboard to add custom dares, and stats from your nights out.',
-      'Because you subscribed before launch, use the code {code} at checkout for €10 off your order. Just make sure to use it within 1 week, before the code expires.',
+      'Because you subscribed before launch, use the code {code} at checkout to get the Founders\' price. It\'s yours for 1 week.',
       'Get your shirt → {url}',
       'See you on the dancefloor,\nAron & the STREETDARE crew'
     ]
@@ -41,15 +41,15 @@ const MAIL = {
       'Hola:',
       '¡Te damos la bienvenida a la comunidad STREETDARE! Nos alegra mucho que hayas llegado tan pronto.',
       'La mayoría de la gente que sale a bares y discotecas en realidad quiere conocer gente nueva, pero no sabe cómo dar el primer paso. Por eso estamos creando STREETDARE en Madrid y Budapest: streetwear hecho por encargo con un QR en la espalda que les da a los desconocidos una excusa fácil y divertida para hablar y hacerse amigos.',
-      'Ahora mismo estamos dando los últimos retoques a las primeras camisetas. No vas a recibir emails pesados todos los días. Te escribiremos cuando las camisetas se puedan pedir (con un código de descuento exclusivo, porque te uniste antes del lanzamiento) y, de vez en cuando, sobre nuevas barajas de retos, funciones y noches STREETDARE.',
+      'Ahora mismo estamos dando los últimos retoques a las primeras camisetas. No vas a recibir emails pesados todos los días. Te escribiremos cuando las camisetas se puedan pedir (con el precio de fundador, porque te uniste antes del lanzamiento) y, de vez en cuando, sobre nuevas barajas de retos, funciones y noches STREETDARE.',
       'Nos vemos pronto por ahí,\nAron y el equipo de STREETDARE'
     ],
-    launchSubject: 'STREETDARE ya está aquí: tu descuento por llegar antes 🎟️',
+    launchSubject: 'STREETDARE ya está aquí: tu precio de fundador te espera 🎟️',
     launch: [
       'Hola:',
       'Gracias por formar parte de la comunidad STREETDARE desde el principio.',
       '¡Hoy salen oficialmente nuestras camisetas hechas por encargo! Cada camiseta viene con tu QR personal, tu propio panel para añadir retos y las estadísticas de tus noches de fiesta.',
-      'Como te apuntaste antes del lanzamiento, usa el código {code} al pagar y tendrás 10 € de descuento en tu pedido. Acuérdate de usarlo en el plazo de 1 semana, antes de que caduque.',
+      'Como te apuntaste antes del lanzamiento, usa el código {code} al pagar y tendrás el precio de fundador. Es tuyo durante 1 semana.',
       'Consigue tu camiseta → {url}',
       'Nos vemos en la pista,\nAron y el equipo de STREETDARE'
     ]
@@ -60,15 +60,15 @@ const MAIL = {
       'Szia!',
       'Üdv a STREETDARE közösségben! Nagyon örülünk, hogy már az elején itt vagy.',
       'Bulizás közben a legtöbben szívesen megismernének új embereket, csak nem tudják, hogyan tegyék meg az első lépést. Ezért csináljuk a STREETDARE-t: rendelésre készülő streetwear egy QR-kóddal a hátán, ami könnyű és vicces ürügyet ad idegeneknek, hogy szóba álljanak egymással.',
-      'Most simítjuk el az utolsó részleteket az első pólókon. Nem fogunk naponta idegesítő e-mailekkel bombázni. Akkor írunk, amikor már rendelhetők a pólók (exkluzív kedvezménykóddal, mert még az indulás előtt csatlakoztál), és néha az új kihíváspaklikról, funkciókról és STREETDARE estékről.',
+      'Most simítjuk el az utolsó részleteket az első pólókon. Nem fogunk naponta idegesítő e-mailekkel bombázni. Akkor írunk, amikor már rendelhetők a pólók (alapítói áron, mert még az indulás előtt csatlakoztál), és néha az új kihíváspaklikról, funkciókról és STREETDARE estékről.',
       'Hamarosan találkozunk,\nÁron és a STREETDARE csapat'
     ],
-    launchSubject: 'Elindult a STREETDARE: itt a korai közösségi kedvezményed 🎟️',
+    launchSubject: 'Elindult a STREETDARE: vár az alapítói árad 🎟️',
     launch: [
       'Szia!',
       'Köszönjük, hogy a kezdetektől a STREETDARE közösség része vagy.',
       'Ma hivatalosan is elindultak a rendelésre készülő pólóink! Mindegyikhez jár a saját QR-kódod, egy saját felület, ahol kihívásokat adhatsz hozzá, és statisztikák a bulis estéidről.',
-      'Mivel még az indulás előtt feliratkoztál, a {code} kóddal 10 eurót spórolsz a rendelésednél. Egy hétig érvényes, utána lejár.',
+      'Mivel még az indulás előtt feliratkoztál, a {code} kóddal alapítói áron rendelhetsz. Egy hétig a tiéd.',
       'Kérem a pólómat → {url}',
       'Találkozunk a táncparketten,\nÁron és a STREETDARE csapat'
     ]
