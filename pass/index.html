@@ -1138,10 +1138,14 @@ let dare = null;
 function myDone(){ return new Set(info.my_dares || []); }
 const skipKey = () => 'sd_skip_' + night;
 const skipped = () => { try{ return new Set(JSON.parse(store.get(skipKey()) || '[]')); }catch(e){ return new Set(); } };
-function pickDare(){
+// a chained dare (Snowball Selfie levels) only unlocks after the previous level is done
+const dareOpen = (d, done, sk) => !done.has(d.id) && !sk.has(d.id) && (!d.chain_after || done.has(d.chain_after));
+function pickDare(after){
   const done = myDone(), sk = skipped();
-  const pool = dares.filter(d => !done.has(d.id) && !sk.has(d.id) && (!dare || d.id !== dare.id));
-  dare = pool.length ? pool[Math.floor(Math.random() * pool.length)] : (dares.filter(d => !done.has(d.id) && !sk.has(d.id))[0] || null);
+  const nx = after ? dares.find(d => d.chain_after === after && dareOpen(d, done, sk)) : null;
+  if (nx){ dare = nx; return renderDare(); }
+  const pool = dares.filter(d => dareOpen(d, done, sk) && (!dare || d.id !== dare.id));
+  dare = pool.length ? pool[Math.floor(Math.random() * pool.length)] : (dares.filter(d => dareOpen(d, done, sk))[0] || null);
   renderDare();
 }
 // "Give me another one": the dare you skip does not come back tonight
@@ -1149,7 +1153,7 @@ function skipDare(){
   if (!dare) return;
   const sk = skipped(); sk.add(dare.id); store.set(skipKey(), JSON.stringify([...sk]));
   const done = myDone();
-  const left = dares.filter(d => !done.has(d.id) && !sk.has(d.id)).length;
+  const left = dares.filter(d => dareOpen(d, done, sk)).length;
   pickDare();
   toast(t(left ? 'skipWarn' : 'skipNone', { n: left }));
 }
@@ -1211,7 +1215,7 @@ $('sGo').onclick = async () => {
       return;
     }
     $('sheet').hidden = true; toast(t('gotPts', { p: data.points }));
-    info.my_dares = [...(info.my_dares || []), dare.id]; pickDare(); refresh();
+    const finished = dare.id; info.my_dares = [...(info.my_dares || []), finished]; pickDare(finished); refresh();
   }catch(x){ if (path) sb.storage.from('night-photos').remove([path]); err.textContent = t('err'); err.hidden = false; }
   finally{ b.disabled = false; b.textContent = t('sGo') + ' · ' + t('pts', { p: dare.points }); }
 };
