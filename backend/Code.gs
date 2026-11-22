@@ -31,6 +31,7 @@ const MAIL = {
       'Thank you for being part of the STREETDARE community from the very beginning.',
       'Today, our made-to-order shirts are officially live! Each shirt comes with your personal QR code, your own dashboard to add custom dares, and stats from your nights out.',
       'Because you subscribed before launch, use the code {code} at checkout to get the Founders\' price. It\'s yours for 1 week.',
+      'One thing first: we\'re starting in Spain and Hungary, so for now we only ship there. If you live somewhere else, hold on a little longer. You\'re on the list, and we\'ll write to you as soon as we ship to your country.',
       'Get your shirt → {url}',
       'See you on the dancefloor,\nAron & the STREETDARE crew'
     ],
@@ -59,6 +60,7 @@ const MAIL = {
       'Gracias por formar parte de la comunidad STREETDARE desde el principio.',
       '¡Hoy salen oficialmente nuestras camisetas hechas por encargo! Cada camiseta viene con tu QR personal, tu propio panel para añadir retos y las estadísticas de tus noches de fiesta.',
       'Como te apuntaste antes del lanzamiento, usa el código {code} al pagar y tendrás el precio de fundador. Es tuyo durante 1 semana.',
+      'Una cosa antes: empezamos en España y Hungría, así que de momento solo enviamos allí. Si vives en otro país, espera un poquito más. Sigues en la lista y te escribiremos en cuanto enviemos a tu país.',
       'Consigue tu camiseta → {url}',
       'Nos vemos en la pista,\nAron y el equipo de STREETDARE'
     ],
@@ -87,6 +89,7 @@ const MAIL = {
       'Köszönjük, hogy a kezdetektől a STREETDARE közösség része vagy.',
       'Ma hivatalosan is elindultak a rendelésre készülő pólóink! Mindegyikhez jár a saját QR-kódod, egy saját felület, ahol kihívásokat adhatsz hozzá, és statisztikák a bulis estéidről.',
       'Mivel még az indulás előtt feliratkoztál, a {code} kóddal alapítói áron rendelhetsz. Egy hétig a tiéd.',
+      'Egy fontos dolog: Spanyolországban és Magyarországon indulunk, így egyelőre csak oda szállítunk. Ha máshol élsz, várj még egy kicsit. Fent vagy a listán, és szólunk, amint a te országodba is szállítunk.',
       'Kérem a pólómat → {url}',
       'Találkozunk a táncparketten,\nÁron és a STREETDARE csapat'
     ],
