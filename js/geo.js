@@ -11,3 +11,64 @@ function sdCountryName(code, lang){
   try{ return new Intl.DisplayNames([lang || 'en'], { type:'region' }).of(code) || code; }catch(e){ return code; }
 }
 function sdFlag(code){ return code ? String.fromCodePoint(...[...code].map(c => 127397 + c.charCodeAt(0))) : ''; }
+
+/* ===== searchable country picker =====
+   Turns a <select> (which keeps the value, so existing code still reads sel.value) into a text box:
+   type a few letters and the matching countries show up below. */
+function sdCountryCombo(sel, opts){
+  if (!sel || sel._sdCombo) return sel && sel._sdCombo;
+  opts = opts || {};
+  const fold = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const wrap = document.createElement('div'); wrap.className = 'sdcc';
+  const inp = document.createElement('input');
+  inp.type = 'text'; inp.autocomplete = 'off'; inp.setAttribute('autocorrect', 'off'); inp.spellcheck = false;
+  inp.setAttribute('role', 'combobox'); inp.setAttribute('aria-autocomplete', 'list'); inp.setAttribute('aria-expanded', 'false');
+  if (sel.id){ inp.id = sel.id + 'Q'; document.querySelectorAll('label[for="' + sel.id + '"]').forEach(l => l.htmlFor = inp.id); }
+  const list = document.createElement('ul'); list.className = 'sdcc-list'; list.setAttribute('role', 'listbox'); list.hidden = true;
+  sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(inp); wrap.appendChild(list); wrap.appendChild(sel);
+  sel.hidden = true; sel.required = false; sel.tabIndex = -1;
+  let items = [], active = -1;
+  const options = () => [...sel.options].filter(o => o.value);
+  const textOf = v => { const o = options().find(x => x.value === v); return o ? o.textContent : ''; };
+  const sync = () => { inp.value = textOf(sel.value); if (opts.placeholder) inp.placeholder = opts.placeholder(); };
+  const close = () => { list.hidden = true; inp.setAttribute('aria-expanded', 'false'); active = -1; };
+  const mark = () => [...list.children].forEach((li, i) => { li.classList.toggle('on', i === active); if (i === active) li.scrollIntoView({ block:'nearest' }); });
+  const render = () => {
+    const q = fold(inp.value.trim());
+    const all = options().map(o => ({ v:o.value, t:o.textContent, f:fold(o.textContent.replace(/^\S+\s/, '')) }));
+    items = !q ? all : all.filter(x => x.f.startsWith(q)).concat(all.filter(x => !x.f.startsWith(q) && (x.f.includes(q) || x.v.toLowerCase() === q)));
+    list.innerHTML = items.length ? items.slice(0, 60).map((x, i) => '<li role="option" data-i="' + i + '">' + x.t.replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' })[c]) + '</li>').join('')
+                                  : '<li class="none">' + (opts.none ? opts.none() : '—') + '</li>';
+    active = items.length && q ? 0 : -1; mark();
+    list.hidden = false; inp.setAttribute('aria-expanded', 'true');
+  };
+  const pick = i => { const x = items[i]; if (!x) return; sel.value = x.v; sel.dispatchEvent(new Event('change', { bubbles:true })); close(); };
+  inp.addEventListener('focus', () => { inp.select(); render(); });
+  inp.addEventListener('input', render);
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown'){ e.preventDefault(); if (list.hidden) render(); active = Math.min(active + 1, items.length - 1); mark(); }
+    else if (e.key === 'ArrowUp'){ e.preventDefault(); active = Math.max(active - 1, 0); mark(); }
+    else if (e.key === 'Enter' && !list.hidden){ e.preventDefault(); pick(active < 0 ? 0 : active); }
+    else if (e.key === 'Escape'){ close(); sync(); }
+  });
+  list.addEventListener('mousedown', e => { e.preventDefault(); const li = e.target.closest('li[data-i]'); if (li) pick(+li.dataset.i); });
+  inp.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (!inp.value.trim() && sel.value){ sel.value = ''; sel.dispatchEvent(new Event('change', { bubbles:true })); }
+      close(); sync();
+    }, 120);
+  });
+  /* code that sets sel.value directly also updates the text box */
+  const d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+  Object.defineProperty(sel, 'value', { configurable:true, get(){ return d.get.call(this); }, set(v){ d.set.call(this, v); sync(); } });
+  new MutationObserver(sync).observe(sel, { childList:true });
+  sync();
+  return (sel._sdCombo = { input:inp, sync });
+}
+/* fills a <select> with every country, named in the given language */
+function sdFillCountries(sel, lang, firstLabel){
+  const keep = sel.value;
+  const list = SD_COUNTRIES.map(c => [c, sdCountryName(c, lang)]).sort((a, b) => a[1].localeCompare(b[1], lang));
+  sel.innerHTML = '<option value="">' + (firstLabel || '') + '</option>' + list.map(([c, n]) => '<option value="' + c + '">' + sdFlag(c) + ' ' + n.replace(/[&<>]/g, '') + '</option>').join('');
+  sel.value = keep;
+}

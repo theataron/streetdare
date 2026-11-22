@@ -807,3 +807,16 @@ body.hot .rate .stars svg{stroke:#1b1412}
 .m-r small{font-weight:400;color:var(--mute)}
 .m-r em{font-style:normal;font-weight:800}
 @media(min-width:560px){.shots{overflow:visible;margin:0;padding:2px 0 6px}.shot{flex:1 1 0}}
+
+/* searchable country picker (js/geo.js sdCountryCombo) */
+.sdcc{position:relative}
+.sdcc-list{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:60;max-height:240px;overflow:auto;margin:0;padding:6px;list-style:none;background:var(--card);color:var(--ink);border:2.5px solid var(--ink);border-radius:16px;box-shadow:var(--sh);text-align:left}
+.sdcc-list li{padding:10px 12px;border-radius:10px;cursor:pointer;font:500 1rem "DM Sans",sans-serif}
+.sdcc-list li.on,.sdcc-list li:hover{background:var(--blush)}
+.sdcc-list li.none{color:var(--mute);cursor:default;background:none}
+html.night .sdcc-list{background:#2a2422;color:var(--ink)}
+html.night .sdcc-list li.on,html.night .sdcc-list li:hover{background:#3a3230}
+/* waitlist: optional country under the email */
+.wl .wlc{display:grid;gap:6px}
+.wl .wlship{font-size:.82rem;opacity:.75;margin:0 4px;text-align:left}
+footer .social{margin:0 0 8px;font-weight:700}

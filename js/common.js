@@ -207,9 +207,9 @@ function sbLog(event, extra){
 
 /* ----- email sign-up forms (any <form class="wl">) ----- */
 const WL_TEXT = {
-  en:{ member:'You’re already in the STREETDARE community ✓', optL:'Email me so I don’t miss new shirts, decks, features and events', optOn:'You’re on the list ✓', optFail:'Your login has run out. <a href="{login}">Log in again</a> and you can switch this on.', note:'One email when the shirts drop, plus new decks, features and events now and then. No spam, unsubscribe with one reply. <a href="/privacy/">Privacy</a>', ph:'Your email', send:'Join & get the drop alert 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community. You won’t miss the drop.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
-  hu:{ member:'Már a STREETDARE közösség tagja vagy ✓', optL:'Írjatok, hogy ne maradjak le az új pólókról, paklikról, funkciókról és eseményekről', optOn:'Fent vagy a listán ✓', optFail:'Lejárt a bejelentkezésed. <a href="{login}">Lépj be újra</a>, és bekapcsolhatod.', note:'Egy e-mail, amikor kijönnek a pólók, és néha hírek az új paklikról, funkciókról és eseményekről. Spam nincs, egy válasszal leiratkozhatsz. <a href="/privacy/">Adatvédelem</a>', ph:'Az e-mail-címed', send:'Feliratkozom az értesítőre 🎟️', sending:'Küldés…', ok:'Bent vagy 🎉 Üdv a STREETDARE közösségben! Nem maradsz le az indulásról.', bad:'Ez az e-mail-cím nem tűnik jónak.', err:'Nem sikerült csatlakozni. Próbáld újra.', demo:'Demó mód: a feliratkozásokat még nem mentjük.' },
-  es:{ member:'Ya estás en la comunidad STREETDARE ✓', optL:'Escribidme para no perderme camisetas, barajas y funciones nuevas, ni eventos', optOn:'Estás en la lista ✓', optFail:'Tu sesión ha caducado. <a href="{login}">Vuelve a entrar</a> y podrás activarlo.', note:'Un email cuando salgan las camisetas y, de vez en cuando, novedades sobre barajas, funciones y eventos. Sin spam, te das de baja con una respuesta. <a href="/privacy/">Privacidad</a>', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE. No te vas a perder el lanzamiento.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
+  en:{ ctry:'Your country (optional)', ctryNone:'No country with that name', ship:'We start in Spain and Hungary. Shipping to more countries coming soon.', member:'You’re already in the STREETDARE community ✓', optL:'Email me so I don’t miss new shirts, decks, features and events', optOn:'You’re on the list ✓', optFail:'Your login has run out. <a href="{login}">Log in again</a> and you can switch this on.', note:'One email when the shirts drop, plus new decks, features and events now and then. No spam, unsubscribe with one reply. <a href="/privacy/">Privacy</a>', ph:'Your email', send:'Join & get the drop alert 🎟️', sending:'Sending…', ok:'You’re in 🎉 Welcome to the STREETDARE community. You won’t miss the drop.', bad:'That email doesn’t look right.', err:'Couldn’t connect. Try again.', demo:'Demo mode - sign-ups are not being saved yet.' },
+  hu:{ ctry:'Országod (nem kötelező)', ctryNone:'Nincs ilyen nevű ország', ship:'Spanyolországban és Magyarországon kezdünk. Hamarosan több országba is szállítunk.', member:'Már a STREETDARE közösség tagja vagy ✓', optL:'Írjatok, hogy ne maradjak le az új pólókról, paklikról, funkciókról és eseményekről', optOn:'Fent vagy a listán ✓', optFail:'Lejárt a bejelentkezésed. <a href="{login}">Lépj be újra</a>, és bekapcsolhatod.', note:'Egy e-mail, amikor kijönnek a pólók, és néha hírek az új paklikról, funkciókról és eseményekről. Spam nincs, egy válasszal leiratkozhatsz. <a href="/privacy/">Adatvédelem</a>', ph:'Az e-mail-címed', send:'Feliratkozom az értesítőre 🎟️', sending:'Küldés…', ok:'Bent vagy 🎉 Üdv a STREETDARE közösségben! Nem maradsz le az indulásról.', bad:'Ez az e-mail-cím nem tűnik jónak.', err:'Nem sikerült csatlakozni. Próbáld újra.', demo:'Demó mód: a feliratkozásokat még nem mentjük.' },
+  es:{ ctry:'Tu país (opcional)', ctryNone:'No hay ningún país con ese nombre', ship:'Empezamos en España y Hungría. Pronto enviaremos a más países.', member:'Ya estás en la comunidad STREETDARE ✓', optL:'Escribidme para no perderme camisetas, barajas y funciones nuevas, ni eventos', optOn:'Estás en la lista ✓', optFail:'Tu sesión ha caducado. <a href="{login}">Vuelve a entrar</a> y podrás activarlo.', note:'Un email cuando salgan las camisetas y, de vez en cuando, novedades sobre barajas, funciones y eventos. Sin spam, te das de baja con una respuesta. <a href="/privacy/">Privacidad</a>', ph:'Tu email', send:'Únete y recibe el aviso 🎟️', sending:'Enviando…', ok:'Ya estás dentro 🎉 Te damos la bienvenida a la comunidad STREETDARE. No te vas a perder el lanzamiento.', bad:'Ese email no parece correcto.', err:'No se pudo conectar. Inténtalo otra vez.', demo:'Modo demo - todavía no se guardan los registros.' }
 };
 /* ----- consent log: every waitlist sign-up and email switch is saved with the exact wording shown ----- */
 const plainText = h => { const d = document.createElement('div'); d.innerHTML = h; return (d.textContent || '').replace(/\s+/g, ' ').trim(); };
@@ -227,6 +227,19 @@ function initWaitlist(){
     const err = form.querySelector('.wlerr'), demo = form.parentElement.querySelector('.demo');
     const label = () => form.dataset.send ? t(form.dataset.send) : WL_TEXT[LANG].send;
     const paint = () => { const w = WL_TEXT[LANG]; input.placeholder = w.ph; if (!btn.disabled) btn.textContent = label(); if (demo){ demo.textContent = w.demo; demo.hidden = !!SD.API_URL; } };
+    /* optional country, searchable, never pre-filled */
+    let ctry = null;
+    if (typeof sdCountryCombo === 'function'){
+      const box = document.createElement('div'); box.className = 'wlc';
+      ctry = document.createElement('select'); ctry.setAttribute('aria-label', 'Country');
+      const ship = document.createElement('p'); ship.className = 'wlship';
+      box.appendChild(ctry); box.appendChild(ship); input.after(box);
+      const cw = () => WL_TEXT[LANG] || WL_TEXT.en;
+      sdFillCountries(ctry, LANG, '');
+      sdCountryCombo(ctry, { placeholder: () => cw().ctry, none: () => cw().ctryNone });
+      const paintC = () => { sdFillCountries(ctry, LANG, ''); ship.textContent = cw().ship; ctry._sdCombo.sync(); };
+      document.addEventListener('langchange', paintC); paintC();
+    }
     const note = document.createElement('p'); note.className = 'wlnote'; form.after(note);
     const paintNote = () => { note.innerHTML = (WL_TEXT[LANG] || WL_TEXT.en).note; };
     document.addEventListener('langchange', paintNote); paintNote();
@@ -240,8 +253,8 @@ function initWaitlist(){
         const src = (window.STAGE ? 'stage-' : '') + (form.dataset.source||'');
         const wording = label() + ' | ' + plainText((WL_TEXT[LANG] || WL_TEXT.en).note);
         const res = await Promise.allSettled([
-          window.STAGE ? Promise.reject('stage') : sbRpc('join_waitlist', { p_email: v, p_wording: wording, p_lang: LANG, p_page: location.pathname, p_source: src }),
-          api('joinWaitlist', { email:v, source: src })
+          window.STAGE ? Promise.reject('stage') : sbRpc('join_waitlist', { p_email: v, p_wording: wording, p_lang: LANG, p_page: location.pathname, p_source: src, p_country: (ctry && ctry.value) || null }),
+          api('joinWaitlist', { email:v, source: src, country: (ctry && ctry.value) || '' })
         ]);
         if (!res.some(x => x.status === 'fulfilled')) throw new Error('both failed');
         store.set('sd_joined','1');

@@ -214,6 +214,12 @@ body.inapp .wrap{display:none}
 .msgs .acts{display:flex;gap:4px;margin-top:2px}
 .msgs .acts button{background:none;border:0;font:700 .75rem "DM Sans",sans-serif;color:var(--mute);cursor:pointer;padding:3px 6px}
 .msgs .acts button.on{color:var(--red)}
+.msgs li.sd .av{background:var(--ink);color:#fff;font:400 .62rem "Bagel Fat One",sans-serif;letter-spacing:.02em}
+.msgs li.sd .bub{background:var(--card);border:2px solid var(--ink);border-radius:18px 18px 18px 6px;cursor:default;white-space:normal}
+.msgs li.sd .bub h4{font:400 1.05rem "Bagel Fat One",sans-serif;color:var(--red);margin:2px 0 6px}
+.msgs li.sd .bub p{margin:0 0 8px}
+.msgs li.sd .bub .btn{margin:6px 0 4px;padding:11px 14px;font-size:.95rem}
+html.night .msgs li.sd .bub{background:#1e1a19;border-color:#fff}
 .msgs li.sys{justify-content:center;font-size:.78rem;color:var(--mute);margin:10px 0}
 .msgs li.day{justify-content:center;margin:14px 0 6px}
 .msgs li.day span{background:var(--card);border-radius:99px;padding:3px 12px;font-size:.72rem;font-weight:800;color:var(--mute)}
@@ -584,6 +590,10 @@ const T = {
     sPhotoNeed:'Add the photo', sPhotoNeedS:'This dare needs a photo for the group.', sPhotoOpt:'Selfie with them? +1 point', sPhotoOptS:'Ask them first. Your group sees it for 7 days.', sPhotoOk:'Photo ready ✓', sPhotoChange:'Tap to change it',
     sGo:'Count it', sCancel:'Back', sNeedAns:'Let them type their answer first.', sNeedPhoto:'This one needs a photo.', sDoneBefore:'You already did this dare tonight.', sEnded:'The night is over.',
     gotPts:'+{p} points 🔥', uploading:'Uploading…', saving:'Saving…', err:'Something went wrong. Try again.',
+    sdFrom:'STREETDARE', sdWelH:'Welcome to {g} 🔥',
+    sdWel:['You have 24 hours. Go up to strangers, do the dares and collect points. Some dares need a text answer or a photo as proof.', 'You can do any dare together with people from your group, and everyone who joins gets the points. But in the end, you’re all competing against each other 👀', 'That’s what STREETDARE is about: making the first move, so tonight you meet people you’d never have talked to otherwise.', 'Stay safe: anyone can say no, keep an eye on your phone and your things, look after each other, and skip any dare that doesn’t feel right.'],
+    sdEndH:'Time’s up! 🏁', sdWin1:'{name} won the night with {p} points. Congratulations 👑', sdWinN:'{names} share the win with {p} points each. Congratulations 👑', sdWin0:'Nobody scored this time. The next night is yours.',
+    sdEnd:'Want more? Join the waitlist for the STREETDARE shirt: more decks and dares, your own dares, strangers come up to you instead of the other way round, and a streetwear shirt designed for going out.', sdEndBtn:'Join the waitlist →',
     bH:'Leaderboard', you:'you', ptsShort:'pts', daresN:'{n} dares', dares1:'1 dare',
     feedH:'Group Feed', privNote:'Only your group sees this chat. During the launch phase, the STREETDARE team can also see it, to analyze how the game is used and make it better for you.',
     photoNote:'Photos stay here for 7 days, then they disappear.', photoNoteLeft:'Photos disappear in {d}. Save them before they’re gone.', saveAll:'Save all photos',
@@ -628,6 +638,10 @@ const T = {
     sPhotoNeed:'Añade la foto', sPhotoNeedS:'Este reto necesita una foto para el grupo.', sPhotoOpt:'¿Selfie con esa persona? +1 punto', sPhotoOptS:'Pregúntale antes. Tu grupo la ve durante 7 días.', sPhotoOk:'Foto lista ✓', sPhotoChange:'Toca para cambiarla',
     sGo:'Que cuente', sCancel:'Volver', sNeedAns:'Deja primero que escriba su respuesta.', sNeedPhoto:'Este reto necesita una foto.', sDoneBefore:'Ya has hecho este reto esta noche.', sEnded:'La noche se ha acabado.',
     gotPts:'+{p} puntos 🔥', uploading:'Subiendo…', saving:'Guardando…', err:'Algo ha fallado. Inténtalo otra vez.',
+    sdFrom:'STREETDARE', sdWelH:'Bienvenidos a {g} 🔥',
+    sdWel:['Tenéis 24 horas. Acercaos a desconocidos, haced los retos y sumad puntos. Algunos retos piden una respuesta escrita o una foto como prueba.', 'Podéis hacer cualquier reto junto a gente de vuestro grupo, y todos los que participan se llevan los puntos. Pero al final, competís entre vosotros 👀', 'De eso va STREETDARE: dar el primer paso, para que esta noche conozcáis a gente con la que nunca habríais hablado.', 'Con cabeza: cualquiera puede decir que no, vigilad el móvil y vuestras cosas, cuidaos entre vosotros y saltaos cualquier reto que no os cuadre.'],
+    sdEndH:'¡Se acabó el tiempo! 🏁', sdWin1:'{name} ha ganado la noche con {p} puntos. ¡Enhorabuena 👑!', sdWinN:'{names} comparten la victoria con {p} puntos cada uno. ¡Enhorabuena 👑!', sdWin0:'Esta vez nadie ha sumado puntos. La próxima noche es vuestra.',
+    sdEnd:'¿Queréis más? Apuntaos a la lista de la camiseta STREETDARE: más barajas y retos, vuestros propios retos, los desconocidos vienen a vosotros en vez de al revés, y una camiseta streetwear diseñada para salir.', sdEndBtn:'Apuntarme a la lista →',
     bH:'Clasificación', you:'tú', ptsShort:'pts', daresN:'{n} retos', dares1:'1 reto',
     feedH:'Group Feed', privNote:'Solo tu grupo ve este chat. Durante la fase de lanzamiento, el equipo de STREETDARE también puede verlo, para analizar cómo se usa el juego y mejorarlo para ti.',
     photoNote:'Las fotos se quedan aquí 7 días y luego desaparecen.', photoNoteLeft:'Las fotos desaparecen en {d}. Guárdalas antes de que se vayan.', saveAll:'Guardar todas las fotos',
@@ -672,6 +686,10 @@ const T = {
     sPhotoNeed:'Add hozzá a fotót', sPhotoNeedS:'Ehhez a kihíváshoz fotó kell a csapatnak.', sPhotoOpt:'Egy szelfi vele? +1 pont', sPhotoOptS:'Előbb kérdezd meg. A csapatod 7 napig látja.', sPhotoOk:'A fotó kész ✓', sPhotoChange:'Koppints a cseréhez',
     sGo:'Számoljuk', sCancel:'Vissza', sNeedAns:'Előbb hadd írja be a válaszát.', sNeedPhoto:'Ehhez fotó kell.', sDoneBefore:'Ezt a kihívást ma már megcsináltad.', sEnded:'Vége az estének.',
     gotPts:'+{p} pont 🔥', uploading:'Feltöltés…', saving:'Mentés…', err:'Valami hiba történt. Próbáld újra.',
+    sdFrom:'STREETDARE', sdWelH:'Üdv itt: {g} 🔥',
+    sdWel:['24 órátok van. Menjetek oda idegenekhez, teljesítsétek a kihívásokat, és gyűjtsetek pontokat. Néhány kihíváshoz szöveges válasz vagy fotó kell bizonyítéknak.', 'Bármelyik kihívást megcsinálhatjátok együtt a csapat többi tagjával, és mindenki megkapja a pontokat, aki benne volt. De a végén egymás ellen versenyeztek 👀', 'Erről szól a STREETDARE: megtenni az első lépést, hogy ma este olyanokkal ismerkedjetek meg, akikkel amúgy sosem beszéltetek volna.', 'Vigyázzatok magatokra: bárki mondhat nemet, figyeljetek a telefonotokra és a cuccaitokra, vigyázzatok egymásra, és hagyjátok ki azt a kihívást, ami nem tűnik jónak.'],
+    sdEndH:'Lejárt az idő! 🏁', sdWin1:'{name} nyerte az estét {p} ponttal. Gratulálunk 👑', sdWinN:'{names} együtt nyertek, fejenként {p} ponttal. Gratulálunk 👑', sdWin0:'Most senki nem szerzett pontot. A következő este a tiétek.',
+    sdEnd:'Kérsz még? Iratkozz fel a STREETDARE póló várólistájára: több pakli és kihívás, saját kihívások, az idegenek jönnek oda hozzád és nem fordítva, plusz egy bulizásra tervezett streetwear póló.', sdEndBtn:'Feliratkozom →',
     bH:'Ranglista', you:'te', ptsShort:'pont', daresN:'{n} kihívás', dares1:'1 kihívás',
     feedH:'Group Feed', privNote:'Ezt a chatet csak a csapatod látja. A bevezető időszakban a STREETDARE csapata is láthatja, hogy elemezze, hogyan használjátok a játékot, és jobbá tegye nektek.',
     photoNote:'A fotók 7 napig maradnak itt, utána eltűnnek.', photoNoteLeft:'A fotók {d} múlva eltűnnek. Mentsd el őket, mielőtt eltűnnek.', saveAll:'Az összes fotó mentése',
@@ -1343,6 +1361,25 @@ function feedLine(m){
   const nm = names.map(n => '<b>' + esc(n) + '</b>').join(esc(t('and2')));
   return esc(dl(d, 'feed')).split('{name}').join(nm).split('{answer}').join('<b>' + esc(p.answer || '') + '</b>');
 }
+/* messages from STREETDARE itself: a welcome when the 24 h start, the winner when they end (built here, not stored) */
+function withSdMsgs(list){
+  const extra = [];
+  if (info.begun_at) extra.push({ id:'sd-welcome', kind:'sd', sd:'welcome', created_at: info.begun_at });
+  if (info.begun_at && !isLive()) extra.push({ id:'sd-end', kind:'sd', sd:'end', created_at: info.ends_at });
+  return list.concat(extra).sort((a, b) => new Date(a.created_at) - new Date(b.created_at) || (a.kind === 'sd' && a.sd === 'welcome' ? -1 : 0));
+}
+function sdBubble(m, time){
+  let body;
+  if (m.sd === 'welcome'){
+    body = '<h4>' + esc(t('sdWelH', { g: info.name })) + '</h4>' + t('sdWel').map(x => '<p>' + esc(x) + '</p>').join('');
+  } else {
+    const ms = info.members || [], top = ms.length ? ms[0].points || 0 : 0;
+    const winners = top ? ms.filter(x => (x.points || 0) === top) : [];
+    const res = !winners.length ? t('sdWin0') : winners.length === 1 ? t('sdWin1', { name: winners[0].name, p: top }) : t('sdWinN', { names: winners.map(x => x.name).join(t('and2')), p: top });
+    body = '<h4>' + esc(t('sdEndH')) + '</h4><p><b>' + esc(res) + '</b></p><p>' + esc(t('sdEnd')) + '</p><a class="btn red" href="/?home=1#join">' + esc(t('sdEndBtn')) + '</a>';
+  }
+  return '<li class="sd"><span class="av">SD</span><div class="col"><span class="nm">' + esc(t('sdFrom')) + '</span><div class="bub">' + body + '<span class="tm">' + time + '</span></div></div></li>';
+}
 let selMsg = null;
 function scrollChat(force){
   const box = $('chatList');
@@ -1352,16 +1389,16 @@ function renderMsgs(){
   if (!info) return;
   const live = isLive(), box = $('chatList');
   const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 140;
-  if (!msgs.length){ $('msgs').innerHTML = '<li class="sys">' + esc(t('chatEmpty')) + '</li>'; return; }
   const byId = new Map(msgs.map(m => [m.id, m]));
   let prevDay = '', prevWho = null;
-  $('msgs').innerHTML = msgs.map(m => {
+  $('msgs').innerHTML = withSdMsgs(msgs).map(m => {
     const who = memberById(m.profile_id) || { name: '?' };
     const dt = new Date(m.created_at);
     const day = dt.toLocaleDateString(L, { weekday:'short', day:'numeric', month:'short' });
     const time = dt.toLocaleTimeString(L, { hour:'2-digit', minute:'2-digit' });
     let out = '';
     if (day !== prevDay){ out += '<li class="day"><span>' + esc(day) + '</span></li>'; prevDay = day; prevWho = null; }
+    if (m.kind === 'sd'){ prevWho = null; return out + sdBubble(m, time); }
     if (m.kind === 'join'){ prevWho = null; return out + '<li class="sys">' + esc(t('joined', { name: who.name })) + ' · ' + time + '</li>'; }
     if (m.kind === 'play'){
       prevWho = null;
@@ -1494,5 +1531,6 @@ function startRealtime(){
   document.addEventListener('visibilitychange', () => { if (!document.hidden){ refresh(); markRead(); } else paintBadge(); });
 }
 </script>
+<script src="/js/hello.js" defer></script>
 </body>
 </html>
