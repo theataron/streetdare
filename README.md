@@ -27,3 +27,8 @@ The website behind the STREETDARE shirts.
 
 ## Publishing (GitHub Pages)
 Repo → Settings → Pages → Source: "Deploy from a branch" → `main` / root.
+
+## Search engines and AI assistants
+- `index.html` has the English text filled in, so crawlers that don't run JavaScript can read it. **After changing `js/text.js`, run `node tools/prerender-home.js`** (visitors still get their own language).
+- `robots.txt` lets search engines and AI assistants read the public pages and keeps them out of the game (/p/, /pass/, /me/, /admin/, /stage/) and the dare files. `sitemap.xml` and `llms.txt` describe the site.
+- `js/quests.js` is only a small emergency copy (15 Party + 3 Devil dares). The real decks live in the database. Shirtless Pass dares can only be read by logged-in players who are in a group.

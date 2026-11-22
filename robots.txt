@@ -1,0 +1,14 @@
+# STREETDARE: the public pages are welcome to be read by search engines and AI assistants.
+# The game itself (scan page, Shirtless Pass, dashboards) and the dare files are not.
+User-agent: *
+Allow: /
+Disallow: /p/
+Disallow: /pass/
+Disallow: /me/
+Disallow: /login/
+Disallow: /admin/
+Disallow: /stage/
+Disallow: /js/quests.js
+Disallow: /js/shirts.js
+
+Sitemap: https://streetdare.com/sitemap.xml
