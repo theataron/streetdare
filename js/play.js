@@ -65,20 +65,28 @@ async function loadLiveDecks(){
 }
 /* a shirt switched off after reports (fair play): no dares through it */
 const OFF = {
-  en:{ h:'This shirt is taking a break 🌙', p:'STREETDARE shirts have a QR code on the back: you scan it, get a dare, and do it together with the person wearing it. It’s the easiest way to start talking to someone new.',
-       p2:'This shirt is inactive right now. Maybe its owner is on a break, or in the middle of another challenge. You can still play tonight with the Shirtless Pass, or get a shirt of your own and let people come to you.',
-       b:'Play with the Shirtless Pass', b2:'I want my own shirt' },
-  es:{ h:'Esta camiseta se está tomando un descanso 🌙', p:'Las camisetas STREETDARE llevan un código QR en la espalda: lo escaneas, te sale un reto y lo hacéis juntos, tú y quien la lleva. Es la forma más fácil de empezar a hablar con alguien nuevo.',
-       p2:'Esta camiseta está inactiva ahora mismo. Puede que su dueño esté de descanso o en medio de otro reto. Aun así puedes jugar esta noche con el Shirtless Pass, o hacerte con tu propia camiseta y que la gente venga a ti.',
-       b:'Jugar con el Shirtless Pass', b2:'Quiero mi propia camiseta' },
-  hu:{ h:'Ez a póló most pihen 🌙', p:'A STREETDARE pólók hátán QR-kód van: beszkenneled, kapsz egy kihívást, és együtt teljesítitek azzal, aki viseli. Ez a legkönnyebb módja, hogy szóba elegyedj valakivel.',
-       p2:'Ez a póló most nem aktív. Lehet, hogy a gazdája épp szünetet tart, vagy egy másik kihívás közepén jár. Ma este így is játszhatsz a Shirtless Passszal, vagy szerezz saját pólót, és hagyd, hogy hozzád jöjjenek.',
-       b:'Játék a Shirtless Passszal', b2:'Saját pólót szeretnék' }
+  en:{ h:'This shirt is taking a break 🌙', p:'STREETDARE shirts have a QR code on the back. It means the person wearing it is up for meeting new people.',
+       s1:'Scan the shirt', s2:'Get a random dare', s3:'Do it together',
+       p2:'This shirt is inactive right now. Maybe its owner is on a break, or in the middle of another challenge. Two ways to play tonight anyway:',
+       t1:'Live now', c1h:'Shirtless Pass', c1p:'No shirt needed. 24 hours of dares on your phone for you and your friends: walk up to strangers, collect points and see who wins.', b:'Play with the Shirtless Pass',
+       t2:'Coming soon', c2h:'Your own shirt', c2p:'Your own QR on the back, so people come up to you. New dare decks, your own dares and stats every time you wear it.', b2:'I want my own shirt', lb:'Tonight', you:'You' },
+  es:{ h:'Esta camiseta se está tomando un descanso 🌙', p:'Las camisetas STREETDARE llevan un código QR en la espalda. Significa que quien la lleva tiene ganas de conocer gente nueva.',
+       s1:'Escanea la camiseta', s2:'Te sale un reto', s3:'Lo hacéis juntos',
+       p2:'Esta camiseta está inactiva ahora mismo. Puede que su dueño esté de descanso o en medio de otro reto. Dos formas de jugar esta noche igualmente:',
+       t1:'Ya disponible', c1h:'Shirtless Pass', c1p:'Sin camiseta. 24 horas de retos en el móvil para ti y tus amigos: acercaos a desconocidos, sumad puntos y a ver quién gana.', b:'Jugar con el Shirtless Pass',
+       t2:'Muy pronto', c2h:'Tu propia camiseta', c2p:'Tu propio QR en la espalda, para que la gente venga a ti. Nuevas barajas de retos, tus propios retos y estadísticas cada vez que la llevas.', b2:'Quiero mi propia camiseta', lb:'Esta noche', you:'Tú' },
+  hu:{ h:'Ez a póló most pihen 🌙', p:'A STREETDARE pólók hátán QR-kód van. Ez azt jelenti, hogy aki viseli, szívesen megismer új embereket.',
+       s1:'Szkenneld be a pólót', s2:'Kapsz egy kihívást', s3:'Együtt megcsináljátok',
+       p2:'Ez a póló most nem aktív. Lehet, hogy a gazdája épp szünetet tart, vagy egy másik kihívás közepén jár. Két mód, hogy ma este így is játssz:',
+       t1:'Már elérhető', c1h:'Shirtless Pass', c1p:'Póló nélkül. 24 óra kihívás a telefonodon neked és a barátaidnak: menjetek oda idegenekhez, gyűjtsetek pontokat, és kiderül, ki nyer.', b:'Játék a Shirtless Passszal',
+       t2:'Hamarosan', c2h:'Saját póló', c2p:'Saját QR-kód a hátadon, hogy hozzád jöjjenek az emberek. Új kihíváspaklik, saját kihívások és statisztikák minden alkalommal, amikor viseled.', b2:'Saját pólót szeretnék', lb:'Ma este', you:'Te' }
 };
 let isOff = false;
 function shirtOff(){
   isOff = true;
-  const paint = () => { const x = OFF[LANG] || OFF.en; $('offH').textContent = x.h; $('offP').textContent = x.p; $('offP2').textContent = x.p2; $('offBtn').textContent = x.b; $('offBtn2').textContent = x.b2; };
+  const paint = () => { const x = OFF[LANG] || OFF.en;
+    [['offH','h'],['offP','p'],['offS1','s1'],['offS2','s2'],['offS3','s3'],['offP2','p2'],['offTag1','t1'],['offC1h','c1h'],['offC1p','c1p'],['offBtn','b'],['offTag2','t2'],['offC2h','c2h'],['offC2p','c2p'],['offBtn2','b2'],['offLb','lb'],['offYou','you']]
+      .forEach(([id, k]) => { $(id).textContent = x[k]; }); };
   document.querySelectorAll('main > section').forEach(s => { s.hidden = s.id !== 'v-off'; });
   const b = $('spinBtn'); if (b) b.disabled = true;
   paint(); document.addEventListener('langchange', paint);

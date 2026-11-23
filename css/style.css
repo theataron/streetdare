@@ -820,3 +820,22 @@ html.night .sdcc-list li.on,html.night .sdcc-list li:hover{background:#3a3230}
 .wl .wlc{display:grid;gap:6px}
 .wl .wlship{font-size:.82rem;opacity:.75;margin:0 4px;text-align:left}
 footer .social{margin:0 0 8px;font-weight:700}
+
+/* scan page: shirt taking a break (switched off) */
+.offv{text-align:center}
+.offhero{position:relative;display:flex;justify-content:center;margin:0 0 6px}
+.offhero svg{width:min(340px,100%);height:auto;animation:offsway 4s ease-in-out infinite;transform-origin:40% 90%}
+@keyframes offsway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.offhero .zz{position:absolute;left:calc(50% - 40px);top:18%;font:400 1.3rem "Bagel Fat One",sans-serif;color:var(--red);opacity:0;animation:zz 3s ease-in infinite}
+.offhero .z2{animation-delay:1s;font-size:1.6rem}.offhero .z3{animation-delay:2s;font-size:2rem}
+@keyframes zz{0%{opacity:0;transform:translate(0,10px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translate(46px,-60px) scale(1.1)}}
+.offsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 6px}
+.offsteps div{background:var(--card);border:2.5px solid var(--ink);border-radius:16px;padding:10px 6px;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.82rem;line-height:1.25;animation:rise .5s both}
+.offsteps div:nth-child(2){animation-delay:.15s}.offsteps div:nth-child(3){animation-delay:.3s}
+.offsteps b{font-size:1.5rem}
+.offbreak{margin:18px 0 14px;font-weight:600}
+.offcards{display:grid;gap:16px;text-align:left}
+.offcards .cardx{animation:rise .6s .2s both}
+.offcards .cardx + .cardx{animation-delay:.35s}
+.offcards .btn{margin-top:12px;width:100%}
+@media (prefers-reduced-motion:reduce){.offhero svg,.offhero .zz,.offsteps div,.offcards .cardx{animation:none}.offhero .zz{opacity:.7}}

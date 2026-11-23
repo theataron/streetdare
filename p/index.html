@@ -43,14 +43,65 @@
   </nav>
 
   <main>
-    <!-- ===== SHIRT SWITCHED OFF (fair play) ===== -->
-    <section class="play" id="v-off" hidden>
+    <!-- ===== SHIRT SWITCHED OFF (fair play): explains STREETDARE, then Shirtless Pass / own shirt ===== -->
+    <section class="play offv" id="v-off" hidden>
+      <div class="offhero" aria-hidden="true">
+        <svg viewBox="0 0 300 140" class="a-shirt">
+          <path class="tee" d="M70 30L95 18Q110 28 125 18L150 30 170 55 152 66 146 58V128H74V58L68 66 50 55Z"/>
+          <g class="qr"><rect x="92" y="62" width="36" height="36" rx="2" class="qbg"/>
+            <path d="M95 65h9v9h-9zM116 65h9v9h-9zM95 86h9v9h-9z" class="qd"/>
+            <path d="M107 66h3v3h-3zM107 72h6v3h-6zM98 77h3v6h-3zM104 78h6v3h-6zM113 77h3v3h-3zM119 78h6v3h-6zM110 84h3v6h-3zM116 86h3v3h-3zM122 85h3v9h-3zM107 91h3v4h-3zM116 92h4v3h-4z" class="qd"/></g>
+          <rect class="beam" x="88" y="60" width="44" height="3" rx="1.5"/>
+          <g class="phone"><rect x="205" y="34" width="56" height="98" rx="10"/><rect x="211" y="46" width="44" height="74" rx="4" class="scr"/>
+            <path class="pstar" d="M233 66l3.6 7.3 8 1.2-5.8 5.6 1.4 8-7.2-3.8-7.2 3.8 1.4-8-5.8-5.6 8-1.2z"/>
+            <rect class="pl" x="218" y="96" width="30" height="4" rx="2"/><rect class="pl" x="222" y="104" width="22" height="4" rx="2"/></g>
+        </svg>
+        <span class="zz z1">z</span><span class="zz z2">z</span><span class="zz z3">Z</span>
+      </div>
       <h1 class="display" id="offH"></h1>
       <p class="sub" id="offP"></p>
-      <p class="sub" id="offP2"></p>
-      <div class="stack">
-        <a class="btn red big" id="offBtn" href="/?home=1#shop"></a>
-        <a class="btn big" id="offBtn2" href="/?home=1#join"></a>
+      <div class="offsteps">
+        <div><b>📱</b><span id="offS1"></span></div>
+        <div><b>🎰</b><span id="offS2"></span></div>
+        <div><b>🤝</b><span id="offS3"></span></div>
+      </div>
+      <p class="offbreak" id="offP2"></p>
+      <div class="offcards">
+        <div class="cardx">
+          <div class="art pass">
+            <div class="guy">
+              <img src="/img/shirtless-guy.webp" alt="" width="454" height="600">
+              <svg viewBox="0 0 910 1202" class="a-guy" aria-hidden="true">
+                <g class="lanyard"><path class="cord" d="M402 430L438 580M512 430L470 580"/>
+                  <rect x="398" y="572" width="112" height="76" rx="12" class="badge"/><text x="454" y="625" class="bt">PASS</text></g>
+                <path class="spark s1" d="M800 300l12 26 26 12-26 12-12 26-12-26-26-12 26-12z"/>
+                <path class="spark s2" d="M110 380l8 18 18 8-18 8-8 18-8-18-18-8 18-8z"/>
+              </svg>
+            </div>
+            <div class="lb"><div class="lbh" id="offLb"></div>
+              <div class="lr"><span id="offYou"></span><i style="--w:92%;--d:0s"></i><b>7</b></div>
+              <div class="lr"><span>Lena</span><i style="--w:70%;--d:.2s"></i><b>5</b></div>
+              <div class="lr"><span>Marco</span><i style="--w:45%;--d:.4s"></i><b>3</b></div>
+            </div>
+          </div>
+          <span class="tag live" id="offTag1"></span><h3 id="offC1h"></h3><p id="offC1p"></p>
+          <a class="btn red" id="offBtn" href="/?home=1#shop"></a>
+        </div>
+        <div class="cardx">
+          <div class="art tee"><svg viewBox="0 0 300 140" class="a-shirt" aria-hidden="true">
+            <path class="tee tee-back" transform="translate(16 -4) rotate(7 110 73)" d="M70 30L95 18Q110 28 125 18L150 30 170 55 152 66 146 58V128H74V58L68 66 50 55Z"/>
+            <path class="tee" d="M70 30L95 18Q110 28 125 18L150 30 170 55 152 66 146 58V128H74V58L68 66 50 55Z"/>
+          <g class="qr"><rect x="92" y="62" width="36" height="36" rx="2" class="qbg"/>
+            <path d="M95 65h9v9h-9zM116 65h9v9h-9zM95 86h9v9h-9z" class="qd"/>
+            <path d="M107 66h3v3h-3zM107 72h6v3h-6zM98 77h3v6h-3zM104 78h6v3h-6zM113 77h3v3h-3zM119 78h6v3h-6zM110 84h3v6h-3zM116 86h3v3h-3zM122 85h3v9h-3zM107 91h3v4h-3zM116 92h4v3h-4z" class="qd"/></g>
+          <rect class="beam" x="88" y="60" width="44" height="3" rx="1.5"/>
+          <g class="phone"><rect x="205" y="34" width="56" height="98" rx="10"/><rect x="211" y="46" width="44" height="74" rx="4" class="scr"/>
+            <path class="pstar" d="M233 66l3.6 7.3 8 1.2-5.8 5.6 1.4 8-7.2-3.8-7.2 3.8 1.4-8-5.8-5.6 8-1.2z"/>
+            <rect class="pl" x="218" y="96" width="30" height="4" rx="2"/><rect class="pl" x="222" y="104" width="22" height="4" rx="2"/></g>
+          </svg></div>
+          <span class="tag" id="offTag2"></span><h3 id="offC2h"></h3><p id="offC2p"></p>
+          <a class="btn" id="offBtn2" href="/?home=1#join"></a>
+        </div>
       </div>
     </section>
     <!-- ===== SPIN ===== -->
