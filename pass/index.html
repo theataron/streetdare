@@ -1213,7 +1213,7 @@ async function openNight(id, fresh){
   showTab(start || (isLive() ? 'dares' : 'chat'));
   clearInterval(clockT); clockT = setInterval(tickClock, 1000); tickClock();
   startRealtime();
-  refreshPush();
+  checkPushSub(); refreshPush();
 }
 function rememberActive(){
   const live = new Date(info.ends_at).getTime() > now();
@@ -1614,16 +1614,33 @@ const installed = () => matchMedia('(display-mode: standalone)').matches || navi
 const pushReady = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
 const b64url = s => { const p = '='.repeat((4 - s.length % 4) % 4), raw = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...raw].map(c => c.charCodeAt(0))); };
 
+/* saying yes to the phone's pop-up is not the same as the subscription reaching the database.
+   Keep the two apart: if the save failed, the card stays with its button instead of hiding for good. */
+let pushSaved = false, pushErr = '';
+async function checkPushSub(){
+  if (!user || !pushReady() || Notification.permission !== 'granted') return;
+  try{
+    const reg = await navigator.serviceWorker.getRegistration('/');
+    const sub = reg && await reg.pushManager.getSubscription();
+    if (sub){
+      const { count } = await sb.from('push_subs').select('id', { count:'exact', head:true }).eq('endpoint', sub.endpoint);
+      pushSaved = !!count;
+    }
+  }catch(e){}
+  paintPush();
+}
+
 function paintPush(){
   const card = $('pushCard'); if (!card) return;
   if (!night || !user || store.get('sd_push_off')){ card.hidden = true; return; }
   const granted = pushReady() && Notification.permission === 'granted';
-  if (granted){ card.hidden = true; return; }
+  if (granted && pushSaved && !pushErr){ card.hidden = true; return; }
   const blocked = pushReady() && Notification.permission === 'denied';
   const needsInstall = isIOS() && !installed();
   card.hidden = false;
   $('pushH').textContent = t('pushH');
-  $('pushP').textContent = needsInstall ? t('pushIos') : blocked ? t('pushBlocked') : isIOS() ? t('pushIosOn') : t('pushP');
+  $('pushP').textContent = (needsInstall ? t('pushIos') : blocked ? t('pushBlocked') : isIOS() ? t('pushIosOn') : t('pushP'))
+    + (pushErr ? '\n\n⚠️ ' + pushErr : '');
   $('pushBtn').hidden = needsInstall || blocked || !pushReady();
   $('pushBtn').textContent = t('pushBtn');
   $('pushLater').textContent = t('pushLater');
@@ -1636,7 +1653,7 @@ $('pushBtn').onclick = async () => {
     if (perm !== 'granted'){ b.disabled = false; paintPush(); return; }
     await subscribePush();
     toast(t('pushOn'));
-  }catch(e){ toast(t('err')); }
+  }catch(e){ pushErr = (e && e.message) || String(e); toast(t('err')); }
   b.disabled = false; paintPush();
 };
 async function subscribePush(){
@@ -1646,15 +1663,20 @@ async function subscribePush(){
   if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64url(VAPID_PUBLIC) });
   const j = sub.toJSON();
   if (!j.keys || !j.keys.p256dh) throw new Error('no keys');
-  await sb.from('push_subs').upsert({
+  /* supabase-js returns the error, it does not throw it: without this check a failed save
+     looked exactly like a successful one and the phone was never subscribed */
+  const { error } = await sb.from('push_subs').upsert({
     profile_id: user.id, endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth,
     ua: navigator.userAgent.slice(0, 200)
   }, { onConflict: 'endpoint' });
+  if (error) throw new Error(error.message || 'save failed');
+  pushSaved = true; pushErr = '';
 }
 /* already allowed on this phone: keep the subscription fresh and in the database */
 async function refreshPush(){
   if (!user || !pushReady() || Notification.permission !== 'granted') return;
-  try{ await subscribePush(); }catch(e){}
+  try{ await subscribePush(); }catch(e){ pushErr = (e && e.message) || String(e); }
+  paintPush();
 }
 
 /* ---------- chat ---------- */
