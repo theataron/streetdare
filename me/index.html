@@ -68,6 +68,10 @@
 .nudge .sub{color:#fff;opacity:.95}
 .nudge .btn{background:#fff;color:var(--ink)}
 .photorow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.avview{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:24px}
+.avview[hidden]{display:none}
+.avview img{width:min(78vw,420px);height:min(78vw,420px);border-radius:50%;object-fit:cover;border:5px solid #fff;background:#222}
+.avview .vx{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:#1b1412;font-size:1.1rem;font-weight:800;cursor:pointer}
 .avatar{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);background:var(--blush);flex:none;display:grid;place-items:center;font-size:2rem}
 .photorow .acts{display:flex;gap:8px;flex-wrap:wrap}
 .setup{background:var(--card)}
@@ -165,7 +169,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
         <h2 id="profH"></h2>
         <p class="sub" id="profP"></p>
         <div class="photorow">
-          <img class="avatar" id="avatar" alt="" hidden><div class="avatar" id="avatarEmpty">🙂</div>
+          <img class="avatar" id="avatar" alt="" hidden style="cursor:zoom-in"><div class="avatar" id="avatarEmpty">🙂</div>
           <div class="acts"><button class="mini red" type="button" id="photoBtn"></button><button class="mini plain" type="button" id="photoDel" hidden></button></div>
           <input type="file" id="photoFile" accept="image/*" hidden>
         </div>
@@ -180,7 +184,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
           <label class="tog" id="recap" style="margin-bottom:4px"><input type="checkbox" id="pRecap"><span id="pRecapL"></span></label>
           <p class="sub" id="pRecapN" style="font-size:.82rem;margin:0 0 14px"></p>
           <p class="err" id="profErr" hidden></p>
-          <button class="btn" type="submit" id="profBtn"></button>
+          <button class="btn red" type="submit" id="profBtn"></button>
         </form>
       </section>
 
@@ -594,6 +598,10 @@ function paintProfile(){
   try{ if (u) localStorage.setItem('sd_avatar', u); else localStorage.removeItem('sd_avatar'); }catch(e){}
 }
 $('photoBtn').onclick = () => $('photoFile').click();
+$('avatar').onclick = () => { if (!profile || !profile.avatar_url) return; $('avBig').src = profile.avatar_url; $('avView').hidden = false; };
+const closeAv = () => { $('avView').hidden = true; $('avBig').removeAttribute('src'); };
+$('avView').onclick = closeAv;
+addEventListener('keydown', e => { if (e.key === 'Escape' && !$('avView').hidden) closeAv(); });
 
 /* ===== set-up checklist (shown until all four steps are done) ===== */
 const seen = k => { try{ return localStorage.getItem('sd_setup_' + k) === '1'; }catch(e){ return false; } };
@@ -764,5 +772,6 @@ $('delAcc').onclick = async () => {
 <script src="/js/menu.js"></script>
 <script src="/js/passbar.js"></script>
 <script src="/js/hello.js" defer></script>
+<div class="avview" id="avView" hidden><button class="vx" type="button" aria-label="Close">✕</button><img id="avBig" alt=""></div>
 </body>
 </html>

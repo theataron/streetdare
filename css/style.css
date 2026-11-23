@@ -819,7 +819,10 @@ html.night .sdcc-list li.on,html.night .sdcc-list li:hover{background:#3a3230}
 /* waitlist: optional country under the email */
 .wl .wlc{display:grid;gap:6px}
 .wl .wlship{font-size:.82rem;opacity:.75;margin:0 4px;text-align:left}
-footer .social{margin:0 0 8px;font-weight:700}
+footer .social{margin:0 0 10px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+footer .social a{display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+footer .social a:hover span{text-decoration:underline}
+footer .social svg{width:22px;height:22px;flex:none;fill:currentColor}
 
 /* scan page: shirt taking a break (switched off) */
 .offv{text-align:center}
