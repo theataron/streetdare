@@ -59,8 +59,25 @@ async function loadLiveDecks(){
     const live = { classic: [], spicy: [], shirt: [] };
     rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.hu = r.text_hu || ''; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
+    if (shirts[0] && shirts[0].status === 'off'){ shirtOff(); return; }
     if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].ig || '', photo: shirts[0].photo || '' }); applyLang(); paintPhoto(); }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
+}
+/* a shirt switched off after reports (fair play): no dares through it */
+const OFF = {
+  en:{ h:'This shirt is switched off right now 🌙', p:'You can’t play STREETDARE through this shirt at the moment. Still want a dare tonight? Find another STREETDARE shirt, or play the Shirtless Pass with your friends.', b:'Back to STREETDARE' },
+  es:{ h:'Esta camiseta está desactivada ahora mismo 🌙', p:'Ahora mismo no se puede jugar a STREETDARE con esta camiseta. ¿Aún quieres un reto esta noche? Busca otra camiseta STREETDARE o jugad al Shirtless Pass con tus amigos.', b:'Volver a STREETDARE' },
+  hu:{ h:'Ez a póló most ki van kapcsolva 🌙', p:'Ezzel a pólóval most nem lehet STREETDARE-t játszani. Ma este is kéne egy kihívás? Keress egy másik STREETDARE pólót, vagy játsszátok a Shirtless Passt a barátaiddal.', b:'Vissza a STREETDARE-hez' }
+};
+let isOff = false;
+function shirtOff(){
+  isOff = true;
+  const paint = () => { const x = OFF[LANG] || OFF.en; $('offH').textContent = x.h; $('offP').textContent = x.p; $('offBtn').textContent = x.b; };
+  document.querySelectorAll('main > section').forEach(s => { s.hidden = s.id !== 'v-off'; });
+  const b = $('spinBtn'); if (b) b.disabled = true;
+  paint(); document.addEventListener('langchange', paint);
+  new MutationObserver(() => { document.querySelectorAll('main > section').forEach(s => { if (s.id !== 'v-off' && !s.hidden) s.hidden = true; }); $('v-off').hidden = false; })
+    .observe(document.querySelector('main'), { subtree:true, attributes:true, attributeFilter:['hidden'] });
 }
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
 const EXTRA = {

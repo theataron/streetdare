@@ -265,6 +265,16 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
       </div>
       <div class="card" id="nightFeed" hidden></div>
       <p class="muted" style="font-size:.85rem">Group Feeds are private to each group; during the launch phase you can read them here (the players are told this in the feed and in the privacy policy). Photos are deleted automatically after 7 days.</p>
+      <div class="card" id="fairPlay">
+        <h3>Fair play: blocked players</h3>
+        <p class="muted" style="font-size:.88rem;margin-bottom:10px">After reports (see Terms → Reports and warnings): 1st report = private warning email, 2nd report or anything serious = block. A blocked player can't join or start Shirtless Pass groups. To switch off someone's <b>shirt</b>, set it to Disabled in the Shirts tab.</p>
+        <form id="blockForm" class="grid2" style="gap:10px;align-items:end">
+          <div><div class="lbl">Username or email</div><input type="text" id="blockWho" maxlength="160" placeholder="e.g. lea_92 or lea@mail.com" required></div>
+          <div><div class="lbl">Private note (what was reported, when)</div><input type="text" id="blockNote" maxlength="300"></div>
+          <button class="btn red" type="submit">Block player</button>
+        </form>
+        <table style="margin-top:14px"><thead><tr><th>Player</th><th>Blocked</th><th>Note</th><th></th></tr></thead><tbody id="blockList"></tbody></table>
+      </div>
     </div>
   </div>
 </div>
@@ -555,7 +565,7 @@ async function loadShirts(){
       '<td><a href="' + url + '" target="_blank" rel="noopener">' + url.replace('https://','') + '</a></td>' +
       '<td>' + (s.owner_id ? '✓ ' + esc(emails[s.owner_id] || 'claimed') : '<code style="font-weight:700;user-select:all">' + esc(codes[s.id] || '-') + '</code>') + '</td>' +
       '<td><code style="font-weight:700;user-select:all">' + esc(dareCodes[s.id] || '-') + '</code></td>' +
-      '<td><select name="status"><option value="active"' + (s.status === 'active' ? ' selected' : '') + '>Active</option><option value="disabled"' + (s.status === 'disabled' ? ' selected' : '') + '>Disabled</option></select></td>' +
+      '<td><select name="status"><option value="active"' + (s.status === 'active' ? ' selected' : '') + '>Active</option><option value="disabled"' + (s.status === 'disabled' ? ' selected' : '') + '>Disabled (switched off)</option></select></td>' +
       '<td><button class="btn sm" name="save">Save</button></td></tr>';
   }).join('');
   $('shirtList').querySelectorAll('tr').forEach(tr => tr.querySelector('[name=save]').onclick = async () => {
@@ -617,7 +627,29 @@ $('seatPick').onclick = e => { const b = e.target.closest('button'); if (!b) ret
 $('sellPay').onchange = paintSeatPick;
 paintSeatPick();
 function leftStr(d){ const ms = new Date(d) - Date.now(); if (ms <= 0) return 'ended ' + ago(d); const h = Math.floor(ms / 36e5), m = Math.floor(ms / 6e4) % 60; return h + 'h ' + m + 'm left'; }
+/* ===== fair play: blocked players ===== */
+async function loadBlocked(){
+  const { data } = await sb.rpc('admin_blocked');
+  const list = data || [];
+  $('blockList').innerHTML = list.length ? list.map(b => '<tr><td><b>' + esc(b.username ? '@' + b.username : '') + '</b> ' + esc(b.name || '') + '<div class="muted" style="font-size:.8rem">' + esc(b.email || '') + '</div></td><td>' + esc(b.at ? new Date(b.at).toLocaleString() : '') + '</td><td>' + esc(b.note || '') + '</td><td><button class="btn sm" data-unblock="' + esc(b.username || b.email || '') + '">Unblock</button></td></tr>').join('')
+    : '<tr><td colspan="4" class="muted">Nobody is blocked.</td></tr>';
+}
+$('blockForm').onsubmit = async e => {
+  e.preventDefault();
+  const who = $('blockWho').value.trim(); if (!who) return;
+  if (!confirm('Block ' + who + ' from Shirtless Pass groups?')) return;
+  const { data, error } = await sb.rpc('admin_set_blocked', { p_who: who, p_blocked: true, p_note: $('blockNote').value.trim() || null });
+  if (error || data !== 'ok') return toast(data === 'not_found' ? 'No player with that username or email' : 'Error: ' + (error ? error.message : data));
+  $('blockWho').value = ''; $('blockNote').value = ''; toast('Blocked'); loadBlocked();
+};
+$('blockList').onclick = async e => {
+  const b = e.target.closest('[data-unblock]'); if (!b) return;
+  const { data, error } = await sb.rpc('admin_set_blocked', { p_who: b.dataset.unblock, p_blocked: false });
+  if (error || data !== 'ok') return toast('Error: ' + (error ? error.message : data));
+  toast('Unblocked'); loadBlocked();
+};
 async function loadPasses(){
+  loadBlocked();
   const { data, error } = await sb.rpc('admin_passes');
   if (error) return toast('Error: ' + error.message);
   passes = data || [];
