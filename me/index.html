@@ -394,10 +394,8 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
 (async () => {
   const session = await getSession();
   if (!session){ location.replace('/login/?next=/me/'); return; }
-  try{
-    const sp = JSON.parse(localStorage.getItem('sd_pass') || 'null');
-    if (sp && sp.ends > Date.now() && !new URLSearchParams(location.search).has('stay')){ location.replace('/pass/?n=' + encodeURIComponent(sp.id)); return; }
-  }catch(e){}
+  /* No live-night takeover here: someone who taps "Profile" wants the profile.
+     The live-group bar at the top of the page is the way back into the night. */
   user = session.user;
   const [p, d, i] = await Promise.all([
     sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed, username, recap_opt_in, lang').eq('id', user.id).maybeSingle(),

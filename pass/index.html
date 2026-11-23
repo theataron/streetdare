@@ -19,6 +19,11 @@
 .field{display:grid;gap:6px;margin-bottom:14px;text-align:left}
 .field label{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
 .field small{color:var(--mute);font-size:.85rem}
+.pfpic{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.pfav{width:76px;height:76px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);background:var(--blush,#f3e7e0);flex:none;display:grid;place-items:center;font-size:1.9rem}
+.pfpic small{display:block;color:var(--mute);font-size:.8rem;margin-top:5px;max-width:19ch}
+.pfchk{display:flex;align-items:flex-start;gap:9px;margin-top:9px;font-size:.88rem;line-height:1.3;font-weight:600;cursor:pointer}
+.pfchk input{width:19px;height:19px;flex:none;margin:0;accent-color:var(--red)}
 .in,.field input,.field textarea{width:100%;font:500 1.05rem "DM Sans",sans-serif;padding:14px 16px;border:2.5px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink)}
 .at{display:flex;align-items:center;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding-left:14px}
 .at span{font-weight:700}
@@ -194,6 +199,22 @@ body.inapp .wrap{display:none}
 .tabs button i{font-style:normal;font-size:1.35rem;line-height:1;filter:grayscale(1);opacity:.65}
 .tabs button.on{color:var(--red)}
 .tabs button.on i{filter:none;opacity:1}
+/* first-run bubbles that point at the bottom menu */
+.coach{position:fixed;inset:0;z-index:55;background:rgba(11,11,11,.66)}
+.coach[hidden]{display:none}
+.tabs.coaching{position:relative;z-index:56;box-shadow:0 -10px 40px rgba(0,0,0,.45)}
+.tabs button.spot i{filter:none;opacity:1;animation:cbpop 1.1s ease-in-out infinite}
+.tabs button.spot{color:var(--red)}
+@keyframes cbpop{0%,100%{transform:scale(1)}50%{transform:scale(1.28)}}
+.cbubble{position:fixed;left:14px;right:14px;z-index:57;background:var(--card);color:var(--ink);border-radius:18px;padding:15px 16px;box-shadow:0 16px 44px rgba(0,0,0,.4)}
+.cbubble b{font-family:"Bagel Fat One","Arial Black",sans-serif;font-weight:400;font-size:1.2rem;display:block;margin-bottom:5px}
+.cbubble p{font-size:.93rem;line-height:1.38;margin:0 0 12px}
+.cbrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cbdots{display:flex;gap:6px}
+.cbdots i{width:7px;height:7px;border-radius:50%;background:#d9cfc2;display:block}
+.cbdots i.on{background:var(--red)}
+.cbarrow{position:absolute;bottom:-8px;width:18px;height:18px;background:var(--card);transform:rotate(45deg);border-radius:3px}
+@media (prefers-reduced-motion:reduce){.tabs button.spot i{animation:none}}
 .badge{position:absolute;top:2px;left:calc(50% + 6px);min-width:19px;height:19px;border-radius:10px;background:var(--red);color:#fff;font:800 .7rem/19px "DM Sans",sans-serif;padding:0 5px;border:2px solid var(--card)}
 .badge.inline{position:static;display:inline-block;vertical-align:middle;margin-left:6px;border:0}
 .minirank{text-align:center;color:var(--mute);font-size:.9rem;margin:6px 0 0}
@@ -318,6 +339,11 @@ html.night .badge{border-color:#211b19}
       <h1 class="display" id="pfH"></h1>
       <p class="lead" id="pfP"></p>
       <form id="pfForm" novalidate>
+        <div class="pfpic">
+          <img class="pfav" id="pfAv" alt="" hidden><div class="pfav" id="pfAvEmpty">🙂</div>
+          <div><button class="mini red" type="button" id="pfPhotoBtn"></button><small id="pfPhotoS"></small></div>
+          <input type="file" id="pfPhotoFile" accept="image/*" hidden>
+        </div>
         <div class="field"><label id="pfNameL" for="pfName"></label><input id="pfName" maxlength="40" autocomplete="given-name" required>
           <small id="pfNameS"></small></div>
         <div class="field"><label id="pfUserL" for="pfUser"></label>
@@ -325,7 +351,8 @@ html.night .badge{border-color:#211b19}
           <small id="pfUserMsg"></small></div>
         <div class="field"><label id="pfIgL" for="pfIg"></label>
           <div class="at"><span>@</span><input id="pfIg" class="in" maxlength="30" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div>
-          <small id="pfIgS"></small></div>
+          <small id="pfIgS"></small>
+          <label class="pfchk" id="pfIgPubWrap" hidden><input type="checkbox" id="pfIgPub" checked><span id="pfIgPubL"></span></label></div>
         <p class="err" id="pfErr" hidden></p>
         <button class="btn red" type="submit" id="pfBtn"></button>
       </form>
@@ -424,7 +451,7 @@ html.night .badge{border-color:#211b19}
     <section class="pane" id="pane-dares">
       <div class="howto" id="nHow" hidden>
         <h2 id="howH"></h2>
-        <ol><li id="how1"></li><li id="how2"></li><li id="how3"></li></ol>
+        <ol><li id="how1"></li><li id="how2"></li><li id="how3"></li><li id="how4"></li></ol>
         <button class="btn" type="button" id="howBtn"></button>
       </div>
       <div class="ended" id="nEnded" hidden><h2 id="endH"></h2><p id="endP"></p><p class="endchat" id="endChat"></p></div>
@@ -513,6 +540,12 @@ html.night .badge{border-color:#211b19}
     <button type="button" data-tab="results"><i>🏆</i><span id="tResults"></span></button>
     <button type="button" data-tab="group"><i>👥</i><span id="tGroup"></span></button>
   </nav>
+  <div class="coach" id="coach" hidden></div>
+  <div class="cbubble" id="cBubble" hidden>
+    <b id="cbT"></b><p id="cbP"></p>
+    <div class="cbrow"><span class="cbdots" id="cbDots"></span><button class="mini red" type="button" id="cbNext"></button></div>
+    <span class="cbarrow" id="cbArrow"></span>
+  </div>
 </div>
 
 <!-- photo viewer: long-press the photo or use the Save button to put it in the gallery -->
@@ -533,7 +566,7 @@ html.night .badge{border-color:#211b19}
     <h2 id="sH"></h2>
     <div class="sheetdare" id="sDare"></div>
     <div class="handoff" id="sAnsBox" hidden>
-      <b id="sAnsH"></b><small id="sAnsS"></small>
+      <b id="sAnsH"></b>
       <input class="in" id="sAns" maxlength="60" autocomplete="off">
     </div>
     <div class="field" id="sWithBox" hidden>
@@ -566,13 +599,18 @@ const PHOTO_DAYS = 7;
 const T = {
   en:{
     tapToSave:'Tap a photo, then “Save to Photos” to keep it on your phone.',
+    cbNext:'Next', cbGo:'Got it 🔥',
+    cbdaresH:'Your dare 🎲', cbdaresP:'One dare at a time. Do it, count it, and the next one turns up. Not feeling it? Ask for another one, but that one won’t come back tonight.',
+    cbchatH:'The group chat 💬', cbchatP:'Photos, dares and trash talk, all in one place. Only your group sees it.',
+    cbresultsH:'The leaderboard 🏆', cbresultsP:'Who is ahead right now. When the timer hits zero, whoever is on top wins the night.',
+    cbgroupH:'Your group 👥', cbgroupP:'Everyone who is playing, your invite code, and the photos from tonight.',
     tDares:'Dares', tChat:'Chat', tResults:'Results', tGroup:'Group', appBackTxt:'Website', endedShort:'Ended', endChat:'No more dares, but the chat stays open 💬', myRank:'You’re #{r} of {n} with {p} points', grpLang:'Group language: {l}. {name} started the group and picks the language for everyone.', grpLangHost:'Group language: {l}. You started the group, so you can change it for everyone:', hostTag:'host', langSaved:'Everyone is now playing in {l} 🌐', phH:'Photos', memH:'Who’s in', nSite:'← Back to the website', nContact:'Contact ✉️', savePhoto:'Save to Photos 📲', saveHint:'Or press and hold the photo, then tap “Save to Photos” (iPhone) or “Download image” (Android).', chatEmpty:'Say hi to your group 👋', newMsgs:'New messages ↓', fLangL:'Language for the whole group', fLangS:'Everyone in the group will play in this language: dares, chat and results. Choose one that everybody understands.',
     mnPass:'My nights 🎟️', mnShop:'Shop 🛍️', mnShopS:'What you can get right now',  mnPassS:'All your Shirtless Pass nights', mnHome:'Home', mnHomeS:'What STREETDARE is', mnTry:'Try a dare 🎲', mnTryS:'See how scanning a shirt works', mnMe:'Profile', mnMeS:'Your name, photo and settings', mnLogin:'Log in', mnLoginS:'Your nights, shirts and stats', mnContact:'Contact ✉️', mnContactS:'Questions, collabs, press', sBrandS:'a game for meeting strangers',
     gH:'Shirtless Pass 🎟️', gSeats:'{l} of {s} seats left', gSeatsStarted:'{name} has started · {l} of {s} seats left',
     gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
     gGoogle:'Continue with Google', gEmail:'Continue with email', gSmall:'New here or been before, it’s the same button.',
     pfH:'Quick, who are you? 👋', pfP:'Your group sees your name and username in the feed and on the leaderboard.',
-    pfNameL:'First name', pfNameS:'This is the name people see: your group tonight, and anyone who scans your shirt.', pfUserL:'Username', pfIgL:'Instagram (optional)', pfIgS:'Only your group sees it.', pfBtn:'Let’s go 🔥',
+    pfNameL:'First name', pfNameS:'This is the name people see: your group tonight, and anyone who scans your shirt.', pfUserL:'Username', pfIgL:'Instagram (optional)', pfIgS:'Only your group sees it.', pfIgPubL:'Show my Instagram to a stranger once we have finished a dare together', pfPhotoAdd:'Add a photo', pfPhotoChange:'Change photo', pfPhotoUp:'Uploading…', pfPhotoBad:'That photo didn’t work. Try another one.', pfPhotoS:'So your group knows who you are. You can change it later.', pfBtn:'Let’s go 🔥',
     oaths:['I swear that tonight I will try to be the reason someone’s night got better, and never the reason it got worse.'],
     ucFree:'@{u} is free ✓', ucTaken:'@{u} is taken. Try another one.', ucBlocked:'Pick a different username.', ucBad:'3 to 20 characters: letters, numbers, . and _',
     needName:'Write your name first.', needUser:'Pick a free username first.',
@@ -592,21 +630,21 @@ const T = {
     hPastH:'Your nights', active:'Live now', rankOf:'#{r} of {n} · {p} pts', hBuyH:'Want to play?', hBuyP:'Message Aron and tell him how many of you there are.',
     hLogin:'Played before? <a href="/login/?next=/pass/">Log in</a> to see your nights.',
     nAll:'← All my nights', nShop:'Shop 🛍️', nProfile:'My profile →', nSub:'{n} in the group',
-    howH:'How it works', how1:'Go up to strangers and do the dares on your phone.', how2:'Every dare gives you points. Friends from your group can jump in, and everyone who joins gets the points.', how3:'Most points when the timer hits zero wins the night.', howBtn:'Let’s go 🔥',
+    howH:'How it works', how1:'Go up to strangers and do the dares on your phone.', how2:'You earn points by doing the dares. Only people from your group can jump in on your dare, and everyone who joins gets the points: you add them yourself once the dare is done.', how3:'Some dares need proof before the points count: a photo, or an answer typed by the stranger.', how4:'When the timer hits zero, the person with the most points wins the night.', howBtn:'Let’s go 🔥',
     endH:'The night is over 🌙', endP:'{name} won with {p} points 👑',
     skipWarn:'Careful with skipping! Every dare shows up only once tonight, so try not to run out before the night ends.', skipNone:'No dares left tonight. Skipped ones don’t come back.', noneLeft:'No dares left tonight. The ones you skipped don’t come back 😅 ',
     shirtH:'Next time: let strangers come to you 👕', shirtP:'With the Shirtless Pass you walked up to strangers. With a STREETDARE shirt it flips: they scan your QR, and strangers walk up to you. The shirt says the opening line for you. And it comes with different dare decks, for the street by day and for parties, so there are even more dares to do.', shirtBtn:'I want a shirt →',
     dK:'Your dare', pts:'+{p}', tagAns:'✍️ The stranger types', tagPhoto:'📸 Photo', dDone:'We did it ✅', dNext:'Give me another one', allDone:'You did every dare tonight 🤯 Legend.',
-    sH:'Nice! 🔥', sAnsH:'Hand your phone to the stranger 👋', sAnsS:'Keep holding it while they type.', sWithL:'Who from your group did it with you?', sPhotoL:'Photo',
+    sH:'Nice! 🔥', sAnsH:'Hand your phone to the stranger 👋', sWithL:'Who from your group did it with you?', sPhotoL:'Photo',
     sPhotoNeed:'Add the photo', sPhotoNeedS:'This dare needs a photo for the group.', sPhotoOpt:'Selfie with them? +1 point', sPhotoOptS:'Ask them first. Your group sees it for 7 days.', sPhotoOk:'Photo ready ✓', sPhotoChange:'Tap to change it',
     sGo:'Count it', sCancel:'Back', sNeedAns:'Let them type their answer first.', sNeedPhoto:'This one needs a photo.', sDoneBefore:'You already did this dare tonight.', sEnded:'The night is over.',
     gotPts:'+{p} points 🔥', uploading:'Uploading…', saving:'Saving…', err:'Something went wrong. Try again.',
     sdFrom:'STREETDARE', sdWelH:'Welcome to {g} 🔥',
-    sdWel:['You have 24 hours. Go up to strangers, do the dares and collect points. Some dares need a text answer or a photo as proof.', 'You can do any dare together with people from your group, and everyone who joins gets the points. But in the end, you’re all competing against each other 👀', 'That’s what STREETDARE is about: making the first move, so tonight you meet people you’d never have talked to otherwise.', 'Stay safe: anyone can say no, keep an eye on your phone and your things, look after each other, and skip any dare that doesn’t feel right.'],
+    sdWel:['You have 24 hours. Go up to strangers, do the dares and collect points. Some dares need a text answer or a photo as proof before the points count.', 'You can do any dare together with people from your group, and everyone who joins gets the points. But in the end, you’re all competing against each other 👀', 'STREETDARE just gives you the first push. Tonight is about meeting people you would never have talked to otherwise.', 'Some dares ask you to hand your phone to a stranger. Keep an eye on it while they type, and keep an eye on your things.', 'Stay safe: anyone can say no, look after each other, and skip any dare that doesn’t feel right.'],
     sdEndH:'Time’s up! 🏁', sdWin1:'{name} won the night with {p} points. Congratulations 👑', sdWinN:'{names} share the win with {p} points each. Congratulations 👑', sdWin0:'Nobody scored this time. The next night is yours.',
     sdEnd:'Want more? Join the waitlist for the STREETDARE shirt: more decks and dares, your own dares, strangers come up to you instead of the other way round, and a streetwear shirt designed for going out.', sdEndBtn:'Join the waitlist →',
     bH:'Leaderboard', you:'you', ptsShort:'pts', daresN:'{n} dares', dares1:'1 dare',
-    feedH:'Group Feed', privNote:'Only your group sees this chat. During the launch phase, the STREETDARE team can also see it, to analyze how the game is used and make it better for you.',
+    feedH:'Group Feed', privNote:'Only your group sees this chat. During the launch phase, the STREETDARE team can also see it, to analyze how the game is used and make it a better experience for you.',
     photoNote:'Photos stay here for 7 days, then they disappear.', photoNoteLeft:'Photos disappear in {d}. Save them before they’re gone.', saveAll:'Save all photos',
     cPh:'Write to your group…', cSend:'Send', cReplyTo:'Replying to {name}', cPreview:'Photo ready', reply:'Reply', del:'Delete', delQ:'Delete this?', challenge:'❌ Didn’t happen', challenged:'❌ {n}', voided:'Doesn’t count (the group said it didn’t happen)',
     joined:'🎟️ {name} joined the night', photoGone:'📸 This photo has disappeared (7 days).', and2:' & ', empty:'Nothing yet. Do the first dare 👆',
@@ -616,13 +654,18 @@ const T = {
   },
   es:{
     tapToSave:'Toca una foto y luego «Guardar en Fotos» para tenerla en tu móvil.',
+    cbNext:'Siguiente', cbGo:'Entendido 🔥',
+    cbdaresH:'Tu reto 🎲', cbdaresP:'Un reto cada vez. Hazlo, cuéntalo y aparece el siguiente. ¿No te convence? Pide otro, pero ese ya no vuelve esta noche.',
+    cbchatH:'El chat del grupo 💬', cbchatP:'Fotos, retos y piques, todo en el mismo sitio. Solo lo ve tu grupo.',
+    cbresultsH:'La clasificación 🏆', cbresultsP:'Quién va ganando ahora mismo. Cuando el contador llegue a cero, gana quien esté arriba.',
+    cbgroupH:'Tu grupo 👥', cbgroupP:'Quién está jugando, tu código de invitación y las fotos de esta noche.',
     tDares:'Retos', tChat:'Chat', tResults:'Resultados', tGroup:'Grupo', appBackTxt:'Web', endedShort:'Terminada', endChat:'Se acabaron los retos, pero el chat sigue abierto 💬', myRank:'Vas #{r} de {n} con {p} puntos', grpLang:'Idioma del grupo: {l}. {name} creó el grupo y elige el idioma para todos.', grpLangHost:'Idioma del grupo: {l}. Creaste el grupo, así que puedes cambiarlo para todos:', hostTag:'anfitrión', langSaved:'Ahora todos juegan en {l} 🌐', phH:'Fotos', memH:'Quién está', nSite:'← Volver a la web', nContact:'Contacto ✉️', savePhoto:'Guardar en Fotos 📲', saveHint:'O mantén pulsada la foto y toca «Guardar en Fotos» (iPhone) o «Descargar imagen» (Android).', chatEmpty:'Saluda a tu grupo 👋', newMsgs:'Mensajes nuevos ↓', fLangL:'Idioma para todo el grupo', fLangS:'Todo el grupo jugará en este idioma: retos, chat y resultados. Elige uno que entienda todo el mundo.',
     mnPass:'Mis noches 🎟️', mnShop:'Tienda 🛍️', mnShopS:'Lo que ya puedes conseguir',  mnPassS:'Todas tus noches de Shirtless Pass', mnHome:'Inicio', mnHomeS:'Qué es STREETDARE', mnTry:'Prueba un reto 🎲', mnTryS:'Mira cómo funciona escanear una camiseta', mnMe:'Perfil', mnMeS:'Tu nombre, tu foto y tus ajustes', mnLogin:'Entrar', mnLoginS:'Tus noches, camisetas y estadísticas', mnContact:'Contacto ✉️', mnContactS:'Preguntas, colaboraciones, prensa', sBrandS:'un juego para conocer gente',
     gH:'Shirtless Pass 🎟️', gSeats:'Quedan {l} de {s} plazas', gSeatsStarted:'{name} ya ha empezado · quedan {l} de {s} plazas',
     gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
     gGoogle:'Continuar con Google', gEmail:'Continuar con email', gSmall:'Si eres nuevo o ya has jugado, es el mismo botón.',
     pfH:'Rápido, ¿quién eres? 👋', pfP:'Tu grupo ve tu nombre y tu usuario en el feed y en la clasificación.',
-    pfNameL:'Nombre', pfNameS:'Este es el nombre que ve la gente: tu grupo esta noche, y quien escanee tu camiseta.', pfUserL:'Usuario', pfIgL:'Instagram (opcional)', pfIgS:'Solo lo ve tu grupo.', pfBtn:'Vamos 🔥',
+    pfNameL:'Nombre', pfNameS:'Este es el nombre que ve la gente: tu grupo esta noche, y quien escanee tu camiseta.', pfUserL:'Usuario', pfIgL:'Instagram (opcional)', pfIgS:'Solo lo ve tu grupo.', pfIgPubL:'Mostrar mi Instagram a un desconocido cuando hayamos terminado un reto juntos', pfPhotoAdd:'Añadir una foto', pfPhotoChange:'Cambiar la foto', pfPhotoUp:'Subiendo…', pfPhotoBad:'Esa foto no ha funcionado. Prueba con otra.', pfPhotoS:'Para que tu grupo sepa quién eres. Puedes cambiarla después.', pfBtn:'Vamos 🔥',
     oaths:['Juro que esta noche voy a intentar ser el motivo por el que la noche de alguien mejoró, y nunca el motivo por el que empeoró.'],
     ucFree:'@{u} está libre ✓', ucTaken:'@{u} ya está cogido. Prueba otro.', ucBlocked:'Elige otro usuario.', ucBad:'De 3 a 20 caracteres: letras, números, . y _',
     needName:'Escribe primero tu nombre.', needUser:'Elige primero un usuario libre.',
@@ -642,21 +685,21 @@ const T = {
     hPastH:'Tus noches', active:'En directo', rankOf:'#{r} de {n} · {p} pts', hBuyH:'¿Queréis jugar?', hBuyP:'Escríbele a Aron y dile cuántos sois.',
     hLogin:'¿Ya has jugado? <a href="/login/?next=/pass/">Entra</a> para ver tus noches.',
     nAll:'← Todas mis noches', nShop:'Tienda 🛍️', nProfile:'Mi perfil →', nSub:'{n} en el grupo',
-    howH:'Cómo funciona', how1:'Acércate a desconocidos y haz los retos del móvil.', how2:'Cada reto da puntos. Tus amigos del grupo pueden unirse, y todos los que se unen se llevan los puntos.', how3:'Quien tenga más puntos cuando el contador llegue a cero gana la noche.', howBtn:'Vamos 🔥',
+    howH:'Cómo funciona', how1:'Acércate a desconocidos y haz los retos del móvil.', how2:'Ganas puntos haciendo los retos. A tu reto solo puede unirse gente de tu grupo, y todos los que se unen se llevan los puntos: los añades tú cuando ya habéis hecho el reto.', how3:'Algunos retos piden una prueba para que los puntos cuenten: una foto, o una respuesta escrita por el desconocido.', how4:'Cuando el contador llegue a cero, gana la noche quien tenga más puntos.', howBtn:'Vamos 🔥',
     endH:'La noche se ha acabado 🌙', endP:'{name} ha ganado con {p} puntos 👑',
     skipWarn:'¡Cuidado con saltar! Cada reto sale una sola vez esta noche, así que intenta no quedarte sin retos antes de que acabe la noche.', skipNone:'No quedan retos esta noche. Los que saltas no vuelven.', noneLeft:'No quedan retos esta noche. Los que has saltado no vuelven 😅 ',
     shirtH:'La próxima: que los desconocidos vengan a ti 👕', shirtP:'Con el Shirtless Pass fuiste tú a hablar con desconocidos. Con una camiseta STREETDARE se da la vuelta: escanean tu QR y son los desconocidos los que se acercan a ti. La camiseta dice la frase de entrada por ti. Y trae distintos mazos de retos, para la calle de día y para fiestas, así que hay aún más retos que hacer.', shirtBtn:'Quiero una camiseta →',
     dK:'Tu reto', pts:'+{p}', tagAns:'✍️ El desconocido escribe', tagPhoto:'📸 Foto', dDone:'¡Hecho! ✅', dNext:'Dame otro', allDone:'Has hecho todos los retos de esta noche 🤯 Leyenda.',
-    sH:'¡Bien! 🔥', sAnsH:'Pásale el móvil al desconocido 👋', sAnsS:'No lo sueltes mientras escribe.', sWithL:'¿Quién de tu grupo lo ha hecho contigo?', sPhotoL:'Foto',
+    sH:'¡Bien! 🔥', sAnsH:'Pásale el móvil al desconocido 👋', sWithL:'¿Quién de tu grupo lo ha hecho contigo?', sPhotoL:'Foto',
     sPhotoNeed:'Añade la foto', sPhotoNeedS:'Este reto necesita una foto para el grupo.', sPhotoOpt:'¿Selfie con esa persona? +1 punto', sPhotoOptS:'Pregúntale antes. Tu grupo la ve durante 7 días.', sPhotoOk:'Foto lista ✓', sPhotoChange:'Toca para cambiarla',
     sGo:'Que cuente', sCancel:'Volver', sNeedAns:'Deja primero que escriba su respuesta.', sNeedPhoto:'Este reto necesita una foto.', sDoneBefore:'Ya has hecho este reto esta noche.', sEnded:'La noche se ha acabado.',
     gotPts:'+{p} puntos 🔥', uploading:'Subiendo…', saving:'Guardando…', err:'Algo ha fallado. Inténtalo otra vez.',
     sdFrom:'STREETDARE', sdWelH:'Bienvenidos a {g} 🔥',
-    sdWel:['Tenéis 24 horas. Acercaos a desconocidos, haced los retos y sumad puntos. Algunos retos piden una respuesta escrita o una foto como prueba.', 'Podéis hacer cualquier reto junto a gente de vuestro grupo, y todos los que participan se llevan los puntos. Pero al final, competís entre vosotros 👀', 'De eso va STREETDARE: dar el primer paso, para que esta noche conozcáis a gente con la que nunca habríais hablado.', 'Con cabeza: cualquiera puede decir que no, vigilad el móvil y vuestras cosas, cuidaos entre vosotros y saltaos cualquier reto que no os cuadre.'],
+    sdWel:['Tenéis 24 horas. Acercaos a desconocidos, haced los retos y sumad puntos. Algunos retos piden una respuesta escrita o una foto como prueba para que los puntos cuenten.', 'Podéis hacer cualquier reto junto a gente de vuestro grupo, y todos los que participan se llevan los puntos. Pero al final, competís entre vosotros 👀', 'STREETDARE solo os da el primer empujón. Esta noche va de conocer a gente con la que nunca habríais hablado.', 'Algunos retos os piden darle el móvil a un desconocido. No lo perdáis de vista mientras escribe, ni tampoco vuestras cosas.', 'Con cabeza: cualquiera puede decir que no, cuidaos entre vosotros y saltaos cualquier reto que no os cuadre.'],
     sdEndH:'¡Se acabó el tiempo! 🏁', sdWin1:'{name} ha ganado la noche con {p} puntos. ¡Enhorabuena 👑!', sdWinN:'{names} comparten la victoria con {p} puntos cada uno. ¡Enhorabuena 👑!', sdWin0:'Esta vez nadie ha sumado puntos. La próxima noche es vuestra.',
     sdEnd:'¿Queréis más? Apuntaos a la lista de la camiseta STREETDARE: más barajas y retos, vuestros propios retos, los desconocidos vienen a vosotros en vez de al revés, y una camiseta streetwear diseñada para salir.', sdEndBtn:'Apuntarme a la lista →',
     bH:'Clasificación', you:'tú', ptsShort:'pts', daresN:'{n} retos', dares1:'1 reto',
-    feedH:'Group Feed', privNote:'Solo tu grupo ve este chat. Durante la fase de lanzamiento, el equipo de STREETDARE también puede verlo, para analizar cómo se usa el juego y mejorarlo para ti.',
+    feedH:'Group Feed', privNote:'Solo tu grupo ve este chat. Durante la fase de lanzamiento, el equipo de STREETDARE también puede verlo, para analizar cómo se usa el juego y mejorar la experiencia para ti.',
     photoNote:'Las fotos se quedan aquí 7 días y luego desaparecen.', photoNoteLeft:'Las fotos desaparecen en {d}. Guárdalas antes de que se vayan.', saveAll:'Guardar todas las fotos',
     cPh:'Escribe a tu grupo…', cSend:'Enviar', cReplyTo:'Respondiendo a {name}', cPreview:'Foto lista', reply:'Responder', del:'Borrar', delQ:'¿Borrar esto?', challenge:'❌ No pasó', challenged:'❌ {n}', voided:'No cuenta (el grupo dice que no pasó)',
     joined:'🎟️ {name} se ha unido a la noche', photoGone:'📸 Esta foto ha desaparecido (7 días).', and2:' y ', empty:'Todavía nada. Haced el primer reto 👆',
@@ -666,13 +709,18 @@ const T = {
   },
   hu:{
     tapToSave:'Koppints egy fotóra, majd a „Mentés a Fotókba” gombra, hogy a telefonodon maradjon.',
+    cbNext:'Tovább', cbGo:'Értem 🔥',
+    cbdaresH:'A kihívásod 🎲', cbdaresP:'Egyszerre egy kihívás. Csináld meg, számold el, és jön a következő. Nem tetszik? Kérj másikat, de az ma este már nem jön vissza.',
+    cbchatH:'A csapat chatje 💬', cbchatP:'Fotók, kihívások és beszólások egy helyen. Csak a csapatod látja.',
+    cbresultsH:'A ranglista 🏆', cbresultsP:'Ki áll most nyerésre. Amikor lejár az idő, a lista élén álló nyeri az estét.',
+    cbgroupH:'A csapatod 👥', cbgroupP:'Ki játszik, a meghívókódod, és a ma esti fotók.',
     tDares:'Kihívások', tChat:'Chat', tResults:'Eredmények', tGroup:'Csapat', appBackTxt:'Weboldal', endedShort:'Vége', endChat:'Több kihívás nincs, de a chat nyitva marad 💬', myRank:'{n} főből #{r}. vagy, {p} ponttal', grpLang:'A csapat nyelve: {l}. A csapatot {name} hozta létre, és ő választja a nyelvet mindenkinek.', grpLangHost:'A csapat nyelve: {l}. Te hoztad létre a csapatot, szóval mindenkinek átállíthatod:', hostTag:'szervező', langSaved:'Innentől mindenki {l} nyelven játszik 🌐', phH:'Fotók', memH:'Kik vannak bent', nSite:'← Vissza a weboldalra', nContact:'Kapcsolat ✉️', savePhoto:'Mentés a Fotókba 📲', saveHint:'Vagy tartsd lenyomva a fotót, és koppints a „Mentés a Fotókba” (iPhone) vagy a „Kép letöltése” (Android) lehetőségre.', chatEmpty:'Köszönj a csapatodnak 👋', newMsgs:'Új üzenetek ↓', fLangL:'Nyelv az egész csapatnak', fLangS:'Az egész csapat ezen a nyelven játszik: kihívások, chat és eredmények. Olyat válassz, amit mindenki ért.',
     mnPass:'Az estéim 🎟️', mnShop:'Bolt 🛍️', mnShopS:'Amit már most megszerezhetsz',  mnPassS:'Az összes Shirtless Pass estéd', mnHome:'Főoldal', mnHomeS:'Mi az a STREETDARE', mnTry:'Próbálj ki egy kihívást 🎲', mnTryS:'Nézd meg, hogyan működik a póló szkennelése', mnMe:'Profil', mnMeS:'A neved, a fotód és a beállításaid', mnLogin:'Belépés', mnLoginS:'Az estéid, pólóid és statisztikáid', mnContact:'Kapcsolat ✉️', mnContactS:'Kérdések, együttműködés, sajtó', sBrandS:'játék, amivel idegenekkel ismerkedhetsz',
     gH:'Shirtless Pass 🎟️', gSeats:'{s} helyből {l} szabad', gSeatsStarted:'{name} már elkezdődött · {s} helyből {l} szabad',
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
     gGoogle:'Folytatás Google-fiókkal', gEmail:'Folytatás e-maillel', gSmall:'Akár új vagy, akár játszottál már, ugyanez a gomb.',
     pfH:'Gyorsan, ki vagy? 👋', pfP:'A csapatod látja a neved és a felhasználóneved a feedben és a ranglistán.',
-    pfNameL:'Keresztnév', pfNameS:'Ezt a nevet látják mások: ma este a csapatod, és bárki, aki beszkenneli a pólódat.', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfBtn:'Mehet 🔥',
+    pfNameL:'Keresztnév', pfNameS:'Ezt a nevet látják mások: ma este a csapatod, és bárki, aki beszkenneli a pólódat.', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfIgPubL:'Mutassa az Instagramomat annak az idegennek, akivel teljesítettünk egy kihívást', pfPhotoAdd:'Fotó hozzáadása', pfPhotoChange:'Fotó cseréje', pfPhotoUp:'Feltöltés…', pfPhotoBad:'Ez a fotó nem jött össze. Próbálj egy másikat.', pfPhotoS:'Hogy a csapatod tudja, ki vagy. Később módosíthatod.', pfBtn:'Mehet 🔥',
     oaths:['Esküszöm, hogy ma este azon leszek, hogy miattam legyen jobb valakinek az estéje, és soha ne miattam legyen rosszabb.'],
     ucFree:'@{u} szabad ✓', ucTaken:'@{u} már foglalt. Próbálj másikat.', ucBlocked:'Válassz másik felhasználónevet.', ucBad:'3–20 karakter: betűk, számok, . és _',
     needName:'Előbb írd be a neved.', needUser:'Előbb válassz egy szabad felhasználónevet.',
@@ -692,21 +740,21 @@ const T = {
     hPastH:'Az estéid', active:'Élő', rankOf:'{n}-ből #{r} · {p} pont', hBuyH:'Játszanátok?', hBuyP:'Írj Áronnak, és mondd meg, hányan vagytok.',
     hLogin:'Játszottál már? <a href="/login/?next=/pass/">Lépj be</a>, és látod az estéidet.',
     nAll:'← Az összes estém', nShop:'Bolt 🛍️', nProfile:'A profilom →', nSub:'{n} fő a csapatban',
-    howH:'Hogy működik', how1:'Menj oda idegenekhez, és csináld meg a kihívásokat a telefonodról.', how2:'Minden kihívás pontot ér. A csapatodból bárki beszállhat, és mindenki megkapja a pontokat, aki részt vett.', how3:'Akinek a legtöbb pontja van, amikor lejár az idő, az nyeri az estét.', howBtn:'Mehet 🔥',
+    howH:'Hogy működik', how1:'Menj oda idegenekhez, és csináld meg a kihívásokat a telefonodról.', how2:'A kihívások teljesítésével szerzel pontot. A kihívásodba csak a saját csapatodból szállhatnak be, és mindenki megkapja a pontokat, aki beszállt: te adod hozzá őket, miután megcsináltátok.', how3:'Néhány kihíváshoz bizonyíték kell, hogy a pont számítson: egy fotó, vagy egy válasz, amit az idegen ír be.', how4:'Amikor lejár az idő, az nyeri az estét, akinek a legtöbb pontja van.', howBtn:'Mehet 🔥',
     endH:'Vége az estének 🌙', endP:'{name} nyert {p} ponttal 👑',
     skipWarn:'Vigyázz a kihagyással! Minden kihívás csak egyszer jön ma este, ezért próbálj meg nem elfogyni előlük, mielőtt véget ér az este.', skipNone:'Ma estére nincs több kihívás. A kihagyottak nem jönnek vissza.', noneLeft:'Ma estére elfogytak a kihívások. A kihagyottak nem jönnek vissza 😅 ',
     shirtH:'Legközelebb: jöjjenek hozzád az idegenek 👕', shirtP:'A Shirtless Pass-szel te mentél oda idegenekhez. A STREETDARE pólóval megfordul: beolvassák a QR-kódodat, és az idegenek jönnek oda hozzád. A póló elmondja helyetted a nyitómondatot. Ráadásul többféle kihívás-paklival jön, nappali utcai és bulis csomagokkal, így még több kihívás vár rád.', shirtBtn:'Kérek egy pólót →',
     dK:'A kihívásod', pts:'+{p}', tagAns:'✍️ Az idegen írja be', tagPhoto:'📸 Fotó', dDone:'Megcsináltuk ✅', dNext:'Kérek egy másikat', allDone:'Ma este minden kihívást megcsináltál 🤯 Legenda.',
-    sH:'Szép! 🔥', sAnsH:'Add oda a telefonod az idegennek 👋', sAnsS:'Tartsd a kezedben, amíg beírja.', sWithL:'Ki csinálta veled a csapatodból?', sPhotoL:'Fotó',
+    sH:'Szép! 🔥', sAnsH:'Add oda a telefonod az idegennek 👋', sWithL:'Ki csinálta veled a csapatodból?', sPhotoL:'Fotó',
     sPhotoNeed:'Add hozzá a fotót', sPhotoNeedS:'Ehhez a kihíváshoz fotó kell a csapatnak.', sPhotoOpt:'Egy szelfi vele? +1 pont', sPhotoOptS:'Előbb kérdezd meg. A csapatod 7 napig látja.', sPhotoOk:'A fotó kész ✓', sPhotoChange:'Koppints a cseréhez',
     sGo:'Számoljuk', sCancel:'Vissza', sNeedAns:'Előbb hadd írja be a válaszát.', sNeedPhoto:'Ehhez fotó kell.', sDoneBefore:'Ezt a kihívást ma már megcsináltad.', sEnded:'Vége az estének.',
     gotPts:'+{p} pont 🔥', uploading:'Feltöltés…', saving:'Mentés…', err:'Valami hiba történt. Próbáld újra.',
     sdFrom:'STREETDARE', sdWelH:'Üdv itt: {g} 🔥',
-    sdWel:['24 órátok van. Menjetek oda idegenekhez, teljesítsétek a kihívásokat, és gyűjtsetek pontokat. Néhány kihíváshoz szöveges válasz vagy fotó kell bizonyítéknak.', 'Bármelyik kihívást megcsinálhatjátok együtt a csapat többi tagjával, és mindenki megkapja a pontokat, aki benne volt. De a végén egymás ellen versenyeztek 👀', 'Erről szól a STREETDARE: megtenni az első lépést, hogy ma este olyanokkal ismerkedjetek meg, akikkel amúgy sosem beszéltetek volna.', 'Vigyázzatok magatokra: bárki mondhat nemet, figyeljetek a telefonotokra és a cuccaitokra, vigyázzatok egymásra, és hagyjátok ki azt a kihívást, ami nem tűnik jónak.'],
+    sdWel:['24 órátok van. Menjetek oda idegenekhez, teljesítsétek a kihívásokat, és gyűjtsetek pontokat. Néhány kihíváshoz szöveges válasz vagy fotó kell bizonyítéknak, hogy a pont számítson.', 'Bármelyik kihívást megcsinálhatjátok együtt a csapat többi tagjával, és mindenki megkapja a pontokat, aki benne volt. De a végén egymás ellen versenyeztek 👀', 'A STREETDARE csak meglöki az elejét. Ma este arról szól, hogy olyanokkal ismerkedjetek meg, akikkel amúgy sosem beszéltetek volna.', 'Néhány kihívásnál oda kell adnotok a telefonotokat egy idegennek. Tartsátok szemmel, amíg beírja, és a cuccaitokat is.', 'Vigyázzatok magatokra: bárki mondhat nemet, vigyázzatok egymásra, és hagyjátok ki azt a kihívást, ami nem tűnik jónak.'],
     sdEndH:'Lejárt az idő! 🏁', sdWin1:'{name} nyerte az estét {p} ponttal. Gratulálunk 👑', sdWinN:'{names} együtt nyertek, fejenként {p} ponttal. Gratulálunk 👑', sdWin0:'Most senki nem szerzett pontot. A következő este a tiétek.',
     sdEnd:'Kérsz még? Iratkozz fel a STREETDARE póló várólistájára: több pakli és kihívás, saját kihívások, az idegenek jönnek oda hozzád és nem fordítva, plusz egy bulizásra tervezett streetwear póló.', sdEndBtn:'Feliratkozom →',
     bH:'Ranglista', you:'te', ptsShort:'pont', daresN:'{n} kihívás', dares1:'1 kihívás',
-    feedH:'Group Feed', privNote:'Ezt a chatet csak a csapatod látja. A bevezető időszakban a STREETDARE csapata is láthatja, hogy elemezze, hogyan használjátok a játékot, és jobbá tegye nektek.',
+    feedH:'Group Feed', privNote:'Ezt a chatet csak a csapatod látja. A bevezető időszakban a STREETDARE csapata is láthatja, hogy elemezze, hogyan használjátok a játékot, és jobb élménnyé tegye nektek.',
     photoNote:'A fotók 7 napig maradnak itt, utána eltűnnek.', photoNoteLeft:'A fotók {d} múlva eltűnnek. Mentsd el őket, mielőtt eltűnnek.', saveAll:'Az összes fotó mentése',
     cPh:'Írj a csapatnak…', cSend:'Küldés', cReplyTo:'Válasz neki: {name}', cPreview:'A fotó kész', reply:'Válasz', del:'Törlés', delQ:'Törlöd?', challenge:'❌ Nem történt meg', challenged:'❌ {n}', voided:'Nem számít (a csapat szerint nem történt meg)',
     joined:'🎟️ {name} csatlakozott az estéhez', photoGone:'📸 Ez a fotó eltűnt (7 nap).', and2:' és ', empty:'Még semmi. Csináljátok meg az első kihívást 👆',
@@ -738,8 +786,8 @@ const waLink = () => WA;
 function paint(){
   document.documentElement.lang = L;
   if (window.paintLangPick) window.paintLangPick();
-  ['gH','gP','gSmall','pfH','pfP','pfNameL','pfNameS','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
-   'nAll','nProfile','nShop','nSite','nContact','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','privNote','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel',
+  ['gH','gP','gSmall','pfH','pfP','pfNameL','pfNameS','pfUserL','pfIgL','pfIgS','pfIgPubL','pfPhotoS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
+   'nAll','nProfile','nShop','nSite','nContact','howH','how1','how2','how3','how4','howBtn','dK','dDone','dNext','bH','privNote','invH','invShare','sAnsH','sWithL','sPhotoL','sGo','sCancel',
    'tDares','tChat','tResults','tGroup','appBackTxt','phH','memH','fLangL','fLangS']
     .forEach(k => { if ($(k)) $(k).textContent = t(k); });
   [['mnPass','mnPass'],['mnHome','mnHome'],['mnShop','mnShop'],['mnTry','mnTry'],['mnContact','mnContact']].forEach(([id, k]) => { $(id).querySelector('span').textContent = t(k); $(id).querySelector('small').textContent = t(k + 'S'); });
@@ -861,8 +909,47 @@ function askProfile(then){
     const base = ($('pfName').value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9._]/g, '').slice(0, 20);
     if (base.length >= 3) $('pfUser').value = base;
   }
+  if (profile.instagram) $('pfIgPub').checked = !!profile.instagram_public;
+  paintPfPhoto(); paintPfIgPub();
   view('profile'); ucCheck();
 }
+/* ---------- profile photo, right where we ask for the name ---------- */
+function paintPfPhoto(){
+  const u = profile && profile.avatar_url;
+  $('pfAv').hidden = !u; $('pfAvEmpty').hidden = !!u; if (u) $('pfAv').src = u;
+  $('pfPhotoBtn').textContent = t(u ? 'pfPhotoChange' : 'pfPhotoAdd');
+}
+/* the sharing tick only means anything once there is a handle to share */
+function paintPfIgPub(){ $('pfIgPubWrap').hidden = !$('pfIg').value.trim(); }
+function squareJpeg(file){
+  return new Promise((resolve, reject) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const side = Math.min(img.naturalWidth, img.naturalHeight), out = 640, c = document.createElement('canvas');
+      c.width = c.height = out;
+      c.getContext('2d').drawImage(img, (img.naturalWidth - side) / 2, (img.naturalHeight - side) / 2, side, side, 0, 0, out, out);
+      URL.revokeObjectURL(url); c.toBlob(b => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', 0.86);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('img')); };
+    img.src = url;
+  });
+}
+$('pfPhotoBtn').onclick = () => $('pfPhotoFile').click();
+$('pfPhotoFile').onchange = async () => {
+  const f = $('pfPhotoFile').files[0]; $('pfPhotoFile').value = ''; if (!f) return;
+  const b = $('pfPhotoBtn'); b.disabled = true; b.textContent = t('pfPhotoUp');
+  try{
+    const blob = await squareJpeg(f), path = user.id + '/' + Date.now() + '.jpg';
+    const up = await sb.storage.from('avatars').upload(path, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+    if (up.error) throw up.error;
+    const old = profile.avatar_url, url = sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+    const { error } = await sb.from('profiles').update({ avatar_url: url }).eq('id', user.id);
+    if (error) throw error;
+    profile.avatar_url = url;
+    if (old && old.includes('/avatars/')) sb.storage.from('avatars').remove([old.split('/avatars/')[1]]);
+  }catch(e){ toast(t('pfPhotoBad')); }
+  b.disabled = false; paintPfPhoto();
+};
 async function ucCheck(){
   const u = $('pfUser').value.trim().toLowerCase(), m = $('pfUserMsg'); ucOk = false;
   if (profile.username && u === profile.username){ ucOk = true; m.textContent = ''; return; }
@@ -879,7 +966,7 @@ $('pfUser').oninput = () => {
   if (v !== $('pfUser').value) $('pfUser').value = v;
   clearTimeout(ucTimer); ucTimer = setTimeout(ucCheck, 350);
 };
-$('pfIg').oninput = () => { const v = $('pfIg').value.toLowerCase().replace(/^@/, '').replace(/[^a-z0-9._]/g, ''); if (v !== $('pfIg').value) $('pfIg').value = v; };
+$('pfIg').oninput = () => { const v = $('pfIg').value.toLowerCase().replace(/^@/, '').replace(/[^a-z0-9._]/g, ''); if (v !== $('pfIg').value) $('pfIg').value = v; paintPfIgPub(); };
 $('pfForm').onsubmit = async e => {
   e.preventDefault(); const err = $('pfErr'); err.hidden = true;
   const name = $('pfName').value.trim().slice(0, 40), u = $('pfUser').value.trim().toLowerCase(), ig = $('pfIg').value.trim();
@@ -887,7 +974,8 @@ $('pfForm').onsubmit = async e => {
   if (!ucOk){ await ucCheck(); if (!ucOk){ err.textContent = t('needUser'); err.hidden = false; return; } }
   const b = $('pfBtn'); b.disabled = true; b.textContent = t('saving');
   const upd = { name, name_confirmed: true, username: u, lang: L };
-  if (ig) upd.instagram = ig;
+  if (ig){ upd.instagram = ig; upd.instagram_public = $('pfIgPub').checked; }
+  else { upd.instagram = null; upd.instagram_public = false; }
   const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
   b.disabled = false; b.textContent = t('pfBtn');
   if (error){ err.textContent = /duplicate|unique|taken/i.test(error.message) ? t('ucTaken', { u }) : t('err'); err.hidden = false; return; }
@@ -1068,13 +1156,13 @@ async function openNight(id, fresh){
   stopLobby();
   await loadMsgs();
   rememberActive();
-  if (fresh || !store.get('sd_pass_how')) $('nHow').hidden = false;
+  if (fresh || !store.get('sd_pass_how')) $('nHow').hidden = false; else setTimeout(startCoach, 400);
   view('night');
   document.body.classList.add('inapp');
   $('app').hidden = false;
   renderHook = renderNight;
   paint();
-  if (!dare) pickDare();
+  if (!dare) restoreDare();
   let start = null; try{ start = sessionStorage.getItem('sd_tab_' + id); }catch(e){}
   showTab(start || (isLive() ? 'dares' : 'chat'));
   clearInterval(clockT); clockT = setInterval(tickClock, 1000); tickClock();
@@ -1085,7 +1173,43 @@ function rememberActive(){
   if (live) store.set('sd_pass', JSON.stringify({ id: info.id, name: info.name, ends: new Date(info.ends_at).getTime() - skew }));
   else { const s = JSON.parse(store.get('sd_pass') || 'null'); if (s && s.id === info.id) store.del('sd_pass'); }
 }
-$('howBtn').onclick = () => { $('nHow').hidden = true; store.set('sd_pass_how', '1'); };
+$('howBtn').onclick = () => { $('nHow').hidden = true; store.set('sd_pass_how', '1'); startCoach(); };
+
+/* ---------- first run: bubbles that point at the bottom menu, once per phone ---------- */
+const COACH = ['dares', 'chat', 'results', 'group'];
+let coachI = -1;
+function startCoach(){
+  if (store.get('sd_pass_tabs') || !isLive()) return;
+  coachI = 0; paintCoach();
+  requestAnimationFrame(paintCoach);   /* again once layout has settled */
+  addEventListener('resize', paintCoach); addEventListener('orientationchange', paintCoach);
+}
+function endCoach(){
+  coachI = -1; store.set('sd_pass_tabs', '1');
+  removeEventListener('resize', paintCoach); removeEventListener('orientationchange', paintCoach);
+  $('coach').hidden = $('cBubble').hidden = true;
+  $('tabs').classList.remove('coaching');
+  [...$('tabs').children].forEach(b => b.classList.remove('spot'));
+}
+function paintCoach(){
+  if (coachI < 0) return;
+  const key = COACH[coachI], btn = $('tabs').querySelector('[data-tab="' + key + '"]');
+  if (!btn) return endCoach();
+  $('coach').hidden = $('cBubble').hidden = false;
+  $('tabs').classList.add('coaching');
+  [...$('tabs').children].forEach(b => b.classList.toggle('spot', b === btn));
+  $('cbT').textContent = t('cb' + key + 'H');
+  $('cbP').textContent = t('cb' + key + 'P');
+  $('cbDots').innerHTML = COACH.map((_, i) => '<i class="' + (i === coachI ? 'on' : '') + '"></i>').join('');
+  $('cbNext').textContent = t(coachI === COACH.length - 1 ? 'cbGo' : 'cbNext');
+  const bar = $('tabs').getBoundingClientRect(), r = btn.getBoundingClientRect(), bub = $('cBubble');
+  bub.style.bottom = (document.documentElement.clientHeight - bar.top + 12) + 'px';
+  /* the arrow is placed against the bubble's own box, so it points at the tab whatever the width */
+  const br = bub.getBoundingClientRect(), mid = r.left + r.width / 2;
+  $('cbArrow').style.left = Math.max(12, Math.min(br.width - 30, mid - br.left - 9)) + 'px';
+}
+$('cbNext').onclick = () => { coachI++; coachI >= COACH.length ? endCoach() : paintCoach(); };
+$('coach').onclick = endCoach;
 const isLive = () => info && new Date(info.ends_at).getTime() > now();
 function tickClock(){
   if (!info) return;
@@ -1210,12 +1334,24 @@ const skipKey = () => 'sd_skip_' + night;
 const skipped = () => { try{ return new Set(JSON.parse(store.get(skipKey()) || '[]')); }catch(e){ return new Set(); } };
 // a chained dare (Snowball Selfie levels) only unlocks after the previous level is done
 const dareOpen = (d, done, sk) => !done.has(d.id) && !sk.has(d.id) && (!d.chain_after || done.has(d.chain_after));
+/* The dare on screen is yours until you do it or skip it: it is remembered on the phone, so
+   switching tabs or apps - or the browser throwing the page away and reloading it - keeps it. */
+const dareKey = () => 'sd_dare_' + night;
+function keepDare(){ try{ dare ? store.set(dareKey(), String(dare.id)) : store.del(dareKey()); }catch(e){} }
+function restoreDare(){
+  const done = myDone(), sk = skipped();
+  let id = null; try{ id = store.get(dareKey()); }catch(e){}
+  const kept = id ? dares.find(d => String(d.id) === String(id) && dareOpen(d, done, sk)) : null;
+  if (kept){ dare = kept; renderDare(); return; }
+  pickDare();
+}
 function pickDare(after){
   const done = myDone(), sk = skipped();
   const nx = after ? dares.find(d => d.chain_after === after && dareOpen(d, done, sk)) : null;
-  if (nx){ dare = nx; return renderDare(); }
+  if (nx){ dare = nx; keepDare(); return renderDare(); }
   const pool = dares.filter(d => dareOpen(d, done, sk) && (!dare || d.id !== dare.id));
   dare = pool.length ? pool[Math.floor(Math.random() * pool.length)] : (dares.filter(d => dareOpen(d, done, sk))[0] || null);
+  keepDare();
   renderDare();
 }
 // "Give me another one": the dare you skip does not come back tonight
