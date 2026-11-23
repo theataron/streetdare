@@ -159,6 +159,13 @@ html.night .board li,html.night .nights li{border-color:#2f2826}
 .lbthumb.count svg{opacity:0}
 .lbcount{position:absolute;font-family:"Bagel Fat One","Arial Black",sans-serif;font-size:4.2rem;line-height:1;color:var(--red)}
 @keyframes lbpulse{0%{transform:scale(.92);opacity:.9}100%{transform:scale(1.25);opacity:0}}
+.lboath{font-family:"Bagel Fat One","Arial Black",sans-serif;font-weight:400;font-size:clamp(1.5rem,6.4vw,2.6rem);line-height:1.12;color:#fff;margin:6vh 0 auto;min-height:40vh}
+.lboath::after{content:"";display:inline-block;width:.085em;height:.92em;margin-left:.06em;vertical-align:-.1em;background:#fff;animation:lbcaret .7s steps(1) infinite}
+.lboath.done::after{animation:none;opacity:0}
+@keyframes lbcaret{0%,49%{opacity:1}50%,100%{opacity:0}}
+.lobby.oath .lbhi,.lobby.oath .lbgroup,.lobby.oath .lbnames,.lobby.oath .lbrules,.lobby.oath .lbinvite,.lobby.oath .lbhost{display:none}
+.lobby.oath .lbbottom{margin-top:0}
+@media (prefers-reduced-motion:reduce){.lboath::after{animation:none}}
 .lbhint{font-weight:700;font-size:.92rem;text-align:center;min-height:1.3em}
 .lbinvite{background:none;border:2px solid rgba(255,255,255,.55);color:#fff;border-radius:99px;padding:8px 16px;font:700 .82rem "DM Sans",sans-serif;cursor:pointer}
 .lbhost{background:none;border:0;color:#fff;opacity:.75;text-decoration:underline;font:600 .8rem "DM Sans",sans-serif;cursor:pointer;padding:4px}
@@ -311,7 +318,8 @@ html.night .badge{border-color:#211b19}
       <h1 class="display" id="pfH"></h1>
       <p class="lead" id="pfP"></p>
       <form id="pfForm" novalidate>
-        <div class="field"><label id="pfNameL" for="pfName"></label><input id="pfName" maxlength="40" autocomplete="given-name" required></div>
+        <div class="field"><label id="pfNameL" for="pfName"></label><input id="pfName" maxlength="40" autocomplete="given-name" required>
+          <small id="pfNameS"></small></div>
         <div class="field"><label id="pfUserL" for="pfUser"></label>
           <div class="at"><span>@</span><input id="pfUser" class="in" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" required></div>
           <small id="pfUserMsg"></small></div>
@@ -391,6 +399,7 @@ html.night .badge{border-color:#211b19}
   <p class="lbgroup" id="lbGroup"></p>
   <ul class="lbnames" id="lbNames"></ul>
   <ol class="lbrules"><li id="lbR1"></li><li id="lbR2"></li><li id="lbR3"></li></ol>
+  <p class="lboath" id="lbOath" hidden aria-live="polite"></p>
   <div class="lbbottom">
     <button class="lbthumb" id="lbThumb" type="button" aria-label="Hold">
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M9 30a23 23 0 0 1 46 0"/><path d="M16 54c-2-7-2-14-2-21a18 18 0 0 1 36 0c0 8 0 14 2 21"/><path d="M23 57c-2-8-2-15-2-23a11 11 0 0 1 22 0c0 8 0 14 2 21"/><path d="M32 34v12"/></svg>
@@ -563,7 +572,8 @@ const T = {
     gP:'Play STREETDARE tonight without a shirt. You and your friends go up to strangers, do dares and collect points. Log in to take your seat.',
     gGoogle:'Continue with Google', gEmail:'Continue with email', gSmall:'New here or been before, it’s the same button.',
     pfH:'Quick, who are you? 👋', pfP:'Your group sees your name and username in the feed and on the leaderboard.',
-    pfNameL:'Your name', pfUserL:'Username', pfIgL:'Instagram (optional)', pfIgS:'Only your group sees it.', pfBtn:'Let’s go 🔥',
+    pfNameL:'First name', pfNameS:'This is the name people see: your group tonight, and anyone who scans your shirt.', pfUserL:'Username', pfIgL:'Instagram (optional)', pfIgS:'Only your group sees it.', pfBtn:'Let’s go 🔥',
+    oaths:['I swear that tonight I will try to be the reason someone’s night got better, and never the reason it got worse.'],
     ucFree:'@{u} is free ✓', ucTaken:'@{u} is taken. Try another one.', ucBlocked:'Pick a different username.', ucBad:'3 to 20 characters: letters, numbers, . and _',
     needName:'Write your name first.', needUser:'Pick a free username first.',
     fH:'You’re the first one here 🎉', fP:'Give your night a name. Everyone in your group will see it.', fPh:'Chaos Night', fBtn:'Start the night ⏱', fSmall:'The 24 hours start now, for the whole group.',
@@ -612,7 +622,8 @@ const T = {
     gP:'Juega a STREETDARE esta noche sin camiseta. Tú y tus amigos os acercáis a desconocidos, hacéis retos y sumáis puntos. Entra para coger tu plaza.',
     gGoogle:'Continuar con Google', gEmail:'Continuar con email', gSmall:'Si eres nuevo o ya has jugado, es el mismo botón.',
     pfH:'Rápido, ¿quién eres? 👋', pfP:'Tu grupo ve tu nombre y tu usuario en el feed y en la clasificación.',
-    pfNameL:'Tu nombre', pfUserL:'Usuario', pfIgL:'Instagram (opcional)', pfIgS:'Solo lo ve tu grupo.', pfBtn:'Vamos 🔥',
+    pfNameL:'Nombre', pfNameS:'Este es el nombre que ve la gente: tu grupo esta noche, y quien escanee tu camiseta.', pfUserL:'Usuario', pfIgL:'Instagram (opcional)', pfIgS:'Solo lo ve tu grupo.', pfBtn:'Vamos 🔥',
+    oaths:['Juro que esta noche voy a intentar ser el motivo por el que la noche de alguien mejoró, y nunca el motivo por el que empeoró.'],
     ucFree:'@{u} está libre ✓', ucTaken:'@{u} ya está cogido. Prueba otro.', ucBlocked:'Elige otro usuario.', ucBad:'De 3 a 20 caracteres: letras, números, . y _',
     needName:'Escribe primero tu nombre.', needUser:'Elige primero un usuario libre.',
     fH:'Eres el primero 🎉', fP:'Ponle nombre a vuestra noche. Todo tu grupo lo verá.', fPh:'Noche Caos', fBtn:'Empezar la noche ⏱', fSmall:'Las 24 horas empiezan ahora, para todo el grupo.',
@@ -661,7 +672,8 @@ const T = {
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
     gGoogle:'Folytatás Google-fiókkal', gEmail:'Folytatás e-maillel', gSmall:'Akár új vagy, akár játszottál már, ugyanez a gomb.',
     pfH:'Gyorsan, ki vagy? 👋', pfP:'A csapatod látja a neved és a felhasználóneved a feedben és a ranglistán.',
-    pfNameL:'A neved', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfBtn:'Mehet 🔥',
+    pfNameL:'Keresztnév', pfNameS:'Ezt a nevet látják mások: ma este a csapatod, és bárki, aki beszkenneli a pólódat.', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfBtn:'Mehet 🔥',
+    oaths:['Esküszöm, hogy ma este azon leszek, hogy miattam legyen jobb valakinek az estéje, és soha ne miattam legyen rosszabb.'],
     ucFree:'@{u} szabad ✓', ucTaken:'@{u} már foglalt. Próbálj másikat.', ucBlocked:'Válassz másik felhasználónevet.', ucBad:'3–20 karakter: betűk, számok, . és _',
     needName:'Előbb írd be a neved.', needUser:'Előbb válassz egy szabad felhasználónevet.',
     fH:'Te vagy itt az első 🎉', fP:'Adj nevet az estének. Az egész csapatod látni fogja.', fPh:'Káosz Este', fBtn:'Kezdődjön az este ⏱', fSmall:'A 24 óra most indul, az egész csapatnak.',
@@ -726,7 +738,7 @@ const waLink = () => WA;
 function paint(){
   document.documentElement.lang = L;
   if (window.paintLangPick) window.paintLangPick();
-  ['gH','gP','gSmall','pfH','pfP','pfNameL','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
+  ['gH','gP','gSmall','pfH','pfP','pfNameL','pfNameS','pfUserL','pfIgL','pfIgS','pfBtn','fH','fP','fBtn','fSmall','jBtn','hK','hH','hP','hCodeH','hCodeP','hBtn','hPastH','hBuyH','hBuyP',
    'nAll','nProfile','nShop','nSite','nContact','howH','how1','how2','how3','howBtn','dK','dDone','dNext','bH','privNote','invH','invShare','sAnsH','sAnsS','sWithL','sPhotoL','sGo','sCancel',
    'tDares','tChat','tResults','tGroup','appBackTxt','phH','memH','fLangL','fLangS']
     .forEach(k => { if ($(k)) $(k).textContent = t(k); });
@@ -842,7 +854,7 @@ let afterProfile = null, ucOk = false, ucTimer;
 function askProfile(then){
   afterProfile = then;
   const first = (profile.name || (user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name)) || '').trim().split(/\s+/)[0] || '';
-  $('pfName').value = (profile.name || first).slice(0, 40);
+  $('pfName').value = (profile.name || first).slice(0, 40);   /* prefilled whole: Hungarian name order means we can't guess which word is the first name */
   $('pfIg').value = profile.instagram || '';
   $('pfUser').value = profile.username || '';
   if (!profile.username){
@@ -922,7 +934,7 @@ $('hForm').onsubmit = e => {
 
 
 /* ---------- waiting room: the 24 hours start when everybody holds the thumb together ---------- */
-let lobbyChan = null, lobbyPoll = null, holders = new Set(), myHold = false, cdT = null, cdN = 0, starting = false, hostSure = false;
+let lobbyChan = null, lobbyPoll = null, holders = new Set(), myHold = false, cdT = null, starting = false, hostSure = false;
 function showLobby(){
   document.body.classList.add('inapp');
   $('app').hidden = true; $('lobby').hidden = false;
@@ -970,8 +982,7 @@ function paintLobby(){
   const all = holdersAll(), n = info.members.filter(m => holders.has(m.id)).length;
   $('lbHint').textContent = starting ? t('lbStarting') : all ? t('lbHintAll') : n ? t('lbHintN', { a: n, b: info.members.length }) : t('lbHint0');
   $('lbThumb').classList.toggle('on', myHold);
-  $('lbThumb').classList.toggle('count', !!cdT);
-  $('lbCount').textContent = cdT ? cdN : '';
+  $('lbCount').textContent = '';
   const left = Math.max(0, free);
   $('lbInvite').hidden = !info.code || !left;
   $('lbInvite').textContent = t('lbInvite', { code: info.code ? fmtCode(info.code) : '', l: left });
@@ -992,17 +1003,33 @@ function checkAll(){
   if (holdersAll()){ if (!cdT) startCount(); }
   else if (cdT) cancelCount();
 }
+/* Everyone is holding: the oath types itself out, letter by letter. Let go and it stops. */
+const OATH_MS = 34;        /* ms per letter */
+const OATH_HOLD_MS = 900;  /* pause on the last word before the night starts */
+let oathTxt = '', oathI = 0;
 function startCount(){
-  cdN = 3; paintLobby(); if (navigator.vibrate) navigator.vibrate(30);
+  const list = t('oaths'), all = Array.isArray(list) ? list : [String(list)];
+  oathTxt = all[Math.floor(Math.random() * all.length)]; oathI = 0;
+  const el = $('lbOath');
+  el.hidden = false; el.textContent = ''; el.classList.remove('done');
+  $('lobby').classList.add('oath');
+  paintLobby(); if (navigator.vibrate) navigator.vibrate(30);
   cdT = setInterval(() => {
     if (!holdersAll()){ cancelCount(); return; }
-    cdN--;
-    if (cdN <= 0){ clearInterval(cdT); cdT = null; goGame(); return; }
-    if (navigator.vibrate) navigator.vibrate(30);
-    paintLobby();
-  }, 1000);
+    oathI++;
+    el.textContent = oathTxt.slice(0, oathI);
+    if (navigator.vibrate && oathTxt[oathI - 1] === ' ') navigator.vibrate(8);
+    if (oathI >= oathTxt.length){
+      clearInterval(cdT); cdT = null; el.classList.add('done');
+      cdT = setTimeout(() => { cdT = null; if (holdersAll()) goGame(); else cancelCount(); }, OATH_HOLD_MS);
+    }
+  }, OATH_MS);
 }
-function cancelCount(){ if (cdT){ clearInterval(cdT); cdT = null; } cdN = 0; paintLobby(); }
+function cancelCount(){
+  if (cdT){ clearInterval(cdT); clearTimeout(cdT); cdT = null; }
+  oathI = 0; $('lbOath').hidden = true; $('lbOath').textContent = ''; $('lobby').classList.remove('oath');
+  paintLobby();
+}
 async function goGame(){
   if (starting) return; starting = true; if (navigator.vibrate) navigator.vibrate([60, 40, 120]);
   paintLobby();

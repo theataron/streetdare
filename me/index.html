@@ -38,6 +38,7 @@
 .field .at input,.at input{border:0!important;border-radius:14px;padding-left:4px!important;width:100%;font:500 1rem "DM Sans",sans-serif;padding:12px 14px 12px 4px;background:transparent;color:var(--ink);outline:none}
 .field input,.field textarea,.field select,.claim input{width:100%;font:500 1rem "DM Sans",sans-serif;padding:12px 14px;border:2px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink)}
 .field textarea{resize:vertical;min-height:52px}
+.field small{color:var(--mute);font-size:.85rem}
 .claim{display:grid;gap:12px}
 .claim input{font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;font-size:1.2rem}
 .dare{border-top:1.5px solid #eadfd2;padding:12px 0;display:grid;gap:8px}
@@ -169,7 +170,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
           <input type="file" id="photoFile" accept="image/*" hidden>
         </div>
         <form id="profForm">
-          <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required></div>
+          <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required><small id="pNameS"></small></div>
           <div class="field"><label for="pUser" id="pUserL"></label><div class="at"><span>@</span><input id="pUser" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div></div>
           <div class="field"><label for="pCtry" id="pCtryL"></label><select id="pCtry"></select></div>
           <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
@@ -300,7 +301,7 @@ const T = {
           ['If something feels off','You never have to do a dare. If someone makes you uncomfortable, walk away, and tell us at streetdare.official@gmail.com if it’s serious.']],
        photoAdd:'Add photo', photoChange:'Change photo', photoDel:'Remove', photoUp:'Uploading…', photoSaved:'Photo saved. Scanners see it now.', photoBad:'That image didn’t work. Try a JPG or PNG.',
        codeH:'Your dare code', codeP:'After a dare, the person who scanned you types this code on their phone, and only then does the dare count on your profile. Tell it to the people you actually did a dare with.', newCode:'Make a new code', codeNew:'New code ready',
-       profH:'Your profile', nameL:'Your name', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
+       profH:'Your profile', nameL:'First name', nameS:'This is what someone sees when they scan your shirt.', igL:'Instagram (optional)', igPubL:'Show my Instagram after someone completes a dare with me', saveProf:'Save', saved:'Saved', badIg:'That Instagram handle doesn’t look right.',
        accH:'Account', loggedAs:'Logged in as {e}', logout:'Log out', del2:'Delete my account', delConfirm:'Delete your account? Your own dares are deleted and the shirt is unlinked from you. This can’t be undone.', err:'Something went wrong. Try again.' },
   hu:{ hello:'Szia, {n}', title:'A profilod', claimH:'Igényeld a pólódat', claimP:'Minden STREETDARE pólóhoz jár egy igénylőkód. Írd be ide, és a póló a tiéd: a statisztikáid, a kihívásaid és a neved a szkennelési oldalon.',
        claimBtn:'Igénylem a pólómat', claiming:'Ellenőrzés…', claimBad:'Ez a kód nem működött. Ellenőrizd, vagy lehet, hogy már igényelték.', noShirt:'Még nincs pólód? <a href="../#join">Csatlakozz a közösséghez</a>, és szólunk, amint elkészülnek.', claimed:'A tiéd! 🎉',
@@ -329,7 +330,7 @@ const T = {
           ['Ha valami nem stimmel','Soha nem kötelező megcsinálni egy kihívást. Ha valaki kellemetlenül viselkedik, menj el, és ha komoly, írj nekünk: streetdare.official@gmail.com.']],
        photoAdd:'Fotó feltöltése', photoChange:'Fotó cseréje', photoDel:'Eltávolítás', photoUp:'Feltöltés…', photoSaved:'Fotó elmentve. Már látják, akik beszkennelnek.', photoBad:'Ez a kép nem működött. Próbáld JPG-vel vagy PNG-vel.',
        codeH:'A kihíváskódod', codeP:'Egy kihívás után az, aki beszkennelt, beírja ezt a kódot a telefonján, és csak ekkor számít a kihívás a profilodon. Azoknak mondd meg, akikkel tényleg megcsináltatok egy kihívást.', newCode:'Új kódot kérek', codeNew:'Kész az új kód',
-       profH:'A profilod', nameL:'A neved', igL:'Instagram (nem kötelező)', igPubL:'Mutassa az Instagramomat, miután valaki teljesített velem egy kihívást', saveProf:'Mentés', saved:'Elmentve', badIg:'Ez az Instagram-név nem tűnik jónak.',
+       profH:'A profilod', nameL:'Keresztnév', nameS:'Ezt látja az, aki beszkenneli a pólódat.', igL:'Instagram (nem kötelező)', igPubL:'Mutassa az Instagramomat, miután valaki teljesített velem egy kihívást', saveProf:'Mentés', saved:'Elmentve', badIg:'Ez az Instagram-név nem tűnik jónak.',
        accH:'Fiók', loggedAs:'Bejelentkezve: {e}', logout:'Kijelentkezés', del2:'Fiók törlése', delConfirm:'Törlöd a fiókodat? A saját kihívásaid törlődnek, és a póló már nem lesz hozzád kötve. Ez nem vonható vissza.', err:'Valami hiba történt. Próbáld újra.' },
   es:{ hello:'Hola {n}', title:'Tu perfil', claimH:'Reclama tu camiseta', claimP:'Cada camiseta STREETDARE viene con un código. Escríbelo aquí y la camiseta es tuya: tus estadísticas, tus retos y tu nombre en la página del escaneo.',
        claimBtn:'Reclamar mi camiseta', claiming:'Comprobando…', claimBad:'Ese código no ha funcionado. Revísalo; puede que ya esté reclamado.', noShirt:'¿Aún no tienes camiseta? <a href="../#join">Únete a la comunidad</a> y te avisamos cuando estén listas.', claimed:'¡Es tuya! 🎉',
@@ -358,7 +359,7 @@ const T = {
           ['Si algo no te cuadra','Nunca tienes que hacer un reto. Si alguien te incomoda, vete, y si es grave escríbenos a streetdare.official@gmail.com.']],
        photoAdd:'Añadir foto', photoChange:'Cambiar foto', photoDel:'Quitar', photoUp:'Subiendo…', photoSaved:'Foto guardada. Ya la ven al escanearte.', photoBad:'Esa imagen no ha funcionado. Prueba con un JPG o PNG.',
        codeH:'Tu código de reto', codeP:'Después de un reto, quien te ha escaneado escribe este código en su móvil, y solo entonces el reto cuenta en tu perfil. Díselo a la gente con la que de verdad has hecho un reto.', newCode:'Crear un código nuevo', codeNew:'Código nuevo listo',
-       profH:'Tu perfil', nameL:'Tu nombre', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
+       profH:'Tu perfil', nameL:'Nombre', nameS:'Esto es lo que ve quien escanea tu camiseta.', igL:'Instagram (opcional)', igPubL:'Mostrar mi Instagram cuando alguien complete un reto conmigo', saveProf:'Guardar', saved:'Guardado', badIg:'Ese usuario de Instagram no parece correcto.',
        accH:'Cuenta', loggedAs:'Has entrado como {e}', logout:'Salir', del2:'Borrar mi cuenta', delConfirm:'¿Borrar tu cuenta? Se borran tus retos propios y la camiseta deja de estar vinculada a ti. No se puede deshacer.', err:'Algo ha fallado. Inténtalo otra vez.' }
 };
 let L = lang(), user = null, profile = null, shirts = [], shirt = null, decks = [], interest = new Set(), events = [], channel = null;
@@ -380,7 +381,7 @@ function paint(){
   $('dEnL').textContent = t('enL'); $('dEsL').textContent = t('esL'); $('dareBtn').textContent = t('addDare');
   $('pMktL').textContent = t('mktL'); $('pMktN').innerHTML = t('mktN'); $('pRecapL').textContent = t('recapL'); $('pRecapN').textContent = t('recapN');
   $('guide').innerHTML = t('g').map(x => '<details><summary>' + esc(x[0]) + '</summary><p>' + esc(x[1]) + '</p></details>').join('');
-  $('pCtryL').textContent = t('ctryL'); $('pUserL').textContent = t('userL'); $('pNameL').textContent = t('nameL'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
+  $('pCtryL').textContent = t('ctryL'); $('pUserL').textContent = t('userL'); $('pNameL').textContent = t('nameL'); $('pNameS').textContent = t('nameS'); $('pIgL').textContent = t('igL'); $('pIgPubL').textContent = t('igPubL'); $('profBtn').textContent = t('saveProf');
   $('accEmail').textContent = user ? t('loggedAs').replace('{e}', user.email) : '';
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
   paintProfile(); paintNameCheck(); paintUser(); paintCountry(); saveLang();
