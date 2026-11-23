@@ -63,6 +63,12 @@ Deno.serve(async (req) => {
   if (!ok) return new Response("forbidden", { status: 403 });
   if (!RESEND) return new Response("RESEND_API_KEY missing", { status: 500 });
   const body = await req.json().catch(() => ({}));
+  // template preview for the admin Emails tab (sample numbers, nothing sent)
+  if (body.preview) {
+    const t = T[(["en", "es", "hu"].includes(body.lang) ? body.lang : "en") as L];
+    return Response.json({ subject: t.subj.replace("{s}", "9").replace("{d}", "4"),
+      html: html(t, "Luca", { scans: 9, dares: 4, people: 4, top: "Swap one item of clothing for the rest of the song.", places: ["Budapest"] }) });
+  }
   const test: string | null = body.test_shirt ?? null;
   const hours = test ? 24 * Math.min(Number(body.days) || 7, 30) : 24;
   const since = new Date(Date.now() - hours * 3600e3).toISOString();
@@ -77,12 +83,12 @@ Deno.serve(async (req) => {
   for (const s of shirts ?? []) {
     const p = (s as any).profiles;
     if (!p?.email || (!test && !p.recap_opt_in)) continue;
-    const o = owners.get(s.owner_id) ?? { email: p.email, name: p.name || "", lang: (["en", "es", "hu"].includes(p.lang) ? p.lang : "en") as L, ids: [] };
+    const o = owners.get(s.owner_id) ?? { email: p.email, name: p.name || "", lang: (["en", "es", "hu"].includes(p.lang) ? p.lang : "en") as L, ids: [] as string[] };
     o.ids.push(s.id); owners.set(s.owner_id, o);
   }
 
   const sent: string[] = [];
-  for (const [, o] of owners) {
+  for (const [ownerId, o] of owners) {
     const { data: ev } = await sb.from("play_events").select("event, device_id, dare_id, dare_text, tz, created_at")
       .in("shirt_id", o.ids).gte("created_at", since).order("created_at", { ascending: false }).limit(5000);
     const rows = ev ?? [];
@@ -112,6 +118,11 @@ Deno.serve(async (req) => {
         html: html(t, name, { scans, dares: dones.length, people, top, places }),
       }),
     });
+    const rb = await r.json().catch(() => ({}));
+    await sb.from("email_log").insert({ kind: test ? "test" : "morning_recap", profile_id: ownerId, to_email: o.email, shirt_id: o.ids.join(","), lang: o.lang,
+      subject: t.subj.replace("{s}", String(scans)).replace("{d}", String(dones.length)), status: r.ok ? "sent" : "failed",
+      resend_id: r.ok ? rb.id : null, error: r.ok ? null : JSON.stringify(rb).slice(0, 300), attempts: 1, sent_at: r.ok ? new Date().toISOString() : null,
+      meta: { scans, dares: dones.length, people, ...(test ? { template: "morning_recap" } : {}) } });
     if (r.ok) sent.push(o.email.replace(/(.).*@/, "$1…@"));
   }
   return new Response(JSON.stringify({ sent }), { headers: { "Content-Type": "application/json" } });

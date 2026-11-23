@@ -25,3 +25,12 @@ The site's code is already updated, but Google only runs the copy pasted into th
 From then on every new sign-up gets the welcome email (in English or Spanish, matching the site language they used). Emails are sent from the Google account that owns the Sheet, with replies going to streetdare.official@gmail.com.
 
 On launch day: create the discount code `EARLYDARE` in your checkout (€10 off, valid one week), paste the shop link into `LAUNCH_URL` at the top of `Code.gs`, save, then run `sendLaunchEmail`. Gmail allows about 100 emails a day; with a longer list, run it again the next day and it carries on where it stopped.
+
+## Account emails and the admin Emails tab (24 Nov 2026)
+
+- **Edge Function `mailer`** (`backend/functions/mailer/`, verify_jwt off, needs `RESEND_API_KEY`). Sends the **welcome** email (once per account, ~3 min after sign-up, email or Google) and the **shirt claimed** email (right after `claim_shirt`). Templates EN/ES/HU in `templates.ts`.
+- **Table `public.email_log`**: every email STREETDARE sends itself (welcome, shirt_claimed, morning_recap, contact, test) with status, Resend id and error. Admin-only read.
+- Queue: a trigger on `profiles` queues the welcome; `claim_shirt()` queues the claimed email and wakes the mailer; cron job `mailer` runs every minute only while something is queued (max 5 attempts).
+- `morning-recap` and `contact-mail` now also write to `email_log` and answer `{"preview":true,"lang":"hu"}` with a sample, for the template previews.
+- **streetdare.com/admin/ → Emails ✉️**: every email Resend sent (including login codes from Supabase), type, status (delivered / opened / bounced…), View the exact email, Retry failed ones, "Accounts that missed an email" with Send it now, and template previews per language with "Send me a test".
+- To deploy after editing: deploy `mailer` with both files (`index.ts`, `templates.ts`).

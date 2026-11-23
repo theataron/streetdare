@@ -40,7 +40,11 @@
 .field textarea{resize:vertical;min-height:52px}
 .field small{color:var(--mute);font-size:.85rem}
 .claim{display:grid;gap:12px}
-.claim input{font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center;font-size:1.2rem}
+.codebox{display:flex;align-items:center;justify-content:center;border:2px solid var(--ink);border-radius:14px;background:#fff;padding:0 14px}
+.codebox span{font:700 1.2rem "DM Sans",sans-serif;letter-spacing:.12em;color:var(--ink);user-select:none}
+.claim .codebox input{border:0;border-radius:0;background:transparent;padding:12px 0;width:7.4em;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:left;font-size:1.2rem;outline:none}
+.codebox:focus-within{box-shadow:0 0 0 3px var(--blush,#f6ddd3)}
+html.night .codebox{background:#2a2422}html.night .codebox span{color:var(--ink)}
 .dare{border-top:1.5px solid #eadfd2;padding:12px 0;display:grid;gap:8px}
 .dare:first-child{border-top:0}
 .dare p{font-weight:600}
@@ -100,6 +104,7 @@
 /* night mode */
 html.night .tile,html.night .linkrow,html.night .at,html.night .shirtpick button,html.night .steps .ck,html.night .code,html.night .codeedit input,
 html.night .field input,html.night .field textarea,html.night .field select,html.night .claim input{background:#2a2422;color:var(--ink)}
+html.night .claim .codebox input{background:transparent}
 html.night .shirtpick button.on{background:var(--ink);color:#121012}
 html.night .steps li.done .ck{background:#1d7a43;color:#fff}
 html.night .pill{background:#173826;color:#8fe0ad}
@@ -193,7 +198,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
         <h2 id="claimH"></h2>
         <p class="sub" id="claimP"></p>
         <form class="claim" id="claimForm">
-          <input id="claimCode" maxlength="11" autocomplete="off" autocapitalize="characters" placeholder="DARE-XXXXXX">
+          <label class="codebox" for="claimCode"><span aria-hidden="true">DARE-</span><input id="claimCode" maxlength="11" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" placeholder="XXXXXX" aria-label="DARE-XXXXXX"></label>
           <p class="err" id="claimErr" hidden></p>
           <button class="btn red" type="submit" id="claimBtn"></button>
         </form>
@@ -397,7 +402,7 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
 /* ===== start ===== */
 (async () => {
   const session = await getSession();
-  if (!session){ location.replace('/login/?next=/me/'); return; }
+  if (!session){ const go = (location.hash.match(/^#(emails|recap)$/) || [])[1]; location.replace('/login/?next=' + encodeURIComponent('/me/' + (go ? '?go=' + go : ''))); return; }
   /* No live-night takeover here: someone who taps "Profile" wants the profile.
      The live-group bar at the top of the page is the way back into the night. */
   user = session.user;
@@ -456,12 +461,15 @@ function startLive(){
 $('copyLink').onclick = async () => { try{ await navigator.clipboard.writeText('https://' + $('qrLink').textContent); toast(t('copied')); }catch(e){} };
 
 /* ===== claim ===== */
+/* "DARE-" is printed in front of the field and never typed; a pasted "DARE-AB12CD" is trimmed to "AB12CD" */
+const cleanCode = v => String(v || '').toUpperCase().replace(/^\s*DARE[-\s]?/, '').replace(/[^A-Z0-9]/g, '').slice(0, 6);
+$('claimCode').addEventListener('input', e => { const el = e.target, c = cleanCode(el.value); if (el.value !== c) el.value = c; });
 $('claimForm').onsubmit = async e => {
   e.preventDefault(); $('claimErr').hidden = true;
-  const code = $('claimCode').value.trim().toUpperCase();
+  const code = cleanCode($('claimCode').value);
   if (code.length < 6) return;
   const b = $('claimBtn'); b.disabled = true; b.textContent = t('claiming');
-  const { data, error } = await sb.rpc('claim_shirt', { p_code: code.startsWith('DARE-') ? code : 'DARE-' + code });
+  const { data, error } = await sb.rpc('claim_shirt', { p_code: 'DARE-' + code });
   b.disabled = false; b.textContent = t('claimBtn');
   if (error){ $('claimErr').textContent = t('claimBad'); $('claimErr').hidden = false; return; }
   toast(t('claimed')); await loadShirts(data);
@@ -699,7 +707,8 @@ $('ncForm').onsubmit = async e => {
 
 /* ===== remember the owner's language for emails (morning recap) ===== */
 function saveLang(){
-  if (location.hash === '#recap' && profile && !window._rc){ window._rc = 1; setTimeout(() => { const r = $('recap'), d = r.closest('details'); if (d) d.open = true; r.scrollIntoView({ block:'center' }); }, 400); }
+  const go = location.hash.slice(1) || new URLSearchParams(location.search).get('go');
+  if ((go === 'recap' || go === 'emails') && profile && !window._rc){ window._rc = 1; setTimeout(() => { const r = go === 'recap' ? $('recap') : $('pMkt').closest('label'), d = r.closest('details'); if (d) d.open = true; r.scrollIntoView({ block:'center' }); r.style.outline = '3px solid var(--red)'; r.style.borderRadius = '12px'; setTimeout(() => r.style.outline = '', 2600); }, 400); }
   if (!profile || !user || profile.lang === L || !['en','es','hu'].includes(L)) return;
   profile.lang = L; sb.from('profiles').update({ lang: L }).eq('id', user.id).then(() => {});
 }
