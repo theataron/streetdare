@@ -252,6 +252,19 @@ body.inapp .wrap{display:none}
 .bub .tm{font-size:.66rem;opacity:.6;margin-left:8px;white-space:nowrap}
 .bub img.pic{display:block;width:220px;max-width:100%;height:220px;object-fit:cover;border-radius:12px;margin:2px 0 4px;background:var(--blush)}
 .bub .rq{border-left:3px solid currentColor;opacity:.75;padding:1px 8px;margin:2px 0 6px;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* reactions: the chips under a message, and the row that opens when you tap it */
+.rxrow{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.msgs li.me .rxrow{justify-content:flex-end}
+.dline .rxrow{justify-content:center}
+.rxc{display:inline-flex;align-items:center;gap:3px;background:var(--card);border:1.5px solid #e6dccf;border-radius:99px;padding:2px 8px;font-size:.82rem;line-height:1.5;cursor:pointer;color:var(--ink)}
+.rxc.on{border-color:var(--red);background:var(--blush)}
+.rxc span{font-weight:800;font-size:.72rem;color:var(--mute)}
+.rxc.on span{color:var(--red)}
+.rxpick{display:flex;gap:2px;margin-top:4px;background:var(--card);border:1.5px solid #e6dccf;border-radius:99px;padding:3px 5px;width:max-content;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.msgs li.me .rxpick{margin-left:auto}
+.dline .rxpick{margin-left:auto;margin-right:auto}
+.rxpick button{background:none;border:0;font-size:1.15rem;line-height:1;padding:4px 5px;cursor:pointer}
+html.night .rxc,html.night .rxpick{border-color:#3a302c}
 .msgs .acts{display:flex;gap:4px;margin-top:2px}
 .msgs .acts button{background:none;border:0;font:700 .75rem "DM Sans",sans-serif;color:var(--mute);cursor:pointer;padding:3px 6px}
 .msgs .acts button.on{color:var(--red)}
@@ -1689,11 +1702,14 @@ async function refreshPush(){
 /* ---------- chat ---------- */
 let playsById = new Map();
 async function loadMsgs(){
-  const [{ data: m }, { data: p }] = await Promise.all([
+  const [{ data: m }, { data: p }, { data: rx }] = await Promise.all([
     sb.from('night_messages').select('*').eq('night_id', night).order('created_at', { ascending: false }).limit(400).then(r => ({ data: (r.data || []).reverse() })),
-    sb.from('night_plays').select('id, profile_id, dare_id, answer, with_ids, points, bonus, challenged_by, voided').eq('night_id', night)
+    sb.from('night_plays').select('id, profile_id, dare_id, answer, with_ids, points, bonus, challenged_by, voided').eq('night_id', night),
+    sb.from('night_reactions').select('message_id, profile_id, emoji').eq('night_id', night)
   ]);
   msgs = m || []; playsById = new Map((p || []).map(x => [x.id, x]));
+  reacts = new Map();
+  (rx || []).forEach(r => { const a = reacts.get(r.message_id) || []; a.push(r); reacts.set(r.message_id, a); });
   await signAll(msgs.filter(x => x.photo_path && !x.deleted && !photoExpired(x)).map(x => x.photo_path));
 }
 const photoExpired = m => now() - msgTime(m) > PHOTO_DAYS * 864e5;
@@ -1723,6 +1739,38 @@ function sdBubble(m, time){
   }
   return '<li class="sd"><span class="av">SD</span><div class="col"><span class="nm">' + esc(t('sdFrom')) + '</span><div class="bub">' + body + '<span class="tm">' + time + '</span></div></div></li>';
 }
+/* ---------- reactions ----------
+   Tap a message to open the row, tap an emoji to add or take back yours.
+   The set is fixed here and in the table's check constraint, so nothing else reaches the feed. */
+const RX = ['❤️','😂','😮','😢','🔥','👍'];
+let reacts = new Map();
+function rxChips(id){
+  const list = reacts.get(id); if (!list || !list.length) return '';
+  const by = new Map();
+  list.forEach(r => { const o = by.get(r.emoji) || { n: 0, mine: false }; o.n++; if (r.profile_id === user.id) o.mine = true; by.set(r.emoji, o); });
+  const out = RX.filter(e => by.has(e)).map(e => {
+    const o = by.get(e);
+    return '<button type="button" class="rxc' + (o.mine ? ' on' : '') + '" data-rx="' + esc(e) + '" data-rxm="' + esc(id) + '">' + e + '<span>' + o.n + '</span></button>';
+  }).join('');
+  return out ? '<div class="rxrow">' + out + '</div>' : '';
+}
+function rxPicker(id){
+  return '<div class="rxpick">' + RX.map(e => '<button type="button" data-rx="' + esc(e) + '" data-rxm="' + esc(id) + '">' + e + '</button>').join('') + '</div>';
+}
+async function toggleRx(id, emoji){
+  if (!RX.includes(emoji)) return;
+  const list = reacts.get(id) || [];
+  const i = list.findIndex(r => r.profile_id === user.id && r.emoji === emoji);
+  if (i >= 0){
+    list.splice(i, 1); reacts.set(id, list); renderMsgs();
+    await sb.from('night_reactions').delete().eq('message_id', id).eq('profile_id', user.id).eq('emoji', emoji);
+  } else {
+    list.push({ message_id: id, profile_id: user.id, emoji }); reacts.set(id, list); renderMsgs();
+    const { error } = await sb.from('night_reactions').insert({ night_id: night, message_id: id, profile_id: user.id, emoji });
+    if (error){ const j = (reacts.get(id) || []).findIndex(r => r.profile_id === user.id && r.emoji === emoji); if (j >= 0){ reacts.get(id).splice(j, 1); renderMsgs(); } toast(t('err')); }
+  }
+}
+
 let selMsg = null;
 /* tapping a notification lands on that message: scroll it into the middle and light it up for a moment */
 function jumpToMsg(id){
@@ -1764,8 +1812,8 @@ function renderMsgs(){
       if (m.profile_id === user.id && m.photo_path && !m.deleted) acts += '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>';
       let pic = '';
       if (m.photo_path && !m.deleted) pic = photoExpired(m) ? '<div class="meta">' + esc(t('photoGone')) + '</div>' : (signed.get(m.photo_path) ? '<img class="pic" data-path="' + esc(m.photo_path) + '" src="' + esc(signed.get(m.photo_path)) + '" alt="">' : '');
-      return out + '<li class="play" data-mid="' + esc(m.id) + '"><div class="dline"><div class="ln' + (p.voided ? ' void' : '') + '">' + feedLine(m) + ' <span class="ptag">+' + ((p.points || 0) + (p.bonus || 0)) + '</span></div>' +
-        (p.voided ? '<div class="meta">' + esc(t('voided')) + '</div>' : '') + pic + '<div class="meta">' + time + '</div>' + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div></li>';
+      return out + '<li class="play" data-mid="' + esc(m.id) + '"><div class="dline" data-sel="' + esc(m.id) + '"><div class="ln' + (p.voided ? ' void' : '') + '">' + feedLine(m) + ' <span class="ptag">+' + ((p.points || 0) + (p.bonus || 0)) + '</span></div>' +
+        (p.voided ? '<div class="meta">' + esc(t('voided')) + '</div>' : '') + pic + '<div class="meta">' + time + '</div>' + rxChips(m.id) + (selMsg === m.id ? rxPicker(m.id) : '') + (acts ? '<div class="acts">' + acts + '</div>' : '') + '</div></li>';
     }
     if (m.deleted) return out;
     const mine = m.profile_id === user.id, cont = prevWho === m.profile_id;
@@ -1779,7 +1827,7 @@ function renderMsgs(){
     const fine = window.matchMedia('(pointer:fine)').matches;
     const acts = selMsg === m.id && (mine || fine) ? '<div class="acts">' + (fine ? '<button type="button" data-re="' + esc(m.id) + '">↪ ' + esc(t('reply')) + '</button>' : '') + (mine ? '<button type="button" data-del="' + esc(m.id) + '">' + esc(t('del')) + '</button>' : '') + '</div>' : '';
     return out + '<li class="' + (mine ? 'me' : '') + (cont ? ' cont' : '') + '" data-mid="' + esc(m.id) + '">' + (mine ? '' : avatar(who)) + '<div class="col">' + (!mine && !cont ? '<span class="nm">' + esc(who.name) + '</span>' : '') +
-      '<div class="bub" data-sel="' + esc(m.id) + '">' + body + '</div>' + acts + '</div></li>';
+      '<div class="bub" data-sel="' + esc(m.id) + '">' + body + '</div>' + rxChips(m.id) + (selMsg === m.id ? rxPicker(m.id) : '') + acts + '</div></li>';
   }).join('');
   if (nearBottom) scrollChat(true);
 }
@@ -1790,6 +1838,7 @@ $('msgs').onclick = async e => {
   if (e.target.closest('img.av')) return;
   const b = e.target.closest('button');
   if (!b){ const s = e.target.closest('[data-sel]'); if (s){ selMsg = selMsg === s.dataset.sel ? null : s.dataset.sel; renderMsgs(); } return; }
+  if (b.dataset.rx){ toggleRx(b.dataset.rxm, b.dataset.rx); return; }
   if (b.dataset.re){ startReply(b.dataset.re); return; }
   if (b.dataset.del){
     if (!confirm(t('delQ'))) return;
@@ -1880,6 +1929,7 @@ function startRealtime(){
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_messages', filter: f }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_plays', filter: f }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'night_members', filter: f }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'night_reactions', filter: f }, refresh)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'nights', filter: 'id=eq.' + night }, refresh)
     .subscribe();
   document.addEventListener('visibilitychange', () => { if (!document.hidden){ refresh(); markRead(); } else paintBadge(); });
