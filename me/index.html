@@ -390,7 +390,7 @@ function paint(){
   $('logout').textContent = t('logout'); $('delAcc').textContent = t('del2');
   paintProfile(); paintNameCheck(); paintUser(); paintCountry(); saveLang();
   if (shirt){ paintStats(); paintDares(); paintDecks(); }
-  paintSetup();
+  liftSetup(); paintSetup();
 }
 window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLang(L); paint(); });
 
@@ -402,7 +402,7 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
      The live-group bar at the top of the page is the way back into the night. */
   user = session.user;
   const [p, d, i] = await Promise.all([
-    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed, username, recap_opt_in, lang').eq('id', user.id).maybeSingle(),
+    sb.from('profiles').select('name, role, avatar_url, instagram, instagram_public, marketing_opt_in, name_confirmed, country, country_confirmed, username, recap_opt_in, lang, setup_done').eq('id', user.id).maybeSingle(),
     sb.from('decks').select('id,name_en,name_es,name_hu,is_free,active,sort').order('sort'),
     sb.from('pack_interest').select('deck_id')
   ]);
@@ -604,8 +604,30 @@ $('avView').onclick = closeAv;
 addEventListener('keydown', e => { if (e.key === 'Escape' && !$('avView').hidden) closeAv(); });
 
 /* ===== set-up checklist (shown until all four steps are done) ===== */
-const seen = k => { try{ return localStorage.getItem('sd_setup_' + k) === '1'; }catch(e){ return false; } };
-const mark = k => { try{ localStorage.setItem('sd_setup_' + k, '1'); }catch(e){} };
+/* The ticks live on the account (profiles.setup_done), so a new phone or browser
+   doesn't ask you to set the shirt up all over again. localStorage is only a fallback
+   for the moment between the tap and the database answering. */
+const seen = k => {
+  if (profile && Array.isArray(profile.setup_done) && profile.setup_done.includes(k)) return true;
+  try{ return localStorage.getItem('sd_setup_' + k) === '1'; }catch(e){ return false; }
+};
+function mark(k){
+  try{ localStorage.setItem('sd_setup_' + k, '1'); }catch(e){}
+  if (!profile) return;
+  const list = Array.isArray(profile.setup_done) ? profile.setup_done : [];
+  if (list.includes(k)) return;
+  profile.setup_done = [...list, k];
+  sb.from('profiles').update({ setup_done: profile.setup_done }).eq('id', user.id);
+}
+/* anything already ticked in this browser moves up to the account once */
+function liftSetup(){
+  if (!profile) return;
+  const list = Array.isArray(profile.setup_done) ? profile.setup_done : [];
+  const add = ['code','test'].filter(k => !list.includes(k) && (() => { try{ return localStorage.getItem('sd_setup_' + k) === '1'; }catch(e){ return false; } })());
+  if (!add.length) return;
+  profile.setup_done = [...list, ...add];
+  sb.from('profiles').update({ setup_done: profile.setup_done }).eq('id', user.id);
+}
 function paintSetup(){
   if (!shirt){ $('setup').hidden = true; return; }
   const done = { st1: !!(profile && profile.avatar_url), st2: seen('code'), st3: seen('test'), st4: events.some(e => e.event === 'scan') };
