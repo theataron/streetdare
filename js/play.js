@@ -93,6 +93,8 @@ function shirtOff(){
   new MutationObserver(() => { document.querySelectorAll('main > section').forEach(s => { if (s.id !== 'v-off' && !s.hidden) s.hidden = true; }); $('v-off').hidden = false; })
     .observe(document.querySelector('main'), { subtree:true, attributes:true, attributeFilter:['hidden'] });
 }
+/* preview of the switched-off screen without switching off a real shirt: /p/?s=demo&preview=off */
+if (new URLSearchParams(location.search).get('preview') === 'off') setTimeout(shirtOff, 0);
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
 const EXTRA = {
   en:{ igH:'Don’t lose each other 👀', igP:'You just did a dare with {name}. Follow them now, so you can find each other after tonight.', ig:'Follow @{ig} on Instagram',
