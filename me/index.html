@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#fbf8ef">
 <link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../css/style.css">
+<script src="/js/night.js"></script>
 <style>
 .me{padding:6px 0 70px}
 .me h1{font-size:clamp(2.2rem,10vw,3rem);color:var(--red);transform:rotate(-2deg);margin:10px 0 6px}
@@ -91,6 +92,13 @@
 .codeedit{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .codeedit input{width:120px;font:400 1.6rem "Bagel Fat One",sans-serif;letter-spacing:.25em;text-align:center;padding:8px 6px 4px;border:2px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink)}
 .code{font:400 2.6rem/1 "Bagel Fat One",sans-serif;letter-spacing:.3em;text-align:center;background:#fff;border:2.5px solid var(--ink);border-radius:16px;padding:16px 8px 12px;margin:6px 0 12px}
+/* night mode */
+html.night .tile,html.night .linkrow,html.night .at,html.night .shirtpick button,html.night .steps .ck,html.night .code,html.night .codeedit input,
+html.night .field input,html.night .field textarea,html.night .field select,html.night .claim input{background:#2a2422;color:var(--ink)}
+html.night .shirtpick button.on{background:var(--ink);color:#121012}
+html.night .steps li.done .ck{background:#1d7a43;color:#fff}
+html.night .pill{background:#173826;color:#8fe0ad}
+html.night .nudge .btn{background:#fff;color:#1b1412}
 </style>
 </head>
 <body>
@@ -98,6 +106,7 @@
   <header class="top">
     <a class="mark display" href="../">STREETDARE</a>
     <div class="right">
+      <button class="nightbtn" id="nightBtn" type="button" aria-label="Night mode">🌙</button>
       <button class="lang" id="lang" aria-label="Language">ES</button>
     </div>
   </header>

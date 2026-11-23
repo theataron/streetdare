@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#fbf8ef">
 <link rel="preload" href="../fonts/bagel-fat-one.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../css/style.css">
+<script src="/js/night.js"></script>
 <style>
 .auth{max-width:420px;margin:0 auto;padding:18px 0 60px;text-align:center}
 .auth h1{font-size:clamp(2.4rem,11vw,3.2rem);color:var(--red);transform:rotate(-2deg);margin:18px 0 10px}
@@ -28,13 +29,17 @@
 .small button{background:none;border:0;color:var(--ink);text-decoration:underline;font:inherit;cursor:pointer;padding:4px}
 .small button:disabled{color:var(--mute);text-decoration:none;cursor:default}
 .sent{background:var(--blush);border-radius:14px;padding:12px 14px;font-size:.95rem;text-align:center}
+/* night mode */
+html.night .auth input,html.night .modes{background:#2a2422;color:var(--ink)}
+html.night .modes button.on{background:var(--ink);color:#121012}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <a class="mark display" href="../">STREETDARE</a>
-    <div class="right"><button class="lang" id="lang" aria-label="Language">ES</button></div>
+    <div class="right"><button class="nightbtn" id="nightBtn" type="button" aria-label="Night mode">🌙</button>
+      <button class="lang" id="lang" aria-label="Language">ES</button></div>
   </header>
 
   <main class="auth">

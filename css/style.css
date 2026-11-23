@@ -713,7 +713,7 @@ html.night .wlbox,html.night .group,html.night .toast,html.night .consent,html.n
 html.night .seg button.on{background:var(--ink);color:#121012}
 html.night .how b{background:var(--red);color:#fff}
 html.night .consent button{border-color:#fff;color:#fff}
-@media (max-width:430px){ body.scanpage #acctBtn{display:none} }
+@media (max-width:430px){ #acctBtn{display:none} }
 /* night: white cards keep dark text */
 html.night .bigcard{color:#1b1412;background:#fff}
 html.night .bigcard .flip{color:#1b1412;background:#fff;border-color:#1b1412}
@@ -839,3 +839,10 @@ footer .social{margin:0 0 8px;font-weight:700}
 .offcards .cardx + .cardx{animation-delay:.35s}
 .offcards .btn{margin-top:12px;width:100%}
 @media (prefers-reduced-motion:reduce){.offhero svg,.offhero .zz,.offsteps div,.offcards .cardx{animation:none}.offhero .zz{opacity:.7}}
+/* the QR on drawn shirts stays black on white in night mode, like a real print */
+html.night .a-shirt .qd{fill:#1b1412}
+html.night .a-shirt .qbg{fill:#fff;stroke:#1b1412}
+
+/* header never wider than the phone */
+.top .right{flex-wrap:nowrap;min-width:0}
+@media (max-width:360px){ .top .mark{font-size:1.05rem} .top .right{gap:6px} }
