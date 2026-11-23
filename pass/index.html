@@ -758,8 +758,8 @@ const T = {
     gP:'Játssz ma este STREETDARE-t póló nélkül. A barátaiddal idegenekhez mentek oda, kihívásokat csináltok és pontokat gyűjtötök. Lépj be, és foglald el a helyed.',
     gGoogle:'Folytatás Google-fiókkal', gEmail:'Folytatás e-maillel', gSmall:'Akár új vagy, akár játszottál már, ugyanez a gomb.',
     pfH:'Gyorsan, ki vagy? 👋', pfP:'A csapatod látja a neved és a felhasználóneved a feedben és a ranglistán.',
-    pfNameL:'Keresztnév', pfNameS:'Ezt a nevet látják mások: ma este a csapatod, és bárki, aki beszkenneli a pólódat.', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfIgPubL:'Mutassuk meg az Instagramomat annak az idegennek, akivel teljesítettem egy kihívást', pfPhotoAdd:'Fotó hozzáadása', pfPhotoChange:'Fotó cseréje', pfPhotoUp:'Feltöltés…', pfPhotoBad:'Ez a fotó nem sikerült. Próbálj egy másikat.', pfPhotoS:'Hogy a csapatod tudja, ki vagy. Később módosíthatod.', pfBtn:'Mehet 🔥',
-    oaths:['Esküszöm, hogy ma este megpróbálok az lenni, aki miatt jobb lett valakinek az estéje, és soha nem az, aki miatt rosszabb.'],
+    pfNameL:'Keresztnév', pfNameS:'Ezt a nevet látják mások: ma este a csapatod, és bárki, aki beszkenneli a pólódat.', pfUserL:'Felhasználónév', pfIgL:'Instagram (nem kötelező)', pfIgS:'Csak a csapatod látja.', pfIgPubL:'Mutasd meg az Instagramomat annak, akivel teljesítettem egy kihívást.', pfPhotoAdd:'Fotó hozzáadása', pfPhotoChange:'Fotó cseréje', pfPhotoUp:'Feltöltés…', pfPhotoBad:'Ez a fotó nem sikerült. Próbálj egy másikat.', pfPhotoS:'Hogy a csapatod tudja, ki vagy. Később módosíthatod.', pfBtn:'Mehet 🔥',
+    oaths:['Esküszöm, hogy ma megpróbálok úgy játszani, aki miatt valakinek jobb lett az estéje, nem pedig rosszabb.'],
     ucFree:'@{u} szabad ✓', ucTaken:'@{u} már foglalt. Próbálj másikat.', ucBlocked:'Válassz másik felhasználónevet.', ucBad:'3–20 karakter: betűk, számok, . és _',
     needName:'Előbb írd be a neved.', needUser:'Előbb válassz egy szabad felhasználónevet.',
     fH:'Te vagy itt az első 🎉', fP:'Adj nevet az estének. Az egész csapatod látni fogja.', fPh:'Káosz Este', fBtn:'Kezdődjön az este ⏱', fSmall:'A 24 óra most indul, az egész csapatnak.',
@@ -1200,6 +1200,7 @@ async function openNight(id, fresh){
   $('app').hidden = false;
   renderHook = renderNight;
   paint();
+  liftSkips();
   if (!dare) restoreDare();
   let start = null; try{ start = sessionStorage.getItem('sd_tab_' + id); }catch(e){}
   showTab(start || (isLive() ? 'dares' : 'chat'));
@@ -1383,8 +1384,12 @@ $('invShare').onclick = async () => {
 /* ---------- dares ---------- */
 let dare = null;
 function myDone(){ return new Set(info.my_dares || []); }
+/* Skipped dares are kept on the account (night_members.skipped), so changing phone or
+   browser mid-night does not hand them back. The copy on this phone is only a cache, so
+   the screen can react before the database answers; the two are merged on every read. */
 const skipKey = () => 'sd_skip_' + night;
-const skipped = () => { try{ return new Set(JSON.parse(store.get(skipKey()) || '[]')); }catch(e){ return new Set(); } };
+const localSkips = () => { try{ return JSON.parse(store.get(skipKey()) || '[]'); }catch(e){ return []; } };
+const skipped = () => new Set([...localSkips(), ...((info && info.my_skips) || [])].map(Number));
 // a chained dare (Snowball Selfie levels) only unlocks after the previous level is done
 const dareOpen = (d, done, sk) => !done.has(d.id) && !sk.has(d.id) && (!d.chain_after || done.has(d.chain_after));
 /* The dare on screen is yours until you do it or skip it: it is remembered on the phone, so
@@ -1408,13 +1413,30 @@ function pickDare(after){
   renderDare();
 }
 // "Give me another one": the dare you skip does not come back tonight
+/* skips made on this phone before they were stored centrally move up once */
+function liftSkips(){
+  if (!info || !isLive()) return;
+  const mine = new Set(((info.my_skips) || []).map(Number));
+  const extra = localSkips().map(Number).filter(id => !mine.has(id));
+  extra.forEach(id => sb.rpc('skip_dare', { p_night: night, p_dare: id }));
+  if (extra.length) info.my_skips = [...mine, ...extra];
+}
 function skipDare(){
   if (!dare) return;
-  const sk = skipped(); sk.add(dare.id); store.set(skipKey(), JSON.stringify([...sk]));
+  const id = dare.id;
+  const sk = skipped(); sk.add(id);
+  store.set(skipKey(), JSON.stringify([...sk]));
+  if (info) info.my_skips = [...sk];
   const done = myDone();
   const left = dares.filter(d => dareOpen(d, done, sk)).length;
   pickDare();
   toast(t(left ? 'skipWarn' : 'skipNone', { n: left }));
+  sb.rpc('skip_dare', { p_night: night, p_dare: id }).then(({ data }) => {
+    if (data && Array.isArray(data.skipped) && info){
+      info.my_skips = data.skipped;
+      store.set(skipKey(), JSON.stringify(data.skipped));
+    }
+  });
 }
 const dl = (d, k) => d[k + '_' + L] || d[k + '_en'] || d[k + '_es'] || '';
 function renderDare(){
