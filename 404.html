@@ -41,6 +41,7 @@
     <p class="hint" id="hint"></p>
   </div>
 </main>
+<script src="/js/copy.js"></script>
 <script>
 (function(){
   var T = {
@@ -51,8 +52,13 @@
   var L = 'en';
   try { L = localStorage.getItem('sd_lang') || ''; } catch(e) { L = ''; }
   if (!T[L]) { var n = (navigator.language || 'en').slice(0,2).toLowerCase(); L = T[n] ? n : 'en'; }
-  document.documentElement.lang = L;
-  ['k','h','dare','home','try','hint','stamp'].forEach(function(id){ document.getElementById(id).textContent = T[L][id]; });
+  function paint(){
+    document.documentElement.lang = L;
+    ['k','h','dare','home','try','hint','stamp'].forEach(function(id){ document.getElementById(id).textContent = T[L][id]; });
+  }
+  /* wording Aron has approved in /admin -> Copy wins over the text above */
+  if (window.sdCopy) window.sdCopy(T, 'e404', paint);
+  paint();
 })();
 </script>
 <script src="/js/hello.js" defer></script>

@@ -278,6 +278,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
 
 <script src="../js/langpick.js"></script>
 <script src="../js/geo.js"></script>
+<script src="/js/copy.js"></script>
 <script type="module">
 import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
@@ -373,6 +374,8 @@ const T = {
 };
 let L = lang(), user = null, profile = null, shirts = [], shirt = null, decks = [], interest = new Set(), events = [], channel = null;
 const t = k => ((T[L] || {})[k] ?? T.en[k]);
+/* wording Aron has approved in /admin -> Copy wins over the text above */
+if (window.sdCopy) sdCopy(T, 'me', () => { try { paint(); } catch (e) {} });
 let toastT; function toast(m){ $('toast').textContent = m; $('toast').hidden = false; clearTimeout(toastT); toastT = setTimeout(() => $('toast').hidden = true, 2600); }
 const when = d => { const s = (Date.now() - new Date(d)) / 1000; if (s < 60) return { es:'ahora', hu:'most' }[L] || 'now'; if (s < 3600) return Math.floor(s/60) + ' min'; if (s < 86400) return Math.floor(s/3600) + ' h'; return new Date(d).toLocaleDateString({ es:'es-ES', hu:'hu-HU' }[L] || 'en-GB', { day:'numeric', month:'short' }); };
 

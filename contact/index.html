@@ -74,6 +74,7 @@ html.night .topics button.on{background:var(--ink);color:#121012}
   <footer>STREETDARE · Madrid · <a href="../privacy/">Privacy</a> · <a href="../terms/">Terms</a></footer>
 </div>
 <script src="../js/langpick.js"></script>
+<script src="/js/copy.js"></script>
 <script type="module">
 import { sb, lang, setLang, getSession } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
@@ -107,6 +108,8 @@ let L = lang(), topic = new URLSearchParams(location.search).get('topic') || 'pl
 if (topic === 'report') topic = 'safety';
 if (!T.en.topics[topic]) topic = 'player';
 const t = k => (T[L] || T.en)[k] ?? T.en[k];
+/* wording Aron has approved in /admin -> Copy wins over the text above */
+if (window.sdCopy) sdCopy(T, 'contact', () => { try { paint(); } catch (e) {} });
 function paint(){
   document.documentElement.lang = L;
   ['h','lead','nameL','emailL','topicL','msgL','send','note','doneH','doneBack'].forEach(k => $(k).textContent = t(k));

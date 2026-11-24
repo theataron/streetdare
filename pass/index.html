@@ -636,6 +636,7 @@ html.night .badge{border-color:#211b19}
 <div class="toast" id="toast" hidden></div>
 
 <script src="../js/langpick.js"></script>
+<script src="/js/copy.js"></script>
 <script type="module">
 import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
 import qrcode from '../js/vendor/qrcode.mjs';
@@ -824,6 +825,8 @@ const T = {
 };
 let L = lang();
 const t = (k, v) => { let s = (T[L] || {})[k] ?? T.en[k] ?? k; if (v) for (const x in v) s = s.split('{' + x + '}').join(v[x]); return s; };
+/* wording Aron has approved in /admin -> Copy wins over the text above */
+if (window.sdCopy) sdCopy(T, 'pass', () => { try { paint(); } catch (e) {} });
 const params = new URLSearchParams(location.search);
 const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const fmtCode = c => c.length === 8 ? c.slice(0,4) + '-' + c.slice(4) : c;

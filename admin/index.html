@@ -107,6 +107,40 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .row > .btn{flex:0 0 auto}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:700;font-size:.9rem;z-index:9}
 .empty{color:var(--mute);padding:14px 0}
+
+/* ----- Copy: approving every word on the site ----- */
+.cpbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.cpgrid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+@media(max-width:900px){.cpgrid{grid-template-columns:1fr}}
+.cphead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.cpsection{font:400 1.3rem/1.2 "Caprasimo",Georgia,serif;margin:2px 0 12px}
+.cpneighbour{border-left:3px solid var(--line);padding:6px 0 6px 12px;color:var(--mute);font-size:.9rem;margin:8px 0}
+.cpnow{border:2px solid var(--ink);border-radius:14px;padding:14px;background:var(--bg)}
+.cpmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;font-size:.85rem}
+.cpkind{background:var(--blush);border-radius:99px;padding:2px 10px;font-weight:800;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em}
+.cpmeta code{background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.8rem}
+.cppill{border:1px solid var(--line);border-radius:99px;padding:2px 10px;color:var(--mute)}
+.cppill.ok{border-color:var(--ok);color:var(--ok);font-weight:700}
+.cppill.warn{border-color:var(--red);color:var(--red);font-weight:700}
+.cpwarn{color:var(--red)}
+.cpref{background:#fff;border:1px dashed var(--line);border-radius:10px;padding:8px 10px;margin-bottom:10px;font-size:.92rem}
+#cpText{width:100%;font:400 1.05rem/1.5 "DM Sans",system-ui,sans-serif;padding:10px;border:2px solid var(--ink);border-radius:10px;background:#fff;resize:vertical}
+#cpNote{width:100%;margin-top:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:.9rem;background:#fff}
+.cpprev{margin-top:8px;font-size:.95rem}
+.cpacts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px}
+.cpbarwrap{height:8px;background:var(--line);border-radius:99px;overflow:hidden;min-width:90px}
+.cpbarwrap i{display:block;height:100%;background:var(--ok)}
+.cplistcard{max-height:76vh;display:flex;flex-direction:column}
+.cptodo{font-size:.85rem;font-weight:700;display:block;margin:-6px 0 10px}
+.cplist{overflow:auto;border-top:1px solid var(--line)}
+.cplistsec{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding:10px 0 4px;position:sticky;top:0;background:var(--card)}
+.cplist button{display:flex;gap:8px;align-items:center;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:5px 6px;cursor:pointer;font:inherit;font-size:.85rem}
+.cplist button.on{background:var(--blush);font-weight:700}
+.cplist button span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cplist button em{color:var(--red);font-style:normal}
+.cpdot{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--mute);flex:none}
+.cpdot.ok{background:var(--ok);border-color:var(--ok)}
+.cpdot.warn{background:var(--red);border-color:var(--red)}
 </style>
 </head>
 <body>
@@ -140,6 +174,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     <nav class="tabs">
       <button data-tab="live" class="on">Live results</button>
       <button data-tab="decks">Decks &amp; dares</button>
+      <button data-tab="copy">Copy ✍️</button>
       <button data-tab="shirts">Shirts</button>
       <button data-tab="passes">Shirtless Pass</button>
       <button data-tab="emails">Waitlist & consent</button>
@@ -213,6 +248,9 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
     </div>
 
     <!-- SHIRTS -->
+    <!-- ===== Copy: approve every word on the site (admin/copy.js) ===== -->
+    <div id="t-copy" hidden></div>
+
     <div id="t-shirts" hidden>
       <div class="card">
         <h3>Add a shirt</h3>
@@ -333,6 +371,7 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 import qrcode from '../js/vendor/qrcode.mjs';
+import { initCopy } from './copy.js';
 
 const sb = createClient('https://jlnsqerwiwmbqpzzcskf.supabase.co', 'sb_publishable_zWPRZvdU4QyCI5hlmAvCWA_Mz7_koXT');
 const $ = id => document.getElementById(id);
@@ -378,9 +417,14 @@ sb.auth.onAuthStateChange((evt, session) => {
 /* ===== tabs ===== */
 document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('on', x === b));
-  ['live','decks','shirts','passes','emails','mail'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
+  ['live','decks','copy','shirts','passes','emails','mail'].forEach(n => $('t-'+n).hidden = n !== b.dataset.tab);
   if (b.dataset.tab === 'mail' && !mailLoaded) loadMail();
+  if (b.dataset.tab === 'copy' && !copyLoaded){ copyLoaded = true; copyUi.load(); }
 });
+
+/* ===== copy review (admin/copy.js) ===== */
+let copyLoaded = false;
+const copyUi = initCopy({ sb, $, esc, toast });
 
 /* ===== live results ===== */
 const EVT = { scan:'scanned', spin:'spun a dare', show:'showed the wearer', accept:'accepted', done:'completed' };
