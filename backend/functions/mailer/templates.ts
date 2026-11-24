@@ -12,7 +12,7 @@ const fill = (s: string, v: Record<string, string>) => s.replace(/\{(\w+)\}/g, (
 /* ---------- copy ---------- */
 const W: Record<L, Record<string, string | string[]>> = {
   en: {
-    subj: "You just made the first move 🔥",
+    subj: "You just made the first step 🔥",
     hi: "Hey {name}, welcome to STREETDARE 👋",
     p1: "Creating an account is a small step, but it’s exactly the kind of step STREETDARE is about: saying yes before you overthink it. We’re really happy you’re here.",
     what: "STREETDARE is a shirt with your own QR code on the back. Whoever scans it gets a dare to do together with you, so starting a conversation with a stranger stops being awkward and starts being fun. We started in Madrid and Budapest.",

@@ -13,7 +13,7 @@ const T: Record<L, Record<string, string>> = {
   en: {
     subj: "Last night: {s} scans, {d} dares 🔥", hi: "Morning, {name} ☀️", intro: "Here’s what your STREETDARE shirt did last night.",
     scans: "scans", dares: "dares done", people: "new people", top: "Last dare you did", where: "Scanned in",
-    share: "Screenshot this and post it 📸 The best nights deserve proof.", cta: "See your night", again: "Wear it again this weekend, and let the next stranger make the first move.",
+    share: "Screenshot this and post it 📸 The best nights deserve proof.", cta: "See your night", again: "Wear it again this weekend, and let the next stranger make the first step.",
     foot: "You get this because you own a STREETDARE shirt. Don’t want morning recaps? Switch them off in your profile.", off: "Turn off recaps",
   },
   es: {
