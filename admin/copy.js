@@ -279,6 +279,11 @@ export function initCopy({ sb, $, esc, toast }) {
   function paintOverview() {
     $('cpRows').innerHTML = groups.map(g => {
       const t = tally(g);
+      if (g.error) {
+        return '<tr><td><b>' + esc(g.label) + '</b></td><td colspan="6" class="cpwarn">' +
+               esc(g.error) + ' \u2014 press \u201cRe-read the site\u201d, and hard-reload ' +
+               'the page if it keeps saying this (Ctrl + Shift + R).</td></tr>';
+      }
       if (!t.total) {
         return '<tr><td><b>' + esc(g.label) + '</b></td><td colspan="6" class="muted">' +
                'nothing in ' + lang.toUpperCase() + ' yet</td></tr>';

@@ -264,6 +264,10 @@ export async function scanSite(read, parseDom) {
   for (const g of GROUPS) {
     let items = [];
 
+    // One page we can't read shouldn't cost us the whole review: note it against that
+    // group and carry on with the rest.
+    try {
+
     if (g.kind === 'markup') {
       const html = await read(g.path === '/' ? '/index.html' : g.path + 'index.html');
       for (const it of scanMarkup(html, parseDom)) {
@@ -305,6 +309,12 @@ export async function scanSite(read, parseDom) {
     }
     // a key the HTML asks for but no language has wording for is dead markup, not copy
     items = items.filter(it => it.en !== null || it.es !== null || it.hu !== null);
+
+    } catch (e) {
+      groups.push({ id:g.id, label:g.label, source:g.source, path:g.path, items:[],
+                    error: e && e.message ? e.message : String(e) });
+      continue;
+    }
 
     groups.push({ id:g.id, label:g.label, source:g.source, path:g.path, items });
   }
