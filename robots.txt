@@ -7,7 +7,6 @@ Disallow: /pass/
 Disallow: /me/
 Disallow: /login/
 Disallow: /admin/
-Disallow: /stage/
 Disallow: /js/quests.js
 Disallow: /js/shirts.js
 

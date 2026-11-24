@@ -35,7 +35,7 @@ const DECK_GROUPS = [
 
 const PAGE_URL = {
   home:'/', scan:'/p/?s=demo', textrest:'/p/?s=demo', me:'/me/', pass:'/pass/',
-  contact:'/contact/', login:'/login/', e404:'/404.html', stage:'/stage/'
+  contact:'/contact/', login:'/login/', e404:'/404.html'
 };
 
 export function initCopy({ sb, $, esc, toast }) {
@@ -77,7 +77,7 @@ export function initCopy({ sb, $, esc, toast }) {
     return (r.published_text ?? null) !== want;
   }
 
-  /* strings in this language that exist at all (the stage page has no Hungarian yet) */
+  /* strings this language actually has wording for */
   const listed = g => g.items.filter(it => base(it, lang) != null);
 
   /* ---------- the shell ---------- */

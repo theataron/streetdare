@@ -10,8 +10,8 @@
    fall out of step with the site and nothing has to be rebuilt after a copy change.
 
    There are two kinds of page:
-     - Home, /p and /stage share js/text.js and name their keys in the HTML as
-       data-i18n="key". The HTML gives the order and the section, text.js gives the wording.
+     - Home and /p share js/text.js and name their keys in the HTML as data-i18n="key".
+       The HTML gives the order and the section, text.js gives the wording.
      - /me, /pass, /contact, /login and 404 each carry their own T block and paint
        themselves from JavaScript. Most of their strings still land in an element whose id
        is the key, so the real page gives us the order there too; the rest (toasts, errors,
@@ -28,7 +28,6 @@ export const GROUPS = [
   { id:'contact',  source:'contact', label:'Contact',                    path:'/contact/', kind:'inline' },
   { id:'login',    source:'login',   label:'Log in',                     path:'/login/',   kind:'inline' },
   { id:'e404',     source:'e404',    label:'404 page',                   path:'/404.html', kind:'inline' },
-  { id:'stage',    source:'text',    label:'Shop (stage page)',          path:'/stage/',   kind:'markup' },
 ];
 
 /* friendlier names for the functions inside the pages that paint themselves */
@@ -81,18 +80,6 @@ const threeLangs = o => ({ en:(o && o.en) || {}, es:(o && o.es) || {}, hu:(o && 
 /* js/text.js: const T = { en:{...}, es:{...}, hu:{...} } */
 export function parseTextJs(src) {
   return threeLangs(literal(objectAfter(src, T_DECL)));
-}
-
-/* js/stage.js adds its own strings on top: Object.assign(T.en, { ... }) */
-export function parseStageJs(src) {
-  const out = { en:{}, es:{}, hu:{} };
-  const re = /Object\.assign\(\s*T\.(en|es|hu)\s*,\s*/g;
-  let m;
-  while ((m = re.exec(src))) {
-    const obj = literal(objectAfter(src.slice(m.index), /Object\.assign\(\s*T\.(?:en|es|hu)\s*,\s*/));
-    if (obj) Object.assign(out[m[1]], obj);
-  }
-  return out;
 }
 
 /* a page carrying its own const T = { en:{...}, ... } inside its script */
@@ -270,10 +257,6 @@ export async function scanSite(read, parseDom) {
   const flat = d => ({ en: flatten(d.en), es: flatten(d.es), hu: flatten(d.hu) });
 
   const dict = { text: flat(parseTextJs(await read('/js/text.js'))) };
-  const stageExtra = flat(parseStageJs(await read('/js/stage.js')));
-  const stageKeys = new Set(Object.keys(stageExtra.en));
-  // at run time the stage page's own strings sit in the same block
-  for (const l of ['en', 'es', 'hu']) Object.assign(dict.text[l], stageExtra[l]);
 
   const groups = [];
   const seen = new Set();     // a key reviewed once isn't asked about again further down
@@ -292,10 +275,9 @@ export async function scanSite(read, parseDom) {
 
     else if (g.kind === 'leftover') {
       // text.js keys no page spells out in its HTML: js/play.js and friends show these.
-      // Anything the stage page adds is left to the stage group further down.
       let n = 0;
       for (const key of Object.keys(dict.text.en)) {
-        if (seen.has(key) || stageKeys.has(key)) continue;
+        if (seen.has(key)) continue;
         seen.add(key);
         items.push({ key, order:n++, kind:'text', section:'Scan flow', sectionFromKey:false, detail:'', hidden:false });
       }
