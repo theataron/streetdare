@@ -11,7 +11,8 @@ a{color:inherit}
 
 /* top bar */
 /* the top padding keeps the header clear of the iPhone clock when the site is opened from the home screen (standalone); in Safari the inset is 0 and nothing changes */
-.top{display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top,0px)) 0 16px}
+.top{display:flex;align-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top,0px)) 0 16px}
+.top .mark{margin-right:auto}  /* holds the burger and the mark together on the left */
 /* home screen app: a dark strip behind the status bar, so the white clock stays readable in day mode too */
 @media (display-mode:standalone){
   body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#121012;z-index:30;pointer-events:none}
@@ -110,7 +111,9 @@ body.hot .btn.red{color:#fff}
 .menu{position:fixed;inset:0;z-index:20;background:var(--red);color:#fff;padding:max(22px,calc(env(safe-area-inset-top,0px) + 10px)) 24px max(22px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;overflow:auto}
 .menu .x{align-self:flex-end;background:none;border:0;color:#fff;font-size:2rem;line-height:1;cursor:pointer;padding:6px 10px}
 .menu a{font-family:"DM Sans",sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:-.01em;line-height:1.2;color:#fff;text-decoration:none;padding:10px 0;border-bottom:2px solid rgba(255,255,255,.25)}
-.menu a small{display:block;font:500 .9rem "DM Sans",sans-serif;opacity:.85;margin-top:2px}
+.menu a small{display:block;font:500 .9rem "DM Sans",sans-serif;opacity:.85;margin-top:2px;min-height:1.1em}
+.menu .nightrow{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:"DM Sans",sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:-.01em;line-height:1.2;color:#fff;padding:10px 0;border-bottom:2px solid rgba(255,255,255,.25)}
+.menu .nightrow .nightbtn{border-color:#fff;color:#fff;flex:none}
 .menu .foot{margin-top:auto;padding-top:24px;font-size:.85rem;opacity:.85}
 .how{display:grid;gap:8px;margin:26px 0 0;text-align:left;font-size:.95rem;color:var(--mute)}
 .how div{display:flex;gap:10px;align-items:baseline}
@@ -719,7 +722,8 @@ html.night .wlbox,html.night .group,html.night .toast,html.night .consent,html.n
 html.night .seg button.on{background:var(--ink);color:#121012}
 html.night .how b{background:var(--red);color:#fff}
 html.night .consent button{border-color:#fff;color:#fff}
-@media (max-width:430px){ #acctBtn{display:none} }
+/* Profile is a highlighted button in the top right on every width, phones included. */
+@media (max-width:430px){ #acctBtn{padding:6px 10px;font-size:.75rem} }
 /* night: white cards keep dark text */
 html.night .bigcard{color:#1b1412;background:#fff}
 html.night .bigcard .flip{color:#1b1412;background:#fff;border-color:#1b1412}

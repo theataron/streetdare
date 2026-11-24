@@ -16,8 +16,11 @@
     toggle: function(){ var on = !this.on(); apply(on); try{ localStorage.setItem(KEY, on ? 'night' : 'day'); }catch(e){} return on; },
     paint: function(){ apply(this.on()); }
   };
-  document.addEventListener('DOMContentLoaded', function(){
-    var b = document.getElementById('nightBtn');
-    if (b){ b.onclick = function(){ window.sdNight.toggle(); }; window.sdNight.paint(); }
+  /* The toggle lives at the bottom of the hamburger menu, and some menus are rebuilt each
+     time they open, so the click is caught on the document rather than bound to the button. */
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('#nightBtn');
+    if (b){ e.preventDefault(); window.sdNight.toggle(); }
   });
+  document.addEventListener('DOMContentLoaded', function(){ window.sdNight.paint(); });
 })();

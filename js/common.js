@@ -45,11 +45,16 @@ const loggedIn = () => !!store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token');
 function paintAccount(){
   const a = ACCT[LANG] || ACCT.en, right = document.querySelector('.top .right'), menu = $('menu');
   if (window.STAGE) return;
-  if (right && !$('acctBtn')){ const l = document.createElement('a'); l.id = 'acctBtn'; l.className = 'acct'; right.prepend(l); }
+  if (right && !$('acctBtn')){ const l = document.createElement('a'); l.id = 'acctBtn'; l.className = 'acct'; right.appendChild(l);  /* far right of the header */ }
   if (menu && !$('mLogin')){
     const foot = menu.querySelector('.foot');
     const mk = id => { const el = document.createElement('a'); el.id = id; el.innerHTML = '<span></span><small></small>'; menu.insertBefore(el, foot); return el; };
-    mk('mPass'); mk('mLogin'); mk('mSignup'); mk('mContact');
+    mk('mPass'); mk('mSignup');
+    /* The Wall belongs low in the menu, right above Contact. Profile is not in here at
+       all any more: it's the highlighted button in the top right of the header. */
+    const wall = menu.querySelector('a[href="#wall"], a[href="/#wall"], a[data-to="wall"]');
+    if (wall) menu.insertBefore(wall, foot);
+    mk('mContact');
   }
   const mc = $('mContact');
   if (mc){ mc.href = '/contact/'; mc.querySelector('span').textContent = a.contact; mc.querySelector('small').textContent = a.contactS; }
@@ -61,8 +66,7 @@ function paintAccount(){
     const pic = store.get('sd_avatar');
     if (loggedIn() && pic && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(pic)){ const i = document.createElement('img'); i.src = pic; i.alt = ''; btn.prepend(i); btn.classList.add('withpic'); }
   }
-  const ml = $('mLogin'), ms = $('mSignup');
-  if (ml){ ml.href = loggedIn() ? '/me/' : '/login/'; ml.querySelector('span').textContent = loggedIn() ? a.me : a.login; ml.querySelector('small').textContent = loggedIn() ? a.meS : a.loginS; }
+  const ms = $('mSignup');
   if (ms){ ms.hidden = loggedIn(); ms.href = '/login/?mode=signup'; ms.querySelector('span').textContent = a.signup; ms.querySelector('small').textContent = a.signupS; }
 }
 /* ----- Shirtless Pass: while a night is live it is the home page, and a bar links back to it ----- */
