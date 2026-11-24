@@ -7,15 +7,22 @@
   if (!top) return;
 
   var last = window.scrollY || 0;
-  var SHOW_AFTER = 6;     /* a flick up this small already brings it back */
+  var up = 0;             /* how far we have travelled up since we last went down */
+  var SHOW_AFTER = 24;    /* a flick up this small already brings it back */
   var HIDE_BELOW = 90;    /* never hide it while you are still near the top */
   var ticking = false;
 
+  /* The page scrolls smoothly, so an upward flick arrives as a run of two- and three-pixel
+     frames. Comparing one frame against the last never adds up to a gesture, so the upward
+     movement is accumulated instead and reset the moment you head back down. */
   function onScroll() {
-    var y = window.scrollY || 0;
-    if (y < HIDE_BELOW) top.classList.remove('hid');
-    else if (y > last + 4) top.classList.add('hid');
-    else if (y < last - SHOW_AFTER) top.classList.remove('hid');
+    var y = window.scrollY || 0, dy = y - last;
+    if (dy > 0) up = 0; else up -= dy;
+
+    if (y < HIDE_BELOW) { top.classList.remove('hid'); up = 0; }
+    else if (dy > 2) top.classList.add('hid');
+    else if (up > SHOW_AFTER) { top.classList.remove('hid'); up = 0; }
+
     last = y;
     ticking = false;
   }
