@@ -152,6 +152,21 @@ html.night .board li,html.night .nights li{border-color:#2f2826}
 .lbtop small{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.68rem;opacity:.8}
 .lbhi{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:clamp(3.4rem,20vw,6rem);line-height:.92;margin:22px 0 8px;color:#fff;word-break:break-word}
 .lbgroup{font-weight:800;font-size:1.05rem;opacity:.92;margin-bottom:16px}
+/* The lobby text scrolls in its own box above the reader, so the reader can never sit on
+   top of the rules or the oath however long they get. */
+.lbmain{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column}
+.lobby{overflow:hidden}
+.cd{position:fixed;inset:0;z-index:60;background:var(--red);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3vh;overflow:hidden;padding:0 24px}
+.cd[hidden]{display:none}
+.cdline{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:clamp(1.7rem,8vw,3.2rem);line-height:1.1;text-align:center;margin:0;opacity:0;animation:cdIn .55s cubic-bezier(.2,.9,.3,1.4) forwards}
+.cdnum{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-size:clamp(6rem,36vw,15rem);line-height:1;min-height:1em}
+.cdnum span{display:block;animation:cdPop .9s cubic-bezier(.2,.9,.3,1.3) forwards}
+.cdflash{position:absolute;left:50%;top:50%;width:12px;height:12px;border-radius:50%;background:#fff;transform:translate(-50%,-50%) scale(0);opacity:0}
+.cd.go .cdflash{animation:cdFlash .5s ease-in forwards}
+@keyframes cdIn{from{opacity:0;transform:translateY(20px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes cdPop{0%{opacity:0;transform:scale(2.4)}32%{opacity:1;transform:scale(1)}78%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.72)}}
+@keyframes cdFlash{from{transform:translate(-50%,-50%) scale(0);opacity:.9}to{transform:translate(-50%,-50%) scale(90);opacity:1}}
+@media (prefers-reduced-motion:reduce){.cdline,.cdnum span,.cd.go .cdflash{animation-duration:.01s}}
 .lbnames{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
 .lbnames li{display:flex;align-items:center;gap:7px;padding:7px 14px 7px 8px;border-radius:99px;background:rgba(255,255,255,.14);border:2px solid transparent;font-weight:800;font-size:.95rem;transition:background .15s,border-color .15s,transform .15s}
 .lbnames li .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.35);margin-left:4px}
@@ -377,7 +392,7 @@ html.night .badge{border-color:#211b19}
         <div class="field"><label id="pfNameL" for="pfName"></label><input id="pfName" maxlength="40" autocomplete="given-name" required>
           <small id="pfNameS"></small></div>
         <div class="field"><label id="pfUserL" for="pfUser"></label>
-          <div class="at"><span>@</span><input id="pfUser" class="in" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" required></div>
+          <div class="at"><span>@</span><input id="pfUser" name="sd-handle" class="in" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" required></div>
           <small id="pfUserMsg"></small></div>
         <div class="field"><label id="pfIgL" for="pfIg"></label>
           <div class="at"><span>@</span><input id="pfIg" class="in" maxlength="30" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div>
@@ -393,7 +408,7 @@ html.night .badge{border-color:#211b19}
       <h1 class="display" id="fH"></h1>
       <p class="lead" id="fP"></p>
       <form id="fForm" novalidate>
-        <div class="field"><input id="fName" maxlength="40" required></div>
+        <div class="field"><input id="fName" name="sd-nightname" maxlength="40" autocomplete="off" required></div>
         <div class="field"><label id="fLangL"></label><div class="langs" id="fLangs"></div><small id="fLangS"></small></div>
         <p class="err" id="fErr" hidden></p>
         <button class="btn red big" type="submit" id="fBtn"></button>
@@ -453,11 +468,13 @@ html.night .badge{border-color:#211b19}
 
 <div class="lobby" id="lobby" hidden>
   <div class="lbtop"><a class="sdlogo" href="/?home=1" style="text-decoration:none" aria-label="STREETDARE">STREETD<i class="sdstar" aria-hidden="true"></i>RE</a><small>Shirtless Pass</small></div>
-  <h1 class="lbhi" id="lbHi"></h1>
-  <p class="lbgroup" id="lbGroup"></p>
-  <ul class="lbnames" id="lbNames"></ul>
-  <ol class="lbrules"><li id="lbR1"></li><li id="lbR2"></li><li id="lbR3"></li></ol>
-  <p class="lboath" id="lbOath" hidden aria-live="polite"></p>
+  <div class="lbmain">
+    <h1 class="lbhi" id="lbHi"></h1>
+    <p class="lbgroup" id="lbGroup"></p>
+    <ul class="lbnames" id="lbNames"></ul>
+    <ol class="lbrules"><li id="lbR1"></li><li id="lbR2"></li><li id="lbR3"></li></ol>
+    <p class="lboath" id="lbOath" hidden aria-live="polite"></p>
+  </div>
   <div class="lbbottom">
     <button class="lbthumb" id="lbThumb" type="button" aria-label="Hold">
       <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M9 30a23 23 0 0 1 46 0"/><path d="M16 54c-2-7-2-14-2-21a18 18 0 0 1 36 0c0 8 0 14 2 21"/><path d="M23 57c-2-8-2-15-2-23a11 11 0 0 1 22 0c0 8 0 14 2 21"/><path d="M32 34v12"/></svg>
@@ -467,6 +484,13 @@ html.night .badge{border-color:#211b19}
     <button class="lbinvite" id="lbInvite" type="button"></button>
     <button class="lbhost" id="lbHost" type="button" hidden></button>
   </div>
+</div>
+
+<!-- the hand-over from the lobby to the game: the line, then 3 - 2 - 1, then a wipe -->
+<div class="cd" id="cd" hidden aria-hidden="true">
+  <p class="cdline" id="cdLine"></p>
+  <div class="cdnum" id="cdNum"></div>
+  <span class="cdflash"></span>
 </div>
 
 <div class="app" id="app" hidden>
@@ -647,7 +671,7 @@ const PHOTO_DAYS = 7;
 const T = {
   en:{
     tapToSave:'Tap a photo, then “Save to Photos” to keep it on your phone.',
-    cbNext:'Next', cbGo:'Got it 🔥',
+    cbNext:'Next', cbGo:'Got it 🔥', cbIntro:'First, get to know the screen.',
     cbdaresH:'Your dare 🎲', cbdaresP:'One dare at a time. Do it, count it, and the next one turns up. Not feeling it? Ask for another one, but that one won’t come back tonight.',
     cbchatH:'The group chat 💬', cbchatP:'Photos, dares and trash talk, all in one place. Only your group sees it.',
     cbresultsH:'The leaderboard 🏆', cbresultsP:'Who is ahead right now. When the timer hits zero, whoever is on top wins the night.',
@@ -706,7 +730,7 @@ const T = {
   },
   es:{
     tapToSave:'Toca una foto y luego «Guardar en Fotos» para tenerla en tu móvil.',
-    cbNext:'Siguiente', cbGo:'Entendido 🔥',
+    cbNext:'Siguiente', cbGo:'Entendido 🔥', cbIntro:'Primero, familiarízate con la pantalla.',
     cbdaresH:'Tu reto 🎲', cbdaresP:'Un reto cada vez. Hazlo, cuéntalo y aparece el siguiente. ¿No te convence? Pide otro, pero ese ya no vuelve esta noche.',
     cbchatH:'El chat del grupo 💬', cbchatP:'Fotos, retos y piques, todo en el mismo sitio. Solo lo ve tu grupo.',
     cbresultsH:'La clasificación 🏆', cbresultsP:'Quién va ganando ahora mismo. Cuando el contador llegue a cero, gana quien esté arriba.',
@@ -765,7 +789,7 @@ const T = {
   },
   hu:{
     tapToSave:'Koppints egy fotóra, majd a „Mentés a Fotókba” gombra, hogy a telefonodon maradjon.',
-    cbNext:'Tovább', cbGo:'Értem 🔥',
+    cbNext:'Tovább', cbGo:'Értem 🔥', cbIntro:'Elsőként ismerkedj meg a felülettel.',
     cbdaresH:'A kihívásod 🎲', cbdaresP:'Egyszerre egy kihívás. Csináld meg, számold el, és jön a következő. Nem tetszik? Kérj másikat, de egy kihívás egy este során csak egyszer jelenik meg a kihívásaid között.',
     cbchatH:'A csapat chatje 💬', cbchatP:'Fotók, kihívások és üzenetek egy helyen!',
     cbresultsH:'A ranglista 🏆', cbresultsP:'Itt láthatod, ki áll nyerésre. Amikor lejár az idő, a lista élén álló nyeri az estét.',
@@ -1089,7 +1113,31 @@ $('hForm').onsubmit = e => {
 
 
 /* ---------- waiting room: the 24 hours start when everybody holds the thumb together ---------- */
-let lobbyChan = null, lobbyPoll = null, holders = new Set(), myHold = false, cdT = null, starting = false, hostSure = false;
+let lobbyChan = null, lobbyPoll = null, holders = new Set(), myHold = false, cdT = null, starting = false, hostSure = false, counting = false;
+
+/* Everyone has held the reader: say the line, count 3 - 2 - 1, then wipe into the game. */
+function runCountdown(){
+  return new Promise(done => {
+    const cd = $('cd'), num = $('cdNum');
+    $('cdLine').textContent = t('lbStarting');
+    num.innerHTML = ''; cd.classList.remove('go'); cd.hidden = false;
+    const quick = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if (quick){ setTimeout(() => { cd.hidden = true; done(); }, 600); return; }
+    let n = 3;
+    const tick = () => {
+      if (n > 0){
+        num.innerHTML = '<span>' + n + '</span>';
+        if (navigator.vibrate) navigator.vibrate(35);
+        n--; setTimeout(tick, 900);
+      } else {
+        if (navigator.vibrate) navigator.vibrate([40, 30, 90]);
+        cd.classList.add('go');
+        setTimeout(() => { cd.hidden = true; cd.classList.remove('go'); done(); }, 520);
+      }
+    };
+    setTimeout(tick, 750);
+  });
+}
 function showLobby(){
   document.body.classList.add('inapp');
   $('app').hidden = true; $('lobby').hidden = false;
@@ -1121,7 +1169,13 @@ async function refreshLobby(){
   if (!data) return;
   info = data;
   skew = new Date(info.now).getTime() - Date.now();
-  if (info.begun_at) return openNight(night);
+  if (info.begun_at){
+    if (counting) return;                       /* the 3s poll must not start a second one */
+    counting = true;
+    await runCountdown();
+    counting = false;
+    return openNight(night);
+  }
   paintLobby(); checkAll();
 }
 function paintLobby(){
@@ -1271,7 +1325,7 @@ function paintCoach(){
   $('tabs').classList.add('coaching');
   [...$('tabs').children].forEach(b => b.classList.toggle('spot', b === btn));
   $('cbT').textContent = t('cb' + key + 'H');
-  $('cbP').textContent = t('cb' + key + 'P');
+  $('cbP').textContent = (coachI === 0 ? t('cbIntro') + ' ' : '') + t('cb' + key + 'P');
   $('cbDots').innerHTML = COACH.map((_, i) => '<i class="' + (i === coachI ? 'on' : '') + '"></i>').join('');
   $('cbNext').textContent = t(coachI === COACH.length - 1 ? 'cbGo' : 'cbNext');
   const bar = $('tabs').getBoundingClientRect(), r = btn.getBoundingClientRect(), bub = $('cBubble');
