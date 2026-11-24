@@ -85,7 +85,7 @@ const T = {
        repNote:'Thanks for telling us. Only Aron reads this, the person you report is never told who wrote it, and we reply within 24 hours. If you are in danger right now, call 112.',
        repWhoL:'Who? Their name, username or the link on their shirt', repWhenL:'When and where did it happen?', msgRep:'What happened?', repWho:'Who', repWhen:'When / where',
        note:'We only use your email to reply to you.', needName:'Write your name.', needEmail:'Check your email address.', needMsg:'Write a slightly longer message.', wait:'Too many messages in a short time. Try again in an hour.', err:'Couldn’t send it. Try again in a moment.',
-       doneH:'Sent! 🔥', doneP:'Thanks, {name}. Your message is on its way to Aron, and he’ll reply to {email}.', doneBack:'Back to STREETDARE' },
+       doneH:'Sent!', doneP:'Thanks, {name}. Your message is on its way to Aron, and he’ll reply to {email}.', doneBack:'Back to STREETDARE' },
   es:{ h:'Escríbenos 👋', lead:'Preguntas sobre las camisetas o el Shirtless Pass, ideas para colaborar con tu local, marca o evento, o una petición de prensa: escribe aquí y llega directo al correo de Aron.',
        nameL:'Tu nombre', emailL:'Tu email', topicL:'¿Sobre qué es?', msgL:'Tu mensaje', send:'Enviar mensaje', sending:'Enviando…',
        topics:{ player:'Camisetas y juego', collab:'Colaboración', press:'Prensa', safety:'Seguridad', other:'Otra cosa' },
@@ -93,7 +93,7 @@ const T = {
        repNote:'Gracias por contárnoslo. Solo lo lee Aron, la persona a la que denuncias nunca sabrá quién lo escribió, y te respondemos en menos de 24 horas. Si estás en peligro ahora mismo, llama al 112.',
        repWhoL:'¿Quién? Su nombre, usuario o el enlace de su camiseta', repWhenL:'¿Cuándo y dónde pasó?', msgRep:'¿Qué pasó?', repWho:'Quién', repWhen:'Cuándo / dónde',
        note:'Solo usamos tu email para responderte.', needName:'Escribe tu nombre.', needEmail:'Revisa tu email.', needMsg:'Escribe un mensaje un poco más largo.', wait:'Demasiados mensajes en poco tiempo. Prueba otra vez en una hora.', err:'No se ha podido enviar. Prueba otra vez en un momento.',
-       doneH:'¡Enviado! 🔥', doneP:'Gracias, {name}. Tu mensaje va de camino a Aron, y te responderá a {email}.', doneBack:'Volver a STREETDARE' },
+       doneH:'¡Enviado!', doneP:'Gracias, {name}. Tu mensaje va de camino a Aron, y te responderá a {email}.', doneBack:'Volver a STREETDARE' },
   hu:{ h:'Írj nekünk 👋', lead:'Kérdésed van a pólókról vagy a Shirtless Passról, együttműködnél a helyeddel, márkáddal vagy eseményeddel, vagy sajtóként keresel: írj ide, és egyenesen Áron postafiókjába érkezik.',
        nameL:'A neved', emailL:'Az e-mail-címed', topicL:'Miről szól?', msgL:'Az üzeneted', send:'Üzenet küldése', sending:'Küldés…',
        topics:{ player:'Pólók és játék', collab:'Együttműködés', press:'Sajtó', safety:'Biztonság', other:'Valami más' },
@@ -101,7 +101,7 @@ const T = {
        repNote:'Köszönjük, hogy szóltál. Csak Áron olvassa, akit jelentesz, sosem tudja meg, ki írta, és 24 órán belül válaszolunk. Ha most veszélyben vagy, hívd a 112-t.',
        repWhoL:'Ki? A neve, felhasználóneve vagy a pólóján lévő link', repWhenL:'Mikor és hol történt?', msgRep:'Mi történt?', repWho:'Ki', repWhen:'Mikor / hol',
        note:'Az e-mail-címedet csak arra használjuk, hogy válaszoljunk.', needName:'Írd be a neved.', needEmail:'Nézd meg az e-mail-címed.', needMsg:'Írj egy kicsit hosszabb üzenetet.', wait:'Túl sok üzenet rövid idő alatt. Próbáld újra egy óra múlva.', err:'Nem sikerült elküldeni. Próbáld újra egy kicsit később.',
-       doneH:'Elküldve! 🔥', doneP:'Köszönjük, {name}. Az üzeneted úton van Áronhoz, és a(z) {email} címre válaszol.', doneBack:'Vissza a STREETDARE-re' }
+       doneH:'Elküldve!', doneP:'Köszönjük, {name}. Az üzeneted úton van Áronhoz, és a(z) {email} címre válaszol.', doneBack:'Vissza a STREETDARE-re' }
 };
 let L = lang(), topic = new URLSearchParams(location.search).get('topic') || 'player', safeKind = 'report';
 if (topic === 'report') topic = 'safety';
