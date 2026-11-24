@@ -43,9 +43,13 @@
         acct.textContent = li ? t.me[0] : t.login[0];
       }
     }
-    function close(){ nav.hidden = true; document.body.style.overflow = ''; }
+    function close(){ nav.hidden = true; document.body.style.overflow = ''; document.body.classList.remove('menuopen'); }
     paint();
-    b.onclick = function(){ paint(); nav.hidden = false; document.body.style.overflow = 'hidden'; };
+    function open(){ paint(); nav.hidden = false; document.body.style.overflow = 'hidden';
+      document.body.classList.add('menuopen');
+      if (header) header.classList.remove('hid'); }
+    /* the burger closes it again when it is already open */
+    b.onclick = function(){ nav.hidden ? open() : close(); };
     nav.addEventListener('click', function(e){ if (e.target.closest('a')) close(); });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
   }

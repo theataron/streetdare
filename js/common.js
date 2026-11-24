@@ -342,6 +342,27 @@ function initDareForms(){
   });
 }
 
+/* ----- the hamburger opens AND closes the menu -----
+   While it is open the header steps aside (see body.menuopen in the CSS), so the top of the
+   screen is just the burger and the menu's own close, with nothing of the page showing
+   through behind them. */
+(function(){
+  const menu = document.getElementById('menu'), burger = document.getElementById('burger');
+  if (!menu || !burger) return;
+  const head = document.querySelector('header.top');
+  function set(on){
+    menu.hidden = !on;
+    document.body.classList.toggle('menuopen', on);
+    if (on && head) head.classList.remove('hid');   /* never open it onto a hidden header */
+  }
+  window.sdMenu = { open: () => set(true), close: () => set(false), toggle: () => set(menu.hidden) };
+  burger.addEventListener('click', () => window.sdMenu.toggle());
+  const x = document.getElementById('menuClose');
+  if (x) x.addEventListener('click', () => window.sdMenu.close());
+  menu.addEventListener('click', e => { if (e.target.closest('a')) window.sdMenu.close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) window.sdMenu.close(); });
+})();
+
 /* ----- the background on every page: big soft stars and a few QR pixels ----- */
 (function(){
   const NS = 'http://www.w3.org/2000/svg';

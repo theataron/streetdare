@@ -34,7 +34,7 @@ a{color:inherit}
 .lang{font:700 .8rem "DM Sans",sans-serif;background:none;border:2px solid var(--ink);border-radius:99px;padding:6px 12px;color:var(--ink);cursor:pointer}
 
 /* buttons */
-.btn{display:block;width:100%;font:700 1.05rem "DM Sans",sans-serif;padding:16px 20px;border-radius:99px;border:2.5px solid var(--ink);background:var(--card);color:var(--ink);box-shadow:var(--sh);cursor:pointer;text-align:center;text-decoration:none;transition:transform .08s,box-shadow .08s}
+.btn{display:block;width:100%;font:700 1.05rem "DM Sans",sans-serif;padding:16px 20px;border-radius:99px;border:2.5px solid var(--redt);background:var(--card);color:var(--redt);box-shadow:var(--sh);cursor:pointer;text-align:center;text-decoration:none;transition:transform .08s,box-shadow .08s}
 .btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 .btn.red{background:var(--red);color:#fff}
 .btn.big{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:1.9rem;letter-spacing:.04em;padding:18px}
@@ -122,6 +122,11 @@ body.hot .btn.red{color:#fff}
 .burger{width:42px;height:38px;border:2px solid var(--ink);border-radius:12px;background:none;cursor:pointer;display:grid;place-content:center;gap:5px}
 .burger i{display:block;width:18px;height:2.5px;border-radius:2px;background:var(--ink)}
 .menu{position:fixed;inset:0;z-index:20;background:var(--red);color:#fff;padding:max(22px,calc(env(safe-area-inset-top,0px) + 10px)) 24px max(22px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;overflow:auto}
+body.menuopen .top{background:transparent;transform:none!important;pointer-events:none}
+body.menuopen .top .mark,body.menuopen .top .right{visibility:hidden}
+body.menuopen .burger{pointer-events:auto;border-color:#fff}
+body.menuopen .burger i{background:#fff}
+body.menuopen .burger .peek{display:none}
 .menu .x{align-self:flex-end;background:none;border:0;color:#fff;font-size:2rem;line-height:1;cursor:pointer;padding:6px 10px}
 .menu a{font-family:"DM Sans",sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:-.01em;line-height:1.2;color:#fff;text-decoration:none;padding:10px 0;border-bottom:2px solid rgba(255,255,255,.25)}
 .menu a small{display:block;font:500 .9rem "DM Sans",sans-serif;opacity:.85;margin-top:2px;min-height:1.1em}
@@ -323,10 +328,10 @@ body.hot .btn.red{color:#fff}
 .pk em{font-style:normal;font-size:1.6rem}
 .pk b{font:400 1.05rem "Caprasimo","Bookman Old Style",Georgia,serif}
 .pk small{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
-.p1{background:#2a5bd7;color:#fff;--r:-24deg;--x:-66px}
-.p2{background:var(--red);color:#fff;--r:-8deg;--x:-22px}
-.p3{background:#ffc531;color:var(--ink);--r:8deg;--x:22px}
-.p4{background:var(--card);color:var(--ink);--r:24deg;--x:66px}
+.p1{background:#6d3bd1;color:#fff;--r:-24deg;--x:-66px}   /* Party  */
+.p2{background:#fff;color:#1b1412;--r:-8deg;--x:-22px}    /* Street */
+.p3{background:#1f9d55;color:#fff;--r:8deg;--x:22px}      /* Festival */
+.p4{background:#2a5bd7;color:#fff;--r:24deg;--x:66px}     /* Erasmus */
 @keyframes fan{0%,12%,100%{transform:translateX(0) rotate(0)}38%,80%{transform:translateX(var(--x)) rotate(var(--r))}}
 @media (prefers-reduced-motion:reduce){.cardx .art *, .coupon::after{animation:none!important}.pk{transform:translateX(var(--x)) rotate(var(--r))}}
 .pk{width:72px;height:104px}
@@ -431,10 +436,10 @@ body.hot .btn.red{color:#fff}
 /* The background is the brand now: big soft stars with curved points, and a few
    clusters of QR pixels. The dashed side-quest routes are gone. */
 .bgmap{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.bgmap .st{fill:var(--ink);stroke:var(--ink);stroke-width:15;stroke-linejoin:round;opacity:.055}
-.bgmap .st.red{fill:var(--red);stroke:var(--red);opacity:.07}
-.bgmap .px rect{fill:var(--ink);opacity:.05}
-.bgmap .px.red rect{fill:var(--red);opacity:.06}
+.bgmap .st{fill:var(--ink);stroke:var(--ink);stroke-width:15;stroke-linejoin:round;opacity:.1}
+.bgmap .st.red{fill:var(--red);stroke:var(--red);opacity:.12}
+.bgmap .px rect{fill:var(--ink);opacity:.09}
+.bgmap .px.red rect{fill:var(--red);opacity:.11}
 html.night .bgmap .st{opacity:.07}
 html.night .bgmap .px rect{opacity:.06}
 @keyframes wander{to{stroke-dashoffset:-220}}
@@ -730,7 +735,8 @@ body.showing .consent{display:none}
 html.night{--bg:#121012;--card:#1e1a19;--ink:#f3ece3;--blush:#3a201d;--mute:#a99c94;--redt:#ff5c50;--red:#d8261c;--red-d:#a51a12;--sh:4px 4px 0 #000;color-scheme:dark}
 html.night body{background:var(--bg);color:var(--ink)}
 html.night .btn.red{color:#fff;border-color:#000}
-html.night .btn{border-color:#000}
+html.night .btn{border-color:var(--redt)}
+html.night .btn.red{border-color:#000}
 html.night .langlist{background:var(--card);color:var(--ink)}
 html.night .menu{background:#7e1009}
 html.night .adult{color:#1b1412}

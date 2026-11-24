@@ -10,7 +10,7 @@ if (!demo) refSave(SHIRT.toLowerCase());
 
 function show(v){
   VIEWS.forEach(n => $('v-'+n).hidden = n !== v);
-  $('menu').hidden = true;
+  if (window.sdMenu) window.sdMenu.close(); else $('menu').hidden = true;
   document.body.classList.toggle('hot', $('devil').checked && ['spin','accept','confirm','done'].includes(v));
   document.body.style.overflow = v === 'show' ? 'hidden' : '';
   document.body.classList.toggle('showing', v === 'show');
@@ -18,9 +18,7 @@ function show(v){
 }
 
 /* ----- menu ----- */
-$('burger').onclick = () => { $('menu').hidden = false; };
-$('menuClose').onclick = () => { $('menu').hidden = true; };
-$('mSpinLink').onclick = e => { e.preventDefault(); $('menu').hidden = true; };
+$('mSpinLink').onclick = e => { e.preventDefault(); if (window.sdMenu) window.sdMenu.close(); };
 document.querySelectorAll('[data-to]').forEach(a => { a.href = '../' + (SHIRT ? '?s=' + SHIRT : '') + '#' + a.dataset.to; });
 $('homeLogo').href = '../' + (SHIRT ? '?s=' + SHIRT : '');
 

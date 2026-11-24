@@ -3,7 +3,7 @@ const VIEWS = ['home','wall','about','club','shop'];
 function show(v){
   if (!VIEWS.includes(v)) v = 'home';
   VIEWS.forEach(n => $('v-'+n).hidden = n !== v);
-  $('menu').hidden = true;
+  if (window.sdMenu) window.sdMenu.close(); else $('menu').hidden = true;
   if (v === 'wall') loadWall();
   window.scrollTo(0,0);
 }
@@ -13,9 +13,6 @@ window.addEventListener('hashchange', () => {
   if (!VIEWS.includes(v) && v && $(v)){ show('home'); requestAnimationFrame(() => $(v).scrollIntoView({ behavior:'smooth' })); return; }
   show(v);
 });
-$('burger').onclick = () => { $('menu').hidden = false; };
-$('menuClose').onclick = () => { $('menu').hidden = true; };
-document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', () => { $('menu').hidden = true; }));
 /* arrived from a shirt's page: the "spin" link goes back to that shirt */
 if (SHIRT) $('tryLink').href = 'p/?s=' + SHIRT;
 
