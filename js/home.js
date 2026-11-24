@@ -30,7 +30,11 @@ document.querySelectorAll('#v-shop [data-art]').forEach(box => {
 
 function chips(){
   const pickText = q => LANG === 'hu' ? (q[3] || q[0]) : LANG === 'es' ? q[1] : q[0];
-  $('chips').innerHTML = QUESTS.classic.slice(0,5).map(q => '<span class="chip">'+pickText(q)+'</span>').join('');
+  /* The examples on the home page are hand-picked rather than just the first five in the
+     deck, so the showcase can change without reordering the deck itself. */
+  const SHOWCASE = [0, 1, 2, 3, 5];
+  const picked = SHOWCASE.map(i => QUESTS.classic[i]).filter(Boolean);
+  $('chips').innerHTML = picked.map(q => '<span class="chip">'+pickText(q)+'</span>').join('');
 }
 
 /* ----- wall ----- */
