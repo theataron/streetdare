@@ -34,7 +34,7 @@ a{color:inherit}
 .lang{font:700 .8rem "DM Sans",sans-serif;background:none;border:2px solid var(--ink);border-radius:99px;padding:6px 12px;color:var(--ink);cursor:pointer}
 
 /* buttons */
-.btn{display:block;width:100%;font:700 1.05rem "DM Sans",sans-serif;padding:16px 20px;border-radius:99px;border:2.5px solid var(--redt);background:var(--card);color:var(--redt);box-shadow:var(--sh);cursor:pointer;text-align:center;text-decoration:none;transition:transform .08s,box-shadow .08s}
+.btn{display:block;width:100%;font:700 1.05rem "DM Sans",sans-serif;padding:16px 20px;border-radius:99px;border:2.5px solid var(--ink);background:var(--card);color:var(--ink);box-shadow:var(--sh);cursor:pointer;text-align:center;text-decoration:none;transition:transform .08s,box-shadow .08s}
 .btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 .btn.red{background:var(--red);color:#fff}
 .btn.big{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:1.9rem;letter-spacing:.04em;padding:18px}
@@ -735,8 +735,7 @@ body.showing .consent{display:none}
 html.night{--bg:#121012;--card:#1e1a19;--ink:#f3ece3;--blush:#3a201d;--mute:#a99c94;--redt:#ff5c50;--red:#d8261c;--red-d:#a51a12;--sh:4px 4px 0 #000;color-scheme:dark}
 html.night body{background:var(--bg);color:var(--ink)}
 html.night .btn.red{color:#fff;border-color:#000}
-html.night .btn{border-color:var(--redt)}
-html.night .btn.red{border-color:#000}
+html.night .btn{border-color:#000}
 html.night .langlist{background:var(--card);color:var(--ink)}
 html.night .menu{background:#7e1009}
 html.night .adult{color:#1b1412}
