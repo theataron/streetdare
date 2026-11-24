@@ -342,17 +342,48 @@ function initDareForms(){
   });
 }
 
-/* ----- faint side-quest routes in the background of every page ----- */
+/* ----- the background on every page: big soft stars and a few QR pixels ----- */
 (function(){
-  const NS = 'http://www.w3.org/2000/svg', svg = document.createElementNS(NS, 'svg');
-  svg.setAttribute('class', 'bgmap'); svg.setAttribute('aria-hidden', 'true');
-  svg.setAttribute('viewBox', '0 0 390 844'); svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-  svg.innerHTML =
-    '<path d="M-20 90C60 40 110 150 190 110S310 30 410 80"/>' +
-    '<path class="r" d="M410 300C330 340 310 250 240 290S110 380 40 330-20 350-20 350"/>' +
-    '<path d="M-20 560C50 500 120 620 200 570S320 480 410 540"/>' +
-    '<path class="r" d="M60 870C90 800 170 830 200 760S290 720 330 780 400 820 410 800"/>' +
-    '<path class="x" d="M182 102l12 12m0-12-12 12M316 772l12 12m0-12-12 12"/>';
+  const NS = 'http://www.w3.org/2000/svg';
+  /* the same star as the one in the wordmark: a thick round join is what curves the points */
+  const STAR = '44.2,8.4 61.2,29.9 87,33.5 71.8,53.3 79.6,79.1 52.7,73.3 30.3,84.8 29.9,60 9.5,43.6 34.3,33.5';
+
+  /* x, y, size, rotation, red */
+  const stars = [
+    [ -40,  40, 300, -12, false],
+    [ 250, 150, 210,  18, true ],
+    [  20, 430, 380,   7, false],
+    [ 255, 600, 240, -22, false],
+    [ -60, 720, 300,  14, true ],
+    [ 170, 300, 120,  -6, false]
+  ];
+  /* x, y, cell size, the rows of the little QR block */
+  const pixels = [
+    [ 300,  60, 9, ['1011','0110','1101','0011'], false],
+    [  26, 250, 8, ['110','011','101'],           true ],
+    [ 320, 470, 9, ['0110','1011','1100'],        false],
+    [  40, 820, 8, ['101','110','011','101'],     false]
+  ];
+
+  let gfx = '<defs><polygon id="sdst" points="' + STAR + '"/></defs>';
+  for (const [x, y, size, rot, red] of stars){
+    gfx += '<use href="#sdst" class="st' + (red ? ' red' : '') + '" x="0" y="0" width="100" height="100" ' +
+           'transform="translate(' + x + ' ' + y + ') rotate(' + rot + ' 50 50) scale(' + (size / 100) + ')"/>';
+  }
+  for (const [x, y, cell, rows, red] of pixels){
+    let block = '';
+    rows.forEach((row, r) => [...row].forEach((on, c) => {
+      if (on === '1') block += '<rect x="' + (x + c * cell) + '" y="' + (y + r * cell) + '" width="' + (cell - 1.5) + '" height="' + (cell - 1.5) + '" rx="1"/>';
+    }));
+    gfx += '<g class="px' + (red ? ' red' : '') + '">' + block + '</g>';
+  }
+
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'bgmap');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('viewBox', '0 0 390 844');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+  svg.innerHTML = gfx;
   document.body.prepend(svg);
 })();
 
