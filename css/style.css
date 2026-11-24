@@ -14,6 +14,9 @@ a{color:inherit}
 .top{display:flex;align-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top,0px)) 0 16px}
 .top .mark{margin-right:auto;white-space:nowrap}  /* holds the burger and the mark together on the left */
 @media (max-width:420px){ .top{gap:7px} .top .mark{font-size:.95rem} }
+/* the narrowest phones still in use: burger, wordmark, language and Profile on one line */
+@media (max-width:360px){ .top{gap:4px} .top .mark{font-size:.75rem} .burger{width:36px}
+  .top .lang{padding:4px 6px;font-size:.68rem;gap:3px} #acctBtn{padding:5px 8px;font-size:.68rem} }
 /* home screen app: a dark strip behind the status bar, so the white clock stays readable in day mode too */
 @media (display-mode:standalone){
   body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#121012;z-index:30;pointer-events:none}
