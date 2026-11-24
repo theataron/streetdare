@@ -1,5 +1,4 @@
-@font-face{font-family:"Caprasimo";src:url(../fonts/caprasimo-latin-ext.woff2) format("woff2");font-weight:400;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:"Caprasimo";src:url(../fonts/caprasimo-latin.woff2) format("woff2");font-weight:400;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Caprasimo";src:url(../fonts/caprasimo.woff2) format("woff2");font-weight:400;font-display:swap}
 @font-face{font-family:"DM Sans";src:url(../fonts/dm-sans.woff2) format("woff2");font-weight:100 1000;font-display:swap}
 :root{--bg:#fbf8ef;--ink:#1b1412;--red:#bd0a0a;--red-d:#8f0606;--blush:#f6ddd3;--mute:#6f625c;--card:#fffdf7;--redt:#bd0a0a;--sh:4px 4px 0 var(--ink)}
 *{box-sizing:border-box;margin:0}
@@ -7,7 +6,7 @@ html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font:400 17px/1.5 "DM Sans",system-ui,-apple-system,Segoe UI,sans-serif;min-height:100dvh;overflow-x:hidden}
 [hidden]{display:none!important}
 .wrap{max-width:560px;margin:0 auto;padding:0 20px}
-.display{font-family:"Caprasimo",Georgia,serif;font-weight:400;line-height:1;letter-spacing:-.005em}
+.display{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;line-height:1;letter-spacing:-.005em}
 a{color:inherit}
 
 /* top bar */
@@ -24,7 +23,7 @@ a{color:inherit}
 .btn{display:block;width:100%;font:700 1.05rem "DM Sans",sans-serif;padding:16px 20px;border-radius:99px;border:2.5px solid var(--ink);background:var(--card);color:var(--ink);box-shadow:var(--sh);cursor:pointer;text-align:center;text-decoration:none;transition:transform .08s,box-shadow .08s}
 .btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 .btn.red{background:var(--red);color:#fff}
-.btn.big{font-family:"Caprasimo",Georgia,serif;font-weight:400;font-size:1.9rem;letter-spacing:.04em;padding:18px}
+.btn.big{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:1.9rem;letter-spacing:.04em;padding:18px}
 .btn.plain{border:0;box-shadow:none;background:none;text-decoration:underline;font-weight:500;color:var(--mute);padding:10px}
 .btn:disabled{opacity:.6}
 .stack{display:grid;gap:14px}
@@ -48,7 +47,7 @@ h2.display{font-size:2.2rem;margin-bottom:18px}
 .steps{display:grid;gap:16px;counter-reset:s}
 .step{background:var(--card);border:2.5px solid var(--ink);border-radius:20px;padding:18px 18px 18px 74px;position:relative;box-shadow:var(--sh)}
 .step:nth-child(2){transform:rotate(.8deg)}.step:nth-child(3){transform:rotate(-.6deg)}
-.step::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:14px;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;font:400 1.5rem/44px "Caprasimo",Georgia,serif;text-align:center}
+.step::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:14px;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;font:400 1.5rem/44px "Caprasimo","Bookman Old Style",Georgia,serif;text-align:center}
 .step h3{font-size:1.1rem;margin-bottom:2px}
 .step p{color:var(--mute);font-size:.97rem}
 
@@ -85,7 +84,7 @@ footer{padding:30px 0 44px;text-align:center;color:var(--mute);font-size:.85rem}
 .machine .lbl{font-weight:700;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
 .window{border:2.5px solid var(--ink);border-radius:16px;background:var(--bg);min-height:150px;display:grid;place-items:center;padding:18px;overflow:hidden}
 .reel{font-size:1.35rem;font-weight:700;line-height:1.25}
-.reel.q{font-family:"Caprasimo",Georgia,serif;font-weight:400;font-size:3rem;color:var(--redt);letter-spacing:.1em}
+.reel.q{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:3rem;color:var(--redt);letter-spacing:.1em}
 .reel.tick{animation:tick .09s ease-out}
 .reel.land{animation:land .45s cubic-bezier(.2,1.6,.4,1)}
 @keyframes tick{from{transform:translateY(-60%);opacity:.2;filter:blur(3px)}to{transform:none;opacity:1;filter:none}}
@@ -122,7 +121,7 @@ body.hot .btn.red{color:#fff}
 .page h2{font-size:1.25rem;margin:26px 0 8px}
 .page p{margin-bottom:12px}
 .page .big{font-size:1.25rem;font-weight:500;line-height:1.35}
-.sig{font-family:"Caprasimo",Georgia,serif;font-size:1.6rem;color:var(--redt);transform:rotate(-3deg);display:inline-block;margin-top:6px}
+.sig{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-size:1.6rem;color:var(--redt);transform:rotate(-3deg);display:inline-block;margin-top:6px}
 .cards{display:grid;gap:14px;margin:18px 0 26px}
 .cardx{background:var(--card);border:2.5px solid var(--ink);border-radius:20px;padding:16px 18px;box-shadow:var(--sh)}
 .cardx .tag{display:inline-block;font-weight:700;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;background:var(--blush);border-radius:99px;padding:3px 10px;margin-bottom:8px}
@@ -152,7 +151,7 @@ body.hot .btn.red{color:#fff}
 .gate h1 span{display:block}.gate h1 .ink{color:var(--ink)}
 .gate .sub{margin:0 0 6px}
 .quote{min-height:78dvh;display:grid;align-content:center;gap:16px;text-align:center;cursor:pointer;padding:20px 6px}
-.quote p{font-family:"Caprasimo",Georgia,serif;font-size:clamp(2.2rem,10.5vw,3.2rem);line-height:1.05;color:var(--ink)}
+.quote p{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-size:clamp(2.2rem,10.5vw,3.2rem);line-height:1.05;color:var(--ink)}
 .quote p em{font-style:normal;color:var(--redt)}
 .quote cite{font-style:normal;color:var(--mute);font-size:.95rem}
 .quote small{color:var(--mute);font-size:.8rem;margin-top:22px;animation:blink 1.6s ease-in-out infinite}
@@ -165,7 +164,7 @@ body.hot .btn.red{color:#fff}
 .map{display:block;width:100%;height:auto;border:2.5px solid var(--ink);border-radius:16px 16px 0 0;background:var(--bg)}
 .map .road{fill:none;stroke:var(--mute);stroke-width:3;stroke-dasharray:1 9;stroke-linecap:round;opacity:.7;transition:opacity .6s}
 .map .lbl-usual{font:500 9px "DM Sans",sans-serif;fill:var(--mute);letter-spacing:.08em;text-transform:uppercase;transition:opacity .6s}
-.map .lbl-side{font:400 13px "Caprasimo",Georgia,serif;fill:var(--redt);opacity:0;transition:opacity .4s}
+.map .lbl-side{font:400 13px "Caprasimo","Bookman Old Style",Georgia,serif;fill:var(--redt);opacity:0;transition:opacity .4s}
 .map.off .road,.map.off .lbl-usual{opacity:.28}
 .map.off .lbl-side{opacity:1}
 .map .walked{fill:none;stroke:var(--red);stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round}
@@ -220,7 +219,7 @@ body.hot .btn.red{color:#fff}
 
 /* launch-discount coupon */
 .coupon{position:relative;display:grid;gap:1px;text-align:center;border:3px dashed var(--red);border-radius:14px;padding:12px 14px;margin:2px 0 16px;background:rgba(189,10,10,.08);transform:rotate(-1.5deg)}
-.coupon b{font:400 1.45rem/1.05 "Caprasimo",Georgia,serif;color:#ff5a4d;letter-spacing:.01em}
+.coupon b{font:400 1.45rem/1.05 "Caprasimo","Bookman Old Style",Georgia,serif;color:#ff5a4d;letter-spacing:.01em}
 .coupon small{font-size:.82rem;opacity:.85}
 .coupon .sc{position:absolute;left:-13px;top:50%;transform:translateY(-50%) rotate(-90deg);font-size:1.1rem;color:var(--red);background:inherit}
 .wlbox .coupon{color:#fff}
@@ -274,7 +273,7 @@ body.hot .btn.red{color:#fff}
 .a-guy .smile,.a-guy .line{fill:none;stroke:#7a3e22;stroke-width:2;stroke-linecap:round}
 .a-guy .cord{fill:none;stroke:var(--red);stroke-width:3}
 .a-guy .badge{fill:#fff;stroke:var(--ink);stroke-width:2}
-.a-guy .bt{font:400 9px "Caprasimo",Georgia,serif;fill:var(--red);text-anchor:middle}
+.a-guy .bt{font:400 9px "Caprasimo","Bookman Old Style",Georgia,serif;fill:var(--red);text-anchor:middle}
 .a-guy .lanyard{transform-origin:75px 76px;animation:swing 2.6s ease-in-out infinite}
 @keyframes swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
 .a-guy .spark{fill:#ffc531;stroke:var(--ink);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:twinkle 1.6s ease-in-out infinite}
@@ -302,7 +301,7 @@ body.hot .btn.red{color:#fff}
 .art.packs{perspective:600px}
 .pk{position:absolute;width:86px;height:118px;border:2.5px solid var(--ink);border-radius:12px;display:grid;place-content:center;text-align:center;gap:2px;box-shadow:3px 3px 0 var(--ink);transform-origin:50% 120%;animation:fan 4s ease-in-out infinite}
 .pk em{font-style:normal;font-size:1.6rem}
-.pk b{font:400 1.05rem "Caprasimo",Georgia,serif}
+.pk b{font:400 1.05rem "Caprasimo","Bookman Old Style",Georgia,serif}
 .pk small{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
 .p1{background:#2a5bd7;color:#fff;--r:-24deg;--x:-66px}
 .p2{background:var(--red);color:#fff;--r:-8deg;--x:-22px}
@@ -390,7 +389,7 @@ body.hot .btn.red{color:#fff}
 .art.pass .guy svg.a-guy{position:absolute;inset:0;height:100%;width:100%}
 .a-guy .cord{fill:none;stroke:var(--red);stroke-width:14}
 .a-guy .badge{fill:#fff;stroke:var(--ink);stroke-width:9}
-.a-guy .bt{font:400 38px "Caprasimo",Georgia,serif;fill:var(--red);text-anchor:middle}
+.a-guy .bt{font:400 38px "Caprasimo","Bookman Old Style",Georgia,serif;fill:var(--red);text-anchor:middle}
 .a-guy .lanyard{transform-origin:457px 430px}
 .a-guy .spark{stroke-width:5}
 .art.pass{align-items:flex-end}
@@ -437,7 +436,7 @@ body.hot .btn.red{color:#fff}
 .faq details{background:var(--card);border:2.5px solid var(--ink);border-radius:16px;padding:0 16px}
 .faq summary{cursor:pointer;font-weight:700;padding:14px 26px 14px 0;list-style:none;position:relative}
 .faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";position:absolute;right:0;top:9px;font:400 1.5rem "Caprasimo",Georgia,serif;color:var(--redt)}
+.faq summary::after{content:"+";position:absolute;right:0;top:9px;font:400 1.5rem "Caprasimo","Bookman Old Style",Georgia,serif;color:var(--redt)}
 .faq details[open] summary::after{content:"–"}
 .faq details p{color:var(--mute);padding:0 0 14px;margin:0}
 .light-q{color:#ffb4a8;margin-bottom:4px}
@@ -455,7 +454,7 @@ body.hot .btn.red{color:#fff}
 .card{border:2.5px solid var(--ink);border-radius:18px;grid-area:1/1}
 .card.back{background:var(--red);
   background-image:radial-gradient(circle at 50% 50%,rgba(255,255,255,.16) 0 2px,transparent 2.5px);background-size:14px 14px}
-.card.back::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:400 3.2rem "Caprasimo",Georgia,serif;color:rgba(255,255,255,.22)}
+.card.back::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:400 3.2rem "Caprasimo","Bookman Old Style",Georgia,serif;color:rgba(255,255,255,.22)}
 .card.b1{position:relative;transform:rotate(-3.5deg) translate(-6px,4px)}
 .card.b2{position:relative;transform:rotate(4deg) translate(8px,6px);background-color:var(--ink)}
 .card.front{position:relative;background:var(--bg);display:grid;place-items:center;align-content:center;gap:8px;padding:16px 14px;min-height:150px;z-index:2;transform-origin:50% 60%}
@@ -468,7 +467,7 @@ body.hot .btn.red{color:#fff}
 .card.front.flip{animation:flip .55s cubic-bezier(.2,1.5,.4,1)}
 @keyframes flip{0%{transform:perspective(700px) rotateY(88deg) scale(.92)}100%{transform:perspective(700px) rotateY(0) scale(1)}}
 .machine.won .card.front{background:var(--card);box-shadow:inset 0 0 0 3px var(--red)}
-.stamp{position:absolute;right:10px;top:8px;font:400 .95rem "Caprasimo",Georgia,serif;letter-spacing:.06em;color:var(--red);border:2.5px solid var(--red);border-radius:10px;padding:2px 8px;transform:rotate(12deg) scale(2.4);opacity:0;pointer-events:none}
+.stamp{position:absolute;right:10px;top:8px;font:400 .95rem "Caprasimo","Bookman Old Style",Georgia,serif;letter-spacing:.06em;color:var(--red);border:2.5px solid var(--red);border-radius:10px;padding:2px 8px;transform:rotate(12deg) scale(2.4);opacity:0;pointer-events:none}
 .machine.won .stamp{animation:stamp .35s cubic-bezier(.3,1.6,.5,1) .3s forwards}
 @keyframes stamp{to{transform:rotate(12deg) scale(1);opacity:.9}}
 .burst{position:absolute;left:50%;top:45%;width:0;height:0;z-index:4;pointer-events:none}
@@ -496,13 +495,13 @@ body.hot .card.b2{background-color:#2a1d1a}
 .teeview svg{width:78%;max-width:300px;height:auto}
 .teeview .tee{stroke:var(--ink);stroke-width:2;stroke-linejoin:round;transition:fill .25s}
 .teeview .collar{fill:none;stroke-width:1.6;transition:stroke .25s}
-.teeview .word{font:400 8px "Caprasimo",Georgia,serif;text-anchor:middle;letter-spacing:.04em;fill:var(--red)}
+.teeview .word{font:400 8px "Caprasimo","Bookman Old Style",Georgia,serif;text-anchor:middle;letter-spacing:.04em;fill:var(--red)}
 .teeview .scan{font:700 4.6px "DM Sans",sans-serif;text-anchor:middle;letter-spacing:.14em;transition:fill .25s}
 .teeview .qbg{transition:fill .25s}
 .teeview.black .tee{fill:#151112}.teeview.black .collar{stroke:#3a3133}.teeview.black .qbg{fill:#fff}.teeview.black .qd{fill:#151112}.teeview.black .scan{fill:#fff}
 .teeview.white .tee{fill:#fbfaf6}.teeview.white .collar{stroke:#d8d2c8}.teeview.white .qbg{fill:#fff;stroke:var(--ink);stroke-width:1}.teeview.white .qd{fill:var(--ink)}.teeview.white .scan{fill:var(--ink)}
 .price{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.price b{font:400 2.4rem/1 "Caprasimo",Georgia,serif;color:var(--ink)}
+.price b{font:400 2.4rem/1 "Caprasimo","Bookman Old Style",Georgia,serif;color:var(--ink)}
 .price span{font-size:.9rem;color:var(--mute);font-weight:600}
 .incl{font-size:.92rem;color:var(--mute);margin:6px 0 16px}
 .opt{margin:0 0 14px}
@@ -525,16 +524,16 @@ body.hot .card.b2{background-color:#2a1d1a}
 .group h3.display{font-size:1.8rem;color:#fff;margin-bottom:6px}
 .group .sub{color:#d9cdc6;margin-bottom:16px}
 .stepper{display:grid;grid-template-columns:56px 1fr 56px;align-items:center;gap:10px;text-align:center}
-.stepper button{height:56px;border-radius:50%;border:2.5px solid var(--bg);background:transparent;color:#fff;font:400 1.8rem "Caprasimo",Georgia,serif;cursor:pointer}
+.stepper button{height:56px;border-radius:50%;border:2.5px solid var(--bg);background:transparent;color:#fff;font:400 1.8rem "Caprasimo","Bookman Old Style",Georgia,serif;cursor:pointer}
 .stepper button:disabled{opacity:.3}
-.stepper b{display:block;font:400 3rem/1 "Caprasimo",Georgia,serif;color:#fff}
+.stepper b{display:block;font:400 3rem/1 "Caprasimo","Bookman Old Style",Georgia,serif;color:#fff}
 .stepper b.pop{animation:land .35s cubic-bezier(.2,1.6,.4,1)}
 .stepper small{color:#d9cdc6;font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem}
 .gbar{height:10px;border-radius:99px;background:rgba(255,255,255,.14);margin:16px 0 14px;overflow:hidden}
 .gbar i{display:block;height:100%;width:calc(var(--p,0) * 100%);background:#ffc531;border-radius:99px;transition:width .3s}
 .gsum{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .gsum div{background:rgba(255,255,255,.08);border-radius:16px;padding:12px;text-align:center}
-.gsum b{display:block;font:400 1.6rem/1.1 "Caprasimo",Georgia,serif;color:#fff}
+.gsum b{display:block;font:400 1.6rem/1.1 "Caprasimo","Bookman Old Style",Georgia,serif;color:#fff}
 .gsum small{color:#d9cdc6;font-size:.8rem;font-weight:600}
 .gsave{font-weight:700;color:#ffc531;text-align:center;margin:12px 0 14px;min-height:1.5em}
 .group .btn{border-color:var(--bg);box-shadow:4px 4px 0 var(--red-d)}
@@ -558,7 +557,7 @@ body.hot .card.b2{background-color:#2a1d1a}
 .art.comm span{animation:hop 1.8s ease-in-out infinite}
 .art.comm span:nth-child(2){animation-delay:.2s}.art.comm span:nth-child(3){animation-delay:.4s}.art.comm span:nth-child(4){animation-delay:.6s}
 .refbanner{background:#ffc531;color:#1b1412;border:2.5px solid var(--ink);border-radius:16px;padding:10px 14px;font-weight:700;font-size:.92rem;margin:0 0 14px}
-.price s{font:400 1.3rem "Caprasimo",Georgia,serif;color:var(--mute)}
+.price s{font:400 1.3rem "Caprasimo","Bookman Old Style",Georgia,serif;color:var(--mute)}
 .hostopt{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;margin:0 0 16px;cursor:pointer}
 .hostopt input{width:20px;height:20px;accent-color:var(--red);flex:none;margin-top:2px}
 .gnext{text-align:center;color:#d9cdc6;font-size:.88rem;margin:0 0 12px;min-height:1.4em}
@@ -576,7 +575,7 @@ body.hot .card.b2{background-color:#2a1d1a}
 .ownerpic{display:block;width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);margin:4px auto 12px}
 /* owner's dare code */
 .codeform{display:grid;gap:12px;margin:8px 0 10px}
-.codeform input{width:100%;font:400 2.4rem "Caprasimo",Georgia,serif;letter-spacing:.35em;text-align:center;padding:14px 10px 10px;border:3px solid var(--ink);border-radius:18px;background:var(--card);color:var(--ink)}
+.codeform input{width:100%;font:400 2.4rem "Caprasimo","Bookman Old Style",Georgia,serif;letter-spacing:.35em;text-align:center;padding:14px 10px 10px;border:3px solid var(--ink);border-radius:18px;background:var(--card);color:var(--ink)}
 .codeform .wlerr{color:var(--red);font-weight:600}
 body.hot .codeform .wlerr{color:#ffb4a8}
 
@@ -713,7 +712,7 @@ html.night .adult{color:#1b1412}
 html.night .refbanner{color:#1b1412}
 .nightbtn{font-size:1.05rem;background:none;border:2px solid var(--ink);border-radius:99px;width:38px;height:34px;cursor:pointer;line-height:1;padding:0}
 /* the logo next to every dare (swap .sdlogo for the final logo file later) */
-.sdlogo{font-family:"Caprasimo",Georgia,serif;font-weight:400;letter-spacing:.01em;line-height:1;display:inline-block;transform:rotate(-2deg)}
+.sdlogo{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;letter-spacing:.01em;line-height:1;display:inline-block;transform:rotate(-2deg)}
 /* the star that stands in for the A in STREETDARE (mask, so it takes the text colour) */
 .sdstar{display:inline-block;width:.8em;height:.8em;vertical-align:-.04em;margin:0 .01em;background:currentColor;-webkit-mask:url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'><polygon%20points='44.2,8.4%2061.2,29.9%2087.0,33.5%2071.8,53.3%2079.6,79.1%2052.7,73.3%2030.3,84.8%2029.9,60.0%209.5,43.6%2034.3,33.5'%20fill='%23000'%20stroke='%23000'%20stroke-width='15'%20stroke-linejoin='round'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'><polygon%20points='44.2,8.4%2061.2,29.9%2087.0,33.5%2071.8,53.3%2079.6,79.1%2052.7,73.3%2030.3,84.8%2029.9,60.0%209.5,43.6%2034.3,33.5'%20fill='%23000'%20stroke='%23000'%20stroke-width='15'%20stroke-linejoin='round'/></svg>") center/contain no-repeat}
 /* night: boxes that are "ink on cream" by day stay dark boxes at night */
@@ -736,7 +735,7 @@ html.night .sdclose{background:#fff;color:#1b1412;border-color:#1b1412}
 .livebar .lbtxt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
 .livebar .lbtxt b{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .livebar .lbtxt small{color:#d9cdc6;font-size:.75rem}
-.livebar .lbclock{font:400 1.05rem "Caprasimo",Georgia,serif;font-variant-numeric:tabular-nums;background:var(--red);border-radius:10px;padding:5px 8px 2px}
+.livebar .lbclock{font:400 1.05rem "Caprasimo","Bookman Old Style",Georgia,serif;font-variant-numeric:tabular-nums;background:var(--red);border-radius:10px;padding:5px 8px 2px}
 .livebar .lbgo{font-weight:800;font-size:.85rem;text-decoration:underline;white-space:nowrap}
 html.night .livebar{background:#000}
 /* rate the dare (scan page, Dare complete) */
@@ -782,7 +781,7 @@ body.hot .rate .stars svg{stroke:#1b1412}
 .shot figcaption{margin-top:8px;font-size:.8rem;color:var(--mute);line-height:1.35}
 .ph{height:300px;border:2px solid var(--ink);border-radius:18px;overflow:hidden;background:var(--bg);box-shadow:var(--sh);display:flex;flex-direction:column}
 .ph-top{background:#1b1412;color:#fbf8ef;padding:7px 8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
-.ph-top b{font-family:"Caprasimo",Georgia,serif;font-weight:400;font-size:.62rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ph-top b{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:.62rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ph-top span{background:var(--red);color:#fff;border-radius:99px;padding:2px 6px;font-size:.52rem;font-weight:800;letter-spacing:.02em;flex:none}
 .ph-body{flex:1;padding:8px;overflow:hidden}
 .ph-tabs{display:flex;border-top:1px solid rgba(111,98,92,.3);background:var(--card)}
@@ -791,7 +790,7 @@ body.hot .rate .stars svg{stroke:#1b1412}
 .ph-tabs i.on::after{content:"";position:absolute;left:50%;bottom:3px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--redt)}
 .m-dare{background:var(--red);color:#fff;border-radius:14px;padding:9px;height:100%;display:flex;flex-direction:column}
 .m-row{display:flex;align-items:center;justify-content:space-between}
-.m-logo{font-family:"Caprasimo",Georgia,serif;font-weight:400;font-size:.6rem}
+.m-logo{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:.6rem}
 .m-pts{background:#fff;color:var(--red);border-radius:99px;padding:1px 6px;font-size:.55rem;font-weight:800}
 .m-k{font-size:.5rem;letter-spacing:.14em;opacity:.85;margin-top:8px}
 .m-dare p{color:#fff;font-size:.78rem;font-weight:700;line-height:1.25;margin-top:5px}
@@ -806,7 +805,7 @@ body.hot .rate .stars svg{stroke:#1b1412}
 .m-me{background:var(--red);color:#fff;align-self:flex-end}
 .m-img{display:block;height:46px;border-radius:8px;margin-bottom:4px;background:linear-gradient(135deg,#f6ddd3,#bd0a0a)}
 .m-board{border:2px solid var(--ink);border-radius:14px;padding:8px;background:var(--card);height:100%}
-.m-board>b{font-family:"Caprasimo",Georgia,serif;font-weight:400;font-size:.68rem;display:block;margin-bottom:5px}
+.m-board>b{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:.68rem;display:block;margin-bottom:5px}
 .m-r{display:flex;align-items:center;gap:5px;padding:4px 3px;font-size:.6rem;border-top:1px solid rgba(111,98,92,.22)}
 .m-r:first-of-type{border-top:0}
 .m-r.me{background:var(--blush);border-radius:8px;border-top:0}
@@ -837,7 +836,7 @@ footer .social svg{width:22px;height:22px;flex:none;fill:currentColor}
 .offhero{position:relative;display:flex;justify-content:center;margin:0 0 6px}
 .offhero svg{width:min(340px,100%);height:auto;animation:offsway 4s ease-in-out infinite;transform-origin:40% 90%}
 @keyframes offsway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
-.offhero .zz{position:absolute;left:calc(50% - 40px);top:18%;font:400 1.3rem "Caprasimo",Georgia,serif;color:var(--red);opacity:0;animation:zz 3s ease-in infinite}
+.offhero .zz{position:absolute;left:calc(50% - 40px);top:18%;font:400 1.3rem "Caprasimo","Bookman Old Style",Georgia,serif;color:var(--red);opacity:0;animation:zz 3s ease-in infinite}
 .offhero .z2{animation-delay:1s;font-size:1.6rem}.offhero .z3{animation-delay:2s;font-size:2rem}
 @keyframes zz{0%{opacity:0;transform:translate(0,10px) scale(.6)}25%{opacity:1}100%{opacity:0;transform:translate(46px,-60px) scale(1.1)}}
 .offsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 6px}
