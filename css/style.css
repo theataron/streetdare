@@ -165,6 +165,7 @@ body.menuopen .burger .peek{display:none}
 .msg small{display:block;color:var(--mute);font-size:.75rem;margin-top:4px}
 .empty{color:var(--mute);text-align:center;padding:20px 0}
 .smallnote{font-size:.75rem;color:var(--mute);margin-top:10px}
+.stack + .smallnote{margin-top:18px}
 
 /* ===== v3: home + scan pages ===== */
 @font-face{font-family:"Permanent Marker";src:url(../fonts/permanent-marker.woff2) format("woff2");font-display:swap}
