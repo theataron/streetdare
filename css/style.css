@@ -883,8 +883,14 @@ footer .social svg{width:22px;height:22px;flex:none;fill:currentColor}
 .offsteps div:nth-child(2){animation-delay:.15s}.offsteps div:nth-child(3){animation-delay:.3s}
 .offsteps b{font-size:1.5rem}
 .offbreak{margin:18px 0 14px;font-weight:600}
-/* the claim box on a shirt nobody has activated yet: the code is typed, so it is spaced out and uppercase */
-.claimform input{text-transform:uppercase;letter-spacing:.08em;text-align:center;font-weight:700}
+/* The claim box on a shirt nobody has activated yet. It deliberately does NOT use .wl: the
+   waitlist script in common.js hydrates every form.wl into an email + country signup, which
+   silently turned this field into the email box. Same look, its own class. */
+.claimform{display:grid;gap:12px}
+.claimform input{font:700 1.05rem "DM Sans",sans-serif;padding:15px 18px;border-radius:99px;border:2.5px solid var(--bg);background:transparent;color:#fff;width:100%;text-transform:uppercase;letter-spacing:.08em;text-align:center}
+.claimform input::placeholder{color:#a89a93;font-weight:500;letter-spacing:.04em}
+.claimform .btn{border-color:var(--bg);box-shadow:4px 4px 0 var(--red-d)}
+.claimerr{color:#ffb4a8;font-size:.9rem;font-weight:600;margin-top:10px}
 .offlinks{display:grid;gap:10px;margin-top:4px}
 .offlinks .btn{width:100%}
 
