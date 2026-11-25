@@ -104,6 +104,30 @@
         </div>
       </div>
     </section>
+    <!-- ===== NOT ACTIVATED YET: the shirt is printed but nobody has claimed it ===== -->
+    <section class="play offv" id="v-new" hidden>
+      <h1 class="display" id="newH"></h1>
+      <p class="sub" id="newP"></p>
+      <div class="offsteps">
+        <div><b>📱</b><span id="newS1"></span></div>
+        <div><b>🎰</b><span id="newS2"></span></div>
+        <div><b>🤝</b><span id="newS3"></span></div>
+      </div>
+      <div class="wlbox">
+        <h3 id="newBoxH"></h3>
+        <p id="newBoxP"></p>
+        <form class="wl claimform" id="newForm" autocomplete="off">
+          <input type="text" id="newCode" maxlength="11" spellcheck="false" autocapitalize="characters" autocorrect="off" aria-label="Claim code" placeholder="DARE-XXXXXX">
+          <button class="btn red" type="submit" id="newBtn"></button>
+        </form>
+        <p class="wlerr" id="newErr" hidden></p>
+      </div>
+      <p class="offbreak" id="newP2"></p>
+      <div class="offlinks">
+        <a class="btn" id="newBtn1" href="/?home=1#shop"></a>
+        <a class="btn" id="newBtn2" href="/?home=1#join"></a>
+      </div>
+    </section>
     <!-- ===== SPIN ===== -->
     <section class="play" id="v-spin" hidden>
       <a class="kicker" id="mineLink" href="/me/" hidden style="display:block;margin-bottom:10px;color:var(--ink);text-decoration:underline"></a>

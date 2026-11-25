@@ -58,6 +58,7 @@ async function loadLiveDecks(){
     rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.hu = r.text_hu || ''; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
     if (shirts[0] && shirts[0].status === 'off'){ shirtOff(); return; }
+    if (shirts[0] && shirts[0].status === 'new'){ shirtNew(); return; }
     /* A shirt can be printed and handed over before anyone has claimed it, and then it has no
        name yet. Taking that empty string as a name gave "You just scanned 's shirt" and a
        sentence with a hole in it, so a nameless shirt stays on the anonymous card until its
@@ -99,6 +100,58 @@ function shirtOff(){
   new MutationObserver(() => { document.querySelectorAll('main > section').forEach(s => { if (s.id !== 'v-off' && !s.hidden) s.hidden = true; }); $('v-off').hidden = false; })
     .observe(document.querySelector('main'), { subtree:true, attributes:true, attributeFilter:['hidden'] });
 }
+/* A shirt that has been printed and handed over but that nobody has claimed yet. It is not
+   playable: whoever scans it would be spinning dares against an empty profile, and the owner
+   would never see them. Instead the page explains STREETDARE and offers the claim code, which
+   only the person holding the shirt has. */
+const NEWS = {
+  en:{ h:'This shirt isn\u2019t activated yet \ud83d\udd12', p:'STREETDARE shirts have a QR code on the back. You scan it, you get a dare, and you do it together with the person wearing it. It is the easiest way to start talking to someone new.',
+       s1:'Scan the shirt', s2:'Get a random dare', s3:'Do it together',
+       boxH:'Is this your shirt?', boxP:'It came with a claim code. Enter it and the shirt becomes yours: your name and photo, your dare code and your own dares.',
+       btn:'Activate my shirt \u2192', bad:'That code doesn\u2019t look right. It looks like DARE-XXXXXX.',
+       p2:'Not your shirt? Nobody has activated this one yet, so there are no dares on it. Two ways to play tonight anyway:',
+       b1:'Play with the Shirtless Pass', b2:'I want my own shirt' },
+  es:{ h:'Esta camiseta a\u00fan no est\u00e1 activada \ud83d\udd12', p:'Las camisetas STREETDARE llevan un c\u00f3digo QR en la espalda. Lo escaneas, te sale un reto y lo hac\u00e9is juntos con quien la lleva puesta. Es la forma m\u00e1s f\u00e1cil de empezar a hablar con alguien nuevo.',
+       s1:'Escanea la camiseta', s2:'Te sale un reto', s3:'Lo hac\u00e9is juntos',
+       boxH:'\u00bfEs tu camiseta?', boxP:'Ven\u00eda con un c\u00f3digo de activaci\u00f3n. Introd\u00facelo y la camiseta pasa a ser tuya: tu nombre y tu foto, tu c\u00f3digo de reto y tus propios retos.',
+       btn:'Activar mi camiseta \u2192', bad:'Ese c\u00f3digo no parece correcto. Tiene la forma DARE-XXXXXX.',
+       p2:'\u00bfNo es tu camiseta? Nadie ha activado esta todav\u00eda, as\u00ed que no tiene retos. Dos formas de jugar esta noche igualmente:',
+       b1:'Jugar con el Shirtless Pass', b2:'Quiero mi propia camiseta' },
+  hu:{ h:'Ez a p\u00f3l\u00f3 m\u00e9g nincs aktiv\u00e1lva \ud83d\udd12', p:'A STREETDARE p\u00f3l\u00f3k h\u00e1t\u00e1n QR-k\u00f3d van. Beszkenneled, kapsz egy kih\u00edv\u00e1st, \u00e9s azzal csin\u00e1lod meg, aki a p\u00f3l\u00f3t viseli. Ez a legegyszer\u0171bb m\u00f3d, hogy sz\u00f3ba \u00e1llj valakivel, akit m\u00e9g nem ismersz.',
+       s1:'Szkenneld be a p\u00f3l\u00f3t', s2:'Kapsz egy kih\u00edv\u00e1st', s3:'Egy\u00fctt megcsin\u00e1lj\u00e1tok',
+       boxH:'A ti\u00e9d ez a p\u00f3l\u00f3?', boxP:'Kaptál hozz\u00e1 egy aktiv\u00e1l\u00f3 k\u00f3dot. \u00cdrd be, \u00e9s a p\u00f3l\u00f3 a ti\u00e9d lesz: a neved \u00e9s a f\u00e9nyk\u00e9ped, a saj\u00e1t kih\u00edv\u00e1sk\u00f3dod \u00e9s a saj\u00e1t kih\u00edv\u00e1said.',
+       btn:'Aktiv\u00e1lom a p\u00f3l\u00f3mat \u2192', bad:'Ez a k\u00f3d nem t\u0171nik j\u00f3nak. \u00cdgy n\u00e9z ki: DARE-XXXXXX.',
+       p2:'Nem a ti\u00e9d? Ezt m\u00e9g senki nem aktiv\u00e1lta, \u00edgy nincsenek rajta kih\u00edv\u00e1sok. K\u00e9t m\u00f3d, hogy ma este \u00edgy is j\u00e1tssz:',
+       b1:'J\u00e1t\u00e9k a Shirtless Passszal', b2:'Saj\u00e1t p\u00f3l\u00f3t szeretn\u00e9k' }
+};
+let isNew = false;
+function shirtNew(){
+  isNew = true;
+  const paint = () => { const x = NEWS[LANG] || NEWS.en;
+    [['newH','h'],['newP','p'],['newS1','s1'],['newS2','s2'],['newS3','s3'],['newBoxH','boxH'],['newBoxP','boxP'],['newBtn','btn'],['newP2','p2'],['newBtn1','b1'],['newBtn2','b2']]
+      .forEach(([id, k]) => { const el = $(id); if (el) el.textContent = x[k]; }); };
+  document.querySelectorAll('main > section').forEach(sec => { sec.hidden = sec.id !== 'v-new'; });
+  const b = $('spinBtn'); if (b) b.disabled = true;
+  paint(); document.addEventListener('langchange', paint);
+  new MutationObserver(() => { document.querySelectorAll('main > section').forEach(sec => { if (sec.id !== 'v-new' && !sec.hidden) sec.hidden = true; }); $('v-new').hidden = false; })
+    .observe(document.querySelector('main'), { subtree:true, attributes:true, attributeFilter:['hidden'] });
+
+  /* The code is checked by claim_shirt, which needs a logged-in account, so the form only
+     checks the shape here and hands the code to /me, which claims it after login. */
+  const form = $('newForm'), input = $('newCode'), err = $('newErr');
+  if (!form) return;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const code = (input.value || '').trim().toUpperCase().replace(/\s+/g, '');
+    if (!/^DARE-[A-Z0-9]{6}$/.test(code)){
+      err.textContent = (NEWS[LANG] || NEWS.en).bad; err.hidden = false; input.focus(); return;
+    }
+    err.hidden = true;
+    location.href = '/me/?claim=' + encodeURIComponent(code);
+  });
+}
+/* preview without a real unclaimed shirt: /p/?s=demo&preview=new */
+if (new URLSearchParams(location.search).get('preview') === 'new') setTimeout(shirtNew, 0);
 /* preview of the switched-off screen without switching off a real shirt: /p/?s=demo&preview=off */
 if (new URLSearchParams(location.search).get('preview') === 'off') setTimeout(shirtOff, 0);
 /* after a completed dare: the wearer's Instagram, if they chose to show it */

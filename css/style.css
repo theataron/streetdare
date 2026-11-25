@@ -883,6 +883,11 @@ footer .social svg{width:22px;height:22px;flex:none;fill:currentColor}
 .offsteps div:nth-child(2){animation-delay:.15s}.offsteps div:nth-child(3){animation-delay:.3s}
 .offsteps b{font-size:1.5rem}
 .offbreak{margin:18px 0 14px;font-weight:600}
+/* the claim box on a shirt nobody has activated yet: the code is typed, so it is spaced out and uppercase */
+.claimform input{text-transform:uppercase;letter-spacing:.08em;text-align:center;font-weight:700}
+.offlinks{display:grid;gap:10px;margin-top:4px}
+.offlinks .btn{width:100%}
+
 .offcards{display:grid;gap:16px;text-align:left}
 .offcards .cardx{animation:rise .6s .2s both}
 .offcards .cardx + .cardx{animation-delay:.35s}
