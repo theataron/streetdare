@@ -534,7 +534,14 @@ function paintDecks(){
   if (!shirt) return;
   if (pickedFor !== shirt.id){ loadPicked(); return; }
   const paid = decks.filter(d => !d.is_free), full = picked.size >= 2;
-  $('decksP').textContent = t('decksP') + ' ' + (full ? t('pickDone') : t('pickInfo').replace('{n}', picked.size));
+  /* A pack can only be picked once it is switched on and actually has dares in it. Choosing is
+     final, so offering an empty deck would lock an owner into nothing. While none of the paid
+     packs is ready, the rows still show with "Coming soon" and the "I want this" button, and the
+     "x of 2 chosen" line stays off the screen entirely. */
+  const anyReady = paid.some(d => d.active);
+  $('decksP').textContent = t('decksP') + ((anyReady || picked.size)
+    ? ' ' + (full ? t('pickDone') : t('pickInfo').replace('{n}', picked.size))
+    : '');
   const dn = d => (L === 'es' ? d.name_es : L === 'hu' ? d.name_hu : d.name_en) || d.name_en;
   /* Devil mode is a switch inside the Party deck, not something you pick separately */
   $('deckList').innerHTML = decks.filter(d => d.id !== 'spicy' && ((d.is_free && d.active) || !d.is_free)).map(d => {
@@ -542,7 +549,7 @@ function paintDecks(){
     let right;
     if (d.is_free) right = '<span class="pill">' + t('included') + '</span>';
     else if (picked.has(d.id)) right = '<span class="pill">' + t('picked') + '</span>';
-    else if (!full) right = '<button class="mini red" data-pick="' + d.id + '">' + t('pickBtn') + '</button>';
+    else if (!full && d.active) right = '<button class="mini red" data-pick="' + d.id + '">' + t('pickBtn') + '</button>';
     else right = interest.has(d.id) ? '<span class="pill soon">' + t('wanted') + '</span>' : '<button class="mini" data-want="' + d.id + '">' + t('want') + '</button>';
     return '<div class="deck"><div><b>' + esc(name) + '</b>' + (!d.is_free && !d.active ? '<small>' + t('soon') + '</small>' : '') + '</div>' + right + '</div>';
   }).join('');
