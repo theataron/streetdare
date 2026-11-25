@@ -64,9 +64,10 @@ async function loadLiveDecks(){
        sentence with a hole in it, so a nameless shirt stays on the anonymous card until its
        owner claims it and their name arrives. */
     if (shirts[0]){
+      hasIg = !!shirts[0].has_ig;
       const nm = (shirts[0].name || '').trim();
       if (nm) owner = Object.assign({}, owner, { name: nm, ig: shirts[0].ig || '', photo: shirts[0].photo || '' });
-      applyLang(); paintPhoto();
+      applyLang(); paintPhoto(); paintExtras();
     }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
@@ -157,19 +158,34 @@ if (new URLSearchParams(location.search).get('preview') === 'off') setTimeout(sh
 /* after a completed dare: the wearer's Instagram, if they chose to show it */
 const EXTRA = {
   en:{ igH:'Don’t lose each other 👀', igP:'You just did a dare with {name}. Follow them now, so you can find each other after tonight.', ig:'Follow @{ig} on Instagram',
-       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code. The dare counts and their Instagram unlocks, if they’ve shared it.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing time 🙌 Scan again whenever you want another dare.', rateL:'How was this dare?', rateThx:'Thanks! 🙌', star:'{n} out of 5 stars', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
+       lock:'Want {name}’s Instagram? Ask for their 4-digit dare code.', lockBtn:'I have the code 🔐', leave:'Back to your friends 👋', igLeave:'Follow @{ig} & back to your friends 👋', bye:'Have an amazing time 🙌 Scan again whenever you want another dare.', rateL:'How was this dare?', rateThx:'Thanks! 🙌', star:'{n} out of 5 stars', by:'✍️ Dare by {name}', mine:'Is this your shirt? Open your dashboard →' },
   es:{ igH:'No os perdáis 👀', igP:'Acabas de hacer un reto con {name}. Síguele ahora para encontraros después de esta noche.', ig:'Sigue a @{ig} en Instagram',
-       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras. El reto cuenta y se desbloquea su Instagram, si lo ha compartido.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'¡Que lo pases genial! 🙌 Escanea otra vez cuando quieras otro reto.', rateL:'¿Qué tal este reto?', rateThx:'¡Gracias! 🙌', star:'{n} de 5 estrellas', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
+       lock:'¿Quieres el Instagram de {name}? Pídele su código de reto de 4 cifras.', lockBtn:'Tengo el código 🔐', leave:'Volver con tus amigos 👋', igLeave:'Sigue a @{ig} y vuelve con tus amigos 👋', bye:'¡Que lo pases genial! 🙌 Escanea otra vez cuando quieras otro reto.', rateL:'¿Qué tal este reto?', rateThx:'¡Gracias! 🙌', star:'{n} de 5 estrellas', by:'✍️ Reto de {name}', mine:'¿Es tu camiseta? Abre tu panel →' },
   hu:{ igH:'Ne veszítsétek el egymást 👀', igP:'Most csináltál meg egy kihívást vele: {name}. Kövesd be most, hogy ma este után is megtaláljátok egymást.', ig:'Kövesd: @{ig} Instagramon',
-       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját. A kihívás beszámít, és feloldódik az Instagramja, ha megosztotta.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Érezd jól magad 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', rateL:'Milyen volt ez a kihívás?', rateThx:'Köszönjük! 🙌', star:'{n} csillag az 5-ből', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
+       lock:'Kéne {name} Instagramja? Kérd el a 4 jegyű kihíváskódját.', lockBtn:'Megvan a kód 🔐', leave:'Vissza a barátaidhoz 👋', igLeave:'Kövesd: @{ig}, és vissza a barátaidhoz 👋', bye:'Érezd jól magad 🙌 Szkenneld be újra, ha jöhet a következő kihívás.', rateL:'Milyen volt ez a kihívás?', rateThx:'Köszönjük! 🙌', star:'{n} csillag az 5-ből', by:'✍️ {name} kihívása', mine:'A te pólód? Nyisd meg a profilodat →' }
 };
 let verified = false;
+/* shirt_card tells us whether the wearer chose to share an Instagram, without giving it away:
+   no point asking the scanner for a code to unlock something that isn't there. */
+let hasIg = false;
+/* the dashboard link is for the person this shirt belongs to, not for anyone who happens to be logged in */
+let isMine = false;
+async function checkMine(){
+  if (demo || window.STAGE || !SHIRT) return;
+  try{
+    const ses = await sbSession(); if (!ses) return;
+    const r = await fetch(SB.url + '/rest/v1/shirts?select=id&id=eq.' + encodeURIComponent(SHIRT.toLowerCase()) + '&owner_id=eq.' + ses.user.id,
+      { headers:{ apikey: SB.key, Authorization: 'Bearer ' + ses.access_token } });
+    isMine = r.ok && (await r.json()).length > 0;
+  }catch(e){ /* logged out or offline: the link just stays hidden */ }
+  paintExtras();
+}
 function paintExtras(){
   const x = EXTRA[LANG] || EXTRA.en, ig = $('igReveal');
   /* the wearer's Instagram only comes back from the server after the right dare code */
   const has = verified && !!(owner && owner.ig);
   $('igCard').hidden = !has;
-  $('igLocked').hidden = verified || practice() || demo;
+  $('igLocked').hidden = verified || practice() || demo || !hasIg;
   if (has){
     ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{ig}', owner.ig);
     $('igH').textContent = x.igH;
@@ -178,7 +194,7 @@ function paintExtras(){
   $('igLockP').textContent = x.lock.replace('{name}', who()); $('igLockBtn').textContent = x.lockBtn;
   $('leaveBtn').textContent = x.leave; $('leaveBtn').hidden = false; $('byeMsg').textContent = x.bye;
   paintStars();
-  const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !(store.get('sb-jlnsqerwiwmbqpzzcskf-auth-token') && !demo && !window.STAGE); }
+  const m = $('mineLink'); if (m){ m.textContent = x.mine; m.hidden = !isMine; }
 }
 document.addEventListener('langchange', paintExtras);
 function logPlay(type){
@@ -445,5 +461,6 @@ async function farCheck(){
 if (!restoreCur()) show('spin');
 try{ if (!demo && !sessionStorage.getItem('sd_scan')){ sessionStorage.setItem('sd_scan','1'); track('scan'); sbLog('scan'); } }catch(e){}
 loadLiveDecks();
+checkMine();
 loadRecent();
 consentInit();

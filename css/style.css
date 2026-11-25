@@ -701,6 +701,7 @@ img.zoomable{cursor:zoom-in}
 .bigcard .flip{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:6px 14px;font:700 .85rem "DM Sans",sans-serif;cursor:pointer;white-space:nowrap}
 .bigtxt.swap{animation:land .35s ease-out}
 .shnote{color:#ddd;font-size:.95rem;max-width:32ch;margin:0 auto 18px}
+.shnote2{color:#ddd;font-size:.9rem;line-height:1.45;max-width:36ch;margin:2px auto;text-align:center}
 .showmode .btn.plain{color:#fff;border-color:#fff}
 .showmode .stack{max-width:420px;margin:0 auto;width:100%}
 @keyframes bigopen{0%{opacity:0;transform:scale(.55) rotate(-7deg)}100%{opacity:1;transform:scale(1) rotate(-1deg)}}

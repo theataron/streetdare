@@ -18,7 +18,7 @@ const QUESTS = {
     ["Ask a stranger which celebrity each of you looks like","Preguntadle a un desconocido a qué famoso se parece cada uno",0,"Kérdezzétek meg egy idegentől, melyik hírességre hasonlítotok"],
     ["Sing a song with the wrong lyrics, loudly, until at least one person joins in","Cantad una canción con la letra mal, bien alto, hasta que al menos una persona se una",0,"Énekeljetek el hangosan egy dalt rossz szöveggel, amíg legalább egy ember be nem száll"],
     ["Tie your shoelaces together and dance for one song (take it easy, at your own risk)","Ataos los cordones juntos y bailad así una canción (con calma y bajo vuestra responsabilidad)",0,"Kössétek össze a cipőfűzőtöket, és táncoljatok így végig egy számot (lassan, saját felelősségre)"],
-    ["Trade something from your pockets with a stranger, then trade that with someone else. You have 10 minutes","Cambiad algo de vuestros bolsillos con un desconocido y luego cambiad eso con otra persona. Tenéis 10 minutos",0,"Cseréljetek el valamit a zsebetekből egy idegennel, aztán azt cseréljétek tovább valaki mással. 10 percetek van"]
+    ["Trade something from your pockets with a stranger, then trade that with someone else. You have 10 minutes.","Cambiad algo de vuestros bolsillos con un desconocido y luego cambiad eso con otra persona. Tenéis 10 minutos.",0,"Cseréljetek el valamit a zsebetekből egy idegennel, aztán azt cseréljétek tovább valaki mással. 10 percetek van."]
   ],
   devil: [
     ["Ask the DJ for the most embarrassing song you can think of","Pedidle al DJ la canción más vergonzosa que se os ocurra",0,"Kérjétek meg a DJ-t, hogy tegye be a legkínosabb számot, ami eszetekbe jut"],
