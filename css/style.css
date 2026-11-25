@@ -179,6 +179,7 @@ body.menuopen .burger .peek{display:none}
 .rlab{font-size:.78rem;color:var(--mute)}
 .rbtn:active .rdot{transform:translateY(3px);box-shadow:none}
 .reach + .smallnote{margin-top:14px}
+.shlist + .smallnote{margin-top:14px}
 
 /* ===== v3: home + scan pages ===== */
 @font-face{font-family:"Permanent Marker";src:url(../fonts/permanent-marker.woff2) format("woff2");font-display:swap}
