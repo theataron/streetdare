@@ -282,6 +282,12 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
 import { sb, getSession, lang, setLang, esc } from '../js/sb.js?v=5';
 const $ = id => document.getElementById(id);
 
+/* A claim code handed over by an unactivated shirt's scan page (/me/?claim=DARE-XXXXXX).
+   It is read here, at the very top, because the login redirect below needs it and the page
+   strips it from the URL once it is used. */
+const CLAIM_FROM_URL = (new URLSearchParams(location.search).get('claim') || '')
+  .toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 11);
+
 const T = {
   en:{ hello:'Hey {n}', title:'Your profile', claimH:'Claim your shirt', claimP:'Every STREETDARE shirt comes with a claim code. Enter it here and the shirt is yours: your stats, your dares, your name on the scan page.',
        claimBtn:'Claim my shirt', claiming:'Checking…', claimBad:'That code didn’t work. Check it, or it may already be claimed.', noShirt:'No shirt yet? <a href="../#join">Join the community</a> and we’ll tell you when they’re ready.', claimed:'It’s yours! 🎉',
@@ -408,8 +414,7 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
     /* A claim code arriving from an unactivated shirt's scan page has to survive the trip
        through login, or the owner lands here with an empty field and no idea why. */
     const go = (location.hash.match(/^#(emails|recap)$/) || [])[1];
-    const cc = (new URLSearchParams(location.search).get('claim') || '').toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 11);
-    const q = cc ? '?claim=' + cc : (go ? '?go=' + go : '');
+    const q = CLAIM_FROM_URL ? '?claim=' + CLAIM_FROM_URL : (go ? '?go=' + go : '');
     location.replace('/login/?next=' + encodeURIComponent('/me/' + q)); return;
   }
   /* No live-night takeover here: someone who taps "Profile" wants the profile.
@@ -425,7 +430,26 @@ window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLan
   try{ if (profile.avatar_url) localStorage.setItem('sd_avatar', profile.avatar_url); else localStorage.removeItem('sd_avatar'); }catch(e){}
   await loadShirts();
   $('loading').hidden = true; $('app').hidden = false;
+  applyClaimFromUrl();
 })();
+
+/* Fill in a claim code that came from a shirt's scan page. Someone who already owns a shirt has
+   the claim box folded away behind "+ Claim another", so it is opened here too, otherwise they
+   arrive at a dashboard with no visible field and no idea where the code goes. */
+function applyClaimFromUrl(){
+  if (!CLAIM_FROM_URL) return;
+  const code = cleanCode(CLAIM_FROM_URL);
+  const el = $('claimCode');
+  if (code.length === 6 && el){
+    $('p-claim').hidden = false;
+    el.value = code;
+    $('p-claim').scrollIntoView({ behavior:'smooth', block:'center' });
+    try{ el.focus({ preventScroll:true }); }catch(e){ try{ el.focus(); }catch(e2){} }
+  }
+  /* out of the URL, so it is not left in history or in a link the owner shares */
+  const q = new URLSearchParams(location.search); q.delete('claim');
+  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+}
 
 async function loadShirts(pick){
   const { data } = await sb.from('shirts').select('id,name,status').eq('owner_id', user.id).order('created_at');
@@ -483,17 +507,6 @@ $('claimForm').onsubmit = async e => {
   if (error){ $('claimErr').textContent = t('claimBad'); $('claimErr').hidden = false; return; }
   toast(t('claimed')); await loadShirts(data);
 };
-/* Arriving from an unactivated shirt's scan page (/me/?claim=DARE-XXXXXX): the code is already
-   in the link, so it is filled in and the field focused, and the code is dropped from the URL
-   so it is not left sitting in history or in a shared link. */
-(function () {
-  const q = new URLSearchParams(location.search), code = cleanCode(q.get('claim') || '');
-  if (code.length < 6) return;
-  const el = $('claimCode');
-  if (el){ el.value = code; try{ el.focus(); }catch(e){} }
-  q.delete('claim');
-  history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
-})();
 
 /* ===== my dares ===== */
 let myDares = [];
