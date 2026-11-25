@@ -4,7 +4,7 @@ let owner = SHIRTS[SHIRT.toLowerCase()] || null;
 const demo = !SHIRT || SHIRT === 'demo';
 let current = null, spinning = false, seen = [];
 
-const who = () => owner ? owner.name : t('thePerson');
+const who = () => (owner && owner.name) ? owner.name : t('thePerson');
 const fill = k => t(k).replace('{name}', who());
 if (!demo) refSave(SHIRT.toLowerCase());
 
@@ -58,7 +58,15 @@ async function loadLiveDecks(){
     rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.hu = r.text_hu || ''; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
     if (shirts[0] && shirts[0].status === 'off'){ shirtOff(); return; }
-    if (shirts[0]){ owner = Object.assign({}, owner, { name: shirts[0].name, ig: shirts[0].ig || '', photo: shirts[0].photo || '' }); applyLang(); paintPhoto(); }
+    /* A shirt can be printed and handed over before anyone has claimed it, and then it has no
+       name yet. Taking that empty string as a name gave "You just scanned 's shirt" and a
+       sentence with a hole in it, so a nameless shirt stays on the anonymous card until its
+       owner claims it and their name arrives. */
+    if (shirts[0]){
+      const nm = (shirts[0].name || '').trim();
+      if (nm) owner = Object.assign({}, owner, { name: nm, ig: shirts[0].ig || '', photo: shirts[0].photo || '' });
+      applyLang(); paintPhoto();
+    }
   }catch(e){ /* offline or database asleep: keep the built-in decks */ }
 }
 /* a shirt switched off after reports (fair play): no dares through it */
@@ -130,7 +138,7 @@ function paintDare(){
   const a = isAdult(current);
   $('adultTag').hidden = !a; $('accAdult').hidden = !a;
   $('together').hidden = !current; $('howRow').hidden = !!current;
-  $('nextP').textContent = owner ? fill('nextP') : t('nextPAnon');
+  $('nextP').textContent = (owner && owner.name) ? fill('nextP') : t('nextPAnon');
   paintBy();
 }
 /* dares the wearer wrote themselves carry their name */
@@ -293,7 +301,7 @@ function igTip(){
   const src = owner && owner.photo, ok = src && /^https:\/\/[a-z0-9.-]+\.supabase\.co\//.test(src);
   const m = sdModal((ok ? '<img class="tippic" alt="">' : '') + '<p></p><button class="btn red" type="button" data-close></button>', 'info');
   if (ok){ const i = m.querySelector('img'); i.src = src; i.alt = who(); }
-  m.querySelector('p').textContent = owner ? fill('nameTip') : t('nameTipAnon');
+  m.querySelector('p').textContent = (owner && owner.name) ? fill('nameTip') : t('nameTipAnon');
   m.querySelector('button').textContent = t('gotIt') || 'OK';
 }
 $('ownerPic').onclick = igTip;
@@ -315,19 +323,19 @@ $('devil').onchange = () => { document.body.classList.toggle('hot', $('devil').c
 
 /* ----- words that depend on the language and on whose shirt it is ----- */
 document.addEventListener('langchange', () => {
-  if (owner){
+  if (owner && owner.name){
     const nm = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';'), parts = t('found').split('{name}');
     $('foundKicker').innerHTML = parts.map(x => x.replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';')).join('<button type="button" class="namebtn" id="nameBtn">' + nm + '</button>');
     $('nameBtn').onclick = igTip;
   } else $('foundKicker').textContent = t('foundAnon');
   const safeName = who().replace(/[&<>"']/g, c => '&#' + c.charCodeAt(0) + ';');
-  $('spinSub').innerHTML = owner ? t('spinSub').replace('{name}', safeName) : t('spinSubAnon');
-  $('how2').textContent = owner ? fill('how2') : t('how2Anon');
+  $('spinSub').innerHTML = (owner && owner.name) ? t('spinSub').replace('{name}', safeName) : t('spinSubAnon');
+  $('how2').textContent = (owner && owner.name) ? fill('how2') : t('how2Anon');
   $('devNote').textContent = fill('devilNote');
   if ($('refLine') && typeof refText === 'function'){ $('refLine').textContent = refText(); $('refLine').hidden = !refText(); }
   $('accNote').textContent = fill('accNote');
-  $('showBtn').textContent = owner ? fill('showBtn') : t('showBtnAnon');
-  $('shNote').textContent = owner ? fill('shNote') : t('shNoteAnon');
+  $('showBtn').textContent = (owner && owner.name) ? fill('showBtn') : t('showBtnAnon');
+  $('shNote').textContent = (owner && owner.name) ? fill('shNote') : t('shNoteAnon');
   if (current && !$('v-show').hidden) paintShow();
   $('cfSub').textContent = fill('cfSub'); $('codeDemo').hidden = !practice();
   if (current && !spinning){ $('reel').textContent = txt(current); $('accText').textContent = txtIn(current, shLang); }
