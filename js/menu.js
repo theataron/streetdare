@@ -2,10 +2,31 @@
    Adds the hamburger button to the header and the same full-screen menu as the homepage. */
 (function(){
   if (document.getElementById('burger')) return;
+  /* Same entries, same order and the same wording as the home page menu in index.html
+     (plus the ones js/common.js injects there), so the menu does not change shape when you
+     walk from the home page into your profile. Keep the two in step when either changes. */
   var T = {
-    en: { shop:['Shop',''], home:['Home',''], pass:['Shirtless Pass','No shirt? Play tonight with your friends'], tr:['Try a dare','See how scanning a shirt works'], wall:['The Wall','Write an anonymous message for the community'], me:['Profile','Your shirt, nights and settings'], login:['Log in','Your shirt, nights and stats'], contact:['Contact','Questions, collabs, press'], night:'Dark mode' },
-    es: { shop:['Tienda',''], home:['Inicio',''], pass:['Shirtless Pass','¿Sin camiseta? Juega esta noche con tus amigos'], tr:['Prueba un reto','Mira cómo funciona escanear una camiseta'], wall:['El Muro','Escribe un mensaje anónimo para la comunidad'], me:['Perfil','Tu camiseta, tus noches y tus ajustes'], login:['Entrar','Tu camiseta, tus noches y estadísticas'], contact:['Contacto','Preguntas, colaboraciones, prensa'], night:'Modo noche' },
-    hu: { shop:['Bolt',''], home:['Főoldal',''], pass:['Shirtless Pass','Nincs pólód? Játssz ma este a barátaiddal'], tr:['Próbálj ki egy kihívást','Nézd meg, hogyan működik a szkennelés'], wall:['A Fal','Írj egy névtelen üzenetet a közösségnek'], me:['Profil','A pólód, az estéid és a beállításaid'], login:['Belépés','A pólód, az estéid és a statisztikáid'], contact:['Kapcsolat','Kérdések, együttműködés, sajtó'], night:'Éjszakai mód' }
+    en: { home:['Home',''], shop:['Shop',''], tr:['Try a dare','See what a scan looks like'],
+          about:['What is STREETDARE?','The idea, and who’s behind STREETDARE'],
+          club:['Join the community','Get your own shirt & see what else is coming'],
+          pass:['Shirtless Pass','No shirt? Play tonight with your friends'],
+          signup:['Create account','Got a shirt? Claim it here'],
+          wall:['The Wall','Write an anonymous message for the community'],
+          contact:['Contact','Questions, collabs, press'], night:'Dark mode' },
+    es: { home:['Inicio',''], shop:['Tienda',''], tr:['Prueba un reto','Mira cómo es un escaneo'],
+          about:['¿Qué es STREETDARE?','La idea, y quién está detrás de STREETDARE'],
+          club:['Únete a la comunidad','Tu propia camiseta, lo que viene y el precio de fundador'],
+          pass:['Shirtless Pass','¿Sin camiseta? Juega esta noche con tus amigos'],
+          signup:['Crear cuenta','¿Tienes camiseta? Reclámala aquí'],
+          wall:['El Muro','Escribe un mensaje anónimo para la comunidad'],
+          contact:['Contacto','Preguntas, colaboraciones, prensa'], night:'Modo noche' },
+    hu: { home:['Kezdőlap',''], shop:['Bolt',''], tr:['Próbálj ki egy kihívást','Nézd meg, milyen egy szkennelés'],
+          about:['Mi az a STREETDARE?','Az ötlet, és aki a STREETDARE mögött áll'],
+          club:['Csatlakozz a közösséghez','Szerezd meg a saját pólódat, és nézd meg, mi jön még'],
+          pass:['Shirtless Pass','Nincs pólód? Játssz ma este a barátaiddal'],
+          signup:['Fiók létrehozása','Van pólód? Itt igényelheted'],
+          wall:['A Fal','Írj egy névtelen üzenetet a közösségnek'],
+          contact:['Kapcsolat','Kérdések, együttműködés, sajtó'], night:'Éjszakai mód' }
   };
   function lang(){ try{ var l = localStorage.getItem('sd_lang'); if (T[l]) return l; }catch(e){} var n = (navigator.language || 'en').slice(0, 2); return T[n] ? n : 'en'; }
   function loggedIn(){ try{ for (var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if (/^sb-.*-auth-token$/.test(k)) return true; } }catch(e){} return false; }
@@ -30,7 +51,11 @@
     header.parentNode.insertBefore(nav, header.nextSibling);
     function paint(){
       var t = T[lang()], li = loggedIn();
-      var items = [['/?home=1', t.home], ['/#shop', t.shop], ['/pass/', t.pass], ['/p/?s=demo', t.tr], ['/#wall', t.wall], ['/contact/', t.contact]];
+      var items = [['/?home=1', t.home], ['/#shop', t.shop], ['/p/?s=demo', t.tr], ['/#about', t.about],
+                   ['/#club', t.club], ['/pass/', t.pass]];
+      /* Create account is for people who have not got one yet, exactly as on the home page */
+      if (!li) items.push(['/login/?mode=signup', t.signup]);
+      items.push(['/#wall', t.wall], ['/contact/', t.contact]);
       nav.innerHTML = '<button class="x" type="button" aria-label="Close">✕</button>' +
         items.map(function(x){ return '<a href="' + x[0] + '"><span>' + x[1][0] + '</span><small>' + x[1][1] + '</small></a>'; }).join('') +
         '<div class="nightrow"><span>' + t.night + '</span>' +

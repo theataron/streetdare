@@ -203,6 +203,14 @@ function logPlay(type){
   sbLog(type, { dare_id: q.id || null, dare_text: q[0] || null, deck_id: q.deck || (QUESTS.devil.includes(q) ? 'spicy' : 'classic') });
 }
 const txt = q => LANG === 'hu' ? (q.hu || q[3] || q[0]) : (q[LANG === 'es' ? 1 : 0] || q[0]);
+/* A wearer writing their own dare can leave a language empty. Nobody reading in that language
+   should be handed it: they would get a dare in a language they may not read, which is worse
+   than one dare fewer in the deck. */
+const hasLang = (q, l) => {
+  const v = l === 'hu' ? (q.hu || q[3]) : q[l === 'es' ? 1 : 0];
+  return !!(v && String(v).trim());
+};
+const deckFor = () => { const d = deck().filter(q => hasLang(q, LANG)); return d.length ? d : deck(); };
 function paintDare(){
   const a = isAdult(current);
   $('adultTag').hidden = !a; $('accAdult').hidden = !a;
@@ -224,7 +232,7 @@ async function loadRecent(){
   try{ const ids = await sbGet('rpc/shirt_recent_dares?p_id=' + encodeURIComponent(SHIRT.toLowerCase())); recent = new Set(ids.map(Number)); }catch(e){}
 }
 function pick(){
-  const d = deck(); let pool = d.filter(q => !seen.includes(q));
+  const d = deckFor(); let pool = d.filter(q => !seen.includes(q));
   if (!pool.length){ seen = seen.filter(q => !d.includes(q)); pool = d; }
   const w = pool.map(q => q.id && recent.has(Number(q.id)) ? RECENT_WEIGHT : 1);
   let r = Math.random() * w.reduce((a, b) => a + b, 0), i = 0;
@@ -239,7 +247,7 @@ function spin(){
   deckReset(); setReel('? ? ?', 'q'); $('together').hidden = true; $('howRow').hidden = false; $('adultTag').hidden = true;
   const final = pick();
   /* other dares flick past first, so people see how deep the deck is */
-  const others = deck().filter(q => q !== final).sort(() => Math.random() - .5);
+  const others = deckFor().filter(q => q !== final).sort(() => Math.random() - .5);
   const GAPS = still() ? [] : [70,75,80,90,100,115,135,160,195,240,300,380];
   let k = 0;
   function land(){

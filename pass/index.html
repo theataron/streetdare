@@ -429,8 +429,12 @@ html.night .badge{border-color:#211b19}
       <h1 class="display" id="mH"></h1>
       <p class="lead" id="mP"></p>
       <div class="stack">
-        <a class="btn wa" id="mWa" target="_blank" rel="noopener"></a>
-        <a class="btn" id="mIg" target="_blank" rel="noopener"></a>
+        <p class="reachh" id="mReachH"></p>
+        <div class="reach">
+          <a class="rbtn wa" id="mWa" target="_blank" rel="noopener"><span class="rdot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.6a8.4 8.4 0 0 1-12.5 7.3L3.5 20.5l1.7-5A8.4 8.4 0 1 1 21 11.6Z"/></svg></span><span class="rlab">WhatsApp</span></a>
+          <a class="rbtn ig" id="mIg" target="_blank" rel="noopener"><span class="rdot"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="dot" cx="17.2" cy="6.8" r="1.2"/></svg></span><span class="rlab">Instagram</span></a>
+        </div>
+        <p class="smallnote" id="mIrl"></p>
         <a class="btn" id="mHub" href="/pass/"></a>
       </div>
     </section>
@@ -456,10 +460,12 @@ html.night .badge{border-color:#211b19}
       <section class="panel">
         <h2 id="hBuyH"></h2>
         <p class="sub" id="hBuyP"></p>
-        <div class="stack">
-          <a class="btn wa" id="hWa" target="_blank" rel="noopener"></a>
-          <a class="btn" id="hIg" target="_blank" rel="noopener"></a>
+        <p class="reachh" id="hReachH"></p>
+        <div class="reach">
+          <a class="rbtn wa" id="hWa" target="_blank" rel="noopener"><span class="rdot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.6a8.4 8.4 0 0 1-12.5 7.3L3.5 20.5l1.7-5A8.4 8.4 0 1 1 21 11.6Z"/></svg></span><span class="rlab">WhatsApp</span></a>
+          <a class="rbtn ig" id="hIg" target="_blank" rel="noopener"><span class="rdot"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="dot" cx="17.2" cy="6.8" r="1.2"/></svg></span><span class="rlab">Instagram</span></a>
         </div>
+        <p class="smallnote" id="hIrl"></p>
       </section>
       <p class="small" id="hApp" hidden></p>
       <p class="small" id="hLogin" hidden></p>
@@ -575,7 +581,14 @@ html.night .badge{border-color:#211b19}
           <div class="bigcode" id="invCode"></div>
           <button class="mini" type="button" id="invShare"></button>
         </div>
-        <div id="invNone" hidden><div class="stack"><a class="btn wa" id="invWa" target="_blank" rel="noopener"></a><a class="btn" id="invIg" target="_blank" rel="noopener"></a></div></div>
+        <div id="invNone" hidden>
+          <p class="reachh" id="invReachH"></p>
+          <div class="reach">
+            <a class="rbtn wa" id="invWa" target="_blank" rel="noopener"><span class="rdot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.6a8.4 8.4 0 0 1-12.5 7.3L3.5 20.5l1.7-5A8.4 8.4 0 1 1 21 11.6Z"/></svg></span><span class="rlab">WhatsApp</span></a>
+            <a class="rbtn ig" id="invIg" target="_blank" rel="noopener"><span class="rdot"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5"/><circle cx="12" cy="12" r="4"/><circle class="dot" cx="17.2" cy="6.8" r="1.2"/></svg></span><span class="rlab">Instagram</span></a>
+          </div>
+          <p class="smallnote" id="invIrl"></p>
+        </div>
       </section>
       <section class="panel">
         <h2 id="phH"></h2>
@@ -704,7 +717,7 @@ const T = {
     endedH:'This night is over 🌙', endedP:'The 24 hours have run out. Want to play again? Message Aron.',
     expiredH:'This code has expired', expiredP:'Codes work for 30 days. Message Aron for a new one.',
     waitH:'Too many tries', waitP:'Wait 15 minutes and try again.',
-    waBtn:'Message Aron on WhatsApp 💬', igBtn:'Or add Aron on Instagram 📸', hubBtn:'Shirtless Pass',
+    reachH:'Message Aron:', reachIrl:'Or come up to me in person if you see me out — always welcome.', waBtn:'Message Aron on WhatsApp 💬', hubBtn:'Shirtless Pass',
     hK:'No shirt yet? No problem', hH:'Shirtless Pass 🎟️', hP:'24 hours of STREETDARE for you and your friends. Go up to strangers, do dares, collect points and see who wins the night.',
     hCodeH:'Got a code?', hCodeP:'Type it here, or scan the QR on Aron’s or a friend’s phone.', hBtn:'Take my seat',
     hPastH:'Your nights', active:'Live now', rankOf:'#{r} of {n} · {p} pts', hBuyH:'Want to play?', hBuyP:'Message Aron with your group’s name and how many of you there are.',
@@ -763,7 +776,7 @@ const T = {
     endedH:'Esta noche se ha acabado 🌙', endedP:'Se han acabado las 24 horas. ¿Queréis jugar otra vez? Escríbele a Aron.',
     expiredH:'Este código ha caducado', expiredP:'Los códigos valen 30 días. Pídele uno nuevo a Aron.',
     waitH:'Demasiados intentos', waitP:'Espera 15 minutos y vuelve a probar.',
-    waBtn:'Escribir a Aron por WhatsApp 💬', igBtn:'O añade a Aron en Instagram 📸', hubBtn:'Shirtless Pass',
+    reachH:'Escríbele a Aron:', reachIrl:'O ven a hablarme en persona si me ves por ahí — siempre bienvenido.', waBtn:'Escribir a Aron por WhatsApp 💬', hubBtn:'Shirtless Pass',
     hK:'¿Aún sin camiseta? Sin problema', hH:'Shirtless Pass 🎟️', hP:'24 horas de STREETDARE para ti y tus amigos. Acercaos a desconocidos, haced retos, sumad puntos y ved quién gana la noche.',
     hCodeH:'¿Tienes un código?', hCodeP:'Escríbelo aquí o escanea el QR del móvil de Aron o de un amigo.', hBtn:'Coger mi plaza',
     hPastH:'Tus noches', active:'En directo', rankOf:'#{r} de {n} · {p} pts', hBuyH:'¿Queréis jugar?', hBuyP:'Escribe a Aron con el nombre de vuestro grupo y cuántos sois.',
@@ -822,7 +835,7 @@ const T = {
     endedH:'Ennek az estének vége 🌙', endedP:'Letelt a 24 óra. Játszanátok még? Írjatok Áronnak.',
     expiredH:'Ez a kód lejárt', expiredP:'A kódok 30 napig érvényesek. Kérj újat Árontól.',
     waitH:'Túl sok próbálkozás', waitP:'Várj 15 percet, és próbáld újra.',
-    waBtn:'Írok Áronnak WhatsAppon 💬', igBtn:'Vagy jelöld be Áront Instagramon 📸', hubBtn:'Shirtless Pass',
+    reachH:'Írj Áronnak:', reachIrl:'Vagy ha találkozunk, nyugodtan gyere oda hozzám személyesen — bármikor jöhet.', waBtn:'Írok Áronnak WhatsAppon 💬', hubBtn:'Shirtless Pass',
     hK:'Még nincs pólód? Semmi gond', hH:'Shirtless Pass 🎟️', hP:'24 óra STREETDARE neked és a barátaidnak. Menjetek oda idegenekhez, csináljatok kihívásokat, gyűjtsetek pontokat, és kiderül, ki nyeri az estét.',
     hCodeH:'Van kódod?', hCodeP:'Írd be ide, vagy szkenneld be a QR-t Áron vagy egy barátod telefonjáról.', hBtn:'Elfoglalom a helyem',
     hPastH:'Az estéid', active:'Élő', rankOf:'{n}-ből #{r} · {p} pont', hBuyH:'Játszanátok?', hBuyP:'Írj Áronnak, és küldd el neki a csapatotok nevét, valamint hogy hányan vagytok.',
@@ -890,14 +903,13 @@ function paint(){
   $('sBrandS').textContent = t('sBrandS');
   $('gGoogleTxt').textContent = t('gGoogle'); $('gEmail').textContent = t('gEmail');
   $('fName').placeholder = t('fPh'); $('cText').placeholder = t('cPh');
-  $('mWa').textContent = $('hWa').textContent = $('invWa').textContent = t('waBtn');
-  $('mIg').textContent = $('hIg').textContent = $('invIg').textContent = t('igBtn');
-  $('mIg').href = $('hIg').href = $('invIg').href = IG;
-  $('mWa').href = $('hWa').href = $('invWa').href = waLink();
+  ['m','h','inv'].forEach(function(k){
+    $(k + 'Wa').href = waLink(); $(k + 'Ig').href = IG;
+    $(k + 'ReachH').textContent = t('reachH'); $(k + 'Irl').textContent = t('reachIrl');
+  });
   $('mHub').textContent = t('hubBtn');
   $('hLogin').innerHTML = t('hLogin');
   $('hApp').textContent = t('hApp');
-  $('invNone').querySelector('a').textContent = t('waBtn');
   renderHook();
 }
 window.paintLangPick = langPicker($('lang'), () => L, c => { L = c; setLang(L); if (profile && user){ sb.from('profiles').update({ lang: L }).eq('id', user.id).then(() => {}); } paint(); });
