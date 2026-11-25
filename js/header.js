@@ -23,6 +23,10 @@
     else if (dy > 2) top.classList.add('hid');
     else if (up > SHOW_AFTER) { top.classList.remove('hid'); up = 0; }
 
+    /* The bar is see-through while you are at the top of the page and frosts over once the
+       page starts running underneath it, so the wordmark and Profile stay readable. */
+    top.classList.toggle('stuck', y > 8);
+
     last = y;
     ticking = false;
   }
@@ -34,5 +38,7 @@
   }, { passive: true });
 
   /* a menu or dialog that locks the page shouldn't leave the header hidden behind it */
-  window.addEventListener('pageshow', function () { top.classList.remove('hid'); });
+  window.addEventListener('pageshow', function () { top.classList.remove('hid'); onScroll(); });
+
+  onScroll();  /* reloading halfway down a page should already show the frosted bar */
 })();

@@ -17,7 +17,15 @@ a{color:inherit}
 
 /* top bar */
 /* the top padding keeps the header clear of the iPhone clock when the site is opened from the home screen (standalone); in Safari the inset is 0 and nothing changes */
-.top{display:flex;align-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top,0px)) 0 16px;position:sticky;top:0;z-index:30;background:var(--bg);transition:transform .25s ease}
+.top{display:flex;align-items:center;gap:10px;padding:calc(16px + env(safe-area-inset-top,0px)) 0 16px;position:sticky;top:0;z-index:30;background:transparent;transition:transform .25s ease,background-color .2s ease}
+/* Transparent at the top of the page, so the hero starts right under the status bar. Once you have
+   scrolled, the page runs behind the bar, so it frosts over just enough to keep the wordmark and
+   Profile readable over whatever is passing underneath. js/header.js adds .stuck. */
+.top.stuck{background:rgba(251,248,239,.78);-webkit-backdrop-filter:blur(12px) saturate(1.1);backdrop-filter:blur(12px) saturate(1.1)}
+html.night .top.stuck{background:rgba(18,16,18,.72)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .top.stuck{background:var(--bg)}
+}
 /* scrolling down pushes it away; the smallest scroll up brings it straight back */
 .top.hid{transform:translateY(calc(-100% - 4px))}
 @media (prefers-reduced-motion:reduce){.top{transition:none}}
@@ -122,7 +130,7 @@ body.hot .btn.red{color:#fff}
 .burger{width:42px;height:38px;border:2px solid var(--ink);border-radius:12px;background:none;cursor:pointer;display:grid;place-content:center;gap:5px}
 .burger i{display:block;width:18px;height:2.5px;border-radius:2px;background:var(--ink)}
 .menu{position:fixed;inset:0;z-index:20;background:var(--red);color:#fff;padding:max(22px,calc(env(safe-area-inset-top,0px) + 10px)) 24px max(22px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;overflow:auto}
-body.menuopen .top{background:transparent;transform:none!important;pointer-events:none}
+body.menuopen .top,body.menuopen .top.stuck{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;transform:none!important;pointer-events:none}
 body.menuopen .top .mark,body.menuopen .top .right{visibility:hidden}
 body.menuopen .burger{pointer-events:auto;border-color:#fff}
 body.menuopen .burger i{background:#fff}

@@ -1994,6 +1994,18 @@ function startRealtime(){
   document.addEventListener('visibilitychange', () => { if (!document.hidden){ refresh(); markRead(); } else paintBadge(); });
 }
 </script>
+<!-- The header is see-through at the top of the page and frosts over once the page runs behind it.
+     The Pass keeps its own header, so it only borrows the .stuck toggle, not the hide-on-scroll. -->
+<script>
+(function(){
+  var top = document.getElementById('top');
+  if (!top) return;
+  var ticking = false;
+  function paint(){ top.classList.toggle('stuck', (window.scrollY || 0) > 8); ticking = false; }
+  window.addEventListener('scroll', function(){ if (ticking) return; ticking = true; requestAnimationFrame(paint); }, { passive:true });
+  paint();
+})();
+</script>
 <script src="/js/hello.js" defer></script>
 </body>
 </html>
