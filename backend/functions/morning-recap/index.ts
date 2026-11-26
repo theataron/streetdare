@@ -11,24 +11,27 @@ const RESEND = Deno.env.get("RESEND_API_KEY") ?? "";
 type L = "en" | "es" | "hu";
 const T: Record<L, Record<string, string>> = {
   en: {
-    subj: "Last night: {s} scans, {d} dares 🔥", hi: "Morning, {name} ☀️", intro: "Here’s what your STREETDARE shirt did last night.",
-    scans: "scans", dares: "dares done", people: "new people", top: "Last dare you did", where: "Scanned in",
+    subj: "Last night: {s}, {d} 🔥", hi: "Morning, {name} ☀️", intro: "Here’s what your STREETDARE shirt did last night.",
+    scans: "scans", dares: "dares done", people: "new people", scan1: "scan", dare1: "dare done", person1: "new person", s1: "scan", d1: "dare", sN: "scans", dN: "dares", top: "Last dare you did", where: "Scanned in",
     share: "Screenshot this and post it 📸 The best nights deserve proof.", cta: "See your night", again: "Wear it again this weekend, and let the next stranger make the first step.",
     foot: "You get this because you own a STREETDARE shirt. Don’t want morning recaps? Switch them off in your profile.", off: "Turn off recaps",
   },
   es: {
-    subj: "Anoche: {s} escaneos, {d} retos 🔥", hi: "Buenos días, {name} ☀️", intro: "Esto es lo que hizo tu camiseta STREETDARE anoche.",
-    scans: "escaneos", dares: "retos hechos", people: "personas nuevas", top: "Último reto que hiciste", where: "Escaneada en",
+    subj: "Anoche: {s}, {d} 🔥", hi: "Buenos días, {name} ☀️", intro: "Esto es lo que hizo tu camiseta STREETDARE anoche.",
+    scans: "escaneos", dares: "retos hechos", people: "personas nuevas", scan1: "escaneo", dare1: "reto hecho", person1: "persona nueva", s1: "escaneo", d1: "reto", sN: "escaneos", dN: "retos", top: "Último reto que hiciste", where: "Escaneada en",
     share: "Hazle captura y súbela 📸 Las mejores noches merecen pruebas.", cta: "Ver tu noche", again: "Vuelve a ponértela este finde y deja que el próximo desconocido dé el primer paso.",
     foot: "Te llega porque tienes una camiseta STREETDARE. ¿No quieres estos resúmenes? Desactívalos en tu perfil.", off: "Desactivar resúmenes",
   },
   hu: {
-    subj: "Tegnap este: {s} szkennelés, {d} kihívás 🔥", hi: "Jó reggelt, {name} ☀️", intro: "Ezt csinálta tegnap este a STREETDARE pólód.",
-    scans: "szkennelés", dares: "teljesített kihívás", people: "új ember", top: "Az utolsó kihívásotok", where: "Itt szkenneltek be",
+    subj: "Tegnap este: {s}, {d} 🔥", hi: "Jó reggelt, {name} ☀️", intro: "Ezt csinálta tegnap este a STREETDARE pólód.",
+    scans: "szkennelés", dares: "teljesített kihívás", people: "új ember", scan1: "szkennelés", dare1: "teljesített kihívás", person1: "új ember", s1: "szkennelés", d1: "kihívás", sN: "szkennelés", dN: "kihívás", top: "Az utolsó kihívásotok", where: "Itt szkenneltek be",
     share: "Csinálj róla képernyőképet, és posztold 📸 A legjobb esték bizonyítékot érdemelnek.", cta: "Nézd meg az estédet", again: "Vedd fel újra a hétvégén, és hagyd, hogy a következő idegen tegye meg az első lépést.",
     foot: "Azért kapod, mert van STREETDARE pólód. Nem kérsz ilyen összefoglalót? Kapcsold ki a profilodban.", off: "Összefoglalók kikapcsolása",
   },
 };
+// "1 dare" but "2 dares" (Hungarian keeps the singular after a number anyway)
+const subject = (t: Record<string, string>, scans: number, dares: number) =>
+  t.subj.replace("{s}", scans + " " + (scans === 1 ? t.s1 : t.sN)).replace("{d}", dares + " " + (dares === 1 ? t.d1 : t.dN));
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]!));
 const city = (tz: string) => tz.split("/").pop()!.replace(/_/g, " ");
 
@@ -45,7 +48,7 @@ function html(t: Record<string, string>, name: string, s: { scans: number; dares
       <div style="font:900 22px Arial,sans-serif;color:#DA3030;letter-spacing:1px">STREETDARE</div>
       <h1 style="font:900 28px/1.15 Arial,sans-serif;color:#FFE32A;margin:18px 0 6px">${esc(t.hi.replace("{name}", name))}</h1>
       <p style="font:16px/1.45 Arial,sans-serif;margin:0 0 16px;color:#eee">${esc(t.intro)}</p>
-      <table role="presentation" style="width:100%;border-collapse:collapse"><tr>${tile(s.scans, t.scans)}${tile(s.dares, t.dares)}${tile(s.people, t.people)}</tr></table>
+      <table role="presentation" style="width:100%;border-collapse:collapse"><tr>${tile(s.scans, s.scans === 1 ? t.scan1 : t.scans)}${tile(s.dares, s.dares === 1 ? t.dare1 : t.dares)}${tile(s.people, s.people === 1 ? t.person1 : t.people)}</tr></table>
       ${s.top ? `<p style="font:13px Arial,sans-serif;color:#aaa;margin:18px 0 4px;text-transform:uppercase;letter-spacing:1px">${esc(t.top)}</p>
       <p style="font:700 17px/1.4 Arial,sans-serif;margin:0;color:#fff">“${esc(s.top)}”</p>` : ""}
       ${s.places.length ? `<p style="font:14px Arial,sans-serif;color:#ccc;margin:14px 0 0">📍 ${esc(t.where)}: ${esc(s.places.join(", "))}</p>` : ""}
@@ -66,7 +69,7 @@ Deno.serve(async (req) => {
   // template preview for the admin Emails tab (sample numbers, nothing sent)
   if (body.preview) {
     const t = T[(["en", "es", "hu"].includes(body.lang) ? body.lang : "en") as L];
-    return Response.json({ subject: t.subj.replace("{s}", "9").replace("{d}", "4"),
+    return Response.json({ subject: subject(t, 9, 4),
       html: html(t, "Luca", { scans: 9, dares: 4, people: 4, top: "Swap one item of clothing for the rest of the song.", places: ["Budapest"] }) });
   }
   const test: string | null = body.test_shirt ?? null;
@@ -114,13 +117,13 @@ Deno.serve(async (req) => {
       headers: { Authorization: `Bearer ${RESEND}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "STREETDARE <hello@streetdare.com>", to: o.email,
-        subject: t.subj.replace("{s}", String(scans)).replace("{d}", String(dones.length)),
+        subject: subject(t, scans, dones.length),
         html: html(t, name, { scans, dares: dones.length, people, top, places }),
       }),
     });
     const rb = await r.json().catch(() => ({}));
     await sb.from("email_log").insert({ kind: test ? "test" : "morning_recap", profile_id: ownerId, to_email: o.email, shirt_id: o.ids.join(","), lang: o.lang,
-      subject: t.subj.replace("{s}", String(scans)).replace("{d}", String(dones.length)), status: r.ok ? "sent" : "failed",
+      subject: subject(t, scans, dones.length), status: r.ok ? "sent" : "failed",
       resend_id: r.ok ? rb.id : null, error: r.ok ? null : JSON.stringify(rb).slice(0, 300), attempts: 1, sent_at: r.ok ? new Date().toISOString() : null,
       meta: { scans, dares: dones.length, people, ...(test ? { template: "morning_recap" } : {}) } });
     if (r.ok) sent.push(o.email.replace(/(.).*@/, "$1…@"));
