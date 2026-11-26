@@ -22,7 +22,7 @@ function langConfirm(code, go, currentName, cancelled){
   const box = document.createElement('div');
   box.innerHTML = code === 'hu'
     ? '<p>Hali! Áron vagyok, az alapító. Habár magyar vagyok, az oldalt angolul terveztem le, és a magyar fordítás még elég gatya. Ha úgy érzed, mindenképpen szükséged van rá, nyomjad, de nem vállalok érte felelősséget. A funabb játékélményhez inkább az angol nyelvet javaslom.</p>'
-      + '<div class="row"><button type="button" class="go">Mehet, magyarul</button><button type="button" class="stay">Maradok ' + (currentName === 'Magyar' ? 'magyarul' : 'angolul') + '</button></div>'
+      + '<div class="row"><button type="button" class="go">Magyar (pls ne)</button><button type="button" class="stay">English</button></div>'
     : '<p><b>Heads up.</b> The ' + name + ' version is auto-generated, so it might translate badly.</p><p>Do you still want to switch?</p>'
       + '<div class="row"><button type="button" class="go">Yes, switch to ' + name + '</button><button type="button" class="stay">No, keep ' + (currentName || 'English') + '</button></div>';
   ov.appendChild(box); document.body.appendChild(ov);

@@ -957,7 +957,7 @@ async function activate(name){
 }
 let groupLang = null;
 function paintLangs(){
-  if (!groupLang) groupLang = L;
+  if (!groupLang) groupLang = 'en';
   $('fLangs').innerHTML = [['en','🇬🇧 English'],['es','🇪🇸 Español'],['hu','🇭🇺 Magyar']].map(([k, v]) => '<button type="button" data-l="' + k + '" class="' + (k === groupLang ? 'on' : '') + '">' + v + '</button>').join('');
 }
 $('fLangs').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.l === groupLang) return; const pick = b.dataset.l; langConfirm(pick, () => { groupLang = pick; paintLangs(); }, LANG_NAMES[groupLang]); };
