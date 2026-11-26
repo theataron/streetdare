@@ -94,7 +94,8 @@ const ONE = { en:{ people:'new person met', dares:'dare done', scans:'scan tonig
               es:{ people:'persona nueva', dares:'reto hecho', scans:'escaneo esta noche', igClicks:'clic en tu Instagram', messages:'mensaje', peopleMet:'persona conocida', daresShirt:'reto hecho con tu camiseta', scansAll:'escaneo', msgsAll:'mensaje recibido' } };
 const tn = (k, n) => (Number(n) === 1 && ONE[L] && ONE[L][k]) || t(k);
 const t = (k, v) => { let s = (T[L] || T.en)[k]; if (s == null) s = T.en[k] || ''; if (v) Object.keys(v).forEach(x => { s = s.split('{' + x + '}').join(v[x]); }); return s; };
-const STAR = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0C55 35 65 45 100 50C65 55 55 65 50 100C45 65 35 55 0 50C35 45 45 35 50 0Z"/></svg>';
+/* the fat, round-cornered star from the A in the logo */
+const STAR = '<svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="44.2,8.4 61.2,29.9 87.0,33.5 71.8,53.3 79.6,79.1 52.7,73.3 30.3,84.8 29.9,60.0 9.5,43.6 34.3,33.5" stroke-width="15" stroke-linejoin="round"/></svg>';
 const LOC = () => L === 'hu' ? 'hu-HU' : L === 'es' ? 'es-ES' : 'en-GB';
 const TZ = (() => { try{ return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Madrid'; }catch(e){ return 'Europe/Madrid'; } })();
 const hm = d => new Date(d).toLocaleTimeString(LOC(), { hour:'2-digit', minute:'2-digit', timeZone: TZ });
@@ -445,8 +446,10 @@ function renderAdmin(app){
 function wireShare(app){ app.querySelectorAll('[data-share]').forEach(b => b.onclick = () => shareNight(NIGHTS.find(n => n.key === b.dataset.share), b)); }
 function loadImg(src){ return new Promise(res => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; }); }
 function starPath(ctx, cx, cy, r){
-  const p = new Path2D('M50 0C55 35 65 45 100 50C65 55 55 65 50 100C45 65 35 55 0 50C35 45 45 35 50 0Z');
-  ctx.save(); ctx.translate(cx - r, cy - r); ctx.scale(r / 50, r / 50); ctx.fill(p); ctx.restore();
+  /* same fat logo star as on the page: the outline is stroked 15 wide with round corners, then filled */
+  const p = new Path2D('M' + '44.2,8.4 61.2,29.9 87.0,33.5 71.8,53.3 79.6,79.1 52.7,73.3 30.3,84.8 29.9,60.0 9.5,43.6 34.3,33.5'.split(' ').join(' L') + ' Z');
+  ctx.save(); ctx.translate(cx - r, cy - r); ctx.scale(r / 50, r / 50);
+  ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = 15; ctx.lineJoin = 'round'; ctx.fill(p); ctx.stroke(p); ctx.restore();
 }
 function cover(ctx, im, x, y, w, h, r){
   ctx.save(); ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.clip();
@@ -461,8 +464,8 @@ async function shareNight(n, btn){
     const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d');
     x.fillStyle = '#E20000'; x.fillRect(0, 0, W, H);
-    x.fillStyle = '#FFE32A'; starPath(x, 940, 180, 330);
-    x.fillStyle = '#1534D1'; starPath(x, 985, 1350, 105);
+    x.fillStyle = '#F7DF40'; starPath(x, 940, 180, 330);
+    x.fillStyle = '#2356E1'; starPath(x, 985, 1350, 105);
     x.fillStyle = '#000'; [[0,0],[30,0],[0,30],[60,30],[30,60],[60,60]].forEach(([a, b]) => x.fillRect(880 + a, 1500 + b, 24, 24));
     x.fillStyle = '#fff'; x.font = '700 46px "DM Sans", sans-serif'; x.fillText('STREETDARE', 72, 130);
     x.fillStyle = '#000'; x.font = '700 40px "DM Sans", sans-serif'; x.fillText(nightDate(n), 72, 300);
@@ -489,7 +492,7 @@ async function shareNight(n, btn){
     let sy = pics.length ? top + bh + 170 : top + 420;
     const stat = (num, label, col) => { x.fillStyle = col; x.font = '150px Caprasimo, Georgia, serif'; x.fillText(String(num), 72, sy);
       const nw = x.measureText(String(num)).width; x.fillStyle = '#fff'; x.font = '700 52px "DM Sans", sans-serif'; x.fillText(label, 72 + nw + 30, sy - 10); sy += 170; };
-    stat(n.people, t('people'), '#FFE32A');
+    stat(n.people, t('people'), '#F7DF40');
     stat(n.dares, t('dares'), '#000');
     x.fillStyle = '#fff'; x.font = '500 40px "DM Sans", sans-serif'; x.fillText(L === 'hu' ? 'A póló, ami megteszi az első lépést.' : L === 'es' ? 'La camiseta que da el primer paso.' : 'The shirt that makes the first step.', 72, H - 110);
     const tagTxt = '@street.dare'; x.font = '700 46px "DM Sans", sans-serif'; const tw = x.measureText(tagTxt).width;

@@ -8,16 +8,16 @@
 .muted{color:var(--mute);font-size:.85rem;display:block;margin-top:6px}
 .launchnote{font-size:.78rem;color:var(--mute);margin:30px 0 0;line-height:1.5}
 .mini{font:700 .85rem "DM Sans",sans-serif;border:2px solid var(--ink);border-radius:99px;background:var(--card);padding:8px 14px;cursor:pointer;color:var(--ink);white-space:nowrap;text-decoration:none;display:inline-block}
-.mini.yel,.btn.yel{background:#ffc531;color:#1b1412}
+.mini.yel,.btn.yel{background:#F7DF40;color:#1b1412}
 .mini.plain{border-color:transparent;background:none;padding:8px 2px}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:700;font-size:.9rem;z-index:9;max-width:90vw;text-align:center}
-.display.y,.y{color:#ffc531}.display.r{color:var(--red)}
+.display.y,.y{color:#F7DF40}.display.r{color:var(--red)}
 .bgstar{position:absolute;pointer-events:none;opacity:.9}
 .bgstar svg{width:100%;height:100%;display:block}
-.bgstar path{fill:#ffc531}
+.bgstar polygon{fill:#F7DF40;stroke:#F7DF40}
 .bgstar.s1{width:160px;height:160px;right:-46px;top:-46px}
-.bgstar.s2{width:70px;height:70px;left:-20px;bottom:30px}.bgstar.s2 path{fill:#2a5bd7}
-.bgstar.s3{width:34px;height:34px;right:30%;bottom:-8px}.bgstar.s3 path{fill:#fff}
+.bgstar.s2{width:70px;height:70px;left:-20px;bottom:30px}.bgstar.s2 polygon{fill:#2356E1;stroke:#2356E1}
+.bgstar.s3{width:34px;height:34px;right:30%;bottom:-8px}.bgstar.s3 polygon{fill:#fff;stroke:#fff}
 
 /* live view */
 .codecard{display:grid;justify-items:center;text-align:center;background:var(--card);border:2.5px solid var(--ink);border-radius:22px;padding:14px;box-shadow:var(--sh);margin:6px 0 14px}
@@ -29,21 +29,21 @@
 .livecard p{position:relative;margin:0;font-size:.95rem}
 .livecard .small{font-size:.85rem;margin-top:10px}
 .livek{position:relative;display:flex;align-items:center;gap:8px;font-weight:800;font-size:.8rem;letter-spacing:.1em}
-.livek .dot{width:10px;height:10px;border-radius:50%;background:#ffc531;animation:sdlive 1.6s infinite}
-@keyframes sdlive{0%{box-shadow:0 0 0 0 rgba(255,197,49,.7)}70%{box-shadow:0 0 0 10px rgba(255,197,49,0)}100%{box-shadow:0 0 0 0 rgba(255,197,49,0)}}
+.livek .dot{width:10px;height:10px;border-radius:50%;background:#F7DF40;animation:sdlive 1.6s infinite}
+@keyframes sdlive{0%{box-shadow:0 0 0 0 rgba(247,223,64,.7)}70%{box-shadow:0 0 0 10px rgba(247,223,64,0)}100%{box-shadow:0 0 0 0 rgba(247,223,64,0)}}
 .tiles3{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
 .tiles3 div{background:#1b1412;color:#fff;border-radius:16px;padding:12px 10px}
 .tiles3 b{display:block;font-size:2.1rem;line-height:1}
 .tiles3 span{display:block;font-size:.78rem;margin-top:6px;line-height:1.25}
 .tiles3.light div{background:var(--card);color:var(--ink);border:2px solid var(--ink)}
 .livecard + .kicker{margin-top:22px}
-.sealcard{display:grid;gap:4px;background:#ffc531;color:#1b1412;border:2.5px solid var(--ink);border-radius:22px;padding:16px 18px;margin:14px 0;box-shadow:var(--sh)}
+.sealcard{display:grid;gap:4px;background:#F7DF40;color:#1b1412;border:2.5px solid var(--ink);border-radius:22px;padding:16px 18px;margin:14px 0;box-shadow:var(--sh)}
 .sealcard b{font-size:1.25rem}
 .mini-tl{list-style:none;padding:0;margin:12px 0 16px;position:relative}
 .mini-tl::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;border-left:2px dashed #cbbdb5}
 .mini-tl li{position:relative;display:flex;gap:14px;align-items:center;margin-bottom:10px}
 .mini-tl .d{flex:none;width:16px;height:16px;border-radius:50%;background:var(--red);border:2px solid var(--ink);position:relative}
-.mini-tl li:nth-child(3n+2) .d{background:#ffc531}.mini-tl li:nth-child(3n) .d{background:#2a5bd7}
+.mini-tl li:nth-child(3n+2) .d{background:#F7DF40}.mini-tl li:nth-child(3n) .d{background:#2356E1}
 .mini-tl li.start .d{background:var(--bg);border-style:dashed}
 .mini-tl li > div{flex:1;display:flex;gap:12px;align-items:center;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:10px 12px}
 .mini-tl li.start > div{background:none;border:0;padding:0}
@@ -74,23 +74,23 @@
 .st b{font-size:2.4rem;line-height:1}
 .st b.sm{font-size:1.3rem;line-height:1.15}
 .st span{font-size:.88rem;font-weight:600;line-height:1.25}
-.st .k{font-size:.78rem;font-weight:800;color:#ffc531}
+.st .k{font-size:.78rem;font-weight:800;color:#F7DF40}
 .st small{font-size:.78rem;opacity:.9}
 .st.big{grid-column:span 2}
 .st.big b{font-size:3.6rem}
 .st.red{background:var(--red);color:#fff}
-.st.blue{background:#2a5bd7;color:#fff;padding-right:70px}
+.st.blue{background:#2356E1;color:#fff;padding-right:70px}
 .st.wide{grid-column:span 2}
 .st.dashed{border-style:dashed;background:none;display:flex;justify-content:space-between;align-items:center}
 .starico{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:48px;height:48px}
-.starico svg{width:100%;height:100%}.starico path{fill:#ffc531}
+.starico svg{width:100%;height:100%}.starico polygon{fill:#F7DF40;stroke:#F7DF40}
 
 /* going out tonight */
-.going{background:#ffc531;color:#1b1412;border:2.5px solid var(--ink);border-radius:26px;padding:20px;margin-top:34px;box-shadow:var(--sh)}
+.going{background:#F7DF40;color:#1b1412;border:2.5px solid var(--ink);border-radius:26px;padding:20px;margin-top:34px;box-shadow:var(--sh)}
 .going h2{color:#1b1412}
 .going p{margin:4px 0 14px}
 .gorow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px;border-radius:16px;background:rgba(0,0,0,.08);color:#1b1412;text-decoration:none;margin-top:8px}
-.gorow.dark{background:#1b1412;color:#fff}.gorow.dark b{color:#ffc531}
+.gorow.dark{background:#1b1412;color:#fff}.gorow.dark b{color:#F7DF40}
 
 /* nights list */
 .nlist{display:grid;gap:10px;margin-top:14px}
@@ -102,7 +102,7 @@
 .nrow em{font-style:normal;color:var(--red);font-weight:800;font-size:1.2rem;padding-right:6px}
 .nth{width:66px;height:66px;border-radius:14px;object-fit:cover;flex:none;display:grid;place-items:center}
 .nth.ph{background:var(--red)}
-.nth.pass{background:#ffc531;color:#1b1412;font-style:normal;font-weight:800;font-size:.75rem}
+.nth.pass{background:#F7DF40;color:#1b1412;font-style:normal;font-weight:800;font-size:.75rem}
 .nrow.pass{border-style:dashed}
 
 /* a night's timeline */
@@ -114,7 +114,7 @@
 .tl::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;border-left:2px dashed #cbbdb5}
 .moment{position:relative;margin-bottom:26px;display:grid;gap:8px}
 .tl .moment::before{content:"";position:absolute;left:-26px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--red);border:2px solid var(--ink)}
-.tl .moment:nth-child(3n+2)::before{background:#ffc531}.tl .moment:nth-child(3n)::before{background:#2a5bd7}
+.tl .moment:nth-child(3n+2)::before{background:#F7DF40}.tl .moment:nth-child(3n)::before{background:#2356E1}
 .mwho{font-size:.85rem;font-weight:700;color:var(--mute)}
 .mcard{background:var(--card);border:2.5px solid var(--ink);border-radius:20px;overflow:hidden;box-shadow:var(--sh)}
 .mcard > .mtop,.mcard > .dtext,.mcard > small{margin-left:16px;margin-right:16px}
@@ -122,7 +122,7 @@
 .mbody{padding:14px 16px}
 .mtop{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .mtop span{font-size:.75rem;font-weight:800;color:var(--redt);letter-spacing:.02em}
-.mtop em,.donetag{font-style:normal;font-size:.75rem;font-weight:800;background:#1b1412;color:#ffc531;border-radius:99px;padding:4px 10px;white-space:nowrap}
+.mtop em,.donetag{font-style:normal;font-size:.75rem;font-weight:800;background:#1b1412;color:#F7DF40;border-radius:99px;padding:4px 10px;white-space:nowrap}
 .dtext{font-weight:700;margin:6px 0 0;line-height:1.35}
 .ans{background:var(--bg);border-radius:14px;padding:10px 12px;margin-top:10px;font-size:.95rem}
 .ans small{display:block;font-size:.78rem;color:var(--mute);font-weight:700}
@@ -132,14 +132,14 @@
 .mpics img{width:100%;height:220px;object-fit:cover;display:block}
 .mpics.bye img{border-radius:20px;border:2.5px solid var(--ink)}
 .msgbox{background:#1b1412;color:#fff;border-radius:20px;padding:14px 16px}
-.msgbox small{font-weight:800;font-size:.78rem;color:#ffc531}
+.msgbox small{font-weight:800;font-size:.78rem;color:#F7DF40}
 .msgbox p{margin:6px 0 0;font-size:1.2rem;line-height:1.25}
 .msgbox.sealed p{font-size:.95rem}
 .crow{display:flex;gap:8px;flex-wrap:wrap}
 .cbtn{flex:1;text-align:center;text-decoration:none;font-weight:700;font-size:.9rem;padding:12px;border-radius:99px;border:2px solid var(--ink);color:var(--ink);background:var(--card);display:inline-block}
-.cbtn.ig{background:#2a5bd7;color:#fff}
+.cbtn.ig{background:#2356E1;color:#fff}
 .macts{display:flex;gap:8px;flex-wrap:wrap}
-.sharebox{background:#2a5bd7;color:#fff;border:2.5px solid var(--ink);border-radius:26px;padding:20px;box-shadow:var(--sh)}
+.sharebox{background:#2356E1;color:#fff;border:2.5px solid var(--ink);border-radius:26px;padding:20px;box-shadow:var(--sh)}
 .sharebox h2{color:#fff}.sharebox p{margin:4px 0 14px}
 
 /* scanner memories */
@@ -164,10 +164,13 @@
 
 html.night .tiles3.light div,html.night .st,html.night .nrow,html.night .mcard,html.night .srow,html.night .memcard,html.night .msgcard,html.night .chips span,html.night .mini,html.night .mini-tl li > div,html.night .codecard{background:#2a2422;color:var(--ink)}
 html.night .st.red,html.night .memcard.nophoto{background:var(--red);color:#fff}
-html.night .st.blue{background:#2a5bd7;color:#fff}
+html.night .st.blue{background:#2356E1;color:#fff}
 html.night .st.dashed{background:none}
-html.night .mini.yel{background:#ffc531;color:#1b1412}
+html.night .mini.yel{background:#F7DF40;color:#1b1412}
 html.night .ans{background:#1f1a19}
 .coderow{display:flex;align-items:center;gap:12px}
 .codecard b.masked{letter-spacing:.25em;color:var(--mute)}
 .eyebtn{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--bg);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+/* the nights page uses the new yellow and blue (the other pages keep their colours) */
+.nightspage .upsell.yellow{background:#F7DF40}
+.nightspage .upsell.blue,.nightspage .swapcard{background:#2356E1}
