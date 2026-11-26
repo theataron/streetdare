@@ -6,7 +6,7 @@
    is latin-ext, so the browser uses this file for those characters and the file above
    for everything else. */
 @font-face{font-family:"DM Sans";src:url(../fonts/dm-sans-ext.woff2) format("woff2");font-weight:100 1000;font-display:swap;unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-:root{--bg:#fbf8ef;--ink:#1b1412;--red:#e20000;--red-d:#ae0000;--blush:#f6ddd3;--mute:#6f625c;--card:#fffdf7;--redt:#e20000;--sh:4px 4px 0 var(--ink)}
+:root{--bg:#fbf8ef;--ink:#1b1412;--red:#e20000;--red-d:#e20000;--blush:#f6ddd3;--mute:#6f625c;--card:#fffdf7;--redt:#e20000;--sh:4px 4px 0 var(--ink)}
 *{box-sizing:border-box;margin:0}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font:400 17px/1.5 "DM Sans",system-ui,-apple-system,Segoe UI,sans-serif;min-height:100dvh;overflow-x:hidden}
@@ -756,7 +756,7 @@ body.showing .consent{display:none}
 .passbar b{font-weight:800}
 
 /* ===== Night mode (html.night, set by js/night.js) ===== */
-html.night{--bg:#121012;--card:#1e1a19;--ink:#f3ece3;--blush:#3a201d;--mute:#a99c94;--redt:#ff5c50;--red:#e20000;--red-d:#b40000;--sh:4px 4px 0 #000;color-scheme:dark}
+html.night{--bg:#121012;--card:#1e1a19;--ink:#f3ece3;--blush:#3a201d;--mute:#a99c94;--redt:#ff5c50;--red:#e20000;--red-d:#e20000;--sh:4px 4px 0 #000;color-scheme:dark}
 html.night body{background:var(--bg);color:var(--ink)}
 html.night .btn.red{color:#fff;border-color:#000}
 html.night .btn{border-color:#000}
@@ -962,7 +962,7 @@ html.night .a-shirt .qbg{fill:#fff;stroke:#1b1412}
 .upsell{border:2.5px solid var(--ink);border-radius:24px;padding:20px;margin:16px 0;box-shadow:var(--sh)}
 .upsell.yellow{background:#ffc531;color:#1b1412}
 .upsell.blue{background:#2a5bd7;color:#fff}
-.upsell small{display:block;font-weight:700;font-size:.8rem;color:#ae0000}
+.upsell small{display:block;font-weight:700;font-size:.8rem;color:#e20000}
 .upsell h2{font-size:1.6rem;margin:4px 0 6px;color:inherit;transform:none}
 .upsell p{margin:0 0 14px}
 .upsell .btn{color:#1b1412}
