@@ -54,8 +54,8 @@ html.night .codebox{background:#2a2422}html.night .codebox span{color:var(--ink)
 .tog{display:inline-flex;align-items:center;gap:8px;font-size:.9rem;font-weight:600;cursor:pointer}
 .tog input{width:20px;height:20px;accent-color:var(--red)}
 .flag{font-size:.8rem;color:var(--red);font-weight:700}
-.deck{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1.5px solid #eadfd2}
-.deck:first-child{border-top:0}
+#deckList .deck{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-top:1.5px solid #eadfd2;min-height:0;position:static}
+#deckList .deck:first-child{border-top:0}
 .deck b{display:block}
 .deck small{color:var(--mute)}
 .pill{font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:4px 10px;background:#d9f0e2;color:#1d7a43;white-space:nowrap}
@@ -127,15 +127,13 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
       <div class="kicker" id="hello"></div>
       <h1 class="display" id="title"></h1>
       <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
-      <!-- shortcuts: one round button per part of the profile, plus the Shirtless Pass and your nights -->
+      <!-- your nights first, as the main thing to tap; then round shortcuts that fit on one line -->
+      <a class="nightsrow" href="/nights/" id="nightsRow"><i aria-hidden="true">🌙</i><span><b id="nrT"></b><small id="nrS"></small></span><em aria-hidden="true">→</em></a>
       <nav class="quicknav" id="quickNav" aria-label="Profile">
         <a href="#shirtArea" data-q="shirts" data-shirt><i aria-hidden="true">👕</i><span></span></a>
         <a href="#s-stats" data-q="stats" data-shirt><i aria-hidden="true">📊</i><span></span></a>
         <a href="#s-dares" data-q="dares" data-shirt><i aria-hidden="true">✍️</i><span></span></a>
-        <a href="#s-guide" data-q="faq" data-shirt><i aria-hidden="true">❓</i><span></span></a>
-        <a href="#s-decks" data-q="decks" data-shirt><i aria-hidden="true">🃏</i><span></span></a>
         <a href="/pass/" data-q="pass"><i aria-hidden="true">🎟️</i><span></span></a>
-        <a href="/nights/" data-q="nights"><i aria-hidden="true">🌙</i><span></span></a>
       </nav>
 
       <!-- set-up checklist for new owners -->
@@ -188,7 +186,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
         </div>
         <form id="profForm">
           <div class="field"><label for="pName" id="pNameL"></label><input id="pName" maxlength="40" required><small id="pNameS"></small></div>
-          <div class="field"><label for="pUser" id="pUserL"></label><div class="at"><span>@</span><input id="pUser" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div></div>
+          <div class="field"><label for="pUser" id="pUserL"></label><div class="at"><span>@</span><input id="pUser" maxlength="20" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div><small class="unmsg" id="pUserMsg" aria-live="polite"></small></div>
           <div class="field"><label for="pCtry" id="pCtryL"></label><select id="pCtry"></select></div>
           <div class="field"><label for="pIg" id="pIgL"></label><input id="pIg" maxlength="31" autocapitalize="off" autocorrect="off" placeholder="@"></div>
           <label class="tog" style="margin-bottom:10px"><input type="checkbox" id="pIgPub"><span id="pIgPubL"></span></label>
@@ -308,7 +306,7 @@ const T = {
        daresH:'Your own dares', daresP:'Dares only your shirt has. They’re mixed into the deck when someone scans you. Add as many as you like, and keep them fun and safe.', lHu:'Hungarian', lEn:'English', lEs:'Spanish', ownTag:' (your language)', optTag:' (optional)', daresTr:'The site runs in three languages. A language you leave empty simply will not get this dare: someone scanning you with their phone in that language never sees it. While we’re in beta we ask you to translate it yourself — the link below opens Google Translate with what you typed.', trLink:'Translate what I wrote with Google Translate →',
        addDare:'Add dare', limit:'That’s a lot of dares. Delete or edit one first.', tooShort:'Write a bit more.', daresEmpty:'No dares of your own yet. Add the first one below.', liveL:'On', del:'Delete', save:'Save', edit:'Edit',
        hidden:'Hidden by STREETDARE', added:'Dare added. It’s live on your shirt now.', delSure:'Delete this dare?',
-       decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', decksOnly:'Right now the Party deck is the one playing on your shirt, with Devil mode as a free switch on top. The other decks are still being written, and you’ll pick your two as soon as they’re ready.', pickInfo:'Your shirt comes with 2 packs of your choice: {n} of 2 chosen. Pick the ones that fit how you go out.', pickDone:'You’ve chosen your 2 packs ✓ They unlock on your shirt as soon as they’re ready.', pickBtn:'Choose', picked:'Yours ✓', pickQ:'Add “{deck}” to your shirt? Your choice is final.', pickErr:'Couldn’t save your choice. Try again.', included:'Included', soon:'Coming soon', soonNext:'Coming next', want:'I want this', wanted:'You’re on the list ✓',
+       decksH:'Your decks', decksP:'What’s in the deck when someone scans your shirt.', decksOnly:'Right now the Party Deck is the one playing on your shirt, with Devil mode as a free switch on top. The other decks are still being written, and you’ll pick your two as soon as they’re ready.', pickInfo:'Your shirt comes with 2 packs of your choice: {n} of 2 chosen. Pick the ones that fit how you go out.', pickDone:'You’ve chosen your 2 packs ✓ They unlock on your shirt as soon as they’re ready.', pickBtn:'Choose', picked:'Yours ✓', pickQ:'Add “{deck}” to your shirt? Your choice is final.', pickErr:'Couldn’t save your choice. Try again.', included:'Included', soon:'Coming soon', soonNext:'Coming next', want:'I want this', wanted:'You’re on the list ✓',
        setupH:'Get set up', setupP:'Four quick steps and your shirt is ready for its first night out.', addClaim:'Claim another shirt',
        st1:'Add your photo', st1s:'People who scan you see it next to your name, so they know who they’re looking for.', st1b:'Add my photo',
        st2:'Learn your dare code', st2s:'When you both say yes to a dare, the person who scanned you types it so the dare counts. It’s further down, under your shirt.', st2b:'Show me',
@@ -428,11 +426,12 @@ function paint(){
 }
 window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLang(L); paint(); });
 /* the round shortcut buttons at the top: labels per language; the shirt ones only once there is a shirt */
-const QN = { en:{ shirts:'Shirts', stats:'Stats', dares:'My dares', faq:'FAQ', decks:'Decks', pass:'Shirtless Pass', nights:'My nights' },
-             es:{ shirts:'Camisetas', stats:'Estadísticas', dares:'Mis retos', faq:'FAQ', decks:'Barajas', pass:'Shirtless Pass', nights:'Mis noches' },
-             hu:{ shirts:'Pólók', stats:'Statisztika', dares:'Kihívásaim', faq:'GYIK', decks:'Paklik', pass:'Shirtless Pass', nights:'Estéim' } };
+const QN = { en:{ shirts:'Shirts', stats:'Stats', dares:'My dares', pass:'Shirtless Pass', nr:'My nights', nrs:'Your timeline, photos and messages' },
+             es:{ shirts:'Camisetas', stats:'Estadísticas', dares:'Mis retos', pass:'Shirtless Pass', nr:'Mis noches', nrs:'Tu línea de tiempo, fotos y mensajes' },
+             hu:{ shirts:'Pólók', stats:'Statisztika', dares:'Kihívásaim', pass:'Shirtless Pass', nr:'Az estéim', nrs:'Idővonal, fotók és üzenetek' } };
 const paintQuick = () => {
   const q = QN[L] || QN.en, noShirt = $('shirtArea').hidden;
+  $('nrT').textContent = q.nr; $('nrS').textContent = q.nrs;
   document.querySelectorAll('#quickNav a').forEach(a => { a.querySelector('span').textContent = q[a.dataset.q]; if (a.hasAttribute('data-shirt')) a.hidden = noShirt; });
 };
 paintQuick(); document.getElementById('lang').parentNode.addEventListener('click', () => setTimeout(paintQuick, 0));
@@ -682,6 +681,12 @@ $('profForm').onsubmit = async e => {
   const upd = { name, name_confirmed: true, country: $('pCtry').value || null, country_confirmed: !!$('pCtry').value, instagram: ig || null, instagram_public: !!ig && $('pIgPub').checked, marketing_opt_in: $('pMkt').checked, recap_opt_in: $('pRecap').checked };
   if (upd.marketing_opt_in !== !!profile.marketing_opt_in) upd.marketing_opt_in_at = new Date().toISOString();
   if (un && un !== profile.username) upd.username = un;
+  /* a username someone else already has can't be saved: check it before trying */
+  if (upd.username){
+    const { data: free } = await sb.rpc('username_check', { p: un });
+    if (free !== 'ok'){ const msg = t({ taken:'ucTaken', blocked:'ucBlocked', bad:'ucBad' }[free] || 'err').replace('{u}', un);
+      $('profErr').textContent = msg; $('profErr').hidden = false; $('pUserMsg').textContent = msg; $('pUserMsg').className = 'unmsg bad'; return; }
+  }
   const { error } = await sb.from('profiles').update(upd).eq('id', user.id);
   if (error){ $('profErr').textContent = upd.username ? unErr(error, un) : t('err'); $('profErr').hidden = false; return; }
   if ('marketing_opt_in_at' in upd){
@@ -811,6 +816,23 @@ function saveLang(){
 }
 
 /* ===== unique username ===== */
+/* the Username field in the profile form checks as you type, like the set-up card */
+let puTimer = null;
+async function puCheck(){
+  const m = $('pUserMsg'), u = $('pUser').value.trim().toLowerCase();
+  m.className = 'unmsg'; m.textContent = '';
+  if (!u || (profile && u === profile.username)) return;
+  if (!UN_RE.test(u)){ m.textContent = t('ucBad'); m.className = 'unmsg bad'; return; }
+  const { data } = await sb.rpc('username_check', { p: u });
+  if ($('pUser').value.trim().toLowerCase() !== u) return;
+  m.textContent = t({ ok:'ucFree', taken:'ucTaken', blocked:'ucBlocked', bad:'ucBad' }[data] || 'err').replace('{u}', u);
+  m.className = 'unmsg ' + (data === 'ok' ? 'good' : 'bad');
+}
+$('pUser').addEventListener('input', () => {
+  const v = $('pUser').value.toLowerCase().replace(/^@/, '').replace(/\s/g, '');
+  if (v !== $('pUser').value) $('pUser').value = v;
+  clearTimeout(puTimer); puTimer = setTimeout(puCheck, 350);
+});
 const unErr = (e, u) => e.code === '23505' ? t('ucTaken').replace('{u}', u) : /username_blocked|username_format/.test(e.message || '') ? t('ucBlocked') : t('err');
 const UN_RE = /^(?!.*\.\.)[a-z0-9][a-z0-9._]{1,18}[a-z0-9]$/;
 function paintUser(){

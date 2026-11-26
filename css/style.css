@@ -990,16 +990,16 @@ html.night .upsell .btn{background:#fff;color:#1b1412}
 .savedares li{margin-bottom:4px}
 div.savedares{padding-left:0}
 /* profile: round shortcut buttons */
-.quicknav{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 12px;margin:14px -4px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.quicknav{display:flex;justify-content:space-between;gap:6px;padding:4px 0 12px;margin:14px 0 4px}
 .quicknav::-webkit-scrollbar{display:none}
-.quicknav a{flex:none;width:72px;display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:var(--ink);text-align:center}
+.quicknav a{flex:1;min-width:0;max-width:84px;display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:var(--ink);text-align:center}
 .quicknav a[hidden]{display:none}
 .quicknav i{font-style:normal;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-size:1.6rem;background:var(--card);border:2.5px solid var(--ink);box-shadow:var(--sh);transition:transform .15s}
 .quicknav a:active i{transform:translate(2px,2px);box-shadow:none}
 .quicknav a[data-q="pass"] i{background:#ffc531}
 .quicknav a[data-q="nights"] i{background:#1b1412}
 .quicknav span{font-size:.78rem;font-weight:700;line-height:1.15}
-.me section[id^="s-"],#shirtArea{scroll-margin-top:16px}
+.me section[id^="s-"],#shirtArea{scroll-margin-top:90px}
 /* logged-in homepage: your nights on top */
 .nightscard{display:grid;gap:10px;margin:14px 0 6px;padding:16px 18px;background:#1b1412;color:#fff;border:2.5px solid var(--ink);border-radius:22px;box-shadow:var(--sh);text-decoration:none;text-align:left}
 .nc-row{display:grid;gap:3px}
@@ -1013,3 +1013,10 @@ div.savedares{padding-left:0}
 .nc-nums b{font-size:1.1rem;color:#ffc531}
 .nc-row.live .nc-nums b{color:#fff}
 .nc-open{font-weight:800;color:#ffc531;font-size:.95rem}
+.unmsg{display:block;font-size:.85rem;margin-top:6px;min-height:1em;font-weight:700}
+.unmsg.good{color:#1f8a4c}.unmsg.bad{color:var(--redt)}
+.nightsrow{display:flex;align-items:center;gap:14px;margin:16px 0 2px;padding:14px 16px;background:#1b1412;color:#fff;border:2.5px solid var(--ink);border-radius:20px;box-shadow:var(--sh);text-decoration:none}
+.nightsrow i{font-style:normal;font-size:1.6rem;width:48px;height:48px;border-radius:50%;background:var(--red);display:grid;place-items:center;flex:none}
+.nightsrow span{flex:1;display:grid;gap:2px}
+.nightsrow b{font-size:1.1rem}.nightsrow small{font-size:.85rem;opacity:.85}
+.nightsrow em{font-style:normal;color:#ffc531;font-weight:800;font-size:1.3rem}
