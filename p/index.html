@@ -288,7 +288,9 @@
       <div class="byeopt" id="optPhoto">
         <label class="byetick"><input type="checkbox" id="tPhoto"><span id="tPhotoL"></span></label>
         <div class="byebody" id="photoBody" hidden>
-          <div class="xthumb" id="byeThumbWrap" hidden><img id="byeThumb" alt=""><span class="donetag" id="byeDoneTag" hidden></span></div>
+          <!-- every photo they took together tonight, plus an optional goodbye photo -->
+          <p class="byenote" id="byeShotsL" hidden></p>
+          <div class="byeshots" id="byeShots" hidden></div>
           <label class="btn xcam" id="byeCamBtn"><input type="file" accept="image/*" id="byePhotoIn" hidden><span id="byeCamT"></span></label>
         </div>
       </div>
@@ -304,7 +306,7 @@
         <p class="byenote" id="contactP"></p>
         <div class="byebody" id="contactBody" hidden>
           <label class="xl" for="byeIg">Instagram</label>
-          <input type="text" id="byeIg" maxlength="31" autocapitalize="off" autocorrect="off" autocomplete="off" placeholder="@">
+          <div class="atfield"><span aria-hidden="true">@</span><input type="text" id="byeIg" maxlength="30" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"></div>
           <label class="xl" for="byeWa">WhatsApp</label>
           <input type="tel" id="byeWa" maxlength="24" autocomplete="tel" placeholder="+">
           <small class="byenote" id="contactHint"></small>

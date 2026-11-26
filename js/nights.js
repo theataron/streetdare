@@ -237,12 +237,11 @@ function renderLogin(){
 function renderOwner(app){
   const h = D.home, st = h.stats || {}, live = liveNight(), name = (D.prof && D.prof.name) || '';
   let html = '';
+  /* tonight first (if a night is running), then always the summary of the last finished night, then the totals */
   if (live) html += liveCard(live, h);
-  else {
-    const last = NIGHTS[0];
-    if (last && Date.now() - last.end < 7 * 864e5) html += lastNightCard(last);
-    else html += '<div class="kicker">' + esc(t('hey', { n: name })) + '</div>';
-  }
+  const last = live ? NIGHTS[1] : NIGHTS[0];
+  if (last) html += lastNightCard(last);
+  else if (!live) html += '<div class="kicker">' + esc(t('hey', { n: name })) + '</div>';
   /* stats */
   const best = NIGHTS.slice().sort((a, b) => b.dares - a.dares)[0];
   html += '<section class="sect"><h2 class="display">' + esc(t('statsH')) + '</h2><p class="sub">' + esc(t('statsP')) + '</p><div class="statgrid">' +
@@ -288,7 +287,7 @@ function liveCard(n, h){
 }
 function lastNightCard(n){
   const ph = n.photos.slice(0, 3);
-  return '<section class="lastnight"><div class="kicker">' + esc(t('lastNight')) + '</div><h1 class="display">' + esc(nightName(n)) + '</h1>' +
+  return '<section class="lastnight sect"><div class="kicker">' + esc(t('lastNight')) + '</div><h1 class="display">' + esc(nightName(n)) + '</h1>' +
     '<p class="sub">' + esc(nightDate(n) + ' · ' + hm(n.start) + ' – ' + hm(n.end)) + '</p>' +
     (ph.length ? '<div class="collage c' + ph.length + '">' + ph.map(p => img(p)).join('') + '</div>' : '<div class="collage none">' + stars() + '</div>') +
     '<div class="tiles3 light"><div><b class="display y">' + n.people + '</b><span>' + esc(t('people')) + '</span></div><div><b class="display r">' + n.dares + '</b><span>' + esc(t('dares')) + '</span></div><div><b class="display">' + n.ig + '</b><span>' + esc(t('igClicks')) + '</span></div></div>' +
@@ -454,24 +453,31 @@ async function shareNight(n, btn){
     const x = c.getContext('2d');
     x.fillStyle = '#E20000'; x.fillRect(0, 0, W, H);
     x.fillStyle = '#FFE32A'; starPath(x, 940, 180, 330);
-    x.fillStyle = '#1534D1'; starPath(x, 90, 1500, 200);
-    x.fillStyle = '#000'; [[70,760],[100,760],[70,790],[130,790],[100,820],[130,820]].forEach(([a, b]) => x.fillRect(a, b, 24, 24));
+    x.fillStyle = '#1534D1'; starPath(x, 985, 1350, 105);
+    x.fillStyle = '#000'; [[0,0],[30,0],[0,30],[60,30],[30,60],[60,60]].forEach(([a, b]) => x.fillRect(880 + a, 1500 + b, 24, 24));
     x.fillStyle = '#fff'; x.font = '700 46px "DM Sans", sans-serif'; x.fillText('STREETDARE', 72, 130);
     x.fillStyle = '#000'; x.font = '700 40px "DM Sans", sans-serif'; x.fillText(nightDate(n), 72, 300);
     x.fillStyle = '#fff'; x.font = '120px Caprasimo, Georgia, serif';
     const words = nightName(n).split(' '); let line = '', y = 430;
     words.forEach(w => { const tl = line ? line + ' ' + w : w; if (x.measureText(tl).width > 900 && line){ x.fillText(line, 72, y); y += 130; line = w; } else line = tl; });
     x.fillText(line, 72, y);
-    const pics = (await Promise.all(n.photos.slice(0, 3).map(p => urls[p] ? loadImg(urls[p]) : null))).filter(Boolean);
-    const top = y + 70, bw = (W - 144 - 2 * 18) / 3, bh = 380;
-    const tilt = [-3, 2, -1], fills = ['#000', '#fff', '#1534D1'];
-    for (let i = 0; i < 3; i++){
-      const bx = 72 + i * (bw + 18);
-      x.save(); x.translate(bx + bw / 2, top + bh / 2); x.rotate(tilt[i] * Math.PI / 180); x.translate(-(bx + bw / 2), -(top + bh / 2));
-      if (pics[i]) cover(x, pics[i], bx, top, bw, bh, 28); else { x.fillStyle = fills[i]; x.beginPath(); x.roundRect(bx, top, bw, bh, 28); x.fill(); }
-      x.restore();
-    }
-    let sy = top + bh + 150;
+    /* the photos decide the layout: none, 1, 2, 3, or 4+ (four shown, "+N" on the last). Never an empty placeholder. */
+    const pics = (await Promise.all(n.photos.slice(0, 4).map(p => urls[p] ? loadImg(urls[p]) : null))).filter(Boolean);
+    const more = Math.max(0, n.photos.length - 4);
+    const top = y + 70, L0 = 72, FW = W - 144, G = 18;
+    const R = pics.length ? Math.min(640, H - 720 - top) : 0;
+    const tile = (im, bx, by, bw, bh, deg) => { x.save(); x.translate(bx + bw / 2, by + bh / 2); x.rotate((deg || 0) * Math.PI / 180); x.translate(-(bx + bw / 2), -(by + bh / 2));
+      x.fillStyle = '#fff'; x.beginPath(); x.roundRect(bx - 8, by - 8, bw + 16, bh + 16, 34); x.fill(); cover(x, im, bx, by, bw, bh, 28); x.restore(); };
+    if (pics.length === 1) tile(pics[0], L0 + 60, top, FW - 120, R, -2);
+    else if (pics.length === 2){ const w2 = (FW - G) / 2; tile(pics[0], L0, top + 20, w2, R - 40, -3); tile(pics[1], L0 + w2 + G, top, w2, R - 40, 2); }
+    else if (pics.length === 3){ const wb = (FW - G) * 0.6, ws = FW - G - wb, hs = (R - G) / 2;
+      tile(pics[0], L0, top, wb, R, -2); tile(pics[1], L0 + wb + G, top, ws, hs, 2); tile(pics[2], L0 + wb + G, top + hs + G, ws, hs, -1); }
+    else if (pics.length >= 4){ const w2 = (FW - G) / 2, h2 = (R - G) / 2, deg = [-2, 2, 1, -1];
+      pics.forEach((im, i) => tile(im, L0 + (i % 2) * (w2 + G), top + Math.floor(i / 2) * (h2 + G), w2, h2, deg[i]));
+      if (more){ const bx = L0 + w2 + G + w2 - 150, by = top + h2 + G + h2 - 110; x.fillStyle = '#000'; x.beginPath(); x.roundRect(bx, by, 130, 90, 45); x.fill();
+        x.fillStyle = '#fff'; x.font = '700 46px "DM Sans", sans-serif'; x.fillText('+' + more, bx + 28, by + 62); } }
+    const bh = R;
+    let sy = pics.length ? top + bh + 170 : top + 420;
     const stat = (num, label, col) => { x.fillStyle = col; x.font = '150px Caprasimo, Georgia, serif'; x.fillText(String(num), 72, sy);
       const nw = x.measureText(String(num)).width; x.fillStyle = '#fff'; x.font = '700 52px "DM Sans", sans-serif'; x.fillText(label, 72 + nw + 30, sy - 10); sy += 170; };
     stat(n.people, t('people'), '#FFE32A');

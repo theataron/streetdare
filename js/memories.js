@@ -10,7 +10,7 @@ const MEM = {
        ansYou:'You', sayBye:'Say goodbye to {name}',
        byeH:'Say goodbye to {name}', byeP:'{name} gets these tomorrow morning. The more you tick, the better the memory.',
        of:'{n} of 3', perfect:'The perfect goodbye.', nameL:'Your first name, so {name} knows it was you',
-       tPhoto:'Take a photo together', camBtn:'Open camera', doneTag:'Already done ✓', tMsg:'Leave {name} a message for tomorrow',
+       tPhoto:'Take a photo together', camBtn:'Open camera', doneTag:'Already done ✓', byeCam:'Take a goodbye photo', fromDares:'Your photos from the dares together:', tMsg:'Leave {name} a message for tomorrow',
        msgPh:'You were the best part of my night…', tContact:'Swap contacts', contactP:'Add yours and you’ll see {name}’s.',
        contactHint:'One is enough, both is even better.', send:'Send to {name}', skip:'Skip', launch:'Aron and the STREETDARE team can see this during the launch phase.',
        errContact:'That Instagram or number doesn’t look right.', errHurt:'Let’s keep it kind 🙏', errNet:'Couldn’t send it. Try again.',
@@ -27,7 +27,7 @@ const MEM = {
        ansYou:'Tú', sayBye:'Despídete de {name}',
        byeH:'Despídete de {name}', byeP:'{name} lo recibe mañana por la mañana. Cuanto más marques, mejor será el recuerdo.',
        of:'{n} de 3', perfect:'La despedida perfecta.', nameL:'Tu nombre, para que {name} sepa que eras tú',
-       tPhoto:'Haceos una foto juntos', camBtn:'Abrir la cámara', doneTag:'Ya hecha ✓', tMsg:'Déjale a {name} un mensaje para mañana',
+       tPhoto:'Haceos una foto juntos', camBtn:'Abrir la cámara', doneTag:'Ya hecha ✓', byeCam:'Haced una foto de despedida', fromDares:'Vuestras fotos de los retos:', tMsg:'Déjale a {name} un mensaje para mañana',
        msgPh:'Has sido lo mejor de mi noche…', tContact:'Intercambiad contactos', contactP:'Añade el tuyo y verás el de {name}.',
        contactHint:'Con uno basta, con los dos mejor.', send:'Enviar a {name}', skip:'Saltar', launch:'Aron y el equipo de STREETDARE pueden ver esto durante la fase de lanzamiento.',
        errContact:'Ese Instagram o número no parece correcto.', errHurt:'Mejor algo bonito 🙏', errNet:'No se pudo enviar. Inténtalo otra vez.',
@@ -44,7 +44,7 @@ const MEM = {
        ansYou:'Te', sayBye:'Köszönj el tőle: {name}',
        byeH:'Köszönj el tőle: {name}', byeP:'{name} holnap reggel kapja meg. Minél többet pipálsz be, annál jobb lesz az emlék.',
        of:'{n} / 3', perfect:'A tökéletes búcsú.', nameL:'A keresztneved, hogy {name} tudja, hogy te voltál',
-       tPhoto:'Készítsetek egy közös fotót', camBtn:'Kamera megnyitása', doneTag:'Már megvan ✓', tMsg:'Hagyj üzenetet holnapra neki: {name}',
+       tPhoto:'Készítsetek egy közös fotót', camBtn:'Kamera megnyitása', doneTag:'Már megvan ✓', byeCam:'Készítsetek búcsúfotót', fromDares:'A közös kihívások fotói:', tMsg:'Hagyj üzenetet holnapra neki: {name}',
        msgPh:'Te voltál az estém legjobb része…', tContact:'Cseréljetek elérhetőséget', contactP:'Add meg a tiédet, és látni fogod az övét.',
        contactHint:'Egy is elég, kettő még jobb.', send:'Küldés neki: {name}', skip:'Kihagyom', launch:'Áron és a STREETDARE csapata az indulási időszakban ezt is láthatja.',
        errContact:'Ez az Instagram vagy szám nem tűnik jónak.', errHurt:'Legyen inkább kedves 🙏', errNet:'Nem sikerült elküldeni. Próbáld újra.',
@@ -65,10 +65,13 @@ const ENC_MAX = 8 * 3600e3;
 const encKey = () => 'sd_enc_' + sh();
 function enc(){
   let e = null; try{ e = JSON.parse(store.get(encKey()) || 'null'); }catch(x){}
-  if (!e || Date.now() - e.at > ENC_MAX) e = { at: Date.now(), dares: [], photo: null, thumb: null, sent: null };
+  if (!e || Date.now() - e.at > ENC_MAX) e = { at: Date.now(), dares: [], bye: null, sent: null };
+  if (e.thumb || e.photo){ /* older shape: one photo for the whole encounter */ e.dares = e.dares || []; if (e.dares.length && !e.dares.some(d => d.thumb || d.photo)) Object.assign(e.dares[e.dares.length - 1], { photo: e.photo, thumb: e.thumb }); delete e.photo; delete e.thumb; }
   return e;
 }
-function encSave(e){ try{ store.set(encKey(), JSON.stringify(e)); }catch(x){ try{ e.thumb = null; store.set(encKey(), JSON.stringify(e)); }catch(y){} } }
+function encSave(e){ try{ store.set(encKey(), JSON.stringify(e)); }catch(x){ try{ (e.dares || []).forEach(d => { if (d.photo) d.thumb = null; }); store.set(encKey(), JSON.stringify(e)); }catch(y){} } }
+/* all the photos of this encounter: one per photo dare, then the goodbye photo */
+const shots = e => (e.dares || []).filter(d => d.thumb || d.photo).map(d => d.thumb).filter(Boolean);
 
 /* ----- photos: shrunk on the phone before upload (low resolution is all we keep) ----- */
 function shrink(file, max, q){
@@ -100,6 +103,7 @@ async function upload(blob){
 
 /* ===== 1. the dare's extra, before "We did it" ===== */
 let ex = { blob: null, thumb: null, winner: null };
+let lastPhoto = null; /* where the dare's photo was uploaded, for afterDone */
 const xOf = () => (current && current.x) || { extra:'none', photo:false, lab:{}, two:false, win:false };
 const wants = () => {
   const x = xOf(), on = verified || practice();
@@ -130,7 +134,7 @@ function check(){
   $('doneBtn').disabled = !!hint;
   return !hint;
 }
-function resetExtras(){ ex = { blob: null, thumb: null, winner: null }; $('xA1').value = ''; $('xA2').value = ''; $('xPhotoIn').value = ''; }
+function resetExtras(){ lastPhoto = null; ex = { blob: null, thumb: null, winner: null }; $('xA1').value = ''; $('xA2').value = ''; $('xPhotoIn').value = ''; }
 $('xPhotoIn').onchange = async e => {
   const f = e.target.files && e.target.files[0]; if (!f) return;
   try{ const r = await shrink(f, 1080, .78); ex.blob = r.blob; ex.thumb = r.thumb; }catch(x){}
@@ -145,8 +149,7 @@ async function collectExtras(){
   if (w.win) out.winner = ex.winner;
   if (w.ans){ out.a1 = $('xA1').value.trim(); if (x.two) out.a2 = $('xA2').value.trim(); }
   if (w.photo && ex.blob){
-    out.photo = await upload(ex.blob);
-    const e = enc(); if (out.photo || practice()){ e.photo = out.photo || 'practice'; e.thumb = ex.thumb; } encSave(e);
+    out.photo = await upload(ex.blob); lastPhoto = out.photo;
   }
   return out;
 }
@@ -154,7 +157,8 @@ async function collectExtras(){
 /* ===== 2. after "We did it" ===== */
 function afterDone(counted){
   if (counted || practice()){
-    const e = enc(); e.dares.push({ t: (current || [])[0] || '', at: Date.now() }); e.sent = null; encSave(e);
+    /* every dare is kept with its own photo, so the goodbye shows all of them */
+    const e = enc(); e.dares.push({ t: (current || [])[0] || '', tx: txt(current || ['']), at: Date.now(), photo: lastPhoto, thumb: ex.thumb || null }); e.sent = null; encSave(e);
     $('leaveBtn').textContent = m('sayBye');
   }
   resetExtras();
@@ -165,7 +169,7 @@ const canSayBye = () => practice() || enc().dares.length > 0;
 let bye = { blob: null, thumb: null };
 /* The three ticks are not buttons: they show what has been done. A photo taken, a message
    typed or a contact filled in ticks its box by itself; nobody ticks or unticks them by hand. */
-const hasPhoto = () => { const e = enc(); return !!(bye.blob || e.thumb || e.photo); };
+const hasPhoto = () => { const e = enc(); return !!(bye.blob || (e.bye && (e.bye.photo || e.bye.thumb)) || (e.dares || []).some(d => d.photo || d.thumb)); };
 const hasMsg = () => !!$('byeMsgIn').value.trim();
 const hasContact = () => !!($('byeIg').value.trim() || $('byeWa').value.trim());
 function ticks(){ $('tPhoto').checked = hasPhoto(); $('tMsg').checked = hasMsg(); $('tContact').checked = hasContact(); }
@@ -176,17 +180,19 @@ function toGoodbye(){
   paintBye(); show('bye'); track('goodbye_open');
 }
 function paintBye(){
-  const e = enc(), had = !!(e.photo || e.thumb);
+  const e = enc(), past = shots(e);
   ticks();
   $('byeH').textContent = m('byeH'); $('byeP').textContent = m('byeP');
   $('byeNameL').textContent = m('nameL');
-  /* photo together: always open, with its own camera button */
+  /* photo together: every photo from their dares, plus an optional goodbye photo */
   $('tPhotoL').textContent = m('tPhoto');
-  const th = bye.thumb || e.thumb;
-  $('byeThumbWrap').hidden = !th; if (th) $('byeThumb').src = th;
-  $('byeDoneTag').hidden = !(had && !bye.thumb); $('byeDoneTag').textContent = m('doneTag');
-  $('byeCamBtn').hidden = had && !bye.thumb;
-  $('byeCamT').textContent = bye.thumb ? m('retake') : m('camBtn');
+  const all = past.concat(bye.thumb ? [bye.thumb] : (e.bye && e.bye.thumb ? [e.bye.thumb] : []));
+  const box = $('byeShots'); box.textContent = '';
+  all.forEach(src => { const i = document.createElement('img'); i.src = src; i.alt = ''; box.appendChild(i); });
+  box.hidden = !all.length;
+  $('byeShotsL').hidden = !past.length; $('byeShotsL').textContent = m('fromDares');
+  $('byeCamBtn').hidden = false;
+  $('byeCamT').textContent = bye.thumb ? m('retake') : m('byeCam');
   $('photoBody').hidden = false;
   $('tMsgL').textContent = m('tMsg'); $('byeMsgIn').placeholder = m('msgPh'); $('msgBody').hidden = false;
   $('byeMsgCount').textContent = $('byeMsgIn').value.length + ' / 140';
@@ -199,7 +205,8 @@ function paintBye(){
   $('byeLaunch').textContent = m('launch');
 }
 const filled = () => (hasPhoto() ? 1 : 0) + (hasMsg() ? 1 : 0) + (hasContact() ? 1 : 0);
-['byeMsgIn','byeIg','byeWa'].forEach(id => $(id).oninput = paintBye);
+['byeMsgIn','byeWa'].forEach(id => $(id).oninput = paintBye);
+$('byeIg').oninput = () => { const v = $('byeIg').value, c = v.replace(/^@+/, '').replace(/\s/g, ''); if (c !== v) $('byeIg').value = c; paintBye(); };
 $('byePhotoIn').onchange = async ev => {
   const f = ev.target.files && ev.target.files[0]; if (!f) return;
   try{ const r = await shrink(f, 1080, .78); bye.blob = r.blob; bye.thumb = r.thumb; }catch(x){}
@@ -218,7 +225,7 @@ async function sendBye(kind){
   const btn = $(kind === 'sent' ? 'byeSend' : 'byeSkip'); btn.disabled = true;
   const e = enc();
   let photo = null;
-  if (kind === 'sent' && bye.blob){ photo = await upload(bye.blob); if (photo || practice()){ e.photo = photo || 'practice'; e.thumb = bye.thumb; } }
+  if (kind === 'sent' && bye.blob){ photo = await upload(bye.blob); if (photo || practice()) e.bye = { photo: photo || 'practice', thumb: bye.thumb }; }
   let ok = practice();
   if (!practice()){
     try{
@@ -249,12 +256,16 @@ function paintSent(){
   else if (ig){ $('swapCard').removeAttribute('target'); $('swapCard').href = '#'; $('swapK').textContent = m('wantIg'); $('swapB').textContent = m('contactP');
     $('swapCard').onclick = ev => { ev.preventDefault(); toGoodbye(); setTimeout(() => $('byeIg').focus(), 80); }; }
   const pv = $('savePreview'); pv.textContent = '';
-  if (e.thumb){ const i = document.createElement('img'); i.src = e.thumb; i.alt = ''; pv.appendChild(i); }
+  const pics = shots(e).concat(e.bye && e.bye.thumb ? [e.bye.thumb] : []);
+  if (pics.length){ const row = document.createElement('div'); row.className = 'savepics';
+    pics.forEach(src => { const i = document.createElement('img'); i.src = src; i.alt = ''; row.appendChild(i); }); pv.appendChild(row); }
   const t = document.createElement('div'); t.className = 'savetext';
   const k = document.createElement('small'); k.textContent = m('youAnd') + (e.dares.length > 1 ? ' · ' + m('dares').replace('{n}', e.dares.length) : '');
-  const b = document.createElement('b'); b.textContent = (e.dares[e.dares.length - 1] || {}).t || txt(current || ['']);
-  t.appendChild(k); t.appendChild(b); pv.appendChild(t);
-  $('saveH').textContent = m('saveH'); $('saveP').textContent = e.thumb ? m('savePphoto') : m('saveP');
+  t.appendChild(k);
+  const list = document.createElement(e.dares.length > 1 ? 'ol' : 'div'); list.className = 'savedares';
+  (e.dares.length ? e.dares : [{ t: txt(current || ['']) }]).forEach(d => { const li = document.createElement(e.dares.length > 1 ? 'li' : 'b'); li.textContent = d.tx || d.t; list.appendChild(li); });
+  t.appendChild(list); pv.appendChild(t);
+  $('saveH').textContent = m('saveH'); $('saveP').textContent = pics.length ? m('savePphoto') : m('saveP');
   $('saveBtn').textContent = m('saveBtn'); $('saveBtn').href = saveHref(); $('saveNote').textContent = loggedIn() ? '' : m('saveNote');
   $('notNowBtn').textContent = m('notNow');
 }
