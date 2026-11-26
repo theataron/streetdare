@@ -163,25 +163,31 @@ const canSayBye = () => practice() || enc().dares.length > 0;
 
 /* ===== 3. say goodbye ===== */
 let bye = { blob: null, thumb: null };
+/* The three ticks are not buttons: they show what has been done. A photo taken, a message
+   typed or a contact filled in ticks its box by itself; nobody ticks or unticks them by hand. */
+const hasPhoto = () => { const e = enc(); return !!(bye.blob || e.thumb || e.photo); };
+const hasMsg = () => !!$('byeMsgIn').value.trim();
+const hasContact = () => !!($('byeIg').value.trim() || $('byeWa').value.trim());
+function ticks(){ $('tPhoto').checked = hasPhoto(); $('tMsg').checked = hasMsg(); $('tContact').checked = hasContact(); }
+['tPhoto','tMsg','tContact'].forEach(id => { const c = $(id); c.disabled = true; c.tabIndex = -1; c.addEventListener('click', ev => ev.preventDefault()); });
 function toGoodbye(){
-  const e = enc();
   bye = { blob: null, thumb: null };
-  $('tPhoto').checked = !!e.thumb || (!!e.photo && e.photo !== 'practice');
-  $('tMsg').checked = !!$('byeMsgIn').value.trim(); $('tContact').checked = !!($('byeIg').value.trim() || $('byeWa').value.trim());
   $('byeErr').hidden = true;
   paintBye(); show('bye'); track('goodbye_open');
 }
 function paintBye(){
   const e = enc(), had = !!(e.photo || e.thumb);
+  ticks();
   $('byeH').textContent = m('byeH'); $('byeP').textContent = m('byeP');
   $('byeNameL').textContent = m('nameL');
-  $('tPhotoL').textContent = m('tPhoto'); $('byeCamT').textContent = bye.thumb ? m('retake') : m('camBtn');
+  /* photo together: always open, with its own camera button */
+  $('tPhotoL').textContent = m('tPhoto');
   const th = bye.thumb || e.thumb;
   $('byeThumbWrap').hidden = !th; if (th) $('byeThumb').src = th;
   $('byeDoneTag').hidden = !(had && !bye.thumb); $('byeDoneTag').textContent = m('doneTag');
   $('byeCamBtn').hidden = had && !bye.thumb;
-  $('tPhoto').disabled = had;
-  $('photoBody').hidden = !$('tPhoto').checked;
+  $('byeCamT').textContent = bye.thumb ? m('retake') : m('camBtn');
+  $('photoBody').hidden = false;
   $('tMsgL').textContent = m('tMsg'); $('byeMsgIn').placeholder = m('msgPh'); $('msgBody').hidden = false;
   $('byeMsgCount').textContent = $('byeMsgIn').value.length + ' / 140';
   $('tContactL').textContent = m('tContact'); $('contactP').textContent = m('contactP'); $('contactHint').textContent = m('contactHint');
@@ -192,29 +198,18 @@ function paintBye(){
   $('byeSend').textContent = m('send'); $('byeSkip').textContent = m('skip');
   $('byeLaunch').textContent = m('launch');
 }
-function filled(){
-  const e = enc();
-  const photo = $('tPhoto').checked && !!(bye.blob || e.photo || e.thumb);
-  const msg = $('tMsg').checked && !!$('byeMsgIn').value.trim();
-  const contact = $('tContact').checked && !!($('byeIg').value.trim() || $('byeWa').value.trim());
-  return (photo ? 1 : 0) + (msg ? 1 : 0) + (contact ? 1 : 0);
-}
-['tPhoto','tMsg','tContact'].forEach(id => $(id).onchange = () => {
-  paintBye();
-  if ($(id).checked){ const f = { tPhoto: null, tMsg: 'byeMsgIn', tContact: 'byeIg' }[id]; if (f) setTimeout(() => $(f).focus(), 50); else if (!enc().thumb && !bye.thumb) $('byePhotoIn').click(); }
-});
-/* typing ticks the box by itself, emptying it unticks it */
-$('byeMsgIn').oninput = () => { $('tMsg').checked = !!$('byeMsgIn').value.trim(); paintBye(); };
-['byeIg','byeWa'].forEach(id => $(id).oninput = () => { $('tContact').checked = !!($('byeIg').value.trim() || $('byeWa').value.trim()); paintBye(); });
+const filled = () => (hasPhoto() ? 1 : 0) + (hasMsg() ? 1 : 0) + (hasContact() ? 1 : 0);
+['byeMsgIn','byeIg','byeWa'].forEach(id => $(id).oninput = paintBye);
 $('byePhotoIn').onchange = async ev => {
   const f = ev.target.files && ev.target.files[0]; if (!f) return;
-  try{ const r = await shrink(f, 1080, .78); bye.blob = r.blob; bye.thumb = r.thumb; $('tPhoto').checked = true; }catch(x){}
+  try{ const r = await shrink(f, 1080, .78); bye.blob = r.blob; bye.thumb = r.thumb; }catch(x){}
+  ev.target.value = '';
   paintBye();
 };
 async function sendBye(kind){
   const err = $('byeErr'); err.hidden = true;
-  const name = $('byeName').value.trim(), msg = $('tMsg').checked ? $('byeMsgIn').value.trim() : '';
-  const ig = $('tContact').checked ? $('byeIg').value.trim().replace(/^@/, '') : '', wa = $('tContact').checked ? $('byeWa').value.trim() : '';
+  const name = $('byeName').value.trim(), msg = $('byeMsgIn').value.trim();
+  const ig = $('byeIg').value.trim().replace(/^@/, ''), wa = $('byeWa').value.trim();
   if (kind === 'sent'){
     if ((ig && !/^[\w.]{1,30}$/.test(ig)) || (wa && (wa.replace(/\D/g, '').length < 6))){ err.textContent = m('errContact'); err.hidden = false; return; }
     const hurt = window.sdHurtful || (() => false);
@@ -252,7 +247,7 @@ function paintSent(){
   if (ig && e.swapped){ $('swapCard').href = 'https://instagram.com/' + encodeURIComponent(ig); $('swapCard').target = '_blank'; $('swapK').textContent = m('swapK'); $('swapB').textContent = m('swapB').replace('{ig}', ig);
     $('swapCard').onclick = () => sbLog('ig_click'); }
   else if (ig){ $('swapCard').removeAttribute('target'); $('swapCard').href = '#'; $('swapK').textContent = m('wantIg'); $('swapB').textContent = m('contactP');
-    $('swapCard').onclick = ev => { ev.preventDefault(); toGoodbye(); $('tContact').checked = true; paintBye(); setTimeout(() => $('byeIg').focus(), 80); }; }
+    $('swapCard').onclick = ev => { ev.preventDefault(); toGoodbye(); setTimeout(() => $('byeIg').focus(), 80); }; }
   const pv = $('savePreview'); pv.textContent = '';
   if (e.thumb){ const i = document.createElement('img'); i.src = e.thumb; i.alt = ''; pv.appendChild(i); }
   const t = document.createElement('div'); t.className = 'savetext';

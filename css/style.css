@@ -969,3 +969,9 @@ html.night .a-shirt .qbg{fill:#fff;stroke:#1b1412}
 html.night .upsell.yellow,html.night .upsell.yellow .btn{color:#1b1412}
 .upsell .btn{background:#fff;color:#1b1412;border-color:#1b1412}
 html.night .upsell .btn{background:#fff;color:#1b1412}
+/* the goodbye ticks are indicators, not buttons: they fill in by themselves */
+.byetick{cursor:default}
+.byetick input{appearance:none;-webkit-appearance:none;width:26px;height:26px;border:2.5px solid var(--ink);border-radius:8px;background:var(--bg);display:grid;place-items:center;opacity:1;pointer-events:none;transition:background .2s}
+.byetick input:checked{background:var(--red);border-color:var(--red)}
+.byetick input:checked::after{content:"";width:7px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
+.byetick{text-align:left}
