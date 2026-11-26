@@ -187,7 +187,8 @@ function paintExtras(){
   const x = EXTRA[LANG] || EXTRA.en, ig = $('igReveal');
   /* the wearer's Instagram only comes back from the server after the right dare code */
   const has = verified && !!(owner && owner.ig);
-  $('igCard').hidden = !has;
+  /* Nobody's Instagram shows on this screen any more: it comes only after "Send" on the goodbye (js/memories.js) */
+  $('igCard').hidden = true;
   $('igLocked').hidden = verified || practice() || demo || !hasIg;
   if (has){
     ig.href = 'https://instagram.com/' + encodeURIComponent(owner.ig); ig.textContent = x.ig.replace('{ig}', owner.ig);

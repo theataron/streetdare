@@ -15,7 +15,7 @@ const MEM = {
        contactHint:'One is enough, both is even better.', send:'Send to {name}', skip:'Skip', launch:'Aron and the STREETDARE team can see this during the launch phase.',
        errContact:'That Instagram or number doesn’t look right.', errHurt:'Let’s keep it kind 🙏', errNet:'Couldn’t send it. Try again.',
        sentH:'{name} will see this tomorrow morning', skipH:'That was a good one', sentP:'', skipP:'Your dare with {name} counts for their shirt.',
-       swapK:'You swapped contacts', swapB:'Follow @{ig}',
+       swapK:'You swapped contacts', wantIg:'Want {name}’s Instagram?', swapB:'Follow @{ig}',
        saveH:'Save this encounter for you too', savePphoto:'Keep the photo and your night with {name}.', saveP:'Keep the dare you did together, and when and with whom.',
        saveBtn:'Save it', saveNote:'With Google or your email. Takes 20 seconds, no password.', notNow:'Not now, back to my friends',
        youAnd:'You and {name}', dares:'{n} dares together',
@@ -32,7 +32,7 @@ const MEM = {
        contactHint:'Con uno basta, con los dos mejor.', send:'Enviar a {name}', skip:'Saltar', launch:'Aron y el equipo de STREETDARE pueden ver esto durante la fase de lanzamiento.',
        errContact:'Ese Instagram o número no parece correcto.', errHurt:'Mejor algo bonito 🙏', errNet:'No se pudo enviar. Inténtalo otra vez.',
        sentH:'{name} lo verá mañana por la mañana', skipH:'Ha estado genial', sentP:'', skipP:'Vuestro reto cuenta para la camiseta de {name}.',
-       swapK:'Habéis intercambiado contactos', swapB:'Sigue a @{ig}',
+       swapK:'Habéis intercambiado contactos', wantIg:'¿Quieres el Instagram de {name}?', swapB:'Sigue a @{ig}',
        saveH:'Guarda este encuentro tú también', savePphoto:'Quédate con la foto y con tu noche con {name}.', saveP:'Quédate con el reto que hicisteis, cuándo y con quién.',
        saveBtn:'Guardarlo', saveNote:'Con Google o tu email. 20 segundos, sin contraseña.', notNow:'Ahora no, vuelvo con mis amigos',
        youAnd:'Tú y {name}', dares:'{n} retos juntos',
@@ -49,7 +49,7 @@ const MEM = {
        contactHint:'Egy is elég, kettő még jobb.', send:'Küldés neki: {name}', skip:'Kihagyom', launch:'Áron és a STREETDARE csapata az indulási időszakban ezt is láthatja.',
        errContact:'Ez az Instagram vagy szám nem tűnik jónak.', errHurt:'Legyen inkább kedves 🙏', errNet:'Nem sikerült elküldeni. Próbáld újra.',
        sentH:'{name} holnap reggel látni fogja', skipH:'Ez jó volt', sentP:'', skipP:'A közös kihívásotok beszámít {name} pólójába.',
-       swapK:'Elérhetőséget cseréltetek', swapB:'Kövesd: @{ig}',
+       swapK:'Elérhetőséget cseréltetek', wantIg:'Kéne {name} Instagramja?', swapB:'Kövesd: @{ig}',
        saveH:'Mentsd el ezt a találkozást te is', savePphoto:'Tartsd meg a fotót és az estédet vele: {name}.', saveP:'Tartsd meg a közös kihívást, hogy mikor és kivel volt.',
        saveBtn:'Elmentem', saveNote:'Google-lel vagy e-maillel. 20 másodperc, jelszó nélkül.', notNow:'Most nem, vissza a barátaimhoz',
        youAnd:'Te és {name}', dares:'{n} közös kihívás',
@@ -167,7 +167,7 @@ function toGoodbye(){
   const e = enc();
   bye = { blob: null, thumb: null };
   $('tPhoto').checked = !!e.thumb || (!!e.photo && e.photo !== 'practice');
-  $('tMsg').checked = false; $('tContact').checked = false;
+  $('tMsg').checked = !!$('byeMsgIn').value.trim(); $('tContact').checked = !!($('byeIg').value.trim() || $('byeWa').value.trim());
   $('byeErr').hidden = true;
   paintBye(); show('bye'); track('goodbye_open');
 }
@@ -182,10 +182,10 @@ function paintBye(){
   $('byeCamBtn').hidden = had && !bye.thumb;
   $('tPhoto').disabled = had;
   $('photoBody').hidden = !$('tPhoto').checked;
-  $('tMsgL').textContent = m('tMsg'); $('byeMsgIn').placeholder = m('msgPh'); $('msgBody').hidden = !$('tMsg').checked;
+  $('tMsgL').textContent = m('tMsg'); $('byeMsgIn').placeholder = m('msgPh'); $('msgBody').hidden = false;
   $('byeMsgCount').textContent = $('byeMsgIn').value.length + ' / 140';
   $('tContactL').textContent = m('tContact'); $('contactP').textContent = m('contactP'); $('contactHint').textContent = m('contactHint');
-  $('contactBody').hidden = !$('tContact').checked;
+  $('contactBody').hidden = false;
   const n = filled();
   $('byeCount').textContent = m('of').replace('{n}', n); $('byeFill').style.width = Math.round(n / 3 * 100) + '%';
   $('byePerfect').hidden = n < 3; $('byePerfect').textContent = m('perfect');
@@ -201,9 +201,11 @@ function filled(){
 }
 ['tPhoto','tMsg','tContact'].forEach(id => $(id).onchange = () => {
   paintBye();
-  if ($(id).checked){ const f = { tPhoto: null, tMsg: 'byeMsgIn', tContact: 'byeIg' }[id]; if (f) setTimeout(() => $(f).focus(), 50); else if (!enc().thumb) $('byePhotoIn').click(); }
+  if ($(id).checked){ const f = { tPhoto: null, tMsg: 'byeMsgIn', tContact: 'byeIg' }[id]; if (f) setTimeout(() => $(f).focus(), 50); else if (!enc().thumb && !bye.thumb) $('byePhotoIn').click(); }
 });
-['byeMsgIn','byeIg','byeWa'].forEach(id => $(id).oninput = paintBye);
+/* typing ticks the box by itself, emptying it unticks it */
+$('byeMsgIn').oninput = () => { $('tMsg').checked = !!$('byeMsgIn').value.trim(); paintBye(); };
+['byeIg','byeWa'].forEach(id => $(id).oninput = () => { $('tContact').checked = !!($('byeIg').value.trim() || $('byeWa').value.trim()); paintBye(); });
 $('byePhotoIn').onchange = async ev => {
   const f = ev.target.files && ev.target.files[0]; if (!f) return;
   try{ const r = await shrink(f, 1080, .78); bye.blob = r.blob; bye.thumb = r.thumb; $('tPhoto').checked = true; }catch(x){}
@@ -246,9 +248,11 @@ function paintSent(){
   const e = enc(), sent = e.sent === 'sent';
   $('sentH').textContent = m(sent ? 'sentH' : 'skipH'); $('sentP').textContent = sent ? m('sentP') : m('skipP'); $('sentP').hidden = !$('sentP').textContent;
   const ig = owner && owner.ig;
-  $('swapCard').hidden = !(e.swapped && ig);
-  if (e.swapped && ig){ $('swapCard').href = 'https://instagram.com/' + encodeURIComponent(ig); $('swapK').textContent = m('swapK'); $('swapB').textContent = m('swapB').replace('{ig}', ig);
+  $('swapCard').hidden = !ig;
+  if (ig && e.swapped){ $('swapCard').href = 'https://instagram.com/' + encodeURIComponent(ig); $('swapCard').target = '_blank'; $('swapK').textContent = m('swapK'); $('swapB').textContent = m('swapB').replace('{ig}', ig);
     $('swapCard').onclick = () => sbLog('ig_click'); }
+  else if (ig){ $('swapCard').removeAttribute('target'); $('swapCard').href = '#'; $('swapK').textContent = m('wantIg'); $('swapB').textContent = m('contactP');
+    $('swapCard').onclick = ev => { ev.preventDefault(); toGoodbye(); $('tContact').checked = true; paintBye(); setTimeout(() => $('byeIg').focus(), 80); }; }
   const pv = $('savePreview'); pv.textContent = '';
   if (e.thumb){ const i = document.createElement('img'); i.src = e.thumb; i.alt = ''; pv.appendChild(i); }
   const t = document.createElement('div'); t.className = 'savetext';
