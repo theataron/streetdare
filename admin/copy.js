@@ -24,9 +24,9 @@ const LANGS = [
 ];
 
 const DECK_GROUPS = [
-  { id:'d-classic',  deck:'classic',  label:'Dares · Party deck' },
+  { id:'d-classic',  deck:'classic',  label:'Dares · Party Deck' },
   { id:'d-spicy',    deck:'spicy',    label:'Dares · Devil mode' },
-  { id:'d-street',   deck:'street',   label:'Dares · Street deck' },
+  { id:'d-street',   deck:'street',   label:'Dares · Street Deck' },
   { id:'d-festival', deck:'festival', label:'Dares · Festival' },
   { id:'d-erasmus',  deck:'erasmus',  label:'Dares · Erasmus' },
   { id:'d-madrid',   deck:'madrid',   label:'Dares · Madrid' },

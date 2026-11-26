@@ -168,3 +168,6 @@ html.night .st.blue{background:#2a5bd7;color:#fff}
 html.night .st.dashed{background:none}
 html.night .mini.yel{background:#ffc531;color:#1b1412}
 html.night .ans{background:#1f1a19}
+.coderow{display:flex;align-items:center;gap:12px}
+.codecard b.masked{letter-spacing:.25em;color:var(--mute)}
+.eyebtn{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--bg);color:var(--ink);display:grid;place-items:center;cursor:pointer}

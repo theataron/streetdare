@@ -8,7 +8,7 @@ let L = lang();
 
 const T = {
   en:{ loginH:'Your nights', loginP:'Log in to see your STREETDARE nights: the dares you did, the photos and the messages people left you.', loginBtn:'Log in',
-       hey:'Hey {n}', live:'LIVE NOW', since:'Your shirt has been out since {t} · {deck}', party:'Party deck', yourCode:'Your dare code',
+       hey:'Hey {n}', live:'LIVE NOW', since:'Your shirt has been out since {t} · {deck}', party:'Party Deck', yourCode:'Your dare code', showCode:'Show the code', hideCode:'Hide the code', codeTap:'Tap the eye to see it.',
        codeP:'Tell it to the person you just said yes to.', people:'new people met', dares:'dares done', scans:'scans tonight', igSoFar:'{n} clicks on your Instagram so far', igSoFar1:'1 click on your Instagram so far',
        justNow:'Just now · {t}', sealed:'{n} messages waiting for you', sealed1:'1 message waiting for you', sealedP:'They open tomorrow morning. No peeking.',
        soFar:'Tonight so far', started:'{t} · Your night started with the first scan', openTonight:'Open tonight’s timeline →', fullTomorrow:'Your full night lands here tomorrow',
@@ -20,7 +20,7 @@ const T = {
        goingH:'Going out tonight?', goingP:'Check if your shirt is ready before you leave.', deck:'Active deck', photo:'Profile photo', photoOk:'Set ✓', photoAdd:'Add it →',
        nightsH:'Your nights', nightsEmpty:'No nights yet. Wear your shirt out and your first night shows up here.', passTag:'Shirtless night', openFeed:'Open the Group Feed →',
        pm:'{p} people met · {d} dares', launch:'During the launch phase, Aron and the STREETDARE team can see your timeline too.',
-       back:'← Home', rename:'Rename', renameQ:'Name this night', done:'Done together ✓', ownDare:'Your own dare', partyTag:'Party deck', streetTag:'Street deck', devilTag:'Devil mode',
+       back:'← Home', rename:'Rename', renameQ:'Name this night', done:'Done together ✓', ownDare:'Your own dare', partyTag:'Party Deck', streetTag:'Street Deck', devilTag:'Devil mode',
        photoDare:'photo dare', private:'What happened here stays between you two.', someone:'Someone', youWon:'You won', theyWon:'{n} won',
        msgTomorrow:'Message for tomorrow', sealedOne:'A message is waiting for you. It opens tomorrow morning.', noMsg:'{n} said goodbye without leaving a message.',
        addNote:'Add a note', addPhoto:'Add a photo', notePh:'What do you want to remember?', save:'Save', noteSaved:'Saved', photoUp:'Uploading…',
@@ -35,7 +35,7 @@ const T = {
        memH:'Your memories', memEmpty:'Nothing here yet. Scan a STREETDARE shirt, do a dare and save the encounter.', peopleThrough:'people met through STREETDARE',
        nightOut:'{w} night out', afternoon:'{w} afternoon', day:'{w}', err:'Something went wrong. Try again.', adminH:'Timelines (admin)', adminP:'Every encounter on every shirt, newest first. Only visible to admins.' },
   es:{ loginH:'Tus noches', loginP:'Entra para ver tus noches STREETDARE: los retos que hiciste, las fotos y los mensajes que te dejaron.', loginBtn:'Entrar',
-       hey:'Hola, {n}', live:'EN DIRECTO', since:'Tu camiseta está fuera desde las {t} · {deck}', party:'Baraja Party', yourCode:'Tu código de reto',
+       hey:'Hola, {n}', live:'EN DIRECTO', since:'Tu camiseta está fuera desde las {t} · {deck}', party:'Party Deck', yourCode:'Tu código de reto', showCode:'Mostrar el código', hideCode:'Ocultar el código', codeTap:'Toca el ojo para verlo.',
        codeP:'Díselo a quien le acabas de decir que sí.', people:'personas nuevas', dares:'retos hechos', scans:'escaneos esta noche', igSoFar:'{n} clics en tu Instagram por ahora',
        justNow:'Ahora mismo · {t}', sealed:'{n} mensajes te esperan', sealed1:'1 mensaje te espera', sealedP:'Se abren mañana por la mañana. Nada de espiar.',
        soFar:'Esta noche hasta ahora', started:'{t} · Tu noche empezó con el primer escaneo', openTonight:'Abrir la línea de esta noche →', fullTomorrow:'Mañana tendrás aquí tu noche entera',
@@ -47,7 +47,7 @@ const T = {
        goingH:'¿Sales esta noche?', goingP:'Comprueba si tu camiseta está lista antes de salir.', deck:'Baraja activa', photo:'Foto de perfil', photoOk:'Puesta ✓', photoAdd:'Añádela →',
        nightsH:'Tus noches', nightsEmpty:'Todavía no hay noches. Sal con tu camiseta y aquí aparecerá la primera.', passTag:'Noche Shirtless', openFeed:'Abrir el Group Feed →',
        pm:'{p} personas · {d} retos', launch:'Durante la fase de lanzamiento, Aron y el equipo de STREETDARE también pueden ver tu línea de tiempo.',
-       back:'← Inicio', rename:'Renombrar', renameQ:'Ponle nombre a esta noche', done:'Hecho juntos ✓', ownDare:'Tu propio reto', partyTag:'Baraja Party', streetTag:'Baraja Street', devilTag:'Devil mode',
+       back:'← Inicio', rename:'Renombrar', renameQ:'Ponle nombre a esta noche', done:'Hecho juntos ✓', ownDare:'Tu propio reto', partyTag:'Party Deck', streetTag:'Street Deck', devilTag:'Devil mode',
        photoDare:'reto con foto', private:'Lo que pasó aquí queda entre vosotros dos.', someone:'Alguien', youWon:'Ganaste tú', theyWon:'Ganó {n}',
        msgTomorrow:'Mensaje para mañana', sealedOne:'Te espera un mensaje. Se abre mañana por la mañana.', noMsg:'{n} se despidió sin dejar mensaje.',
        addNote:'Añadir una nota', addPhoto:'Añadir una foto', notePh:'¿Qué quieres recordar?', save:'Guardar', noteSaved:'Guardado', photoUp:'Subiendo…',
@@ -62,7 +62,7 @@ const T = {
        memH:'Tus recuerdos', memEmpty:'Aquí aún no hay nada. Escanea una camiseta STREETDARE, haz un reto y guarda el encuentro.', peopleThrough:'personas conocidas con STREETDARE',
        nightOut:'{w} de fiesta', afternoon:'{w} por la tarde', day:'{w}', err:'Algo ha fallado. Inténtalo otra vez.', adminH:'Líneas de tiempo (admin)', adminP:'Todos los encuentros de todas las camisetas, los más nuevos primero. Solo lo ven los admins.' },
   hu:{ loginH:'Az estéid', loginP:'Lépj be, és lásd a STREETDARE estéidet: a kihívásokat, a fotókat és az üzeneteket, amiket neked hagytak.', loginBtn:'Belépés',
-       hey:'Szia, {n}', live:'ÉLŐ', since:'A pólód {t} óta kint van · {deck}', party:'Party pakli', yourCode:'A kihíváskódod',
+       hey:'Szia, {n}', live:'ÉLŐ', since:'A pólód {t} óta kint van · {deck}', party:'Party Deck', yourCode:'A kihíváskódod', showCode:'Kód mutatása', hideCode:'Kód elrejtése', codeTap:'Koppints a szemre, hogy lásd.',
        codeP:'Mondd meg annak, akinek most mondtál igent.', people:'új ember', dares:'kihívás', scans:'szkennelés ma este', igSoFar:'{n} kattintás az Instagramodra eddig',
        justNow:'Épp most · {t}', sealed:'{n} üzenet vár rád', sealed1:'1 üzenet vár rád', sealedP:'Holnap reggel nyílnak meg. Nincs leskelődés.',
        soFar:'A mai este eddig', started:'{t} · Az estéd az első szkenneléssel kezdődött', openTonight:'A mai este idővonala →', fullTomorrow:'Holnap itt lesz az egész estéd',
@@ -74,7 +74,7 @@ const T = {
        goingH:'Ma este mész valahova?', goingP:'Nézd meg, hogy kész-e a pólód, mielőtt elindulsz.', deck:'Aktív pakli', photo:'Profilkép', photoOk:'Megvan ✓', photoAdd:'Add hozzá →',
        nightsH:'Az estéid', nightsEmpty:'Még nincs egy este sem. Vedd fel a pólódat, és itt jelenik meg az első.', passTag:'Shirtless este', openFeed:'A Group Feed megnyitása →',
        pm:'{p} új ember · {d} kihívás', launch:'Az indulási időszakban Áron és a STREETDARE csapata is láthatja az idővonaladat.',
-       back:'← Kezdőlap', rename:'Átnevezés', renameQ:'Adj nevet ennek az estének', done:'Együtt megcsináltátok ✓', ownDare:'A saját kihívásod', partyTag:'Party pakli', streetTag:'Street pakli', devilTag:'Devil mode',
+       back:'← Kezdőlap', rename:'Átnevezés', renameQ:'Adj nevet ennek az estének', done:'Együtt megcsináltátok ✓', ownDare:'A saját kihívásod', partyTag:'Party Deck', streetTag:'Street Deck', devilTag:'Devil mode',
        photoDare:'fotós kihívás', private:'Ami itt történt, az kettőtök között marad.', someone:'Valaki', youWon:'Te nyertél', theyWon:'{n} nyert',
        msgTomorrow:'Üzenet holnapra', sealedOne:'Egy üzenet vár rád. Holnap reggel nyílik meg.', noMsg:'{n} üzenet nélkül köszönt el.',
        addNote:'Jegyzet hozzáadása', addPhoto:'Fotó hozzáadása', notePh:'Mire akarsz emlékezni?', save:'Mentés', noteSaved:'Elmentve', photoUp:'Feltöltés…',
@@ -102,6 +102,7 @@ let S = null;        /* session */
 let D = { home: null, mine: [], pass: [], prof: null };
 let NIGHTS = [];     /* shirt nights, newest first */
 let urls = {};       /* signed photo urls by path */
+let codeShown = false;
 let NAMES = {};      /* the owner's own names for their nights, by night key */
 
 /* ---------- loading ---------- */
@@ -265,10 +266,14 @@ function renderOwner(app){
   html += '<p class="launchnote">' + esc(t('launch')) + '</p>';
   app.innerHTML = html;
   wireShare(app);
+  const eye = $('eyeBtn'); if (eye) eye.onclick = () => { codeShown = !codeShown; renderOwner(app); };
 }
 function liveCard(n, h){
   const firstScan = n.items.find(i => i.k === 'ev'), mo = n.moments.slice().reverse(), last = mo[0];
-  let s = h.code ? '<div class="codecard"><small>' + esc(t('yourCode')) + '</small><b class="display">' + esc(h.code) + '</b><span>' + esc(t('codeP')) + '</span></div>' : '';
+  /* the code is hidden until the eye is tapped, so nobody reads it over your shoulder */
+  const EYE = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>' + (codeShown ? '<path d="M3 3l18 18"/>' : '') + '</svg>';
+  let s = h.code ? '<div class="codecard"><small>' + esc(t('yourCode')) + '</small><div class="coderow"><b class="display' + (codeShown ? '' : ' masked') + '">' + esc(codeShown ? h.code : '••••') + '</b>' +
+    '<button type="button" class="eyebtn" id="eyeBtn" aria-pressed="' + codeShown + '" aria-label="' + esc(codeShown ? t('hideCode') : t('showCode')) + '">' + EYE + '</button></div><span>' + esc(codeShown ? t('codeP') : t('codeTap')) + '</span></div>' : '';
   s += '<section class="livecard">' + stars() + '<div class="livek"><i class="dot"></i>' + esc(t('live')) + '</div><h1 class="display">' + esc(nightName(n)) + '</h1>' +
     '<p>' + esc(t('since', { t: hm(n.start), deck: t('party') })) + '</p><div class="tiles3">' +
     '<div><b class="display y">' + n.people + '</b><span>' + esc(t('people')) + '</span></div>' +

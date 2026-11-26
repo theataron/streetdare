@@ -80,16 +80,6 @@ function livePass(){ try{ const p = JSON.parse(store.get('sd_pass') || 'null'); 
   let ok = false; try{ ok = !!sessionStorage.getItem('sd_home_ok'); }catch(e){}
   const p = livePass();
   if (home && p && !ok && !window.STAGE && !location.hash) location.replace('/pass/?n=' + encodeURIComponent(p.id));
-  /* A shirt owner already knows what STREETDARE is: their home page is their nights (/nights/).
-     The flag is set by /nights/ (and checked once here the first time), ?home=1 still shows the info page. */
-  else if (home && !ok && !window.STAGE && !location.hash && loggedIn()){
-    if (store.get('sd_owner') === '1') location.replace('/nights/');
-    else if (store.get('sd_owner') !== '0') setTimeout(() => sbSession().then(s => s && fetch(SB.url + '/rest/v1/shirts?select=id&limit=1&owner_id=eq.' + s.user.id,
-        { headers:{ apikey: SB.key, Authorization: 'Bearer ' + s.access_token } }).then(r => r.ok ? r.json() : []).then(rows => {
-        store.set('sd_owner', rows.length ? '1' : '0');
-        if (rows.length) location.replace('/nights/');
-      })).catch(() => {}), 0);
-  }
 })();
 function paintPassBar(){
   const p = livePass(); let bar = $('passBar');
@@ -442,3 +432,51 @@ function openInfo(text){
   m.querySelector('p').textContent = text; m.querySelector('button').textContent = t('gotIt') || 'OK';
 }
 document.addEventListener('click', e => { const z = e.target.closest('img.zoomable'); if (z && !z.hidden) openPhoto(z.src, z.alt); });
+
+/* ===== Logged-in homepage: a summary of your nights on top, the normal homepage below =====
+   Shirt owners see tonight (if a night is running) or their last night; people who saved an
+   encounter see their memories. Everything links to /nights/. (Aron, 26 Nov: replaces sending
+   owners straight to /nights/.) */
+(function nightsCard(){
+  const home = document.getElementById('v-home');
+  if (!home || !loggedIn() || window.STAGE) return;
+  const NC = {
+    en:{ live:'LIVE NOW', tonight:'Your shirt is out tonight', last:'Your last night', mem:'Your STREETDARE memories', people:'new people met', dares:'dares done', enc:'saved encounters', open:'Your nights →', since:'since {t}' },
+    es:{ live:'EN DIRECTO', tonight:'Tu camiseta está fuera esta noche', last:'Tu última noche', mem:'Tus recuerdos STREETDARE', people:'personas nuevas', dares:'retos hechos', enc:'encuentros guardados', open:'Tus noches →', since:'desde las {t}' },
+    hu:{ live:'ÉLŐ', tonight:'Ma este kint van a pólód', last:'Az utolsó estéd', mem:'A STREETDARE emlékeid', people:'új ember', dares:'kihívás', enc:'elmentett találkozás', open:'Az estéid →', since:'{t} óta' } };
+  let data = null;
+  const loc = () => LANG === 'hu' ? 'hu-HU' : LANG === 'es' ? 'es-ES' : 'en-GB';
+  function nights(ev){
+    const items = (ev || []).map(e => ({ e: e.e, d: e.d, at: +new Date(e.at) })).sort((a, b) => a.at - b.at), out = [];
+    let cur = null;
+    items.forEach(it => { if (!cur || it.at - cur.end > 6 * 3600e3){ cur = { start: it.at, end: it.at, ev: [] }; out.push(cur); } cur.ev.push(it); cur.end = it.at; });
+    out.forEach(n => { const done = n.ev.filter(e => e.e === 'done'); n.dares = done.length; n.people = new Set(done.map(e => e.d)).size; });
+    return out.filter(n => n.ev.some(e => e.e === 'scan' || e.e === 'done')).reverse();
+  }
+  function paint(){
+    if (!data) return;
+    const c = NC[LANG] || NC.en;
+    let el = document.getElementById('nightsCard');
+    let html = '';
+    const ns = nights(data.home && data.home.events), owner = !!(data.home && data.home.shirts && data.home.shirts.length);
+    const live = ns[0] && Date.now() - ns[0].end < 3 * 3600e3 ? ns[0] : null, last = live ? ns[1] : ns[0];
+    const one = (k, v) => v === 1 && LANG === 'en' ? ({ people:'new person met', dares:'dare done' })[k] : c[k];
+    const nums = n => '<div class="nc-nums"><span><b>' + n.people + '</b> ' + one('people', n.people) + '</span><span><b>' + n.dares + '</b> ' + one('dares', n.dares) + '</span></div>';
+    const day = n => { const d = new Date(n.start - 6 * 3600e3).toLocaleDateString(loc(), { weekday:'long', day:'numeric', month:'short' }); return d.charAt(0).toUpperCase() + d.slice(1); };
+    const hm = ms => new Date(ms).toLocaleTimeString(loc(), { hour:'2-digit', minute:'2-digit' });
+    if (owner && live) html += '<div class="nc-row live"><small><i class="nc-dot"></i>' + c.live + '</small><b>' + c.tonight + ' · ' + c.since.replace('{t}', hm(live.start)) + '</b>' + nums(live) + '</div>';
+    if (owner && last) html += '<div class="nc-row"><small>' + c.last + '</small><b>' + day(last) + '</b>' + nums(last) + '</div>';
+    const mem = (data.mine || []).length;
+    if (!owner && mem) html += '<div class="nc-row"><small>' + c.mem + '</small><b>' + mem + ' ' + c.enc + '</b></div>';
+    if (!html){ if (el) el.remove(); return; }
+    if (!el){ el = document.createElement('a'); el.id = 'nightsCard'; el.className = 'nightscard'; el.href = '/nights/'; home.insertBefore(el, home.firstChild); }
+    el.innerHTML = html + '<span class="nc-open">' + c.open + '</span>';
+  }
+  setTimeout(() => sbSession().then(s => {
+    if (!s) return;
+    const h = { apikey: SB.key, Authorization: 'Bearer ' + s.access_token, 'Content-Type':'application/json' };
+    const rpc = fn => fetch(SB.url + '/rest/v1/rpc/' + fn, { method:'POST', headers: h, body: '{}' }).then(r => r.ok ? r.json() : null).catch(() => null);
+    return Promise.all([rpc('owner_home'), rpc('my_encounters')]).then(([home, mine]) => { data = { home, mine }; paint(); });
+  }).catch(() => {}), 0);
+  document.addEventListener('langchange', paint);
+})();

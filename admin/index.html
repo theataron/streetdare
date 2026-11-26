@@ -512,7 +512,7 @@ function paintDeckSettings(){
       '<button class="btn sm" type="submit">Save deck</button>' +
     '</form>' +
     (d.id === 'classic' || d.id === 'spicy' ? '' : '<p class="muted" style="font-size:.85rem;margin-top:8px">This pack isn\'t shown on the scan page yet. It will be once pack choice and checkout are built. <b id="interestN"></b></p>');
-  if (!(d.id === 'classic' || d.id === 'spicy')) sb.from('pack_interest').select('user_id', { count:'exact', head:true }).eq('deck_id', d.id).then(r => { const el = $('interestN'); if (el) el.textContent = (r.count || 0) + ' shirt owners said "I want this".'; });
+  /* the "I want this" list for unfinished decks was removed (Aron, 26 Nov) */
   $('deckForm').onsubmit = async e => {
     e.preventDefault(); const f = e.target;
     const { error } = await sb.from('decks').update({ name_en: f.name_en.value.trim(), name_es: f.name_es.value.trim(), name_hu: f.name_hu.value.trim() || null, active: f.active.checked, is_free: f.is_free.checked }).eq('id', d.id);

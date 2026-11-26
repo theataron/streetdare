@@ -127,8 +127,16 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
       <div class="kicker" id="hello"></div>
       <h1 class="display" id="title"></h1>
       <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
-      <p class="sub"><a href="/pass/" id="passLink">🎟️ Shirtless Pass →</a></p>
-      <p class="sub"><a href="/nights/" id="nightsLink">Your nights →</a></p>
+      <!-- shortcuts: one round button per part of the profile, plus the Shirtless Pass and your nights -->
+      <nav class="quicknav" id="quickNav" aria-label="Profile">
+        <a href="#shirtArea" data-q="shirts" data-shirt><i aria-hidden="true">👕</i><span></span></a>
+        <a href="#s-stats" data-q="stats" data-shirt><i aria-hidden="true">📊</i><span></span></a>
+        <a href="#s-dares" data-q="dares" data-shirt><i aria-hidden="true">✍️</i><span></span></a>
+        <a href="#s-guide" data-q="faq" data-shirt><i aria-hidden="true">❓</i><span></span></a>
+        <a href="#s-decks" data-q="decks" data-shirt><i aria-hidden="true">🃏</i><span></span></a>
+        <a href="/pass/" data-q="pass"><i aria-hidden="true">🎟️</i><span></span></a>
+        <a href="/nights/" data-q="nights"><i aria-hidden="true">🌙</i><span></span></a>
+      </nav>
 
       <!-- set-up checklist for new owners -->
       <!-- right after the profile is created: is this the name people should see? -->
@@ -223,7 +231,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
         </section>
 
         <!-- stats + live -->
-        <section class="panel">
+        <section class="panel" id="s-stats">
           <h2><span id="statsH"></span><span class="live" id="liveDot" hidden><i></i><span id="liveTxt"></span></span></h2>
           <div class="tiles">
             <div class="tile"><b id="nScans">0</b><span id="lScans"></span></div>
@@ -235,7 +243,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
         </section>
 
         <!-- my dares -->
-        <section class="panel">
+        <section class="panel" id="s-dares">
           <h2 id="daresH"></h2>
           <p class="sub" id="daresP"></p>
           <div id="myDares"></div>
@@ -251,13 +259,13 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
         </section>
 
         <!-- how it works -->
-        <section class="panel guide">
+        <section class="panel guide" id="s-guide">
           <h2 id="guideH"></h2>
           <div id="guide"></div>
         </section>
 
         <!-- decks -->
-        <section class="panel">
+        <section class="panel" id="s-decks">
           <h2 id="decksH"></h2>
           <p class="sub" id="decksP"></p>
           <div id="deckList"></div>
@@ -419,8 +427,16 @@ function paint(){
   liftSetup(); paintSetup();
 }
 window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLang(L); paint(); });
-const paintNightsLink = () => { $('nightsLink').textContent = ({ en:'Your nights →', es:'Tus noches →', hu:'Az estéid →' })[L] || 'Your nights →'; };
-paintNightsLink(); document.getElementById('lang').parentNode.addEventListener('click', () => setTimeout(paintNightsLink, 0));
+/* the round shortcut buttons at the top: labels per language; the shirt ones only once there is a shirt */
+const QN = { en:{ shirts:'Shirts', stats:'Stats', dares:'My dares', faq:'FAQ', decks:'Decks', pass:'Shirtless Pass', nights:'My nights' },
+             es:{ shirts:'Camisetas', stats:'Estadísticas', dares:'Mis retos', faq:'FAQ', decks:'Barajas', pass:'Shirtless Pass', nights:'Mis noches' },
+             hu:{ shirts:'Pólók', stats:'Statisztika', dares:'Kihívásaim', faq:'GYIK', decks:'Paklik', pass:'Shirtless Pass', nights:'Estéim' } };
+const paintQuick = () => {
+  const q = QN[L] || QN.en, noShirt = $('shirtArea').hidden;
+  document.querySelectorAll('#quickNav a').forEach(a => { a.querySelector('span').textContent = q[a.dataset.q]; if (a.hasAttribute('data-shirt')) a.hidden = noShirt; });
+};
+paintQuick(); document.getElementById('lang').parentNode.addEventListener('click', () => setTimeout(paintQuick, 0));
+new MutationObserver(paintQuick).observe($('shirtArea'), { attributes: true, attributeFilter: ['hidden'] });
 
 /* ===== start ===== */
 (async () => {
@@ -601,7 +617,7 @@ function paintDecks(){
   const paid = decks.filter(d => !d.is_free), full = picked.size >= 2;
   /* A pack can only be picked once it is switched on and actually has dares in it. Choosing is
      final, so offering an empty deck would lock an owner into nothing. While none of the paid
-     packs is ready, the rows still show with "Coming soon" and the "I want this" button, and the
+     packs is ready, the rows still show with "Coming soon" (no "I want this" button any more), and the
      "x of 2 chosen" line stays off the screen entirely. */
   const anyReady = paid.some(d => d.active);
   $('decksP').textContent = t('decksP') + ' ' + ((anyReady || picked.size)
@@ -620,7 +636,7 @@ function paintDecks(){
     if (d.is_free) right = '<span class="pill">' + t('included') + '</span>';
     else if (picked.has(d.id)) right = '<span class="pill">' + t('picked') + '</span>';
     else if (!full && d.active) right = '<button class="mini red" data-pick="' + d.id + '">' + t('pickBtn') + '</button>';
-    else right = interest.has(d.id) ? '<span class="pill soon">' + t('wanted') + '</span>' : '<button class="mini" data-want="' + d.id + '">' + t('want') + '</button>';
+    else right = ''; /* no "I want this" list any more (Aron, 26 Nov): unfinished decks just say "Coming soon" */
     const tag = (!d.is_free && !d.active) ? '<small>' + t(d.id === nextUp ? 'soonNext' : 'soon') + '</small>' : '';
     return '<div class="deck"><div><b>' + esc(name) + '</b>' + tag + '</div>' + right + '</div>';
   }).join('');
