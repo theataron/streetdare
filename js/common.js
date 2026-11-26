@@ -78,6 +78,16 @@ function livePass(){ try{ const p = JSON.parse(store.get('sd_pass') || 'null'); 
   let ok = false; try{ ok = !!sessionStorage.getItem('sd_home_ok'); }catch(e){}
   const p = livePass();
   if (home && p && !ok && !window.STAGE && !location.hash) location.replace('/pass/?n=' + encodeURIComponent(p.id));
+  /* A shirt owner already knows what STREETDARE is: their home page is their nights (/nights/).
+     The flag is set by /nights/ (and checked once here the first time), ?home=1 still shows the info page. */
+  else if (home && !ok && !window.STAGE && !location.hash && loggedIn()){
+    if (store.get('sd_owner') === '1') location.replace('/nights/');
+    else if (store.get('sd_owner') !== '0') setTimeout(() => sbSession().then(s => s && fetch(SB.url + '/rest/v1/shirts?select=id&limit=1&owner_id=eq.' + s.user.id,
+        { headers:{ apikey: SB.key, Authorization: 'Bearer ' + s.access_token } }).then(r => r.ok ? r.json() : []).then(rows => {
+        store.set('sd_owner', rows.length ? '1' : '0');
+        if (rows.length) location.replace('/nights/');
+      })).catch(() => {}), 0);
+  }
 })();
 function paintPassBar(){
   const p = livePass(); let bar = $('passBar');

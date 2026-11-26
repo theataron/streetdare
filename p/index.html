@@ -186,6 +186,24 @@
       <div class="kicker" data-i18n="accKicker"></div>
       <div class="ticket"><small>Dare <span class="adult" id="accAdult" hidden>18+</span></small><div id="accText"></div><div class="byline" id="byAcc" hidden></div></div>
       <p class="note" id="accNote"></p>
+      <!-- the dare's extra for the memory: photo / who won / the answer. Needed before "We did it" on a code-confirmed dare -->
+      <div class="extras" id="extras" hidden>
+        <div class="xbox" id="xPhotoBox" hidden>
+          <b class="xl" id="xPhotoL"></b>
+          <label class="btn xcam" id="xPhotoBtn"><input type="file" accept="image/*" id="xPhotoIn" hidden><span id="xPhotoBtnT"></span></label>
+          <div class="xthumb" id="xThumbWrap" hidden><img id="xThumb" alt=""><button type="button" class="btn plain xretake" id="xRetake"></button></div>
+        </div>
+        <div class="xbox" id="xWinBox" hidden>
+          <b class="xl" id="xWinL"></b>
+          <div class="xwin" role="radiogroup"><button type="button" class="btn" id="xWinMe" role="radio" aria-checked="false"></button><button type="button" class="btn" id="xWinThem" role="radio" aria-checked="false"></button></div>
+        </div>
+        <div class="xbox" id="xAnsBox" hidden>
+          <label class="xl" for="xA1" id="xAnsL"></label>
+          <input type="text" id="xA1" maxlength="140" autocomplete="off">
+          <input type="text" id="xA2" maxlength="140" autocomplete="off" hidden aria-labelledby="xAnsL">
+        </div>
+        <p class="xhint" id="xHint"></p>
+      </div>
       <div class="stack">
         <button class="btn red" id="doneBtn" data-i18n="done"></button>
         <button class="btn plain" id="changeBtn" data-i18n="change"></button>
@@ -259,6 +277,80 @@
         <a class="btn plain" data-to="wall" data-i18n="toWall"></a>
       </div>
     </section>
+
+    <!-- ===== SAY GOODBYE: photo together, a message for tomorrow, swap contacts ===== -->
+    <section class="play" id="v-bye" hidden>
+      <h1 class="display" id="byeH"></h1>
+      <p class="sub" id="byeP"></p>
+      <div class="byebar"><div class="byetrack"><i id="byeFill"></i></div><b id="byeCount"></b></div>
+      <p class="byeperfect" id="byePerfect" hidden></p>
+      <label class="xl" for="byeName" id="byeNameL"></label>
+      <input type="text" id="byeName" maxlength="40" autocomplete="given-name">
+      <div class="byeopt" id="optPhoto">
+        <label class="byetick"><input type="checkbox" id="tPhoto"><span id="tPhotoL"></span></label>
+        <div class="byebody" id="photoBody" hidden>
+          <div class="xthumb" id="byeThumbWrap" hidden><img id="byeThumb" alt=""><span class="donetag" id="byeDoneTag" hidden></span></div>
+          <label class="btn xcam" id="byeCamBtn"><input type="file" accept="image/*" id="byePhotoIn" hidden><span id="byeCamT"></span></label>
+        </div>
+      </div>
+      <div class="byeopt" id="optMsg">
+        <label class="byetick"><input type="checkbox" id="tMsg"><span id="tMsgL"></span></label>
+        <div class="byebody" id="msgBody" hidden>
+          <input type="text" id="byeMsgIn" maxlength="140" autocomplete="off" aria-labelledby="tMsgL">
+          <small class="byecount" id="byeMsgCount">0 / 140</small>
+        </div>
+      </div>
+      <div class="byeopt" id="optContact">
+        <label class="byetick"><input type="checkbox" id="tContact"><span id="tContactL"></span></label>
+        <p class="byenote" id="contactP"></p>
+        <div class="byebody" id="contactBody" hidden>
+          <label class="xl" for="byeIg">Instagram</label>
+          <input type="text" id="byeIg" maxlength="31" autocapitalize="off" autocorrect="off" autocomplete="off" placeholder="@">
+          <label class="xl" for="byeWa">WhatsApp</label>
+          <input type="tel" id="byeWa" maxlength="24" autocomplete="tel" placeholder="+">
+          <small class="byenote" id="contactHint"></small>
+        </div>
+      </div>
+      <p class="wlerr" id="byeErr" hidden></p>
+      <div class="stack">
+        <button class="btn red" type="button" id="byeSend"></button>
+        <button class="btn plain" type="button" id="byeSkip"></button>
+      </div>
+      <p class="smallnote center" id="byeLaunch"></p>
+    </section>
+
+    <!-- ===== AFTER THE GOODBYE: save this encounter for you too ===== -->
+    <section class="play" id="v-sent" hidden>
+      <h1 class="display" id="sentH"></h1>
+      <p class="sub" id="sentP"></p>
+      <a class="swapcard" id="swapCard" target="_blank" rel="noopener" hidden><small id="swapK"></small><b id="swapB"></b></a>
+      <div class="savecard">
+        <div class="savepreview" id="savePreview"></div>
+        <h2 class="display" id="saveH"></h2>
+        <p class="sub" id="saveP"></p>
+        <a class="btn red" id="saveBtn" href="/login/"></a>
+        <small class="smallnote" id="saveNote"></small>
+      </div>
+      <button class="btn plain" type="button" id="notNowBtn"></button>
+    </section>
+
+    <!-- ===== NOT NOW: thank you, and two ways to keep playing ===== -->
+    <section class="play" id="v-thanks" hidden>
+      <h1 class="display" id="thxH"></h1>
+      <p class="sub" id="thxP"></p>
+      <div class="upsell yellow">
+        <small id="upPassK"></small>
+        <h2 class="display" id="upPassH"></h2>
+        <p id="upPassP"></p>
+        <a class="btn" id="upPassBtn" href="/?home=1#shop"></a>
+      </div>
+      <div class="upsell blue">
+        <h2 class="display" id="upShirtH"></h2>
+        <p id="upShirtP"></p>
+        <a class="btn" id="upShirtBtn" href="/?home=1#join"></a>
+      </div>
+      <a class="btn plain" id="thxSave" href="/login/"></a>
+    </section>
   </main>
 </div>
 <script src="../js/text.js"></script>
@@ -269,6 +361,8 @@
 <script src="../js/quests.js"></script>
 <script src="../js/shirts.js"></script>
 <script src="../js/play.js"></script>
+<script src="../js/wordfilter.js"></script>
+<script src="../js/memories.js"></script>
 <script src="../js/passbar.js"></script>
 <script src="/js/hello.js" defer></script>
 <script src="../js/header.js" defer></script>

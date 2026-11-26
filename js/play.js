@@ -1,5 +1,5 @@
 /* ===== STREETDARE - the page a shirt's QR code opens ===== */
-const VIEWS = ['spin','show','accept','confirm','done'];
+const VIEWS = ['spin','show','accept','confirm','done','bye','sent','thanks'];
 let owner = SHIRTS[SHIRT.toLowerCase()] || null;
 const demo = !SHIRT || SHIRT === 'demo';
 let current = null, spinning = false, seen = [];
@@ -51,11 +51,14 @@ async function loadLiveDecks(){
   const where = s ? 'or=(deck_id.in.(classic,spicy),shirt_id.eq.' + encodeURIComponent(s) + ')' : 'deck_id=in.(classic,spicy)';
   try{
     const [rows, shirts] = await Promise.all([
-      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,text_hu,adult&active=eq.true&' + where + '&order=sort,id'),
+      sbGet('dares?select=id,deck_id,shirt_id,text_en,text_es,text_hu,adult,extra,needs_photo,label_en,label_es,label_hu,two_fields,also_winner&active=eq.true&' + where + '&order=sort,id'),
       s ? sbGet('rpc/shirt_card?p_id=' + encodeURIComponent(s)) : Promise.resolve([])
     ]);
     const live = { classic: [], spicy: [], shirt: [] };
-    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.hu = r.text_hu || ''; q.deck = r.shirt_id ? 'shirt' : r.deck_id; (live[q.deck] || []).push(q); });
+    rows.forEach(r => { const q = [r.text_en, r.text_es]; q.id = r.id; q.adult = !!r.adult; q.hu = r.text_hu || ''; q.deck = r.shirt_id ? 'shirt' : r.deck_id;
+      /* what the dare saves for the memory: a photo, who won, a short answer */
+      q.x = { extra: r.extra || 'none', photo: !!r.needs_photo, lab: { en: r.label_en || '', es: r.label_es || '', hu: r.label_hu || '' }, two: !!r.two_fields, win: !!r.also_winner };
+      (live[q.deck] || []).push(q); });
     if (live.classic.length){ DECKS.classic = live.classic; DECKS.spicy = live.spicy.length ? live.spicy : DECKS.spicy; DECKS.shirt = live.shirt; seen = []; }
     if (shirts[0] && shirts[0].status === 'off'){ shirtOff(); return; }
     if (shirts[0] && shirts[0].status === 'new'){ shirtNew(); return; }
@@ -272,13 +275,13 @@ const CUR_KEY = 'sd_current', CUR_MAX = 4 * 3600e3;
 function saveCur(view){
   if (!current) return;
   try{ store.set(CUR_KEY, JSON.stringify({ s: SHIRT.toLowerCase(), view, at: Date.now(), sl: shLang, devil: $('devil').checked, v: verified, st: codeStage,
-    q: { en: current[0], es: current[1], hu: current.hu || current[3] || '', id: current.id || null, adult: isAdult(current), deck: current.deck || null } })); }catch(e){}
+    q: { en: current[0], es: current[1], hu: current.hu || current[3] || '', id: current.id || null, adult: isAdult(current), deck: current.deck || null, x: current.x || null } })); }catch(e){}
 }
 function clearCur(){ try{ localStorage.removeItem(CUR_KEY); }catch(e){} }
 function restoreCur(){
   let c = null; try{ c = JSON.parse(store.get(CUR_KEY) || 'null'); }catch(e){}
   if (!c || c.s !== SHIRT.toLowerCase() || Date.now() - c.at > CUR_MAX || !c.q || !c.q.en){ clearCur(); return false; }
-  const q = [c.q.en, c.q.es || c.q.en]; q.hu = c.q.hu; q.id = c.q.id; q.adult = !!c.q.adult; q.deck = c.q.deck;
+  const q = [c.q.en, c.q.es || c.q.en]; q.hu = c.q.hu; q.id = c.q.id; q.adult = !!c.q.adult; q.deck = c.q.deck; q.x = c.q.x || null;
   current = q; shLang = c.sl || LANG; $('devil').checked = !!c.devil; verified = !!c.v; codeStage = c.st || 'accept';
   if (c.view === 'show'){ paintShow(); show('show'); }
   else { $('accText').textContent = txtIn(current, shLang); paintDare(); show(c.view); }
@@ -312,18 +315,23 @@ $('againBtn').onclick = spin;
 /* the wearer's code is typed the moment you both say yes: it seals the dare, and from then on it counts */
 let codeStage = 'accept';
 function askCode(stage){ codeStage = stage; $('codeIn').value = ''; $('codeErr').hidden = true; show('confirm'); saveCur('confirm'); setTimeout(() => $('codeIn').focus(), 150); }
-function toAccept(){ $('accText').textContent = txtIn(current, shLang); paintDare(); show('accept'); saveCur('accept'); }
+function toAccept(){ $('accText').textContent = txtIn(current, shLang); paintDare(); show('accept'); saveCur('accept'); if (window.sdMem) sdMem.paintExtras(); }
 $('acceptBtn').onclick = () => { track('accept', { quest: (current || [])[0] }); askCode('accept'); };
 $('changeBtn').onclick = () => { clearCur(); verified = false; resetSpin(); show('spin'); };
 $('doneBtn').onclick = () => verified ? finishVerified() : finishDare(false);
 async function finishVerified(){
   let res = 'error';
+  const btn = $('doneBtn'); btn.disabled = true;
   try{
     const q = current || [];
-    const r = await fetch(SB.url + '/rest/v1/rpc/finish_dare', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
-      body: JSON.stringify({ p_shirt: SHIRT.toLowerCase(), p_device: deviceId(), p_dare_id: q.id || null, p_dare_text: q[0] || null, p_deck: q.deck || 'classic', p_lang: LANG }) });
+    /* the dare's photo / winner / answer go with it, so they land on the wearer's timeline */
+    const ex = window.sdMem ? await sdMem.collectExtras() : {};
+    const r = await fetch(SB.url + '/rest/v1/rpc/finish_dare_ex', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
+      body: JSON.stringify({ p_shirt: SHIRT.toLowerCase(), p_device: deviceId(), p_dare_id: q.id || null, p_dare_text: q[0] || null, p_deck: q.deck || 'classic', p_lang: LANG,
+        p_winner: ex.winner || null, p_a1: ex.a1 || null, p_a2: ex.a2 || null, p_photo: ex.photo || null }) });
     res = r.ok ? await r.json() : 'error';
   }catch(x){}
+  btn.disabled = false;
   if (typeof res === 'string' && (res === 'ok' || res.startsWith('ok|'))) return finishDare(true, res.slice(3));
   finishDare(false);
 }
@@ -347,7 +355,7 @@ $('stars').onclick = e => {
   fetch(SB.url + '/rest/v1/rpc/rate_dare', { method:'POST', headers:{ apikey: SB.key, 'Content-Type':'application/json' },
     body: JSON.stringify({ p_shirt: SHIRT.toLowerCase(), p_device: deviceId(), p_dare_id: q.id || null, p_dare_text: q[0] || null, p_rating: rated, p_verified: verified, p_lang: LANG }) }).catch(() => {});
 };
-function finishDare(counted, igHandle){ rated = 0; ratedDare = current; verified = !!counted; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
+function finishDare(counted, igHandle){ rated = 0; ratedDare = current; verified = !!counted; $('byeMsg').hidden = true; if (owner && counted) owner.ig = igHandle || ''; paintExtras(); if (window.sdMem) sdMem.afterDone(counted); clearCur(); track('done', { quest: (current || [])[0], verified: counted }); show('done'); }
 $('codeIn').oninput = () => {
   $('codeIn').value = $('codeIn').value.replace(/\D/g, '').slice(0, 4); $('codeErr').hidden = true;
   if ($('codeIn').value.length === 4 && !$('codeBtn').disabled) $('codeForm').requestSubmit();
@@ -387,7 +395,9 @@ $('igLockBtn').onclick = () => askCode('late');
 /* clean way out */
 /* after leaving (or following on Instagram) "Another dare" stays, in case they come back */
 function byeBye(){ $('leaveBtn').hidden = true; $('igLocked').hidden = true; $('byeMsg').hidden = false; }
-$('leaveBtn').onclick = byeBye;
+/* after a code-confirmed dare, leaving means saying goodbye properly (js/memories.js) */
+$('leaveBtn').onclick = () => (window.sdMem && sdMem.canSayBye()) ? sdMem.toGoodbye() : byeBye();
+$('igReveal').addEventListener('click', () => sbLog('ig_click'));
 
 /* ----- the owner's photo next to their name ----- */
 function paintPhoto(){

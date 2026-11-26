@@ -12,21 +12,21 @@
           pass:['Shirtless Pass','No shirt? Play tonight with your friends'],
           signup:['Create account','Got a shirt? Claim it here'],
           wall:['The Wall','Write an anonymous message for the community'],
-          contact:['Contact','Questions, collabs, press'], night:'Dark mode' },
+          contact:['Contact','Questions, collabs, press'], night:'Dark mode', me:['Profile'], login:['Log in'] },
     es: { home:['Inicio',''], shop:['Tienda',''], tr:['Prueba un reto','Mira cómo es un escaneo'],
           about:['¿Qué es STREETDARE?','La idea, y quién está detrás de STREETDARE'],
           club:['Únete a la comunidad','Tu propia camiseta, lo que viene y el precio de fundador'],
           pass:['Shirtless Pass','¿Sin camiseta? Juega esta noche con tus amigos'],
           signup:['Crear cuenta','¿Tienes camiseta? Reclámala aquí'],
           wall:['El Muro','Escribe un mensaje anónimo para la comunidad'],
-          contact:['Contacto','Preguntas, colaboraciones, prensa'], night:'Modo noche' },
+          contact:['Contacto','Preguntas, colaboraciones, prensa'], night:'Modo noche', me:['Perfil'], login:['Entrar'] },
     hu: { home:['Kezdőlap',''], shop:['Bolt',''], tr:['Próbálj ki egy kihívást','Nézd meg, milyen egy szkennelés'],
           about:['Mi az a STREETDARE?','Az ötlet, és aki a STREETDARE mögött áll'],
           club:['Csatlakozz a közösséghez','Szerezd meg a saját pólódat, és nézd meg, mi jön még'],
           pass:['Shirtless Pass','Nincs pólód? Játssz ma este a barátaiddal'],
           signup:['Fiók létrehozása','Van pólód? Itt igényelheted'],
           wall:['A Fal','Írj egy névtelen üzenetet a közösségnek'],
-          contact:['Kapcsolat','Kérdések, együttműködés, sajtó'], night:'Éjszakai mód' }
+          contact:['Kapcsolat','Kérdések, együttműködés, sajtó'], night:'Éjszakai mód', me:['Profil'], login:['Belépés'] }
   };
   function lang(){ try{ var l = localStorage.getItem('sd_lang'); if (T[l]) return l; }catch(e){} var n = (navigator.language || 'en').slice(0, 2); return T[n] ? n : 'en'; }
   function loggedIn(){ try{ for (var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if (/^sb-.*-auth-token$/.test(k)) return true; } }catch(e){} return false; }

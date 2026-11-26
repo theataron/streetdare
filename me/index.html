@@ -128,6 +128,7 @@ html.night .nudge .btn{background:#fff;color:#1b1412}
       <h1 class="display" id="title"></h1>
       <p class="sub" id="adminLink" hidden><a href="../admin/">→ Admin board</a></p>
       <p class="sub"><a href="/pass/" id="passLink">🎟️ Shirtless Pass →</a></p>
+      <p class="sub"><a href="/nights/" id="nightsLink">Your nights →</a></p>
 
       <!-- set-up checklist for new owners -->
       <!-- right after the profile is created: is this the name people should see? -->
@@ -418,6 +419,8 @@ function paint(){
   liftSetup(); paintSetup();
 }
 window.paintLangPick = langPicker($('lang'), () => L, code => { L = code; setLang(L); paint(); });
+const paintNightsLink = () => { $('nightsLink').textContent = ({ en:'Your nights →', es:'Tus noches →', hu:'Az estéid →' })[L] || 'Your nights →'; };
+paintNightsLink(); document.getElementById('lang').parentNode.addEventListener('click', () => setTimeout(paintNightsLink, 0));
 
 /* ===== start ===== */
 (async () => {
