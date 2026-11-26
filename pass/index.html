@@ -960,7 +960,7 @@ function paintLangs(){
   if (!groupLang) groupLang = 'en';
   $('fLangs').innerHTML = [['en','🇬🇧 English'],['es','🇪🇸 Español'],['hu','🇭🇺 Magyar']].map(([k, v]) => '<button type="button" data-l="' + k + '" class="' + (k === groupLang ? 'on' : '') + '">' + v + '</button>').join('');
 }
-$('fLangs').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.l === groupLang) return; const pick = b.dataset.l; langConfirm(pick, () => { groupLang = pick; paintLangs(); }, LANG_NAMES[groupLang]); };
+$('fLangs').onclick = e => { const b = e.target.closest('button'); if (!b || b.dataset.l === groupLang) return; const pick = b.dataset.l; langConfirm(pick, () => { groupLang = pick; paintLangs(); }, LANG_NAMES[groupLang], null, () => { groupLang = 'en'; paintLangs(); }); };
 $('fForm').onsubmit = async e => {
   e.preventDefault(); $('fErr').hidden = true;
   const name = $('fName').value.trim(); if (!name){ $('fName').focus(); return; }
@@ -1450,8 +1450,12 @@ $('endNowBtn').onclick = async () => {
 };
 $('gLangs').onclick = async e => {
   const b = e.target.closest('button'); if (!b || !imHost() || b.dataset.l === info.lang) return;
-  const pick = b.dataset.l;
-  if (pick !== 'en' && !(await new Promise(ok => langConfirm(pick, () => ok(true), LANG_NAMES[info.lang], () => ok(false))))) return;
+  let pick = b.dataset.l;
+  if (pick !== 'en'){
+    const p0 = pick;
+    pick = await new Promise(ok => langConfirm(p0, () => ok(p0), LANG_NAMES[info.lang], () => ok(null), () => ok('en')));
+    if (!pick || pick === info.lang) return;
+  }
   $('gLangs').querySelectorAll('button').forEach(x => x.disabled = true);
   const { data, error } = await sb.rpc('set_night_lang', { p_night: night, p_lang: pick });
   $('gLangs').querySelectorAll('button').forEach(x => x.disabled = false);

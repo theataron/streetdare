@@ -5,7 +5,7 @@ const LANG_LIST = [
   { code:'hu', name:'Magyar' }
 ];
 /* English is the default and the only reviewed language. Switching to any other one asks first. */
-function langConfirm(code, go, currentName, cancelled){
+function langConfirm(code, go, currentName, cancelled, toEn){
   if (code === 'en') return go();
   const name = (LANG_LIST.find(l => l.code === code) || {}).name || code;
   if (!document.getElementById('langConfirmCss')){
@@ -27,11 +27,12 @@ function langConfirm(code, go, currentName, cancelled){
       + '<div class="row"><button type="button" class="go">Yes, switch to ' + name + '</button><button type="button" class="stay">No, keep ' + (currentName || 'English') + '</button></div>';
   ov.appendChild(box); document.body.appendChild(ov);
   const prev = document.activeElement;
-  const done = ok => { document.removeEventListener('keydown', onKey, true); ov.remove(); if (prev && prev.focus) try{ prev.focus(); }catch(e){} if (ok) go(); else if (cancelled) cancelled(); };
+  const done = (ok, quiet) => { document.removeEventListener('keydown', onKey, true); ov.remove(); if (prev && prev.focus) try{ prev.focus(); }catch(e){} if (ok) go(); else if (cancelled && !quiet) cancelled(); };
   const onKey = e => { if (e.key === 'Escape'){ e.stopPropagation(); done(false); } };
   document.addEventListener('keydown', onKey, true);
   box.querySelector('.go').onclick = () => done(true);
-  box.querySelector('.stay').onclick = () => done(false);
+  /* the Hungarian pop-up's "English" button really switches to English when the visitor is on another language */
+  box.querySelector('.stay').onclick = () => (code === 'hu' && toEn && currentName && currentName !== 'English') ? (done(false, true), toEn()) : done(false);
   ov.onclick = e => { if (e.target === ov) done(false); };
   box.querySelector('.stay').focus();
 }
@@ -54,7 +55,7 @@ function langPicker(btn, getCurrent, onPick){
     close();
     if (code === getCurrent()) return;
     const cur = (LANG_LIST.find(l => l.code === getCurrent()) || {}).name;
-    langConfirm(code, () => { onPick(code); paint(); }, cur);
+    langConfirm(code, () => { onPick(code); paint(); }, cur, null, () => { onPick('en'); paint(); });
   };
   list.onclick = e => { const li = e.target.closest('li'); if (li) pick(li.dataset.code); };
   list.onkeydown = e => { if (e.key === 'Enter'){ const li = e.target.closest('li'); if (li){ pick(li.dataset.code); btn.focus(); } } };
