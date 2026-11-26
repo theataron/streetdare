@@ -975,3 +975,4 @@ html.night .upsell .btn{background:#fff;color:#1b1412}
 .byetick input:checked{background:var(--red);border-color:var(--red)}
 .byetick input:checked::after{content:"";width:7px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:translateY(-2px) rotate(45deg)}
 .byetick{text-align:left}
+.langnote{display:block;margin-top:6px;font-size:.8rem;color:var(--mute)}

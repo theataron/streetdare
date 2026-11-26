@@ -5,7 +5,7 @@ const LANG_LIST = [
   { code:'hu', name:'Magyar' }
 ];
 /* English is the default and the only reviewed language. Switching to any other one asks first. */
-function langConfirm(code, go, currentName){
+function langConfirm(code, go, currentName, cancelled){
   if (code === 'en') return go();
   const name = (LANG_LIST.find(l => l.code === code) || {}).name || code;
   if (!document.getElementById('langConfirmCss')){
@@ -20,11 +20,14 @@ function langConfirm(code, go, currentName){
   }
   const ov = document.createElement('div'); ov.className = 'lcm'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
   const box = document.createElement('div');
-  box.innerHTML = '<p><b>Heads up.</b> The ' + name + ' version is auto-generated, so it might translate badly.</p><p>Do you still want to switch?</p>'
-    + '<div class="row"><button type="button" class="go">Yes, switch to ' + name + '</button><button type="button" class="stay">No, keep ' + (currentName || 'English') + '</button></div>';
+  box.innerHTML = code === 'hu'
+    ? '<p>Hali! Áron vagyok, az alapító. Habár magyar vagyok, az oldalt angolul terveztem le, és a magyar fordítás még elég gatya. Ha úgy érzed, mindenképpen szükséged van rá, nyomjad, de nem vállalok érte felelősséget. A funabb játékélményhez inkább az angol nyelvet javaslom.</p>'
+      + '<div class="row"><button type="button" class="go">Mehet, magyarul</button><button type="button" class="stay">Maradok ' + (currentName === 'Magyar' ? 'magyarul' : 'angolul') + '</button></div>'
+    : '<p><b>Heads up.</b> The ' + name + ' version is auto-generated, so it might translate badly.</p><p>Do you still want to switch?</p>'
+      + '<div class="row"><button type="button" class="go">Yes, switch to ' + name + '</button><button type="button" class="stay">No, keep ' + (currentName || 'English') + '</button></div>';
   ov.appendChild(box); document.body.appendChild(ov);
   const prev = document.activeElement;
-  const done = ok => { document.removeEventListener('keydown', onKey, true); ov.remove(); if (prev && prev.focus) try{ prev.focus(); }catch(e){} if (ok) go(); };
+  const done = ok => { document.removeEventListener('keydown', onKey, true); ov.remove(); if (prev && prev.focus) try{ prev.focus(); }catch(e){} if (ok) go(); else if (cancelled) cancelled(); };
   const onKey = e => { if (e.key === 'Escape'){ e.stopPropagation(); done(false); } };
   document.addEventListener('keydown', onKey, true);
   box.querySelector('.go').onclick = () => done(true);
