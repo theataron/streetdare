@@ -27,7 +27,7 @@ const T = {
        hide:'Remove this moment', hideQ:'Remove this encounter from your timeline? You can’t undo this.',
        plainDare:'A dare done together', earlier:'Before memories existed, so only the dare is saved.',
        tooGood:'Too good to keep to yourself', tooGoodP:'We turn this night into a Story image for your Instagram.',
-       tagTip:'Tag @street.dare so we can repost you.', shareFail:'Saved the image. Post it as a Story from your photos.',
+       tagTip:'Tag @street.dare so we can repost you.', shTitle:'Your picture is ready', shS1:'Press and hold the picture, then tap “Save image”.', shS2:'Open Instagram (or any app you like) and post it from your photos.', shS3:'Tag @street.dare so we can repost you.', shShow:'Show my picture', shClose:'Close', shHint:'Press and hold the picture, then tap “Save image”.', shareFail:'Saved the image. Post it as a Story from your photos.',
        welcome:'Welcome, {n}', firstMem:'Your first STREETDARE memory', youAnd:'You and {n}', youTold:'You told {n}: “{m}”', seeNights:'See it in your nights ↓',
        theDare:'The dare you did together', follow:'Follow @{ig}',
        passK:'Still out tonight?', passH:'Play with your friends', passP:'With a Shirtless Pass your group gets its own dares for 24 hours: you go up to strangers, collect points and see who wins the night. Everything lands in your nights, like this one.', passBtn:'Get a Shirtless Pass',
@@ -54,7 +54,7 @@ const T = {
        hide:'Quitar este momento', hideQ:'¿Quitar este encuentro de tu línea de tiempo? No se puede deshacer.',
        plainDare:'Un reto hecho juntos', earlier:'De antes de que existieran los recuerdos, así que solo se guardó el reto.',
        tooGood:'Demasiado bueno para quedártelo', tooGoodP:'Convertimos esta noche en una imagen para tu historia de Instagram.',
-       tagTip:'Etiqueta a @street.dare para que te compartamos.', shareFail:'Imagen guardada. Súbela como historia desde tus fotos.',
+       tagTip:'Etiqueta a @street.dare para que te compartamos.', shTitle:'Tu imagen está lista', shS1:'Mantén pulsada la imagen y toca “Guardar imagen”.', shS2:'Abre Instagram (o la app que quieras) y súbela desde tus fotos.', shS3:'Etiqueta a @street.dare para que te compartamos.', shShow:'Ver mi imagen', shClose:'Cerrar', shHint:'Mantén pulsada la imagen y toca “Guardar imagen”.', shareFail:'Imagen guardada. Súbela como historia desde tus fotos.',
        welcome:'Hola, {n}', firstMem:'Tu primer recuerdo STREETDARE', youAnd:'Tú y {n}', youTold:'Le dijiste a {n}: “{m}”', seeNights:'Míralo en tus noches ↓',
        theDare:'El reto que hicisteis juntos', follow:'Sigue a @{ig}',
        passK:'¿Sigues de fiesta?', passH:'Juega con tus amigos', passP:'Con un Shirtless Pass tu grupo tiene sus propios retos durante 24 horas: os acercáis a desconocidos, sumáis puntos y veis quién gana la noche. Todo acaba en tus noches, como esta.', passBtn:'Quiero un Shirtless Pass',
@@ -81,7 +81,7 @@ const T = {
        hide:'Pillanat eltávolítása', hideQ:'Eltávolítod ezt a találkozást az idővonaladról? Nem vonható vissza.',
        plainDare:'Egy közös kihívás', earlier:'Még az emlékek előttről, ezért csak a kihívás maradt meg.',
        tooGood:'Túl jó ahhoz, hogy megtartsd magadnak', tooGoodP:'Ebből az estéből Instagram-sztori képet készítünk.',
-       tagTip:'Jelöld meg a @street.dare-t, hogy megoszthassunk.', shareFail:'Elmentettük a képet. Tedd ki sztoriba a fotóid közül.',
+       tagTip:'Jelöld meg a @street.dare-t, hogy megoszthassunk.', shTitle:'Kész a képed', shS1:'Nyomd hosszan a képet, aztán koppints a „Kép mentése” gombra.', shS2:'Nyisd meg az Instagramot (vagy bármelyik appot), és töltsd fel a fotóid közül.', shS3:'Jelöld meg a @street.dare-t, hogy megoszthassunk.', shShow:'Mutasd a képem', shClose:'Bezárás', shHint:'Nyomd hosszan a képet, aztán koppints a „Kép mentése” gombra.', shareFail:'Elmentettük a képet. Tedd ki sztoriba a fotóid közül.',
        welcome:'Szia, {n}', firstMem:'Az első STREETDARE emléked', youAnd:'Te és {n}', youTold:'Ezt írtad neki ({n}): „{m}”', seeNights:'Nézd meg az estéid között ↓',
        theDare:'A közös kihívásotok', follow:'Kövesd: @{ig}',
        passK:'Még bulizol?', passH:'Játssz a barátaiddal', passP:'Egy Shirtless Passszal a csapatod 24 órára saját kihívásokat kap: odamentek idegenekhez, pontokat gyűjtötök, és kiderül, ki nyeri az estét. Minden az estéid közé kerül, mint ez is.', passBtn:'Kérek egy Shirtless Passt',
@@ -481,12 +481,44 @@ async function shareNight(n, btn){
     x.fillStyle = '#000'; x.beginPath(); x.roundRect(W - 72 - tw - 64, H - 260, tw + 64, 90, 45); x.fill();
     x.fillStyle = '#fff'; x.fillText(tagTxt, W - 72 - tw - 32, H - 200);
     const blob = await new Promise(r => c.toBlob(r, 'image/png'));
-    const file = new File([blob], 'streetdare-night.png', { type: 'image/png' });
-    if (navigator.canShare && navigator.canShare({ files: [file] })){
-      try{ await navigator.share({ files: [file] }); toast(t('tagTip'), 6000); }catch(e){ if (e && e.name !== 'AbortError') download(blob); }
-    } else { download(blob); toast(t('shareFail') + ' ' + t('tagTip'), 7000); }
+    showSharePicture(blob);
   }catch(e){ toast(t('err')); }
   if (btn) btn.disabled = false;
+}
+/* Step 1: a pop-up with what to do next. Step 2: the picture itself, as a plain image, so a long press offers "Save image". */
+function showSharePicture(blob){
+  if (!document.getElementById('shareCss')){
+    const st = document.createElement('style'); st.id = 'shareCss';
+    st.textContent = '.snm{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}'
+      + '.snm .box{background:var(--card,#fffdf7);color:var(--ink,#1b1412);border:2px solid var(--ink,#1b1412);border-radius:18px;box-shadow:4px 4px 0 var(--ink,#1b1412);max-width:380px;width:100%;padding:22px 20px;text-align:left}'
+      + '.snm h2{margin:0 0 12px;font-size:1.35rem}.snm ol{margin:0 0 6px;padding-left:22px;line-height:1.45}.snm li{margin:0 0 8px}'
+      + '.snm .row{display:flex;flex-direction:column;gap:10px;margin-top:16px}'
+      + '.snm button{font:inherit;font-weight:700;border-radius:99px;padding:12px 18px;cursor:pointer;border:2px solid var(--ink,#1b1412)}'
+      + '.snm .go{background:var(--red,#e20000);color:#fff}.snm .stay{background:transparent;color:var(--ink,#1b1412)}'
+      + '.snm.pic .box{max-width:340px;text-align:center;padding:14px}.snm img{display:block;width:100%;height:auto;border-radius:12px;-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}'
+      + '.snm .hint{margin:10px 0 0;font-size:.92rem;font-weight:700}';
+    document.head.appendChild(st);
+  }
+  const url = URL.createObjectURL(blob);
+  const ov = document.createElement('div'); ov.className = 'snm'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true');
+  document.body.appendChild(ov);
+  const close = () => { ov.remove(); URL.revokeObjectURL(url); };
+  ov.onclick = e => { if (e.target === ov) close(); };
+  const steps = () => {
+    ov.className = 'snm';
+    ov.innerHTML = '<div class="box"><h2></h2><ol><li></li><li></li><li></li></ol><div class="row"><button type="button" class="go"></button><button type="button" class="stay"></button></div></div>';
+    ov.querySelector('h2').textContent = t('shTitle');
+    const li = ov.querySelectorAll('li'); li[0].textContent = t('shS1'); li[1].textContent = t('shS2'); li[2].textContent = t('shS3');
+    ov.querySelector('.go').textContent = t('shShow'); ov.querySelector('.stay').textContent = t('shClose');
+    ov.querySelector('.go').onclick = picture; ov.querySelector('.stay').onclick = close;
+  };
+  const picture = () => {
+    ov.className = 'snm pic';
+    ov.innerHTML = '<div class="box"><img alt=""><p class="hint"></p><div class="row"><button type="button" class="stay"></button></div></div>';
+    ov.querySelector('img').src = url; ov.querySelector('.hint').textContent = t('shHint');
+    ov.querySelector('.stay').textContent = t('shClose'); ov.querySelector('.stay').onclick = close;
+  };
+  steps();
 }
 function download(blob){ const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'streetdare-night.png'; document.body.appendChild(a); a.click(); a.remove(); }
 let toastT = null;
