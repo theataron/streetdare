@@ -14,10 +14,10 @@
 .display.y,.y{color:#F7DF40}.display.r{color:var(--red)}
 .bgstar{position:absolute;pointer-events:none;opacity:.9}
 .bgstar svg{width:100%;height:100%;display:block}
-.bgstar polygon{fill:#F7DF40;stroke:#F7DF40}
+.bgstar path{fill:#F7DF40}
 .bgstar.s1{width:160px;height:160px;right:-46px;top:-46px}
-.bgstar.s2{width:70px;height:70px;left:-20px;bottom:30px}.bgstar.s2 polygon{fill:#2356E1;stroke:#2356E1}
-.bgstar.s3{width:34px;height:34px;right:30%;bottom:-8px}.bgstar.s3 polygon{fill:#fff;stroke:#fff}
+.bgstar.s2{width:70px;height:70px;left:-20px;bottom:30px}.bgstar.s2 path{fill:#2356E1}
+.bgstar.s3{width:34px;height:34px;right:30%;bottom:-8px}.bgstar.s3 path{fill:#fff}
 
 /* live view */
 .codecard{display:grid;justify-items:center;text-align:center;background:var(--card);border:2.5px solid var(--ink);border-radius:22px;padding:14px;box-shadow:var(--sh);margin:6px 0 14px}
@@ -83,7 +83,7 @@
 .st.wide{grid-column:span 2}
 .st.dashed{border-style:dashed;background:none;display:flex;justify-content:space-between;align-items:center}
 .starico{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:48px;height:48px}
-.starico svg{width:100%;height:100%}.starico polygon{fill:#F7DF40;stroke:#F7DF40}
+.starico svg{width:100%;height:100%}.starico path{fill:#F7DF40}
 
 /* going out tonight */
 .going{background:#F7DF40;color:#1b1412;border:2.5px solid var(--ink);border-radius:26px;padding:20px;margin-top:34px;box-shadow:var(--sh)}

@@ -368,8 +368,8 @@ function initDareForms(){
 /* ----- the background on every page: big soft stars and a few QR pixels ----- */
 (function(){
   const NS = 'http://www.w3.org/2000/svg';
-  /* the same star as the one in the wordmark: a thick round join is what curves the points */
-  const STAR = '44.2,8.4 61.2,29.9 87,33.5 71.8,53.3 79.6,79.1 52.7,73.3 30.3,84.8 29.9,60 9.5,43.6 34.3,33.5';
+  /* the same star as the one in the wordmark: traced from the black star on the shirt back, filled */
+  const STAR = 'M96.3 34.8 L94.9 33.4 L92.6 32.0 L83.2 28.4 L76.6 26.7 L69.9 25.4 L66.9 19.8 L64.2 15.2 L61.8 11.9 L59.9 9.6 L57.6 7.4 L55.3 5.7 L53.3 4.7 L50.8 4.2 L48.4 4.4 L45.8 5.4 L44.0 6.5 L41.2 9.2 L37.4 14.1 L33.1 20.8 L31.7 23.5 L31.2 24.0 L23.6 24.8 L17.3 26.0 L12.3 27.8 L9.1 29.3 L6.4 30.9 L3.8 33.4 L3.0 34.6 L2.4 36.0 L2.0 37.4 L2.0 40.2 L2.9 43.5 L4.8 47.3 L8.1 51.8 L16.4 60.3 L16.4 60.9 L14.6 66.5 L13.1 72.4 L10.9 83.2 L10.5 86.6 L10.5 88.7 L10.9 90.9 L11.8 92.9 L12.5 93.7 L14.0 94.7 L17.2 95.6 L21.8 95.6 L26.0 94.9 L30.9 93.6 L36.1 91.8 L45.6 87.7 L51.8 84.6 L52.3 84.6 L63.0 90.0 L68.6 92.5 L72.4 93.8 L76.7 94.8 L79.4 94.9 L81.1 94.6 L82.8 93.7 L84.2 92.0 L85.0 89.9 L85.4 87.9 L85.6 83.4 L85.4 80.2 L84.6 74.2 L82.3 63.2 L87.1 57.9 L91.3 52.9 L94.9 47.8 L96.7 44.6 L97.6 41.9 L97.9 38.9 L97.3 36.5Z';
 
   /* x, y, size, rotation, red */
   const stars = [
@@ -388,7 +388,7 @@ function initDareForms(){
     [  40, 820, 8, ['101','110','011','101'],     false]
   ];
 
-  let gfx = '<defs><polygon id="sdst" points="' + STAR + '"/></defs>';
+  let gfx = '<defs><path id="sdst" d="' + STAR + '"/></defs>';
   for (const [x, y, size, rot, red] of stars){
     gfx += '<use href="#sdst" class="st' + (red ? ' red' : '') + '" x="0" y="0" width="100" height="100" ' +
            'transform="translate(' + x + ' ' + y + ') rotate(' + rot + ' 50 50) scale(' + (size / 100) + ')"/>';

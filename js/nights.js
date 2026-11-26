@@ -95,7 +95,8 @@ const ONE = { en:{ people:'new person met', dares:'dare done', scans:'scan tonig
 const tn = (k, n) => (Number(n) === 1 && ONE[L] && ONE[L][k]) || t(k);
 const t = (k, v) => { let s = (T[L] || T.en)[k]; if (s == null) s = T.en[k] || ''; if (v) Object.keys(v).forEach(x => { s = s.split('{' + x + '}').join(v[x]); }); return s; };
 /* the fat, round-cornered star from the A in the logo */
-const STAR = '<svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="44.2,8.4 61.2,29.9 87.0,33.5 71.8,53.3 79.6,79.1 52.7,73.3 30.3,84.8 29.9,60.0 9.5,43.6 34.3,33.5" stroke-width="15" stroke-linejoin="round"/></svg>';
+const STAR_D = 'M96.3 34.8 L94.9 33.4 L92.6 32.0 L83.2 28.4 L76.6 26.7 L69.9 25.4 L66.9 19.8 L64.2 15.2 L61.8 11.9 L59.9 9.6 L57.6 7.4 L55.3 5.7 L53.3 4.7 L50.8 4.2 L48.4 4.4 L45.8 5.4 L44.0 6.5 L41.2 9.2 L37.4 14.1 L33.1 20.8 L31.7 23.5 L31.2 24.0 L23.6 24.8 L17.3 26.0 L12.3 27.8 L9.1 29.3 L6.4 30.9 L3.8 33.4 L3.0 34.6 L2.4 36.0 L2.0 37.4 L2.0 40.2 L2.9 43.5 L4.8 47.3 L8.1 51.8 L16.4 60.3 L16.4 60.9 L14.6 66.5 L13.1 72.4 L10.9 83.2 L10.5 86.6 L10.5 88.7 L10.9 90.9 L11.8 92.9 L12.5 93.7 L14.0 94.7 L17.2 95.6 L21.8 95.6 L26.0 94.9 L30.9 93.6 L36.1 91.8 L45.6 87.7 L51.8 84.6 L52.3 84.6 L63.0 90.0 L68.6 92.5 L72.4 93.8 L76.7 94.8 L79.4 94.9 L81.1 94.6 L82.8 93.7 L84.2 92.0 L85.0 89.9 L85.4 87.9 L85.6 83.4 L85.4 80.2 L84.6 74.2 L82.3 63.2 L87.1 57.9 L91.3 52.9 L94.9 47.8 L96.7 44.6 L97.6 41.9 L97.9 38.9 L97.3 36.5Z';
+const STAR = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M96.3 34.8 L94.9 33.4 L92.6 32.0 L83.2 28.4 L76.6 26.7 L69.9 25.4 L66.9 19.8 L64.2 15.2 L61.8 11.9 L59.9 9.6 L57.6 7.4 L55.3 5.7 L53.3 4.7 L50.8 4.2 L48.4 4.4 L45.8 5.4 L44.0 6.5 L41.2 9.2 L37.4 14.1 L33.1 20.8 L31.7 23.5 L31.2 24.0 L23.6 24.8 L17.3 26.0 L12.3 27.8 L9.1 29.3 L6.4 30.9 L3.8 33.4 L3.0 34.6 L2.4 36.0 L2.0 37.4 L2.0 40.2 L2.9 43.5 L4.8 47.3 L8.1 51.8 L16.4 60.3 L16.4 60.9 L14.6 66.5 L13.1 72.4 L10.9 83.2 L10.5 86.6 L10.5 88.7 L10.9 90.9 L11.8 92.9 L12.5 93.7 L14.0 94.7 L17.2 95.6 L21.8 95.6 L26.0 94.9 L30.9 93.6 L36.1 91.8 L45.6 87.7 L51.8 84.6 L52.3 84.6 L63.0 90.0 L68.6 92.5 L72.4 93.8 L76.7 94.8 L79.4 94.9 L81.1 94.6 L82.8 93.7 L84.2 92.0 L85.0 89.9 L85.4 87.9 L85.6 83.4 L85.4 80.2 L84.6 74.2 L82.3 63.2 L87.1 57.9 L91.3 52.9 L94.9 47.8 L96.7 44.6 L97.6 41.9 L97.9 38.9 L97.3 36.5Z"/></svg>';
 const LOC = () => L === 'hu' ? 'hu-HU' : L === 'es' ? 'es-ES' : 'en-GB';
 const TZ = (() => { try{ return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Madrid'; }catch(e){ return 'Europe/Madrid'; } })();
 const hm = d => new Date(d).toLocaleTimeString(LOC(), { hour:'2-digit', minute:'2-digit', timeZone: TZ });
@@ -446,10 +447,10 @@ function renderAdmin(app){
 function wireShare(app){ app.querySelectorAll('[data-share]').forEach(b => b.onclick = () => shareNight(NIGHTS.find(n => n.key === b.dataset.share), b)); }
 function loadImg(src){ return new Promise(res => { const i = new Image(); i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; }); }
 function starPath(ctx, cx, cy, r){
-  /* same fat logo star as on the page: the outline is stroked 15 wide with round corners, then filled */
-  const p = new Path2D('M' + '44.2,8.4 61.2,29.9 87.0,33.5 71.8,53.3 79.6,79.1 52.7,73.3 30.3,84.8 29.9,60.0 9.5,43.6 34.3,33.5'.split(' ').join(' L') + ' Z');
+  /* the logo star, traced from the shirt back, filled */
+  const p = new Path2D(STAR_D);
   ctx.save(); ctx.translate(cx - r, cy - r); ctx.scale(r / 50, r / 50);
-  ctx.strokeStyle = ctx.fillStyle; ctx.lineWidth = 15; ctx.lineJoin = 'round'; ctx.fill(p); ctx.stroke(p); ctx.restore();
+  ctx.fill(p); ctx.restore();
 }
 function cover(ctx, im, x, y, w, h, r){
   ctx.save(); ctx.beginPath(); ctx.roundRect(x, y, w, h, r); ctx.clip();
