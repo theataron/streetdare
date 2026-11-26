@@ -218,8 +218,8 @@ const deckFor = () => { const d = deck().filter(q => hasLang(q, LANG)); return d
 function paintDare(){
   const a = isAdult(current);
   $('adultTag').hidden = !a; $('accAdult').hidden = !a;
-  $('together').hidden = !current; $('howRow').hidden = !!current;
-  $('nextP').textContent = (owner && owner.name) ? fill('nextP') : t('nextPAnon');
+  /* the 3 steps stay on screen the whole time; they replaced the old "Next:" box */
+  $('howRow').hidden = false;
   paintBy();
 }
 /* dares the wearer wrote themselves carry their name */
@@ -248,7 +248,7 @@ function setReel(text, cls){ const r = $('reel'); r.className = 'reel'; void r.o
 function spin(){
   if (spinning) return; spinning = true;
   $('preSpin').hidden = false; $('postSpin').hidden = true; $('spinBtn').disabled = true;
-  deckReset(); setReel('? ? ?', 'q'); $('together').hidden = true; $('howRow').hidden = false; $('adultTag').hidden = true;
+  deckReset(); setReel('? ? ?', 'q'); $('howRow').hidden = false; $('adultTag').hidden = true;
   const final = pick();
   /* other dares flick past first, so people see how deep the deck is */
   const others = deckFor().filter(q => q !== final).sort(() => Math.random() - .5);
