@@ -89,6 +89,10 @@ const T = {
        memH:'Az emlékeid', memEmpty:'Itt még nincs semmi. Szkennelj be egy STREETDARE pólót, csináljatok meg egy kihívást, és mentsd el a találkozást.', peopleThrough:'ember, akit a STREETDARE-rel ismertél meg',
        nightOut:'{w} esti buli', afternoon:'{w} délután', day:'{w}', err:'Valami hiba történt. Próbáld újra.', adminH:'Idővonalak (admin)', adminP:'Minden találkozás minden pólón, a legújabb elöl. Csak adminok látják.' }
 };
+/* singular after "1" ("1 dare done", "1 reto hecho"); Hungarian always uses the singular after a number */
+const ONE = { en:{ people:'new person met', dares:'dare done', scans:'scan tonight', igClicks:'click on your Instagram', messages:'message', peopleMet:'person met', daresShirt:'dare done with your shirt', scansAll:'scan', msgsAll:'message received' },
+              es:{ people:'persona nueva', dares:'reto hecho', scans:'escaneo esta noche', igClicks:'clic en tu Instagram', messages:'mensaje', peopleMet:'persona conocida', daresShirt:'reto hecho con tu camiseta', scansAll:'escaneo', msgsAll:'mensaje recibido' } };
+const tn = (k, n) => (Number(n) === 1 && ONE[L] && ONE[L][k]) || t(k);
 const t = (k, v) => { let s = (T[L] || T.en)[k]; if (s == null) s = T.en[k] || ''; if (v) Object.keys(v).forEach(x => { s = s.split('{' + x + '}').join(v[x]); }); return s; };
 const STAR = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0C55 35 65 45 100 50C65 55 55 65 50 100C45 65 35 55 0 50C35 45 45 35 50 0Z"/></svg>';
 const LOC = () => L === 'hu' ? 'hu-HU' : L === 'es' ? 'es-ES' : 'en-GB';
@@ -246,11 +250,11 @@ function renderOwner(app){
   /* stats */
   const best = NIGHTS.slice().sort((a, b) => b.dares - a.dares)[0];
   html += '<section class="sect"><h2 class="display">' + esc(t('statsH')) + '</h2><p class="sub">' + esc(t('statsP')) + '</p><div class="statgrid">' +
-    '<div class="st big red"><b class="display">' + (st.people || 0) + '</b><span>' + esc(t('peopleMet')) + '</span><small>' + esc(t('peopleMetP')) + '</small></div>' +
-    '<div class="st"><b class="display">' + (st.dares || 0) + '</b><span>' + esc(t('daresShirt')) + '</span></div>' +
-    '<div class="st"><b class="display">' + (st.scans || 0) + '</b><span>' + esc(t('scansAll')) + '</span></div>' +
-    '<div class="st"><b class="display">' + (st.ig || 0) + '</b><span>' + esc(t('igClicks')) + '</span></div>' +
-    '<div class="st"><b class="display">' + (st.messages || 0) + '</b><span>' + esc(t('msgsAll')) + '</span></div>' +
+    '<div class="st big red"><b class="display">' + (st.people || 0) + '</b><span>' + esc(tn('peopleMet', (st.people || 0))) + '</span><small>' + esc(t('peopleMetP')) + '</small></div>' +
+    '<div class="st"><b class="display">' + (st.dares || 0) + '</b><span>' + esc(tn('daresShirt', (st.dares || 0))) + '</span></div>' +
+    '<div class="st"><b class="display">' + (st.scans || 0) + '</b><span>' + esc(tn('scansAll', (st.scans || 0))) + '</span></div>' +
+    '<div class="st"><b class="display">' + (st.ig || 0) + '</b><span>' + esc(tn('igClicks', (st.ig || 0))) + '</span></div>' +
+    '<div class="st"><b class="display">' + (st.messages || 0) + '</b><span>' + esc(tn('msgsAll', (st.messages || 0))) + '</span></div>' +
     (best && best.dares ? '<a class="st wide blue" href="#n=' + encodeURIComponent(best.key) + '"><span class="k">' + esc(t('bestNight')) + '</span><b class="display sm">' + esc(nightName(best)) + '</b><span>' + esc(t('bestP', { d: nightDate(best), n: best.dares })) + '</span><i class="starico">' + STAR + '</i></a>' : '') +
     '<div class="st wide dashed"><span>' + esc(t('shirtless')) + '</span><b class="display sm">' + (st.shirtless || 0) + '</b></div>' +
     '</div></section>';
@@ -276,9 +280,9 @@ function liveCard(n, h){
     '<button type="button" class="eyebtn" id="eyeBtn" aria-pressed="' + codeShown + '" aria-label="' + esc(codeShown ? t('hideCode') : t('showCode')) + '">' + EYE + '</button></div><span>' + esc(codeShown ? t('codeP') : t('codeTap')) + '</span></div>' : '';
   s += '<section class="livecard">' + stars() + '<div class="livek"><i class="dot"></i>' + esc(t('live')) + '</div><h1 class="display">' + esc(nightName(n)) + '</h1>' +
     '<p>' + esc(t('since', { t: hm(n.start), deck: t('party') })) + '</p><div class="tiles3">' +
-    '<div><b class="display y">' + n.people + '</b><span>' + esc(t('people')) + '</span></div>' +
-    '<div><b class="display">' + n.dares + '</b><span>' + esc(t('dares')) + '</span></div>' +
-    '<div><b class="display">' + n.scans + '</b><span>' + esc(t('scans')) + '</span></div></div>' +
+    '<div><b class="display y">' + n.people + '</b><span>' + esc(tn('people', n.people)) + '</span></div>' +
+    '<div><b class="display">' + n.dares + '</b><span>' + esc(tn('dares', n.dares)) + '</span></div>' +
+    '<div><b class="display">' + n.scans + '</b><span>' + esc(tn('scans', n.scans)) + '</span></div></div>' +
     (n.ig ? '<p class="small">' + esc(n.ig === 1 && L === 'en' ? t('igSoFar1') : t('igSoFar', { n: n.ig })) + '</p>' : '') + '</section>';
   if (last) s += '<div class="kicker">' + esc(t('justNow', { t: hm(last.at) })) + '</div>' + momentCard(last, true);
   if (n.sealed) s += '<div class="sealcard"><b class="display">' + esc(n.sealed === 1 ? t('sealed1') : t('sealed', { n: n.sealed })) + '</b><span>' + esc(t('sealedP')) + '</span></div>';
@@ -295,7 +299,7 @@ function lastNightCard(n){
   return '<section class="lastnight sect"><div class="kicker">' + esc(t('lastNight')) + '</div><h1 class="display">' + esc(nightName(n)) + '</h1>' +
     '<p class="sub">' + esc(nightDate(n) + ' · ' + hm(n.start) + ' – ' + hm(n.end)) + '</p>' +
     (ph.length ? '<div class="collage c' + ph.length + '">' + ph.map(p => img(p)).join('') + '</div>' : '<div class="collage none">' + stars() + '</div>') +
-    '<div class="tiles3 light"><div><b class="display y">' + n.people + '</b><span>' + esc(t('people')) + '</span></div><div><b class="display r">' + n.dares + '</b><span>' + esc(t('dares')) + '</span></div><div><b class="display">' + n.ig + '</b><span>' + esc(t('igClicks')) + '</span></div></div>' +
+    '<div class="tiles3 light"><div><b class="display y">' + n.people + '</b><span>' + esc(tn('people', n.people)) + '</span></div><div><b class="display r">' + n.dares + '</b><span>' + esc(tn('dares', n.dares)) + '</span></div><div><b class="display">' + n.ig + '</b><span>' + esc(tn('igClicks', n.ig)) + '</span></div></div>' +
     (n.best ? '<div class="msgcard"><small>' + esc(t('msgFor', { n: n.msgs })) + '</small><p class="display">“' + esc(n.best) + '”</p></div>' : '') +
     '<div class="row2"><a class="btn red" href="#n=' + encodeURIComponent(n.key) + '">' + esc(t('openNight')) + '</a><button class="btn yel" type="button" data-share="' + esc(n.key) + '">' + esc(t('share')) + '</button></div></section>';
 }
@@ -342,7 +346,7 @@ function momentCard(i, compact){
 function renderNight(app, n){
   let s = '<div class="nhead"><a class="mini plain" href="#">' + esc(t('back')) + '</a><button class="mini yel" type="button" data-share="' + esc(n.key) + '">' + esc(t('share')) + '</button></div>' +
     '<h1 class="display">' + esc(nightName(n)) + '</h1><p class="sub">' + esc(nightDate(n) + ' · ' + hm(n.start) + ' – ' + hm(n.end)) + ' <button class="mini" type="button" id="renameBtn">' + esc(t('rename')) + '</button></p>' +
-    '<div class="chips"><span><b>' + n.people + '</b> ' + esc(t('people')) + '</span><span><b>' + n.dares + '</b> ' + esc(t('dares')) + '</span><span><b>' + n.ig + '</b> ' + esc(t('igClicks')) + '</span><span><b>' + n.msgs + '</b> ' + esc(t('messages')) + '</span></div>' +
+    '<div class="chips"><span><b>' + n.people + '</b> ' + esc(tn('people', n.people)) + '</span><span><b>' + n.dares + '</b> ' + esc(tn('dares', n.dares)) + '</span><span><b>' + n.ig + '</b> ' + esc(tn('igClicks', n.ig)) + '</span><span><b>' + n.msgs + '</b> ' + esc(tn('messages', n.msgs)) + '</span></div>' +
     '<div class="tl">' + n.moments.map(i => momentCard(i, false)).join('') + '</div>' +
     '<section class="sharebox"><h2 class="display">' + esc(t('tooGood')) + '</h2><p>' + esc(t('tooGoodP')) + '</p><button class="btn yel" type="button" data-share="' + esc(n.key) + '">' + esc(t('share')) + '</button></section>' +
     '<p class="launchnote">' + esc(t('launch')) + '</p>';
