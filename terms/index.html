@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#fbf8ef">
 <link rel="stylesheet" href="../css/style.css">
 <script src="/js/night.js"></script>
+<script src="/js/langpick.js"></script>
 <style>
 .legal{padding:10px 0 70px}
 .legal h1{font-size:clamp(2.2rem,10vw,3rem);color:var(--red);transform:rotate(-2deg);margin:12px 0 6px}
@@ -192,15 +193,15 @@
 </div>
 <script>
 (function(){
-  var L; try{ L = localStorage.getItem('sd_lang'); }catch(e){}
-  if (!L) L = (navigator.language||'en').toLowerCase().indexOf('es') === 0 ? 'es' : 'en';
+  var L; try{ L = localStorage.getItem('sd_lang2'); }catch(e){}
+  if (L !== 'es') L = 'en';
   var b = document.getElementById('lang');
   function paint(){
     document.documentElement.lang = L;
     document.querySelectorAll('[data-l]').forEach(function(m){ m.hidden = m.getAttribute('data-l') !== L; });
     b.innerHTML = ['en','es'].map(function(c){ return '<span' + (c === L ? ' class="on"' : '') + '>' + c.toUpperCase() + '</span>'; }).join('<i>|</i>');
   }
-  b.onclick = function(){ L = L === 'en' ? 'es' : 'en'; try{ localStorage.setItem('sd_lang', L); }catch(e){} paint(); };
+  b.onclick = function(){ var to = L === 'en' ? 'es' : 'en'; langConfirm(to, function(){ L = to; try{ localStorage.setItem('sd_lang2', L); }catch(e){} paint(); }); };
   paint();
 })();
 </script>

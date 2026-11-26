@@ -28,7 +28,7 @@
           wall:['A Fal','Írj egy névtelen üzenetet a közösségnek'],
           contact:['Kapcsolat','Kérdések, együttműködés, sajtó'], me:['Profil'], login:['Belépés'], night:'Éjszakai mód' }
   };
-  function lang(){ try{ var l = localStorage.getItem('sd_lang'); if (T[l]) return l; }catch(e){} var n = (navigator.language || 'en').slice(0, 2); return T[n] ? n : 'en'; }
+  function lang(){ try{ var l = localStorage.getItem('sd_lang2'); if (T[l]) return l; }catch(e){} return 'en'; }
   function loggedIn(){ try{ for (var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if (/^sb-.*-auth-token$/.test(k)) return true; } }catch(e){} return false; }
   function init(){
     var right = document.querySelector('header.top .right'), header = document.querySelector('header.top');

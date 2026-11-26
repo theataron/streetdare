@@ -50,8 +50,8 @@
     hu:{ k:'404-es hiba · nincs ilyen oldal', h:'Eltévedtél.', dare:'A kihívásod: kérdezz meg egy idegent, merre kell menni.', home:'Vigyél haza', try:'Próbálj ki egy igazi kihívást', hint:'Az oldalt nem találtad meg, de egy kihívást igen. Nem rossz.', stamp:'KIHÍVÁS' }
   };
   var L = 'en';
-  try { L = localStorage.getItem('sd_lang') || ''; } catch(e) { L = ''; }
-  if (!T[L]) { var n = (navigator.language || 'en').slice(0,2).toLowerCase(); L = T[n] ? n : 'en'; }
+  try { L = localStorage.getItem('sd_lang2') || ''; } catch(e) { L = ''; }
+  if (!T[L]) L = 'en';
   function paint(){
     document.documentElement.lang = L;
     ['k','h','dare','home','try','hint','stamp'].forEach(function(id){ document.getElementById(id).textContent = T[L][id]; });

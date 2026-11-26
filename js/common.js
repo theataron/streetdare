@@ -29,10 +29,12 @@ function refGet(){
 }
 
 /* ----- language ----- */
-const LANG_CHOSEN = !!store.get('sd_lang');
-const PHONE_LANG = (navigator.language||'en').toLowerCase();
-let LANG = store.get('sd_lang') || (PHONE_LANG.startsWith('es') ? 'es' : PHONE_LANG.startsWith('hu') ? 'hu' : 'en');
-function setLang(code){ LANG = code; store.set('sd_lang', code); applyLang(); }
+/* English is the default for everyone: the phone's language is not used any more. Other languages are
+   auto-generated, so the picker (js/langpick.js) warns before switching. Key is sd_lang2 so that choices
+   made before the warning existed don't stick. */
+const LANG_CHOSEN = !!store.get('sd_lang2');
+let LANG = ['es','hu'].includes(store.get('sd_lang2')) ? store.get('sd_lang2') : 'en';
+function setLang(code){ LANG = code; store.set('sd_lang2', code); applyLang(); }
 let DICT = { en:{} };
 const t = k => (DICT[LANG] && DICT[LANG][k]) ?? (DICT.en[k] ?? k);
 /* ----- account links: "Log in" in the header, "Log in" + "Create account" in the menu ----- */

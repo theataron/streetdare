@@ -26,11 +26,11 @@ export function safeNext(v, fallback){
 }
 
 export function lang(){
-  try{ const s = localStorage.getItem('sd_lang'); if (s) return s; }catch(e){}
-  const n = (navigator.language || 'en').toLowerCase();
-  return n.startsWith('es') ? 'es' : n.startsWith('hu') ? 'hu' : 'en';
+  /* English by default for everyone; another language only after the picker's warning was confirmed */
+  try{ const s = localStorage.getItem('sd_lang2'); if (s === 'es' || s === 'hu') return s; }catch(e){}
+  return 'en';
 }
-export function setLang(l){ try{ localStorage.setItem('sd_lang', l); }catch(e){} }
+export function setLang(l){ try{ localStorage.setItem('sd_lang2', l); }catch(e){} }
 
 export const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 

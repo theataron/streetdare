@@ -3,7 +3,7 @@
 (function(){
   if (location.pathname.indexOf('/pass') === 0 || window.STAGE) return;
   var T = { en: ['Your group is live', 'Open'], es: ['Tu grupo está en marcha', 'Abrir'], hu: ['A csapatod játékban van', 'Megnyitás'] };
-  function lang(){ try{ var l = localStorage.getItem('sd_lang'); if (T[l]) return l; }catch(e){} var n = (navigator.language || 'en').slice(0, 2); return T[n] ? n : 'en'; }
+  function lang(){ try{ var l = localStorage.getItem('sd_lang2'); if (T[l]) return l; }catch(e){} return 'en'; }
   function live(){
     try{
       var logged = false;

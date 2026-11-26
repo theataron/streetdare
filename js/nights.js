@@ -2,7 +2,7 @@
    Shirt owners: their home (live view during a night, last night, stats, the nights list) and
    a timeline per night. Scanners who saved an encounter: their own memories. Everyone: their
    Shirtless Pass nights. Data comes from owner_home(), my_encounters() and my_nights(). */
-import { sb, getSession, lang, setLang, esc } from './sb.js?v=5';
+import { sb, getSession, lang, setLang, esc } from './sb.js?v=6';
 const $ = id => document.getElementById(id);
 let L = lang();
 
@@ -452,7 +452,7 @@ async function shareNight(n, btn){
     await Promise.all([document.fonts.load('120px Caprasimo'), document.fonts.load('700 40px "DM Sans"')]).catch(() => {});
     const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d');
-    x.fillStyle = '#DA3030'; x.fillRect(0, 0, W, H);
+    x.fillStyle = '#E20000'; x.fillRect(0, 0, W, H);
     x.fillStyle = '#FFE32A'; starPath(x, 940, 180, 330);
     x.fillStyle = '#1534D1'; starPath(x, 90, 1500, 200);
     x.fillStyle = '#000'; [[70,760],[100,760],[70,790],[130,790],[100,820],[130,820]].forEach(([a, b]) => x.fillRect(a, b, 24, 24));
