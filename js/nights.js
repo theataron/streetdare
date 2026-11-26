@@ -102,6 +102,7 @@ let S = null;        /* session */
 let D = { home: null, mine: [], pass: [], prof: null };
 let NIGHTS = [];     /* shirt nights, newest first */
 let urls = {};       /* signed photo urls by path */
+let NAMES = {};      /* the owner's own names for their nights, by night key */
 
 /* ---------- loading ---------- */
 async function load(){
@@ -113,6 +114,7 @@ async function load(){
     sb.rpc('owner_home'), sb.rpc('my_encounters'), sb.rpc('my_nights'),
     sb.from('profiles').select('name,avatar_url,role').eq('id', S.user.id).maybeSingle()
   ]);
+  try{ const { data: nn } = await sb.from('night_names').select('night_key,name'); (nn || []).forEach(r => { NAMES[r.night_key] = r.name; }); }catch(e){}
   D = { home: h.data || null, mine: m.data || [], pass: p.data || [], prof: pr.data || {} };
   if (params.get('admin') !== null && D.prof.role === 'admin'){
     const { data } = await sb.rpc('admin_encounters', { p_shirt: params.get('admin') || null });
@@ -176,7 +178,7 @@ function buildNights(){
 }
 /* "Friday night out · 28 Nov": the evening a night belongs to, even when it ends at 4 in the morning */
 function nightName(n){
-  try{ const own = localStorage.getItem('sd_nn_' + n.key); if (own) return own; }catch(e){}
+  if (NAMES[n.key]) return NAMES[n.key];
   const d = new Date(n.start), shifted = new Date(n.start - 6 * 3600e3);
   const hr = +d.toLocaleString('en-GB', { hour:'2-digit', hour12:false, timeZone: TZ });
   const w = cap(shifted.toLocaleDateString(LOC(), { weekday:'long', timeZone: TZ }));
@@ -341,7 +343,17 @@ function renderNight(app, n){
     '<section class="sharebox"><h2 class="display">' + esc(t('tooGood')) + '</h2><p>' + esc(t('tooGoodP')) + '</p><button class="btn yel" type="button" data-share="' + esc(n.key) + '">' + esc(t('share')) + '</button></section>' +
     '<p class="launchnote">' + esc(t('launch')) + '</p>';
   app.innerHTML = s;
-  $('renameBtn').onclick = () => { const v = prompt(t('renameQ'), nightName(n)); if (v == null) return; try{ v.trim() ? localStorage.setItem('sd_nn_' + n.key, v.trim().slice(0, 40)) : localStorage.removeItem('sd_nn_' + n.key); }catch(e){} route(); };
+  $('renameBtn').onclick = async () => {
+    const v = prompt(t('renameQ'), nightName(n)); if (v == null) return;
+    const name = v.trim().slice(0, 40);
+    if (name && window.sdHurtful && sdHurtful(name)) return;
+    const q = name ? sb.from('night_names').upsert({ owner_id: S.user.id, night_key: n.key, name, updated_at: new Date().toISOString() })
+                   : sb.from('night_names').delete().eq('night_key', n.key);
+    const { error } = await q;
+    if (error) return toast(t('err'));
+    if (name) NAMES[n.key] = name; else delete NAMES[n.key];
+    toast(t('noteSaved')); route();
+  };
   wireShare(app); wireMoments(app);
 }
 function wireMoments(app){
