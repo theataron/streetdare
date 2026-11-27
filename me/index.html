@@ -465,6 +465,8 @@ new MutationObserver(paintQuick).observe($('shirtArea'), { attributes: true, att
   await loadShirts();
   $('loading').hidden = true; $('app').hidden = false;
   applyClaimFromUrl();
+  /* "Active deck" on the nights page links here: open straight on Your decks */
+  if (/^#(s-)?decks$/.test(location.hash)) setTimeout(() => { const s = $('s-decks'); if (s) s.scrollIntoView({ behavior:'smooth', block:'start' }); }, 300);
 })();
 
 /* Fill in a claim code that came from a shirt's scan page. Someone who already owns a shirt has

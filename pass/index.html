@@ -128,6 +128,20 @@
 .shirtcard p{font-size:.95rem;line-height:1.4;margin-bottom:12px}
 .shirtcard .btn{display:block;text-align:center;text-decoration:none}
 .ended h2{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:1.6rem}
+.nightsdd{padding:0}
+.nightsdd summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 18px}
+.nightsdd summary::-webkit-details-marker{display:none}
+.nightsdd summary span{flex:1;min-width:0}
+.nightsdd summary b{display:block;font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:1.45rem;line-height:1.1}
+.nightsdd summary small{display:block;color:var(--mute);font-size:.9rem;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ddchev{flex:none;width:34px;height:34px;border-radius:50%;background:var(--red);position:relative;transition:transform .2s}
+.ddchev::after{content:"";position:absolute;left:11px;top:9px;width:9px;height:9px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+.nightsdd[open] .ddchev{transform:rotate(180deg)}
+.nightsdd .nights{padding:0 18px 8px;border-top:1.5px solid #eadfd2}
+html.night .nightsdd .nights{border-color:#2f2826}
+.hsteps{margin:4px 0 10px 1.2em;padding:0;display:grid;gap:8px}
+.hsteps li{padding-left:2px}
+.hsteps b{color:var(--redt)}
 .howto{background:var(--ink);color:#fff;border-radius:20px;padding:18px;margin:16px 0}
 .howto h2{font-family:"Caprasimo","Bookman Old Style",Georgia,serif;font-weight:400;font-size:1.4rem;margin-bottom:8px}
 .howto ol{margin:0 0 14px 1.1em;padding:0;display:grid;gap:6px}
@@ -434,6 +448,17 @@ html.night .badge{border-color:#211b19}
       <div class="kicker" id="hK"></div>
       <h1 class="display" id="hH"></h1>
       <p class="lead" id="hP"></p>
+      <!-- played before: your nights as one button that opens the list -->
+      <details class="panel nightsdd" id="hPast" hidden>
+        <summary><span><b id="hPastH"></b><small id="hPastS"></small></span><i class="ddchev" aria-hidden="true"></i></summary>
+        <ul class="nights" id="hNights"></ul>
+      </details>
+      <!-- how it works: first for new players, last for people who have played -->
+      <section class="panel hhow" id="hHowBox">
+        <h2 id="hHowH"></h2>
+        <ol class="hsteps"><li id="hHow1"></li><li id="hHow2"></li><li id="hHow3"></li><li id="hHow4"></li><li id="hHow5"></li></ol>
+        <p class="small" id="hHowNote"></p>
+      </section>
       <section class="panel" id="hCodeBox">
         <h2 id="hCodeH"></h2>
         <p class="sub" id="hCodeP"></p>
@@ -443,11 +468,7 @@ html.night .badge{border-color:#211b19}
           <button class="btn red" type="submit" id="hBtn"></button>
         </form>
       </section>
-      <section class="panel" id="hPast" hidden>
-        <h2 id="hPastH"></h2>
-        <ul class="nights" id="hNights"></ul>
-      </section>
-      <section class="panel">
+      <section class="panel" id="hBuyBox">
         <h2 id="hBuyH"></h2>
         <p class="sub" id="hBuyP"></p>
         <p class="reachh" id="hReachH"></p>
@@ -710,6 +731,7 @@ const T = {
     waitH:'Too many tries', waitP:'Wait 15 minutes and try again.',
     reachH:'Message Aron:', reachIrl:'Or come up to me in person if you see me out — always welcome.', waBtn:'Message Aron on WhatsApp 💬', hubBtn:'Shirtless Pass',
     hK:'No shirt yet? No problem', hH:'Shirtless Pass 🎟️', hP:'24 hours of STREETDARE for you and your friends. Go up to strangers, do dares, collect points and see who wins the night.',
+    hHowH:'How it works', hPastS:'{n} nights · last: {last}', hPastS1:'1 night · {last}', hHow1:'<b>One code for the whole group.</b> Aron gives you a code; everyone types it in or scans the QR to take a seat.', hHow2:'<b>24 hours on your phones.</b> The clock starts when your group begins, and each of you plays on your own phone.', hHow3:'<b>Go up to strangers and do the dares.</b> Every dare is worth points. Friends from your group can jump in, and everyone in it gets the points.', hHow4:'<b>Some dares need proof:</b> a photo, or an answer the stranger types on your phone.', hHow5:'<b>Your group has its own chat</b> for the night. When the time runs out, the one with the most points wins.', hHowNote:'No shirt needed. Anyone can say no, and you can skip any dare that doesn’t feel right.',
     hCodeH:'Got a code?', hCodeP:'Type it here, or scan the QR on Aron’s or a friend’s phone.', hBtn:'Take my seat',
     hPastH:'Your nights', active:'Live now', rankOf:'#{r} of {n} · {p} pts', hBuyH:'Want to play?', hBuyP:'Message Aron with your group’s name and how many of you there are.',
     hLogin:'Played before? <a href="/login/?next=/pass/">Log in</a> to see your nights.',
@@ -769,6 +791,7 @@ const T = {
     waitH:'Demasiados intentos', waitP:'Espera 15 minutos y vuelve a probar.',
     reachH:'Escríbele a Aron:', reachIrl:'O ven a hablarme en persona si me ves por ahí — siempre bienvenido.', waBtn:'Escribir a Aron por WhatsApp 💬', hubBtn:'Shirtless Pass',
     hK:'¿Aún sin camiseta? Sin problema', hH:'Shirtless Pass 🎟️', hP:'24 horas de STREETDARE para ti y tus amigos. Acercaos a desconocidos, haced retos, sumad puntos y ved quién gana la noche.',
+    hHowH:'Cómo funciona', hPastS:'{n} noches · la última: {last}', hPastS1:'1 noche · {last}', hHow1:'<b>Un código para todo el grupo.</b> Aron os da un código; cada uno lo escribe o escanea el QR para coger su plaza.', hHow2:'<b>24 horas en vuestros móviles.</b> El reloj empieza cuando vuestro grupo arranca, y cada uno juega con su propio móvil.', hHow3:'<b>Acércate a desconocidos y haz los retos.</b> Cada reto da puntos. Los de tu grupo pueden unirse, y todos los que se unen se llevan los puntos.', hHow4:'<b>Algunos retos piden prueba:</b> una foto o una respuesta que escribe el desconocido en tu móvil.', hHow5:'<b>Vuestro grupo tiene su propio chat</b> para la noche. Cuando se acaba el tiempo, gana quien tenga más puntos.', hHowNote:'No hace falta camiseta. Cualquiera puede decir que no, y puedes saltarte cualquier reto que no te apetezca.',
     hCodeH:'¿Tienes un código?', hCodeP:'Escríbelo aquí o escanea el QR del móvil de Aron o de un amigo.', hBtn:'Coger mi plaza',
     hPastH:'Tus noches', active:'En directo', rankOf:'#{r} de {n} · {p} pts', hBuyH:'¿Queréis jugar?', hBuyP:'Escribe a Aron con el nombre de vuestro grupo y cuántos sois.',
     hLogin:'¿Ya has jugado? <a href="/login/?next=/pass/">Entra</a> para ver tus noches.',
@@ -828,6 +851,7 @@ const T = {
     waitH:'Túl sok próbálkozás', waitP:'Várj 15 percet, és próbáld újra.',
     reachH:'Írj Áronnak:', reachIrl:'Vagy ha találkozunk, nyugodtan gyere oda hozzám személyesen — bármikor jöhet.', waBtn:'Írok Áronnak WhatsAppon 💬', hubBtn:'Shirtless Pass',
     hK:'Még nincs pólód? Semmi gond', hH:'Shirtless Pass 🎟️', hP:'24 óra STREETDARE neked és a barátaidnak. Menjetek oda idegenekhez, csináljatok kihívásokat, gyűjtsetek pontokat, és kiderül, ki nyeri az estét.',
+    hHowH:'Hogy működik', hPastS:'{n} este · utoljára: {last}', hPastS1:'1 este · {last}', hHow1:'<b>Egy kód az egész csapatnak.</b> Áron ad egy kódot; mindenki beírja, vagy beszkenneli a QR-t, és elfoglalja a helyét.', hHow2:'<b>24 óra a telefonotokon.</b> Az óra akkor indul, amikor a csapat elkezdi, és mindenki a saját telefonján játszik.', hHow3:'<b>Menj oda idegenekhez, és csináld meg a kihívásokat.</b> Minden kihívás pontot ér. A csapatodból bárki beszállhat, és mindenki megkapja a pontokat, aki beszállt.', hHow4:'<b>Néhány kihíváshoz bizonyíték kell:</b> egy fotó, vagy egy válasz, amit az idegen ír be a telefonodon.', hHow5:'<b>A csapatotoknak saját chatje van</b> az estére. Amikor lejár az idő, az nyer, akinek a legtöbb pontja van.', hHowNote:'Nem kell hozzá póló. Bárki mondhat nemet, és bármelyik kihívást kihagyhatod, ami nem tetszik.',
     hCodeH:'Van kódod?', hCodeP:'Írd be ide, vagy szkenneld be a QR-t Áron vagy egy barátod telefonjáról.', hBtn:'Elfoglalom a helyem',
     hPastH:'Az estéid', active:'Élő', rankOf:'{n}-ből #{r} · {p} pont', hBuyH:'Játszanátok?', hBuyP:'Írj Áronnak, és küldd el neki a csapatotok nevét, valamint hogy hányan vagytok.',
     hLogin:'Játszottál már? <a href="/login/?next=/pass/">Lépj be</a>, és látod az estéidet.',
@@ -896,6 +920,8 @@ function paint(){
   });
   $('mHub').textContent = t('hubBtn');
   $('hLogin').innerHTML = t('hLogin');
+  ['hHow1','hHow2','hHow3','hHow4','hHow5'].forEach(k => { $(k).innerHTML = t(k); });
+  $('hHowH').textContent = t('hHowH'); $('hHowNote').textContent = t('hHowNote');
   $('hApp').textContent = t('hApp');
   renderHook();
 }
@@ -1085,6 +1111,12 @@ async function hub(){
   // opened from the home screen icon: that app has its own login, so say so instead of leaving people on a logged-out page
   $('hApp').hidden = !!user || !(matchMedia('(display-mode: standalone)').matches || navigator.standalone === true);
   $('hPast').hidden = !list.length;
+  /* order (Aron, 28 Nov): new players read how it works first, then Got a code?, then Want to play?;
+     people with at least one Shirtless night get their nights on top and the explanation last */
+  const hv = $('v-hub'), played = list.length > 0;
+  if (played){ hv.insertBefore($('hPast'), $('hCodeBox')); hv.insertBefore($('hHowBox'), $('hApp')); }
+  else hv.insertBefore($('hHowBox'), $('hCodeBox'));
+  $('hP').hidden = played;
   // unread chat messages per night, counted from the last time this phone opened that chat
   const unread = {};
   await Promise.all(list.map(async n => {
@@ -1095,6 +1127,13 @@ async function hub(){
   }));
   renderHook = () => {
     if (current !== 'hub') return;
+    if (list.length){
+      const n0 = list[0], tot = Object.values(unread).reduce((a, b) => a + b, 0);
+      const d0 = new Date(n0.started_at).toLocaleDateString(L, { day:'numeric', month:'short' });
+      const last = n0.name + (n0.active ? ' (' + t('active') + ')' : ' · ' + d0);
+      $('hPastH').innerHTML = esc(t('hPastH')) + (tot ? ' <span class="badge inline">' + (tot > 99 ? '99+' : tot) + '</span>' : '');
+      $('hPastS').textContent = list.length === 1 ? t('hPastS1', { last }) : t('hPastS', { n: list.length, last });
+    }
     $('hNights').innerHTML = list.map(n => {
       const d = new Date(n.started_at).toLocaleDateString(L, { day:'numeric', month:'short' });
       const sub = n.lobby ? '<span class="ptag">' + esc(t('lobbyTag')) + '</span>' : n.active ? '<span class="ptag">' + esc(t('active')) + '</span>' : esc(d);

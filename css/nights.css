@@ -102,6 +102,9 @@
 .nrow em{font-style:normal;color:var(--red);font-weight:800;font-size:1.2rem;padding-right:6px}
 .nth{width:66px;height:66px;border-radius:14px;object-fit:cover;flex:none;display:grid;place-items:center}
 .nth.ph{background:var(--red)}
+.nth svg{width:42px;height:42px;display:block;flex:none}
+.nth.ph svg path{fill:#fff;stroke:#1b1412;stroke-width:2.2;stroke-linejoin:round}
+.nth.pass svg path{fill:#1b1412}.nth.pass svg path.cut{fill:none;stroke:#F7DF40;stroke-width:2.4;stroke-linecap:round}
 .nth.pass{background:#F7DF40;color:#1b1412;font-style:normal;font-weight:800;font-size:.75rem}
 .nrow.pass{border-style:dashed}
 

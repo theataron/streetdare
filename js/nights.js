@@ -217,6 +217,9 @@ function upsells(){
   return '<div class="upsell yellow"><small>' + esc(t('passK')) + '</small><h2 class="display">' + esc(t('passH')) + '</h2><p>' + esc(t('passP')) + '</p><a class="btn" href="/?home=1#shop">' + esc(t('passBtn')) + '</a></div>' +
          '<div class="upsell blue"><h2 class="display">' + esc(t('shirtH')) + '</h2><p>' + esc(t('shirtP')) + '</p><a class="btn" href="/?home=1#join">' + esc(t('shirtBtn')) + '</a></div>';
 }
+/* night thumbnails without a photo: a shirt for shirt nights, a ticket for Shirtless Pass nights */
+const ICO_SHIRT = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M17 9l-9 5 3 9 4-2v18h18V21l4 2 3-9-9-5c-1.5 3-4 4.5-7 4.5S18.5 12 17 9z"/></svg>';
+const ICO_PASS = '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 15a3 3 0 0 1 3-3h26a3 3 0 0 1 3 3v5a4 4 0 0 0 0 8v5a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3v-5a4 4 0 0 0 0-8z"/><path class="cut" d="M29 13v4m0 5v4m0 5v4"/></svg>';
 const stars = () => '<i class="bgstar s1">' + STAR + '</i><i class="bgstar s2">' + STAR + '</i><i class="bgstar s3">' + STAR + '</i>';
 function passList(){
   return (D.pass || []).map(p => ({ at: +new Date(p.begun_at || p.created_at || p.started_at || Date.now()), p }));
@@ -246,7 +249,10 @@ function renderOwner(app){
   let html = '';
   /* tonight first (if a night is running), then always the summary of the last finished night, then the totals */
   if (live) html += liveCard(live, h);
-  const last = live ? NIGHTS[1] : NIGHTS[0];
+  /* the last-night block only if that night was last night (or earlier tonight); nothing for older nights (Aron, 28 Nov) */
+  const nday = ms => new Date(ms - 6 * 3600e3).toLocaleDateString('en-CA', { timeZone: TZ });
+  const cand = live ? NIGHTS[1] : NIGHTS[0];
+  const last = cand && [nday(Date.now()), nday(Date.now() - 24 * 3600e3)].includes(nday(cand.start)) ? cand : null;
   if (last) html += lastNightCard(last);
   else if (!live) html += '<div class="kicker">' + esc(t('hey', { n: name })) + '</div>';
   /* stats */
@@ -265,7 +271,7 @@ function renderOwner(app){
   if (!live && (hr >= 17 || hr < 3)){
     const ph = !!(D.prof && D.prof.avatar_url);
     html += '<section class="going"><h2 class="display">' + esc(t('goingH')) + '</h2><p>' + esc(t('goingP')) + '</p>' +
-      '<a class="gorow dark" href="/me/#decks"><span>' + esc(t('deck')) + '</span><b>' + esc(t('party')) + ' →</b></a>' +
+      '<a class="gorow dark" href="/me/#s-decks"><span>' + esc(t('deck')) + '</span><b>' + esc(t('party')) + ' →</b></a>' +
       '<a class="gorow" href="/me/"><span>' + esc(t('photo')) + '</span><b>' + esc(ph ? t('photoOk') : t('photoAdd')) + '</b></a></section>';
   }
   html += nightsList();
@@ -306,9 +312,9 @@ function lastNightCard(n){
     '<div class="row2"><a class="btn red" href="#n=' + encodeURIComponent(n.key) + '">' + esc(t('openNight')) + '</a><button class="btn yel" type="button" data-share="' + esc(n.key) + '">' + esc(t('share')) + '</button></div></section>';
 }
 function nightsList(){
-  const rows = NIGHTS.map(n => ({ at: n.start, html: '<a class="nrow" href="#n=' + encodeURIComponent(n.key) + '">' + (n.photos[0] ? img(n.photos[0], 'nth') : '<i class="nth ph"></i>') +
+  const rows = NIGHTS.map(n => ({ at: n.start, html: '<a class="nrow" href="#n=' + encodeURIComponent(n.key) + '">' + (n.photos[0] ? img(n.photos[0], 'nth') : '<i class="nth ph">' + ICO_SHIRT + '</i>') +
     '<span><b class="display">' + esc(nightName(n)) + '</b><small>' + esc(nightDate(n) + ' · ' + t('pm', { p: n.people, d: n.dares })) + '</small></span><em>→</em></a>' }))
-    .concat(passList().map(x => ({ at: x.at, html: '<a class="nrow pass" href="/pass/?n=' + esc(x.p.id) + '"><i class="nth pass">PASS</i><span><small class="y">' + esc(t('passTag')) + '</small><b class="display">' + esc(x.p.name || '') + '</b><small>' + esc(dayMon(x.at) + ' · ' + t('openFeed')) + '</small></span></a>' })))
+    .concat(passList().map(x => ({ at: x.at, html: '<a class="nrow pass" href="/pass/?n=' + esc(x.p.id) + '"><i class="nth pass">' + ICO_PASS + '</i><span><small class="y">' + esc(t('passTag')) + '</small><b class="display">' + esc(x.p.name || '') + '</b><small>' + esc(dayMon(x.at) + ' · ' + t('openFeed')) + '</small></span></a>' })))
     .sort((a, b) => b.at - a.at);
   return '<section class="sect"><h2 class="display">' + esc(t('nightsH')) + '</h2>' + (rows.length ? '<div class="nlist">' + rows.map(r => r.html).join('') + '</div>' : '<p class="sub">' + esc(t('nightsEmpty')) + '</p>') + '</section>';
 }
@@ -420,7 +426,7 @@ function renderScanner(app){
   const people = new Set(mine.map(e => e.shirt)).size;
   s += '<section class="sect"><h2 class="display">' + esc(t('memH')) + '</h2>' + (mine.length ? '<p class="sub"><b>' + people + '</b> ' + esc(t('peopleThrough')) + '</p>' : '');
   const rows = mine.map(e => ({ at: +new Date(e.at), html: scannerRow(e) })).concat(passList().map(x => ({ at: x.at,
-    html: '<a class="nrow pass" href="/pass/?n=' + esc(x.p.id) + '"><i class="nth pass">PASS</i><span><small class="y">' + esc(t('passTag')) + '</small><b class="display">' + esc(x.p.name || '') + '</b><small>' + esc(dayMon(x.at) + ' · ' + t('openFeed')) + '</small></span></a>' }))).sort((a, b) => b.at - a.at);
+    html: '<a class="nrow pass" href="/pass/?n=' + esc(x.p.id) + '"><i class="nth pass">' + ICO_PASS + '</i><span><small class="y">' + esc(t('passTag')) + '</small><b class="display">' + esc(x.p.name || '') + '</b><small>' + esc(dayMon(x.at) + ' · ' + t('openFeed')) + '</small></span></a>' }))).sort((a, b) => b.at - a.at);
   s += rows.length ? rows.map(r => r.html).join('') : '<p class="sub">' + esc(t('memEmpty')) + '</p>';
   s += '</section>';
   if (!params.get('saved')) s += '<div class="upsell blue"><h2 class="display">' + esc(t('shirtH')) + '</h2><p>' + esc(t('shirtP')) + '</p><a class="btn" href="/?home=1#join">' + esc(t('shirtBtn')) + '</a></div>';
